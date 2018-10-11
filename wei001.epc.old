@@ -7,7 +7,7 @@
 
 [ETS-ESF]
 // Die aus der ETS3 exportierte ESF-Datei
-C:\Users\asc\repo\EibPC/EtsExport/Weisshauptstr.12v5.esf
+C:/Users/asc/EibPC/EtsExport/Weisshauptstr.12v5.esf
 
 [Macros]
 ////////////////////////////////////////////////////////
@@ -283,14 +283,14 @@ pShifterDachWRad( IDShift_D_H_RAD_WEST)
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken
-C:\Users\asc\repo\EibPC/lib/EibPCHz.lib
-C:\Users\asc\repo\EibPC/lib/WeiHz.lib
-C:\Users\asc\repo\EibPC/lib/EibPCBase.lib
-C:\Users\asc\repo\EibPC/lib/HzInit.lib
-C:\Users\asc\repo\EibPC/lib/visuMain.lib
-C:\Users\asc\repo\EibPC\lib/webOut01.lib
-C:\Users\asc\repo\EibPC/lib/HzViso.lib
-C:\Users\asc\repo\EibPC/lib/RemMem.lib
+C:/Users/asc/EibPC/lib/EibPCHz.lib
+C:/Users/asc/EibPC/lib/WeiHz.lib
+C:/Users/asc/EibPC/lib/EibPCBase.lib
+C:/Users/asc/EibPC/lib/HzInit.lib
+C:/Users/asc/EibPC/lib/visuMain.lib
+C:/Users/asc/EibPC/lib/webOut01.lib
+C:/Users/asc/EibPC/lib/HzViso.lib
+C:/Users/asc/EibPC/lib/RemMem.lib
 //C:/Users/Public/dev/knx/EibPC/lib/BMXRemanent8.lib
 //C:/Users/Public/dev/knx/EibPC/lib/test.lib
 
@@ -309,8 +309,8 @@ C:\Users\asc\repo\EibPC/lib/RemMem.lib
 
 [EibPC]
 #ifndef EMPTY
-#include C:\Users\asc\repo\EibPC/include/DefHz.inc
-#include C:\Users\asc\repo\EibPC/include/RemMem.inc
+#include C:/Users/asc/EibPC/include/DefHz.inc
+#include C:/Users/asc/EibPC/include/RemMem.inc
 //
 //////////////////////////////////////////////////////////////////////
 // EibPC-UVR1611
@@ -464,8 +464,8 @@ if delay("FBHStSw-3/3/18",delayFBHog1) then write("FBHSw-3/3/17",OFF) endif
 // WebServer
 ////////////////////////////////////////////////////////////////////////////////////////"GetTargetTE-3/2/50"
 
-#include C:\Users\asc\repo\EibPC/include/tBuf.inc
-#include C:\Users\asc\repo\EibPC/include/viso.inc
+#include C:/Users/asc/EibPC/include/tBuf.inc
+#include C:/Users/asc/EibPC/include/viso.inc
 
 
 /////////////////////////////////////////////////////////////////
