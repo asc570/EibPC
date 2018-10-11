@@ -1,0 +1,52 @@
+// $Id: $ //
+:begin WebOutTest1( Id,GA )
+:var txt@
+:var strOut@
+txt@  = $ $c64000
+strOut@  = $nil$c64000
+
+if( event(GA )) then{
+ txt@ = txt@ +$
+                  <tr>
+                     <td>
+                        1
+                     </td>
+                     <td>
+                     2
+                     </td> 
+                     <td>
+                        3
+                     </td>
+                     <td>
+                       4
+                     </td> 
+                     <td>
+                        5
+                     </td> 
+                     <td>
+                       6
+                     </td>
+                     <td>
+                        7
+                     </td>
+                     <td>
+                     8
+                     </td> 
+                     <td>
+                        9
+                     </td>
+                     <td>
+                       10
+                     </td> 
+                     <td>
+                        11
+                     </td> 
+                     <td>
+                      12
+                     </td>
+                     </tr>$;
+   strOut@ = $<table> $+txt@+$</table>$; 
+
+   weboutput( Id,strOut@ )
+   }endif
+:end

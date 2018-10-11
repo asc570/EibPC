@@ -1,0 +1,186 @@
+// $Id: visuMain.lib 62 2014-04-08 15:08:04Z asc $ //
+:begin WebOutHkAll( Id )
+:var t1@
+///////////////////////////
+:var PIdHk1@
+:var PIdHk3@
+:var PIdHk4@
+:var PIdHk5@
+////////////////////
+t1@      = $$
+////////////////////////
+PIdHk1@ = $nil$
+PIdHk3@ = $nil$
+PIdHk4@ = $nil$
+PIdHk5@ = $nil$
+////////////////////
+if( systemstart() or event("Ain01-11/2/1" )) then{
+   PIdHk1@ = convert( "Ain01-11/2/1"/147u16,$$ )+$%$;
+   PIdHk3@ = convert( "Ain03-11/2/3"/147u16,$$ )+$%$;
+   PIdHk4@ = convert( "Ain04-11/2/4"/147u16,$$ )+$%$;
+   PIdHk5@ = convert( "Ain05-11/2/5"/147u16,$$ )+$%$;
+
+ if( "Ain01-11/2/1" > 0u16 ) then{
+      PIdHk1@ = $<font color=green>$ + PIdHk1@ + $</font>$ 
+      }endif;
+ if( "Ain03-11/2/3" > 0u16 ) then{
+      PIdHk1@ = $<font color=green>$ + PIdHk3@ + $</font>$ 
+      }endif;
+ if( "Ain04-11/2/4" > 0u16 ) then{
+      PIdHk1@ = $<font color=green>$ + PIdHk4@ + $</font>$ 
+      }endif;
+ if( "Ain05-11/2/5"> 0u16 ) then{
+      PIdHk1@ = $<font color=green>$ + PIdHk5@ + $</font>$ 
+      }endif;
+
+t1@ =$   <table width ="100%">
+                           <tr>
+                              <td>
+                                 <b>PID Hk1:</b>
+                              </td>
+                              <td>$
+                                  +PIdHk1@+
+                              $</td>
+                              <td>
+                                 <b>PID Hk3:</b>
+                              </td>
+                              <td>$
+                                  +PIdHk3@+
+                              $</td>
+                        </tr>
+                        <tr>
+                              <td>
+                                 <b>PID Hk4:</b>
+                              </td>
+                              <td>$
+                                  +PIdHk4@+
+                              $</td>
+                              <td>
+                                 <b>PID Hk5:</b>
+                              </td>
+                              <td>$
+                                  +PIdHk5@+
+                              $</td>
+                        </tr>
+           </table>$;
+
+   weboutput( Id,t1@)
+}endif
+:end
+//////////////////////////////////////////////////////////////
+:begin WebOutHkTemp1_3( Id )
+:var t1@
+///////////////////////////
+////////////////////
+:var Tvl1@
+:var Trl1@
+:var Tvl3@
+:var Trl3@
+////////////////////
+t1@      = $$
+////////////////////
+Tvl1@ = $nil$
+Trl1@ = $nil$
+Tvl3@ = $nil$
+Trl3@ = $nil$
+////////////////////
+if( systemstart() or event("Ain06-11/2/6" )) then{
+
+   Tvl1@ =     convert( "Ain06-11/2/6",$$ )+ $C$;
+   Trl1@ =     convert( "Ain07-11/2/7",$$ )+ $C$;
+   Tvl3@ =     convert( "Ain08-11/2/8",$$ )+ $C$;
+   Trl3@ =     convert( "Ain09-11/2/9",$$ )+ $C$;
+
+t1@ =$   <table width ="100%">
+                       <tr>
+                              <td>
+                                 <b>T Vorlauf 1:</b>
+                              </td>
+                              <td>$
+                                  +Tvl1@+
+                              $</td>
+                              <td>
+                                 <b>T Ruecklauf 1:</b>
+                              </td>
+                              <td>$
+                                  +Trl1@+
+                              $</td>
+                        </tr>
+                       <tr>
+                              <td>
+                                 <b>T Vorlauf 3:</b>
+                              </td>
+                              <td>$
+                                  +Tvl3@+
+                              $</td>
+                              <td>
+                                 <b>T Ruecklauf 3:</b>
+                              </td>
+                              <td>$
+                                  +Trl3@+
+                              $</td>
+                      </tr>
+           </table>$;
+
+   weboutput( Id,t1@)
+}endif
+
+:end
+
+//////////////////////////////////////////////////////////////
+:begin WebOutHkTemp4_Col( Id )
+:var t1@
+///////////////////////////
+:var Tvl4@
+:var Trl4@
+:var TvlCol@
+:var TrlCol@
+////////////////////
+t1@      = $$
+////////////////////
+Tvl4@ = $nil$
+Trl4@ = $nil$
+TvlCol@ = $nil$
+TrlCol@ = $nil$
+
+if( systemstart() or event("Ain06-11/2/6" )) then{
+   Tvl4@ =     convert( "Ain10-11/2/10",$$ )+ $C$;
+   Trl4@ =     convert( "Ain11-11/2/11",$$ )+ $C$;
+   TvlCol@ =   convert( "Ain12-11/2/12",$$ )+ $C$;
+   TrlCol@ =   convert( "Ain13-11/2/13",$$ )+ $C$; 
+
+t1@ =$   <table width ="100%">
+                      <tr>
+                              <td>
+                                 <b>T Vorlauf 4:</b>
+                              </td>
+                              <td>$
+                                  +Tvl4@+
+                              $</td>
+                              <td>
+                                 <b>T Ruecklauf 4:</b>
+                              </td>
+                              <td>$
+                                  +Trl4@+
+                              $</td>
+                     </tr>
+                     <tr>
+                              <td>
+                                 <b>T Vorlauf Col:</b>
+                              </td>
+                              <td>$
+                                  +TvlCol@+
+                              $</td>
+                              <td>
+                                 <b>T Ruecklauf Col:</b>
+                              </td>
+                              <td>$
+                                  +TrlCol@+
+                              $</td>
+                     </tr>
+           </table>$;
+
+   weboutput( Id,t1@)
+}endif
+:end
+

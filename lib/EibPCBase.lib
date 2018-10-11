@@ -1,0 +1,87 @@
+// $Id: EibPCBase.lib 41 2014-01-03 18:06:13Z asc $ //
+///////////////////////////////////////////////////////
+// EventReadGA()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+///////////////////////////////////////////////////////////////
+:begin EventReadGA(ReadGA,val)
+if (eventread(ReadGA)) then writeresponse(ReadGA,val) endif
+:end
+////////////////////////////////////////////////////////////////
+// WriteOnChange()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+:begin WriteOnChange(WriteGA,val)
+:info $ when val changes write val onto WriteGA$\\
+$GA to write on$\\
+$when val changes write val onto WriteGA$
+if(change(val) or systemstart( )) then write(WriteGA,val) endif
+:end
+
+////////////////////////////////////////////////////////////////
+:begin WriteOnChangeT(WriteGA,val,mm)
+if(change(val))         then  write(WriteGA,val) endif
+if( cycle( mm,0u08 ))   then  write(WriteGA,val) endif 
+if( systemstart( ))     then  write(WriteGA,val) endif 
+:end
+////////////////////////////////////////////////////////////////
+// WriteOnChangeConv()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+:begin WriteOnChangeConv(WriteGA,val)
+if(systemstart()) then write(WriteGA,convert(val,WriteGA)) endif
+if(change(val)) then write(WriteGA,convert(val,WriteGA)) endif
+:end
+//////////////////////////////////////////////////////////////
+:begin WriteOnChangeConvT(WriteGA,val,mm)
+if(systemstart()) then  write(WriteGA,convert(val,WriteGA)) endif
+if(cycle( mm,2u08 )) then  write(WriteGA,convert(val,WriteGA)) endif
+if(change(val) )  then  write(WriteGA,convert(val,WriteGA)) endif 
+:end
+////////////////////////////////////////////////////////////////
+// StoreGA()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+:begin StoreGA(Ga,var,fChangeEvent)
+initga(Ga)
+if(systemstart()) then  write(Ga,var) endif
+if(change(Ga)) then var = Ga endif
+if (eventread(Ga)) then writeresponse(Ga,var) endif
+if(change(var) and var != Ga and fChangeEvent) then write(Ga,var) endif
+
+:endif
+////////////////////////////////////////////////////////////////
+// StoreGAt()
+//
+:begin StoreGAt(Ga,var,fChangeEvent,msec)
+initga(Ga)
+if(systemstart()) then  write(Ga,var) endif
+if(change(Ga)) then var = Ga endif
+if (eventread(Ga)) then writeresponse(Ga,var) endif
+if(change(var) and var != Ga and fChangeEvent) then write(Ga,var) endif
+if(msec!=0u64 and delay(eventresponse(Ga) or eventwrite(Ga),msec)) then write(Ga,var) endif
+:endif
+
+////////////////////////////////////////////////////////////////
+// TimerControl()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+//:begin TimerCControl(fInGA,fOutGA,SetTime,GetTime)
+//if(event(fInGA)) then write(fOutGA,fInGA) endif
+//if(delayc((fInGA==EIN),SetTime,GetTime)) then write(fInGA,AUS) endif
+//:end
+
+:begin StoreRemanent(val,pos)
+if(change(val)) then writeflash(val,pos) endif
+
+:end

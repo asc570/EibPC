@@ -1,0 +1,169 @@
+// $Id: EibPCHz.lib 38 2013-12-20 08:23:11Z asc $ //
+/----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Ziel                 : HzKomfortDriver
+// 
+//  Version              : v0.01.01
+//
+//  Lizens               : 
+//
+//  (C) Copyright        : All rights reserved.
+//
+//  Author               : Alexander Schuetz
+//  KNX forum id         : 
+//
+//  Dat.Rev.             : 
+//  Version              : 
+//----------------------------------------------------------------------
+
+
+//////////////////////////////////////////////////////////////
+:begin WriteHzMDT_Mode(HVACmodeGA,fAuto,HzMDTMode,fDay)
+:info $Schreib an HVACmodeGA den MDT Mode: 1:Komfort, 2:Sby, 3:Nacht, 4: Frost.  $\\
+$FAuto: Zeitprogram :AUto/Man$\\
+$HVACmodeGA: r+w :den HVAC Mode intp MDT Heizungsaktor$\\
+$fDay: r: Flag to set HVAC mode$  
+initga(HVACmodeGA)
+
+if(change(fAuto) or change(HzMDTMode) or change(fDay) or systemstart() ) then{
+	if(fAuto == EIN )then{
+		if(fDay == EIN) then{
+			HzMDTMode = min(HZ_MDT_SBY,HzMDTMode);
+			write(HVACmodeGA,HzMDTMode ) 
+			}else{
+			write(HVACmodeGA,HZ_MDT_NIGHT )
+			}endif
+		}else{
+		write(HVACmodeGA,HzMDTMode ) 
+		}endif;	
+	}endif
+:end
+/////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////
+:begin WriteHzMDT_Perc(PercGA,fAuto,fDay,pDay,pNight)
+if(change(fAuto)  or change(fDay) or change( pDay ) or change( pNight ) or systemstart() ) then{ 
+   if(fAuto  )then{
+		if(fDay ) then{
+			write(PercGA,pDay ) 
+			}else{
+			write(PercGA,pNight )
+			}endif
+		}endif;	
+	}endif
+:end
+/////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////
+// ZasHourShift()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+:begin ZasHourShift(H,dayH,ShiftHGA)
+:info $Changes the in/out houre value based on ShiftHGA, steps from 24h to 01h and back$\\
+$ in/out night Houre$\\
+$ GA to init a shift$
+if(event(ShiftHGA)) then{
+	if(ShiftHGA == EIN and H != dayH) then{
+		H = H + 1u08 
+		}else{
+		if(!chtime(H,0,0) or H < dayH ) then	H = H - 1u08 endif
+		}endif
+	}endif
+if(H > 24u08)   then H = 1u08 endif
+if(H < 1u08)    then H = 24u08 endif
+:end
+////////////////////////////////////////////////////////////////////////
+// IsHourDay()
+// @date	23.09.2013
+// @version	0.01.01 
+// @author	Alexander Schütz
+// Requirements: 
+:begin IsHourDay(nightH,dayH,fIsDay,fNightOverride)
+:info $checks every hour if time is between dayH and nightH and sets fIsDay to EIN if condition is true.Resets fNightOverride in the morning$\\
+$in: start hour of night$\\
+$in:start hour of day$\\
+$out: true if day$
+:var ra@
+ra@ = convert(random(59u32),1u08)
+// reset NightOverride at 3Uhr
+:var rT@
+rT@	= 5u08
+if(htime(rT@,0u08,0u08)) then fNightOverrideGen = AUS endif
+
+if(mtime(0u08,ra@) or change(nightH) or change(dayH) or change(fNightOverride) or systemstart()) then{
+	if(fNightOverride == AUS) then{
+		if(nightH > dayH) then{
+			fIsDay = !chtime(nightH,0,0) and  chtime(dayH,0,0)
+			} else{
+			if (nightH == dayH) then{
+				 fIsDay = AUS
+				} else{
+				fIsDay = !chtime(nightH,0,0) or chtime(dayH,0,0)
+				}endif
+			}endif
+		}else{
+		fIsDay = AUS
+		}endif
+    }endif
+:end
+
+
+//////////////////////////////////////////////////////////////////////////////////
+:begin MixTemp2(In1GA,In2GA,OutTemp)
+:info $Output to variable OutTemp the avarage of In1GA and In2GA temp. Takes care for timeout and a 0C value from Input$\\
+$in:GA for temperatur 1$\\
+$in:GA for temperatur 2$\\
+$out: variable for mix temperature$
+initGA(In1GA)
+initGA(In2GA)
+:var timeout@
+timeout@ = 3600000u64 		/* 10 minuten*/
+:var valid1@
+:var valid2@
+valid1@	= AUS
+valid2@	= AUS
+
+if(delay(event(In1GA),timeout@) ) then valid1@ = AUS endif
+if(delay(event(In2GA),timeout@) ) then valid2@ = AUS endif
+if(In1GA == 0f16) then valid1@ = AUS endif
+if(In2GA == 0f16) then valid2@ = AUS endif
+if(event(In1GA))then{
+	if(valid2@) then{
+		OutTemp = average(In1GA,In2GA)
+		}else{
+		OutTemp = In1GA
+		}endif;
+	valid1@ = EIN
+	}endif
+if(event(In2GA))then{
+	if(valid1@) then{
+		OutTemp = average(In1GA,In2GA)
+		}else{
+		OutTemp = In2GA
+		}endif;
+	valid2@ = EIN
+	}endif
+:end
+
+
+
+///////////////////////////////////////////////////////
+//
+:begin SetHkUvr8FromMini(miniAllUVR8,PcUvrMode,outHkUvr8)
+:info $	 preliminary, using only minimum EG $
+// mode UVR_xxx8 is subset of PCUVR_UVR_xxx
+// reliminary: use only minimum EG
+
+if( change(miniAllUVR8) or change(PcUvrMode) or delay(systemstart(),10000u64)) then{
+	if( PcUvrMode == PCUVR_PCAUTO)  then{
+		outHkUvr8 = miniAllUVR8 
+	}else{
+		outHkUvr8 = PcUvrMode
+	}endif
+}endif
+:end
+/////////////////////////////////////////////////////////////////////////////
+

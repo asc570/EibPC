@@ -1,0 +1,1041 @@
+// $Id: webOut01.lib 68 2014-10-07 13:38:32Z asc $ 
+
+:begin WebOutHkComplett( Id )
+:var SBY@
+:var AUTO@
+:var NORMAL@
+:var ABGESENKT@
+:var INTERN@
+:var PC@
+:var ERROR@
+//
+:var DvlHk1@
+:var DvlHk3@
+:var DvlHk4@
+
+//
+DvlHk1@  = 6f16
+DvlHk3@  = 10f16
+DvlHk4@  = 4f16
+//
+SBY@        = $<font color=agua >f</font>$
+AUTO@       = $<font color=olive>a</font>$
+NORMAL@     = $<font color=lime>h</font>$
+ABGESENKT@  = $<font color=yellow>l</font>$
+INTERN@     = $<font color=black>i</font>$
+ERROR@      = $<font color=red>e</font>$
+////////////////////
+:var t1@
+:var STARTDELAY@
+////////////////////
+t1@            = $$
+STARTDELAY@    = 2000u64
+///////////////////////////
+:var InfoHk1@
+:var InfoHk3@
+:var InfoHk4@
+:var InfoHk5@
+
+InfoHk1@ = $Hk1$
+InfoHk3@ = $Hk3$
+InfoHk4@ = $Hk4$
+InfoHk5@ = $Hk5$
+/////////////////////////////
+:var PIdHk1@
+:var PIdHk3@
+:var PIdHk4@
+:var PIdHk5@
+////////////////////////
+PIdHk1@ = $nil$
+PIdHk3@ = $nil$
+PIdHk4@ = $nil$
+PIdHk5@ = $nil$
+////////////////////
+:var Tvl1@
+:var Trl1@
+:var Tvl3@
+:var Trl3@
+:var Tvl4@
+:var Trl4@
+////////////////////
+Tvl1@ = $nil$
+Trl1@ = $nil$
+Tvl3@ = $nil$
+Trl3@ = $nil$
+Tvl4@ = $nil$
+Trl4@ = $nil$
+////////////////////
+:var TistHk1@
+:var TistHk3@
+:var TistHk4@
+:var TistHk5@
+///////
+TistHk1@ = $nil$
+TistHk3@ = $nil$
+TistHk4@ = $nil$
+TistHk5@ = $nil$
+/////////////////////
+:var TsollHk1@
+:var TsollHk3@
+:var TsollHk4@
+:var TsollHk5@
+///////////////////////
+TsollHk1@ = $nil$
+TsollHk3@ = $nil$
+TsollHk4@ = $nil$
+TsollHk5@ = $nil$
+//////////////////////
+:var Hk1Pump@
+:var Hk3Pump@
+:var Hk4Pump@
+//////////////////////
+Hk1Pump@ = $&#042$
+Hk3Pump@ = $&#042$
+Hk4Pump@ = $&#042$
+////////////////////
+:var Hk1Mode@
+:var Hk3Mode@
+:var Hk4Mode@
+:var Hk5Mode@
+
+Hk1Mode@ = $err$
+Hk3Mode@ = $err$
+Hk4Mode@ = $err$
+Hk5Mode@ = $err$
+//////////////////////////////
+:var MasterOn@
+MasterOn@  = $nil$
+if (after(systemstart(),STARTDELAY@) or change(bHzMasterON )) then{
+   if(bHzMasterON  ) then{
+      MasterOn@ = $<font color="lime">Master ON</font>$;
+      }else{
+      MasterOn@ = $<font color="red">Master OFF</font>$;
+      }endif
+   }endif
+
+if( after(systemstart(),STARTDELAY@) or change(Hk1_Uvr8Mode) )then{
+   Hk1Mode@ = ERROR@;
+   if Hk1_Uvr8Mode==UVR_SBY8        then Hk1Mode@ = SBY@ endif;
+   if Hk1_Uvr8Mode==UVR_AUTO8       then Hk1Mode@ = AUTO@ endif;
+   if Hk1_Uvr8Mode==UVR_NORMAL8	   then Hk1Mode@ = NORMAL@ endif;
+   if Hk1_Uvr8Mode==UVR_ABGESENKT8  then Hk1Mode@ = ABGESENKT@ endif;
+   if Hk1_Uvr8Mode==UVR_INTERN8     then Hk1Mode@ = INTERN@ endif;
+   }endif
+if( after(systemstart(),STARTDELAY@ ) or change(Hk3_Uvr8Mode) )then{
+   Hk3Mode@ = ERROR@;
+   if Hk3_Uvr8Mode==UVR_SBY8        then Hk3Mode@ = SBY@ endif;
+   if Hk3_Uvr8Mode==UVR_AUTO8       then Hk3Mode@ = AUTO@ endif;
+   if Hk3_Uvr8Mode==UVR_NORMAL8	   then Hk3Mode@ = NORMAL@ endif;
+   if Hk3_Uvr8Mode==UVR_ABGESENKT8  then Hk3Mode@ = ABGESENKT@ endif;
+   if Hk3_Uvr8Mode==UVR_INTERN8     then Hk3Mode@ = INTERN@ endif;
+   }endif
+if( after(systemstart(),STARTDELAY@  ) or change(Hk4_Uvr8Mode) )then{
+   Hk4Mode@ = ERROR@;
+   if Hk4_Uvr8Mode==UVR_SBY8        then Hk4Mode@ = SBY@ endif;
+   if Hk4_Uvr8Mode==UVR_AUTO8       then Hk4Mode@ = AUTO@ endif;
+   if Hk4_Uvr8Mode==UVR_NORMAL8	   then Hk4Mode@ = NORMAL@ endif;
+   if Hk4_Uvr8Mode==UVR_ABGESENKT8  then Hk4Mode@ = ABGESENKT@ endif;
+   if Hk4_Uvr8Mode==UVR_INTERN8     then Hk4Mode@ = INTERN@ endif;
+   }endif
+if( after(systemstart(), STARTDELAY@ ) or change(Hk5_Uvr8Mode) )then{
+   Hk5Mode@ = ERROR@;
+   if Hk5_Uvr8Mode==UVR_SBY8        then Hk5Mode@ = SBY@ endif;
+   if Hk5_Uvr8Mode==UVR_AUTO8       then Hk5Mode@ = AUTO@ endif;
+   if Hk5_Uvr8Mode==UVR_NORMAL8	   then Hk5Mode@ = NORMAL@ endif;
+   if Hk5_Uvr8Mode==UVR_ABGESENKT8  then Hk5Mode@ = ABGESENKT@ endif;
+   if Hk5_Uvr8Mode==UVR_INTERN8     then Hk5Mode@ = INTERN@ endif;
+   }endif
+
+//////////////////////////////////////////////////
+if( systemstart() or event("Ain01-11/2/1" ) or event("Ain08-11/2/8" )\\
+                  or event("Din11-11/0/11")) then{
+      PIdHk1@ = stringformat("Ain01-11/2/1"/148u16 ,0,3,3,3 )+$%$;
+
+      PIdHk3@ = stringformat("Ain03-11/2/3"/148u16 ,0,3,3,3 )+$%$;
+      PIdHk4@ = stringformat("Ain04-11/2/4"/148u16 ,0,3,3,3 )+$%$;
+      PIdHk5@ = stringformat("Ain05-11/2/5"/148u16 ,0,3,3,3 )+$%$;
+
+
+    if( "Ain01-11/2/1" > 0u16 ) then{
+         PIdHk1@ = $<font color=lime>$ + PIdHk1@ + $</font>$ 
+         }endif;
+    if( "Ain03-11/2/3" > 0u16 ) then{
+         PIdHk3@ = $<font color=lime>$ + PIdHk3@ + $</font>$ 
+         }endif;
+    if( "Ain04-11/2/4" > 0u16 ) then{
+         PIdHk4@ = $<font color=lime>$ + PIdHk4@ + $</font>$ 
+         }endif;
+    if( "Ain05-11/2/5"> 0u16 ) then{
+         PIdHk5@ = $<font color=lime>$ + PIdHk5@ + $</font>$ 
+         }endif;
+
+   if( "Din11-11/0/11"== ON ) then{
+      InfoHk1@ = $<font  color=fuchsia>Hk1</font>$ ;
+      }else{
+      InfoHk1@ = $<font color=blue>Hk1</font>$ ;
+      }endif;
+
+   if( "Din09-11/0/9"== ON ) then{
+      InfoHk3@ = $<font color=fuchsia>Hk3</font>$ ;
+      }else{
+      InfoHk3@ = $<font color=blue>Hk3</font>$ ;
+      }endif;
+
+   if( Hk5_SwMain== ON ) then{
+      InfoHk5@ = $<font color=aqua>Hk5*</font>$ ;
+      }else{
+      InfoHk5@ = $<font color=gray>Hk5</font>$ ;
+      }endif;
+
+   if( "Din08-11/0/8"== ON ) then{
+      InfoHk4@ = $<font color=fuchsia>Hk4</font>$ ;
+      }else{
+      InfoHk4@ = $<font color=blue>Hk4</font>$ ;
+      }endif;
+
+   ////////////////////////////////////////////////////////////////////////
+   Tvl1@ = stringformat(convert( "Ain06-11/2/6",0f16 ) ,4,3,2,0 );
+   Trl1@ = stringformat(convert( "Ain07-11/2/7",0f16 ) ,4,3,2,0 );
+   Tvl3@ = stringformat(convert( "Ain08-11/2/8",0f16 ) ,4,3,2,0 );
+   Trl3@ = stringformat(convert( "Ain09-11/2/9",0f16 ) ,4,3,2,0 );
+   Tvl4@ = stringformat(convert( "Ain10-11/2/10",0f16 ) ,4,3,2,0 );
+   Trl4@ = stringformat(convert( "Ain11-11/2/11",0f16 ) ,4,3,2,0 );
+
+   TistHk1@ = Tvl1@ + $/$ + Trl1@ + $C$;
+   TistHk3@ = Tvl3@ + $/$ + Trl3@ + $C$;
+   TistHk4@ = Tvl4@ + $/$ + Trl4@ + $C$;
+ 
+   if( ( "Ain06-11/2/6" - "Ain07-11/2/7") > DvlHk1@ ) then{
+      TistHk1@ = $<font color=red>$ + TistHk1@+ $</font>$;     
+      }endif;
+   if( ( "Ain08-11/2/8" - "Ain09-11/2/9") > DvlHk3@ ) then{
+      TistHk3@ = $<font color=red>$ + TistHk3@+ $</font>$;     
+      }endif;
+   if( ( "Ain10-11/2/10" - "Ain11-11/2/11") > DvlHk4@ ) then{
+      TistHk4@ = $<font color=red>$ + TistHk4@+ $</font>$;     
+      }endif;
+   //////////////////////////////////////////////////////////////////////////////
+   TsollHk1@ = stringformat(convert( "Ain02-11/2/2",0f16 ) ,4,3,2,0 )+$C$;
+   TsollHk3@ = stringformat(convert( "Ain14-11/2/14",0f16 ) ,4,3,2,0 )+$C$;
+   TsollHk4@ = stringformat(convert( "Ain15-11/2/15",0f16 ) ,4,3,2,0 )+$C$;
+   TsollHk5@ = stringformat(convert( "Ain13-11/2/13",0f16 ) ,4,3,2,0 )+$C$;
+
+   if("Ain02-11/2/2" > 5f16 ) then{
+      TsollHk1@ = $<font color=lime>$ + TsollHk1@ + $</font>$;
+      }endif;
+   if("Ain14-11/2/14" > 5f16 ) then{
+      TsollHk3@ = $<font color=lime>$ + TsollHk3@ + $</font>$;
+      }endif;
+   if("Ain15-11/2/15" > 5f16 ) then{
+      TsollHk4@ = $<font color=lime>$ + TsollHk4@ + $</font>$;
+      }endif;
+   if("Ain13-11/2/13" > 5f16 ) then{
+      TsollHk5@ = $<font color=lime>$ + TsollHk5@ + $</font>$;
+      }endif;
+////////////////////////////////////////////////////////
+t1@ =$   <table width ="100%">
+                           <tr>
+                              <td>$
+                                 +InfoHk1@+
+                              $</td>
+                              <td>$
+                                  +PIdHk1@+
+                              $</td>
+                               <td>$
+                                  +TistHk1@+
+                              $</td>
+                               <td>$
+                                  +TsollHk1@+
+                              $</td>
+                              <td>$
+                                  +Hk1Mode@+
+                              $</td>
+                              <td>$
+                                 +InfoHk3@+ 
+                              $</td>
+                              <td>$
+                                  +PIdHk3@+
+                              $</td>
+                               <td>$
+                                   +MasterOn@+
+                              $</td>
+                               <td>$
+                                  +TsollHk3@+
+                              $</td>
+                              <td>$
+                                  +Hk3Mode@+
+                              $</td>
+                        </tr>
+                        <tr>
+                              <td>$
+                                 +InfoHk4@+ 
+                              $</td>
+                              <td>$
+                                  +PIdHk4@+
+                              $</td>
+                               <td>$
+                                   +TistHk4@+
+                              $</td>
+                               <td>$
+                                  +TsollHk4@+
+                              $</td>
+                              <td>$
+                                  +Hk4Mode@+
+                              $</td>
+                              <td>$
+                                 +InfoHk5@+ 
+                              $</td>
+                              <td>$
+                                  +PIdHk5@+
+                              $</td>
+                               <td>$
+                                   +TistHk3@+
+                              $</td>
+                               <td>$
+                                  +TsollHk5@+
+                              $</td>
+                               <td>$
+                                  +Hk5Mode@+
+                              $</td>
+                        </tr>
+           </table>$;
+
+   weboutput( Id,t1@)
+}endif
+:end
+///////////////////////////////////////////////////////////////
+:begin WebOutWX( Id )
+
+:var t1@
+:var STARTDELAY@
+
+////////////////////
+:var Taussen@
+:var Wind@
+:var Lux@
+:var IsRain@
+:var Time@
+:var Date@
+:var TDispl@
+////////////////////
+Taussen@ = $nil$
+Wind@    = $nil$
+Lux@    = $nil$
+IsRain@  = $nil$
+Time@    = $nil$
+Date@    = $nil$
+TDispl@  = $nil$
+////////////////////
+t1@            = $$
+STARTDELAY@    = 2000u64
+////////////////////
+
+////////////////////////////////////////////////////////
+if( systemstart() or event("RsWxWindSpeed-3/6/3" )\\
+   or event( "Ain16-11/2/16" )\\
+   or event( "RsRainRaining-3/6/0")\\
+   or event("RsWxLuxSouth-3/6/38" )\\
+   or event( "RsWxLgtnessDawn-3/6/6" )) then{
+   Taussen@ = stringformat(convert( "Ain16-11/2/16" ,0f16 ) ,4,3,3,1 )+ $C$;
+   Wind@ = stringformat(convert( "RsWxWindSpeed-3/6/3" ,0f16 ) ,4,3,3,2 )+ $m/s$;
+   
+   if "RsRainRaining-3/6/0" then{
+      IsRain@ = $<font color="red">Ja</font>$
+      }else{
+      IsRain@ = $<font color=gray>Nein</font>$
+   }endif;
+   if "RsWxLuxSouth-3/6/38" > 1000f16 then{
+      Lux@ = stringformat("RsWxLuxSouth-3/6/38" ,4,3,3,0 )+ $lux$;
+      }else{
+      Lux@ = stringformat("RsWxLgtnessDawn-3/6/6" ,4,3,3,0 )+ $lux$;
+      }endif;
+
+   Time@ = convert( "sTime-0/0/1",$$ );
+   Date@ = convert( "sDate-0/0/4",$$ );
+   TDispl@ = Date@ + $ ,  $ + Time@;
+
+////////////////////////////////////////////////////////
+t1@ =$   <table width ="100%">
+                           <tr>
+                              <td>
+                                 <font color=navy>Aussen T:</font>
+                              </td>
+                              <td>$
+                                  +Taussen@+
+                              $</td>
+                              <td>
+                                 <font color= navy>Wind Speed:</font>
+                              </td>
+                              <td>$
+                                 +Wind@+
+                              $</td>
+                               <td>
+                                 <font color=navy>Regen:</font>
+                              </td>
+                              <td>$
+                                 +IsRain@+
+                              $</td>
+                           </tr>
+                           <tr>
+                              <td>
+                                 <font color=navy>Hellichkeit:</font>
+                              </td>
+                              <td>$
+                                  +Lux@+
+                              $</td>
+                              <td colspan="4" align="right">$
+                                 +TDispl@+
+                              $</td>
+                           </tr>
+           </table>$;
+
+   weboutput( Id,t1@);
+}endif
+:end
+///////////////////////////////////////////////////////////////////
+//A: Rad Raum W
+//B:Rad Raum O
+//C: Rad Bad
+//D: FBH Raum W
+//E: FBH Raum O
+//F: FBH Bad
+
+:begin WebOutDachHz( Id )
+
+
+:var t1@
+:var RadW@
+:var RadO@
+:var RadBad@
+:var FbhW@
+:var FbhO@
+:var FbhBad@
+:var Twest@
+:var Tost@
+:var Tbad@
+:var Hum@
+:var BadB@
+:var TminBad@
+:var TminOst@
+:var TlimRadOst@
+:var TlimRadB@
+:var Tcorr@
+
+RadW@    = $nil$
+RadO@    = $RAD Ost$
+RadBad@  = $nil$
+FbhW@    = $FBH West$
+FbhO@    = $nil$
+FbhBad@  = $nil$
+Twest@   = $nil$
+Tost@    = $nil$
+Tbad@    = $nil$
+Hum@     = $nil$
+BadB@    = $nil$
+TminBad@ = 19f16
+TminOst@ = 19f16
+TlimRadOst@ = $nil$
+TlimRadB@   = $nil$
+Tcorr@      = $nil$
+
+initga( "GetPosPercA-3/4/89" )
+initga( "StSwHkB-3/4/162" )
+initga( "GetPosPercC-3/4/91" )
+initga( "StSwHkD-3/4/164" )
+initga( "GetPosPercE-3/4/93" )
+initga( "GetPosPercF-3/4/94" )
+
+
+t1@ = $nil$c10000
+if( systemstart() \\
+    or change( "GetPosPercA-3/4/89")\\
+    or change( "StSwHkB-3/4/162" ) \\
+    or change( "GetPosPercC-3/4/91" )\\
+    or change( "StSwHkD-3/4/164" ) \\
+    or change( "GetPosPercE-3/4/93" ) \\
+    or change( "GetPosPercF-3/4/94" )\\
+    or change( "Din09-11/0/9"  )\\
+    or change( "Din08-11/0/8" )\\
+    or change( "TavgDachOst-6/3/5" )\\
+    or change( "TavgDachBad-6/3/6")\\
+    or change( "HyBad-3/4/2" )\\
+    or change( fBoostOnlyDachBad)\\
+    or change( fT_limit_Dach_Ost_Rad )\\
+    or change( fT_limit_Dach_Bad_Rad )\\
+    or change( Hk4_TCorr ))\\
+   then{
+
+   Tcorr@ = stringformat( Hk4_TCorr  ,4,3,1,1 )+ $C$;
+   if( Hk4_TCorr >= 0f16 ) then{
+      if(  Hk4_TCorr > 0f16) then{
+         Tcorr@ = $<font color="lime">$+Tcorr@+$</font>$;
+         }endif
+      }else{
+      Tcorr@ = $<font color="fuchsia">$+Tcorr@+$</font>$;
+      }endif;
+ 
+   TlimRadOst@ = stringformat(convert( fT_limit_Dach_Ost_Rad ,0f16 ) ,4,3,3,1 )+ $C$;
+   if(fT_limit_Dach_Ost_Rad >  "TavgDachOst-6/3/5"  ) then{
+       if( "Din09-11/0/9" == EIN )then{
+               TlimRadOst@ = $<font color="lime">$+TlimRadOst@+$</font>$;
+               }else{
+               TlimRadOst@ = $<font color="yellow">$+TlimRadOst@+$</font>$;
+               }endif;
+            }endif;
+
+   TlimRadB@ = stringformat(convert( fT_limit_Dach_Bad_Rad ,0f16 ) ,4,3,3,1 )+ $C$;
+   if(fT_limit_Dach_Bad_Rad >  "TavgDachBad-6/3/6" ) then{
+       if( "Din09-11/0/9" == EIN )then{
+               TlimRadB@ = $<font color="lime">$+TlimRadB@+$</font>$;
+               }else{
+               TlimRadB@ = $<font color="yellow">$+TlimRadB@+$</font>$;
+               }endif;
+            }endif;
+
+   if fBoostOnlyDachBad == EIN  then{
+         BadB@ = convert(convert( BoostOnlyDachTimeRemaining / 60000u64,0u16 ),$$) +$ min$;
+         BadB@ = $<font color="red">$+BadB@+$</font>$;
+         }else{
+         BadB@ = $Off$;
+         }endif;
+
+   Tost@ = stringformat(convert( "TavgDachOst-6/3/5" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "TavgDachOst-6/3/5" < TminOst@ ) then{
+         Tbad@ = $<font color="red">$+Tost@+$</font>$;
+         }endif;  
+
+   Tbad@ = stringformat(convert( "TavgDachBad-6/3/6" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "TavgDachBad-6/3/6" < TminBad@ ) then{
+      Tbad@ = $<font color="red">$+Tbad@+$</font>$;
+      }endif;     
+
+   Hum@  = stringformat(convert( "HyBad-3/4/2" ,0f16  ) ,4,3,3,1 )+ $%$;
+   if( "HyBad-3/4/2"  > 60f16 ) then{
+      Hum@ = $<font color="red">$+Hum@+$</font>$;
+      }endif;
+
+   RadW@    = convert(convert( "GetPosPercA-3/4/89",0u16 )*100u16/255u16,$$  )+$%$;
+   if( "GetPosPercA-3/4/89" > 0% )  then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadW@ = $<font color="lime">$+RadW@+$</font>$;
+         }else{
+         RadW@ = $<font color="yellow">$+RadW@+$</font>$;
+         }endif;
+      }endif;
+
+   if( "StSwHkB-3/4/162" == EIN )     then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadO@ = $<font color="lime">ON</font>$;
+         }else{
+         RadO@ = $<font color="yellow">SBY</font>$;
+         }endif;
+      }else{
+      RadO@ = $OFF$
+      }endif;
+
+   RadBad@  = convert( convert("GetPosPercC-3/4/91",0u16)*100u16/255u16,$$ )+$%$;
+   if( "GetPosPercC-3/4/91" > 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadBad@ = $<font color="lime">$+RadBad@+$</font>$;
+         }else{
+         RadBad@ = $<font color="yellow">$+RadBad@+$</font>$;
+         }endif;
+      }endif;
+
+   if( "StSwHkD-3/4/164"  == EIN )  then{
+      if( "Din08-11/0/8" == EIN )then{
+         FbhW@ = $<font color="lime">ON</font>$;
+         }else{
+         FbhW@ = $<font color="yellow">SBY</font>$;
+         }endif;
+      }else{
+      FbhW@ = $OFF$
+       }endif;
+
+   FbhO@  = convert( convert("GetPosPercE-3/4/93",0u16 )*100u16/255u16,$$ )+$%$;
+   if( "GetPosPercE-3/4/93" > 0%)   then{
+       if( "Din08-11/0/8" == EIN )then{    
+         FbhO@  = $<font color="lime">$+FbhO@+$</font>$;
+         }else{
+         FbhO@  = $<font color="yellow">$+FbhO@+$</font>$;
+         }endif;
+      }endif;
+
+   FbhBad@  = convert( convert( "GetPosPercF-3/4/94",0u16 )*100u16/255u16,$$ )+$%$;
+   if( "GetPosPercF-3/4/94" > 0%)   then{
+      if( "Din08-11/0/8" == EIN)   then{
+         FbhBad@  = $<font color="lime">$+FbhBad@+$</font>$;
+         }else{
+         FbhBad@  = $<font color="yellow">$+FbhBad@+$</font>$;
+         }endif;
+      }endif;
+
+   t1@ =$   <table width ="100%" border="0">
+<tr>
+   <td colspan="2">
+      <u><font color=navy >Raum West: </font></u>(xx.xC)
+   </td>
+   <td colspan="2">
+      <u><font color=navy >Raum Ost: </font></u>
+      ($+Tost@+$)
+   </td>
+   <td colspan="2">
+      <u><font color=navy >Bad: </font></u>
+      ($+Tbad@+$)
+   </td>
+</tr>
+<tr>
+   <td>
+      <font color=navy >Rad</font>  
+   </td>
+   <td >$
+       +RadW@+
+   $</td>
+    <td>
+      <font color=navy >Rad</font>
+   </td>
+   <td >$
+      +RadO@+
+   $</td>
+   <td>
+      <font color=navy >Rad</font>
+   </td>
+    <td >$
+      +RadBad@+
+   $</td>
+</tr>
+<tr>
+ <td>
+      <font color=navy >FBH</font>
+   </td>
+   <td >$
+      +FbhW@+
+   $</td>
+   <td>
+      <font color=navy >FBH</font>
+   </td>
+   <td >$
+       +FbhO@+
+   $</td>
+   <td>
+      <font color=navy >FBH</font>
+   </td>
+   <td >$
+      +FbhBad@+
+   $</td>
+</tr>
+<tr>
+   <td colspan="4">
+ 
+   </td>
+   <td>
+      <font color=navy >Hum.</font>
+   </td>
+   <td>$
+      +Hum@+
+   $</td>
+
+</tr>
+<tr>
+   <td >
+      <font color=navy >Temp corr: </font>
+   </td>
+    <td>$
+      +Tcorr@+
+   $</td>
+   <td>
+      <font color=navy >RAD On</font>
+   </td>
+   <td>$
+      +TlimRadOst@+
+   $</td>
+   <td>
+      <font color=navy >Rad On</font>
+   </td>
+   <td>$
+      +TlimRadB@+
+   $</td>
+</tr>
+</table>$;
+   weboutput( Id,t1@ )
+   }endif
+:end
+/////////////////////////////////////////////////////////////////////////////////
+
+:begin WebOutEgHz( Id )
+:var CFROST@
+:var CLOW@
+:var CHIGH@
+:var CSBY@
+:var CMAX@
+:var CERROR@
+
+CFROST@  = $<font color="agua">Frost</font>$
+CLOW@    = $<font color="yellow">Low</font>$
+CHIGH@   = $<font color="lime">High</font>$
+CSBY@    = $<font color="blue">Sby</font>$
+CMAX@    = $<font color="olive">Max</font>$
+CERROR@  = $<font color="red">Error</font>$
+
+
+:var t1@
+/////////////////
+:var TwohnZ@
+:var TessZ@
+:var Twc@
+//
+:var TrWohnZ@
+:var TrEssZ@
+:var TrKueche@
+:var TrWc@
+//////////////////
+:var RadWohnZ@
+:var RadEssZ@
+:var RadKueche@
+:var RadWC@
+:var RadTr@
+:var RadGard@
+
+:var TminWohnZ@
+:var TminEssZ@
+:var TminWC@
+
+:var ModeWohnZ@
+:var ModeEssZ@
+:var ModeWc@
+
+:var FbhWohnZ@
+:var FbhEssZ@
+
+
+
+ModeWohnZ@  = $nil$
+ModeEssZ@   = $nil$
+ModeWc@     = $nil$
+
+TwohnZ@     = $nil$
+TessZ@      = $nil$
+Twc@        = $nil$
+
+TrWohnZ@     = $nil$
+TrEssZ@      = $nil$
+TrKueche@    = $nil$
+TrWc@        = $nil$
+
+RadWohnZ@   = $nil$
+RadEssZ@    = $nil$
+RadKueche@  = $nil$
+RadWC@      = $nil$
+RadTr@      = $nil$
+RadGard@    = $nil$
+
+FbhWohnZ@   = $nil$
+FbhEssZ@    = $nil$
+
+
+
+TminWohnZ@  = 19f16
+TminEssZ@   = 19f16
+TminWC@     = 19f16
+
+
+t1@ = $nil$c3000
+// RAD WohnZ
+initga( "GetPosC-3/2/10" ) 
+// RAD EssZ Süd
+initga( "GetPosF-3/2/13" )
+// RAD Küche
+initga( "GetPosE-3/2/12" )
+// RAD WC
+initga( "GetPosA-3/2/8" )
+// Target Temp WohnZ
+initga( "GetTargetTC-3/2/48" )
+// Target EssZ
+initga( "GetTargetTF-3/2/51" )
+// Target Küche
+initga( "GetTargetTE-3/2/50" )
+// Target WC
+initga( "GetTargetTA-3/2/46" )
+// HVAC WohnZ
+initga( "HVACstC-3/2/54" )
+// HVAC EssZ E is Master
+initga( "HVACstE-3/2/56" )
+// HVAC WC
+initga( "HVACstA-3/2/52" )
+// FBH WohnZ
+initga( "GetPosG-3/2/121"   )
+// FBH EssZ
+initga( "GetPosH-3/2/122"  )
+// RAD Gardrobe
+initga( "GetPosB-3/2/9" )
+// RAD EMO Treppenhaus
+initga( "HkProp2Ist-3/3/15" )
+
+if( systemstart() \\
+      or change("TavgEGWohnZ-6/1/13" )\\
+      or change( "TavgEGEssZ-6/1/14" )\\
+      or change( "TavgEGWC-6/1/15" ) \\
+      or change( "GetPosC-3/2/10" ) \\
+      or change( "GetPosF-3/2/13" ) \\
+      or change( "GetPosE-3/2/12"  )\\
+      or change( "GetPosA-3/2/8" )\\
+      or change( "GetTargetTC-3/2/48" ) \\
+      or change( "GetTargetTF-3/2/51" ) \\
+      or change( "GetTargetTE-3/2/50" ) \\
+      or change( "GetTargetTA-3/2/46" )\\
+      or change( "HVACstC-3/2/54" )\\
+      or change( "HVACstE-3/2/56" )\\
+      or change( "HVACstA-3/2/52" )\\
+      or change( "GetPosG-3/2/121" )\\
+      or change( "GetPosH-3/2/122" )\\
+      or change( "GetPosB-3/2/9" )\\
+      or change( "HkProp2Ist-3/3/15" )) then{
+
+if( ( "HVACstC-3/2/54" and HZ_HVAC_SBY )!= 0u08)       then ModeWohnZ@ = CSBY@ endif;
+if( ( "HVACstC-3/2/54" and HZ_HVAC_NIGHT )!= 0u08)     then ModeWohnZ@ = CLOW@ endif;
+if( ( "HVACstC-3/2/54" and HZ_HVAC_KOMFORT )!= 0u08)   then ModeWohnZ@ = CHIGH@ endif;
+if( ( "HVACstC-3/2/54" and HZ_HVAC_FROST )!= 0u08)     then ModeWohnZ@ = CFROST@ endif;
+if( ( "HVACstC-3/2/54" and (HZ_HVAC_FROST \\
+                           or HZ_HVAC_NIGHT \\
+                           or HZ_HVAC_KOMFORT \\
+                           or HZ_HVAC_SBY)  )== 0u08)     then{
+    ModeWohnZ@ = CERROR@ 
+    }endif;
+
+if( ( "HVACstE-3/2/56" and HZ_HVAC_SBY )!= 0u08)       then ModeEssZ@ = CSBY@ endif;
+if( ( "HVACstE-3/2/56" and HZ_HVAC_NIGHT )!= 0u08)     then ModeEssZ@ = CLOW@ endif;
+if( ( "HVACstE-3/2/56" and HZ_HVAC_KOMFORT )!= 0u08)   then ModeEssZ@ = CHIGH@ endif;
+if( ( "HVACstE-3/2/56" and HZ_HVAC_FROST )!= 0u08)     then ModeEssZ@ = CFROST@ endif;
+if( ( "HVACstE-3/2/56" and (HZ_HVAC_FROST \\
+                           or HZ_HVAC_NIGHT \\
+                           or HZ_HVAC_KOMFORT \\
+                           or HZ_HVAC_SBY)  )== 0u08)     then{
+    ModeEssZ@ = CERROR@ 
+    }endif;
+
+if( ( "HVACstA-3/2/52" and HZ_HVAC_SBY )!= 0u08)       then ModeWc@ = CSBY@ endif;
+if( ( "HVACstA-3/2/52" and HZ_HVAC_NIGHT )!= 0u08)     then ModeWc@ = CLOW@ endif;
+if( ( "HVACstA-3/2/52" and HZ_HVAC_KOMFORT )!= 0u08)   then ModeWc@ = CHIGH@ endif;
+if( ( "HVACstA-3/2/52" and HZ_HVAC_FROST )!= 0u08)     then ModeWc@ = CFROST@ endif;
+if( ( "HVACstA-3/2/52" and (HZ_HVAC_FROST \\
+                           or HZ_HVAC_NIGHT \\
+                           or HZ_HVAC_KOMFORT \\
+                           or HZ_HVAC_SBY)  )== 0u08)     then{
+    ModeWc@ = CERROR@ 
+    }endif;
+
+if( "GetPosG-3/2/121"  ) then{
+   FbhWohnZ@   = $On$; 
+   if( "Din11-11/0/11" ) then{
+         FbhWohnZ@  = $<font color="lime">$+FbhWohnZ@+$</font>$;
+         }else{
+         FbhWohnZ@  = $<font color="yellow">$+FbhWohnZ@ +$</font>$;
+         }endif; 
+   }else{
+   FbhWohnZ@   = $Off$ 
+   }endif;
+
+if( "GetPosH-3/2/122" ) then{
+   FbhEssZ@   = $On$;
+   if( "Din11-11/0/11" ) then{
+         FbhEssZ@  = $<font color="lime">$+FbhEssZ@+$</font>$;
+         }else{
+         FbhEssZ@  = $<font color="yellow">$+FbhEssZ@ +$</font>$;
+         }endif;    
+   }else{
+   FbhEssZ@   = $Off$ 
+   }endif;
+ 
+if( "GetPosB-3/2/9" ) then{
+   RadGard@   = $On$;
+   if( "Din09-11/0/9" ) then{
+         RadGard@  = $<font color="lime">$+RadGard@+$</font>$;
+         }else{
+         RadGard@  = $<font color="yellow">$+RadGard@ +$</font>$;
+         }endif;    
+   }else{
+   RadGard@   = $Off$ 
+   }endif; 
+
+RadTr@  = convert( convert("HkProp2Ist-3/3/15",0u16)*100u16/255u16,$$ )+$%$;
+   if( "HkProp2Ist-3/3/15"> 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadTr@ = $<font color="lime">$+RadTr@+$</font>$;
+         }else{
+         RadTr@ = $<font color="yellow">$+RadTr@+$</font>$;
+         }endif;
+      }endif;
+
+TwohnZ@ = stringformat(convert( "TavgEGWohnZ-6/1/13" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "TavgEGWohnZ-6/1/13"< TminWohnZ@ ) then{
+         TwohnZ@ = $<font color="red">$+TwohnZ@+$</font>$;
+         }endif;  
+
+TrWohnZ@ = stringformat(convert( "GetTargetTC-3/2/48" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "Din09-11/0/9" == EIN )then{
+         TrWohnZ@ = $<font color="lime">$+TrWohnZ@+$</font>$;
+         }else{
+         TrWohnZ@ = $<font color="yellow">$+TrWohnZ@+$</font>$;
+         }endif;  
+
+TessZ@ = stringformat(convert( "TavgEGEssZ-6/1/14"  ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "TavgEGEssZ-6/1/14" < TminEssZ@ ) then{
+         TessZ@ = $<font color="red">$+TessZ@+$</font>$;
+         }endif; 
+         
+TrEssZ@  = stringformat(convert( "GetTargetTF-3/2/51" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "Din09-11/0/9" == EIN )then{
+         TrEssZ@  = $<font color="lime">$+TrEssZ@+$</font>$;
+         }else{
+         TrEssZ@  = $<font color="yellow">$+TrEssZ@ +$</font>$;
+         }endif;   
+
+TrKueche@  = stringformat(convert( "GetTargetTE-3/2/50" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "Din09-11/0/9" == EIN )then{
+         TrKueche@  = $<font color="lime">$+TrKueche@+$</font>$;
+         }else{
+         TrKueche@  = $<font color="yellow">$+TrKueche@ +$</font>$;
+         }endif;   
+
+Twc@ = stringformat(convert( "TavgEGWC-6/1/15" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "TavgEGWC-6/1/15"< TminWC@ ) then{
+         Twc@ = $<font color="red">$+Twc@+$</font>$;
+         }endif;  
+
+TrWc@   = stringformat(convert( "GetTargetTA-3/2/46" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "Din09-11/0/9" == EIN )then{
+         TrWc@   = $<font color="lime">$+TrWc@ +$</font>$;
+         }else{
+         TrWc@   = $<font color="yellow">$+TrWc@  +$</font>$;
+         }endif;  
+
+RadWohnZ@  = convert( convert("GetPosC-3/2/10",0u16)*100u16/255u16,$$ )+$%$;
+   if( "GetPosC-3/2/10" > 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadWohnZ@ = $<font color="lime">$+RadWohnZ@+$</font>$;
+         }else{
+         RadWohnZ@ = $<font color="yellow">$+RadWohnZ@+$</font>$;
+         }endif;
+      }endif;
+
+RadEssZ@  = convert( convert("GetPosF-3/2/13",0u16)*100u16/255u16,$$ )+$%$;
+   if( "GetPosF-3/2/13" > 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadEssZ@ = $<font color="lime">$+RadEssZ@+$</font>$;
+         }else{
+         RadEssZ@ = $<font color="yellow">$+RadEssZ@+$</font>$;
+         }endif;
+      }endif;
+
+RadKueche@  = convert( convert("GetPosE-3/2/12",0u16)*100u16/255u16,$$ )+$%$;
+   if( "GetPosE-3/2/12" > 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadKueche@ = $<font color="lime">$+RadKueche@+$</font>$;
+         }else{
+         RadKueche@ = $<font color="yellow">$+RadKueche@+$</font>$;
+         }endif;
+      }endif;
+
+RadWC@  = convert( convert("GetPosA-3/2/8",0u16)*100u16/255u16,$$ )+$%$;
+   if( "GetPosA-3/2/8" > 0%)   then{
+      if( "Din09-11/0/9" == EIN )then{
+         RadWC@ = $<font color="lime">$+RadWC@+$</font>$;
+         }else{
+         RadWC@ = $<font color="yellow">$+RadWC@+$</font>$;
+         }endif;
+      }endif;
+
+
+t1@ =$   <table width ="100%" border="0">
+  <tr>
+   <th colspan="2">
+     <u><font color=navy >Wohnzimmer: </font></u>
+     ($+TwohnZ@+$)
+   </th>
+   <th colspan="2">
+      <u><font color=navy >Esszimmer: </font></u>
+      ($+TessZ@+$)
+   </th>
+   <th colspan="2">
+      <u><font color=navy >WC: </font></u>
+      ($+Twc@+$)
+   </th>
+</tr>
+<tr>
+   <td>$
+      +ModeWohnZ@+  
+   $</td>
+   <td >($
+       +TrWohnZ@+
+   $)</td>
+    <td>$
+      +ModeEssZ@+
+   $</td>
+   <td >($
+      +TrEssZ@+$/$+TrKueche@+
+   $)</td>
+   <td>$
+      +ModeWc@+
+   $</td>
+    <td >($
+      +TrWc@ +
+   $)</td>
+</tr>
+<tr>
+   <td>
+      <font color=navy >RAD</font>
+   </td>
+   <td >$
+       +RadWohnZ@+
+   $</td>
+    <td>
+      <font color=navy >RAD</font>
+   </td>
+   <td >$
+      +RadEssZ@+$/$+RadKueche@+
+   $</td>
+   <td>
+      <font color=navy >RAD</font>
+   </td>
+    <td >$
+      +RadWC@+
+   $</td>
+</tr>
+<tr>
+   <td>
+      <font color=navy >FBH:</font>  
+   </td>
+   <td >$
+       +FbhWohnZ@+
+   $</td>
+    <td>
+      <font color=navy >FBH</font>
+   </td>
+   <td >$
+      +FbhEssZ@+
+   $</td>
+   <td>
+   </td>
+    <td >
+   </td>
+</tr>
+</table>
+ <table width ="100%" border="0">
+<tr>
+ <th >
+   <u><font color=navy >RAD Treppe :</font></u>
+   </th>
+   <th>$
+   +RadTr@ +
+$</th>
+<th >
+   <u><font color=navy >RAD Gardrobe :</font></u>
+</th>
+<th>$ 
+    +RadGard@+
+$</th>
+</tr>
+</table>$;
+   weboutput( Id,t1@ );
+   }endif
+:end

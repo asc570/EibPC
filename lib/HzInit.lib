@@ -1,0 +1,206 @@
+// $Id: HzInit.lib 52 2014-03-14 18:22:46Z asc $ //
+////////////////////////////////////////////////////////////////////
+// EG
+//
+//HK:
+//A: Gäste WC ( regler)
+//B: Gardrobe  (stetig)
+//C: Rad. WohnZ West + WohnZ Süd (regler)
+//D: Rad WohnZ Süd ( not used)
+//E: Rad Küche/ EssZ (regler) master)
+//F: Rad EssZ (regler slave)
+//G: FBH WohnZ (stetig)
+//H: FBH EssZ (stetig)
+////////////////////////////////////////////////////////////////////////
+// EG Valve
+//
+:begin IHzVaRad_EG( eGA ) 
+if( event(eGA) )then{
+// unlock Sperre
+   write( "HkLockA-3/2/22",AUS );
+   write( "HkLockB-3/2/23",AUS );
+   write( "HkLockC-3/2/24",AUS );
+   write( "HkLockD-3/2/25",AUS );
+   write( "HkLockE-3/2/26",AUS );
+   write( "HkLockF-3/2/27",AUS );
+// unlock Zwangsstellung
+   write( "SetLockPosA-3/2/96",AUS );
+   write( "SetLockPosB-3/2/97",AUS );
+   write( "SetLockPosC-3/2/98",AUS );
+   write( "SetLockPosD-3/2/99",AUS );
+   write( "SetLockPosE-3/2/100",AUS );
+   write( "SetLockPosF-3/2/101",AUS );
+// specific
+   write( "HkSwB-3/2/1",EIN ); /* Gardrobe */
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////
+:begin IHzVaFbh_EG( eGA ) 
+if( event(eGA) )then{
+// unlock Sperre
+   write( "HkLockG-3/2/119",AUS );
+   write( "HkLockH-3/2/120",AUS );
+// unlock Zwangsstellung
+   write( "SetLockPosG-3/2/125",AUS );
+   write( "SetLockPosH-3/2/126",AUS );
+// specific
+   write( "HkSwG-3/2/6",AUS);                /*FBH WohnZ */
+   write( "HkSwH-3/2/7",EIN);                /*FBH EssZ */
+   }endif
+:end
+///////////////////////////////////////////////////////////////////////
+:begin HzRadSetLockPos_EG( fGA )
+if( event(fGA)  ) then{
+   write( "SetLockPosA-3/2/96",fGA );
+   write( "SetLockPosB-3/2/97",fGA );
+   write( "SetLockPosC-3/2/98",fGA );
+   write( "SetLockPosD-3/2/99",fGA );
+   write( "SetLockPosE-3/2/100",fGA );
+   write( "SetLockPosF-3/2/101",fGA );
+   }endif
+:end
+/////////////////////////////////////////////////////////////////////
+//  EG control
+//
+:begin IniLogic_RadDayNight_EG(nH,dH,diffH)
+if(systemstart() or change(nH)) then{
+	HzEGnH_EssZ = nH;
+	HzEGnH_WohnZ= nH;
+	HzEGnH_WC	= nH;
+	HzEGnH_Gard	= nH;
+	HzEGnH_Tr	= nH;
+	Hk1_DayEnd  = nH -diffH
+	}endif
+if(systemstart() or change(dH)) then{
+	HzEGdH_EssZ = dH;
+	HzEGdH_WohnZ= dH;
+	HzEGdH_WC	= dH;
+	HzEGdH_Gard	= dH;
+	HzEGdH_Tr	= dH
+	}endif
+:end
+/////////////////////////////////////////////////////////////////////
+// OG1
+//
+//A: GästeZ, R2 (stetig)
+//B: Treppenhaus ( Prop) (stetig)
+//C: Büro, R4 (stetig)
+//D: Emilia, R3 (stetig)
+//E: Bad, R5 (regler)
+//F: Marisa R1 (stetig)
+:begin IHzVaRad_OG1( eGA ) 
+if( event(eGA) )then{
+// unlock Sperre
+   write( "HkLockA-3/3/38",AUS );
+   write( "HkLockB-3/3/39",AUS );
+   write( "HkLockC-3/3/40",AUS );
+   write( "HkLockD-3/3/41",AUS );
+   write( "HkLockE-3/3/42",AUS );
+   write( "HkLockF-3/3/43",AUS );
+// unlock Zwangsstellung
+   write( "LockPosA-3/3/44",AUS );
+   write( "LockPosB-3/3/45",AUS );
+   write( "LockPosC-3/3/46",AUS );
+   write( "LockPosD-3/3/47",AUS );
+   write( "LockPosE-3/3/48",AUS );
+   write( "LockPosF-3/3/49",AUS );
+// specific
+   write( "SetPosPercA-3/3/107",0%);               /* OG1 Gäste */
+   write( "SetPosPercB-3/3/108",HzEgPerNight_Tr);  /* EG TreppenH */
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////
+:begin HzRadSetLockPos_OG1( fGA )
+if( event(fGA) ) then{
+   write( "LockPosA-3/3/44",fGA);
+   write( "LockPosB-3/3/45",fGA );
+   write( "LockPosC-3/3/46",fGA );
+   write( "LockPosD-3/3/47",fGA );
+   write( "LockPosE-3/3/48",fGA );
+   write( "LockPosF-3/3/49",fGA );
+}endif
+
+:end
+//////////////////////////////////////////////////////////////////////
+// DAch
+// (all stetig)
+//A: Rad Raum W
+//B: Rad Raum O
+//C: Rad Bad
+//D: FBH Raum W
+//E: FBH Raum O
+//F: FBH Bad
+:begin IHzVaRad_Dach( eGA ) 
+if( event(eGA) )then{
+// unlock Sperre
+   write( "HkLockA-3/4/107",AUS );
+   write( "HkLockB-3/4/108",AUS );
+   write( "HkLockC-3/4/109",AUS );
+// unlock Zwangsstellung
+   write( "LockPosA-3/4/113",AUS );
+   write( "LockPosB-3/4/114",AUS );
+   write( "LockPosC-3/4/115",AUS );
+// specific
+   write( "SetPosPercA-3/4/83",0%);    /* RAD Raum W*/
+   write( "SwHkB-3/4/156",EIN);        /* RAD Raum Ost */
+   write( "SetPosPercC-3/4/85",80%);   /* Rad Bad*/
+   }endif
+:end
+////////////////////////////////////////////////////////////////////////
+:begin IHzVaFbh_Dach( eGA ) 
+if( event(eGA) )then{
+// unlock Sperre
+   write( "HkLockD-3/4/110",AUS );
+   write( "HkLockE-3/4/111",AUS );
+   write( "HkLockF-3/4/112",AUS );
+// unlock Zwangsstellung
+   write( "LockPosD-3/4/116",AUS );
+   write( "LockPosE-3/4/117",AUS );
+   write( "LockPosF-3/4/118",AUS );
+// specific
+   write( "SwHkD-3/4/158",EIN);               /* FBH Raum W*/
+   write( "SetPosPercE-3/4/87",100%);         /* FBH Raum O */
+   write( "SetPosPercF-3/4/88",100%);         /* FBH Bad */
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////
+:begin HzRadSetLockPos_Dach( fGA )
+if( event(fGA) ) then{
+   write( "LockPosD-3/4/116",fGA );
+   write( "LockPosE-3/4/117",fGA );
+   write( "LockPosF-3/4/118",fGA );
+}endif
+:end
+//////////////////////////////////////////////////////////////////////
+// Gen
+//////////////////////////////////////////////////////////////////////
+:begin IHzVa_Rad_All( eGA ) 
+if( event(eGA) )then write( "eIHzVaRad_EG-8/6/0",AUS ) endif;
+if(after( event(eGA),100u64 )) then{
+   write("eIHzVaRad_OG1-8/6/1",AUS ) 
+   }endif;
+if( after( event(eGA),200u64 )) then{
+   write( "eIHzVaRad_Dach-8/6/2",AUS )
+   }endif;
+ 
+:end
+///////////////////////////////////////////////////////////////////////
+:begin IHzVa_All( eGA ) 
+if( event(eGA) )then write( "eIHzVaFbh_EG-8/6/14",AUS )endif;
+if( after(event(eGA),50u64 )) then{
+   write( "eIHzVaFbh_Dach-8/6/15",AUS )
+   }endif
+if(  after(event(eGA),100u64  )) then{
+   write( "eIHzVaRad_All-8/6/3",AUS )
+   }endif
+:end
+////////////////////////////////////////////////////////////////////////
+:begin HzRadSetLockPos_All( fGA )
+if( event(fGA) )then write( "fHzLockPos_EG-8/6/17",fGA )endif;
+if( after(event(fGA),50u64 )) then{
+   write( "fHzLockPos_OG1-8/6/18",fGA )
+   }endif
+if(  after(event(fGA),100u64  )) then{
+   write( "fHzLockPos_Dach-8/6/19",fGA )
+   }endif
+:end

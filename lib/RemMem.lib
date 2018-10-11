@@ -1,0 +1,302 @@
+// $Id: RemMem.lib 68 2014-10-07 13:38:32Z asc $
+
+////////////////////////////////////////////////////////////////////////
+// To observe:
+// - macro does not give any information about read/write success/failure.
+// - macro does not pass information about pending write operations.
+///////////////////////////////////////////////////////////////////
+//
+:begin RemMemControl3(Pos,Var,remVar,forceWrite)
+:info $ Saves the state of any scalar variable Var to the flash memory.\\
+if forceWrite is set to OFF on systemstart() Var receives its value from the flash memory.\\
+if forceWrite is set to ON on  systemstart(), the value of Var during systemstart() is written to the flash memory.\\
+When Var changes, after a delay of changeDelay@ the new value of Val is written to the flash memory.\\
+ATTENTION: Two variables of the same type must be passed to the macro: \\
+Var is the variable the macro persists the state for,\\
+remVar must be passed for internal use of the macro and must not be changed from outside the macro!$\\
+$slot on the flash memory u16$\\
+$any scalar variable to safe the state $\\
+$for internal use only. Must be ame type as Var$\\
+$If set to EIN, writes the value of Val to the flash memory. During systemstart(),\\
+if set to EIN, prevents a readflash( ) and writes the initial value of Val to the flash memory$
+
+
+:var readSuccess@
+:var readComplete@
+:var readFault@
+:var writeFault@
+:var readDelay@
+:var changeDelay@
+:var readTimeout@
+:var writeTimeout@
+:var readPending@
+:var writePending@
+:var writeReq@
+
+
+readSuccess@   = EIN
+readComplete@  = AUS
+readFault@     = ON
+writeFault@    = ON
+readDelay@     = 2000u64      /* delay after systemstart() for reading RemMem */
+changeDelay@   = 60000u64     /* wait that time before writing to RemMem */
+writeTimeout@  = 120000u64
+readTimeout@   = 120000u64
+readPending@   = AUS
+writePending@  = AUS
+writeReq@      = AUS
+
+//////////////
+// reading
+/////////////
+if( change( Var)) then write( "DebugOut-10/4/0",$Change Var:$c14+convert(Var,$$c14)  ) endif;
+
+// read from flash if forceWrite is EIN
+if after(systemstart(),readDelay@)  then{
+   readSuccess@   = EIN;
+   write( "DebugOut-10/4/0",$Init RemMem()$c14 );
+   write( "DebugOut-10/4/0",$forceWrite: $c14+convert(forceWrite,$$c14)  );
+   if( forceWrite) then{
+      write( "DebugOut-10/4/0",$skip reading$c14 );
+      readPending@   = AUS;
+      readFault@     = OFF;
+      writeReq@      = ON;
+      }else{
+      readPending@   = EIN;
+      readFault@     = ON;
+      writeReq@      = AUS;
+      write( "DebugOut-10/4/0",$readflash()$c14 );
+      readFault@ = readflash( remVar,Pos ); 
+      }endif ;
+      forceWrite     = AUS;
+   }endif
+
+// readflash() timeout handling
+if( delay(readPending@, readTimeout@ ) and readPending@) then{
+   write( "DebugOut-10/4/0",$TimeoutR$c14 );
+   readSuccess@   = AUS;
+   readFault@     = OFF;
+   }endif
+
+// after readflash() handling
+if( after(!readFault@,1u64 )) then{
+      write( "DebugOut-10/4/0",$read comlete$c14 );
+      write( "DebugOut-10/4/0",$rem: $c14+convert(remVar,$$c14)  );
+      write( "DebugOut-10/4/0",$Suc: $c14+convert(readSuccess@,$$c14)  );
+   if( readSuccess@ ) then{
+     write( "DebugOut-10/4/0",$Set:$c14+convert(Var,$$c14)+$=$c14+convert(remVar,$$c14  ));
+      Var = remVar;
+      }else{
+      writeReq@ = EIN;
+      }endif;
+   readComplete@  = EIN;
+   readPending@   = AUS;
+   }endif
+///////////////
+// writing
+//////////////
+// check if a write is needed
+if( delay(change(Var),changeDelay@ )) then{
+   write( "DebugOut-10/4/0",$check$c14+convert(Var,$$c14)+$!=$c14+convert(remVar,$$c14)   );
+   if( Var != remVar) then{
+      writeReq@ = EIN;
+      write( "DebugOut-10/4/0",$write req$c14 );
+      }endif
+   }endif
+// write to flash
+if (after((writeReq@ and readComplete@ and !writePending@ ), 1u64 )) then{
+   writePending@  = EIN;
+   writeReq@      = AUS;
+   writeFault@   = ON;
+   write( "DebugOut-10/4/0",$writeflash()$c14 );
+   writeFault@   = writeflash( Var,Pos );
+   }endif
+// write timeout
+if( delay(writePending@,writeTimeout@) and writePending@ ) then{
+   write( "DebugOut-10/4/0",$TimeoutW$c14 );
+   writeFault@   = OFF;
+   }endif
+// after write handling
+if after(!writeFault@,1u64  ) then{
+   write( "DebugOut-10/4/0",$write reset$c14 );
+   remVar         = Var;
+   writeFault@    = ON;
+   writePending@  = AUS; 
+   }endif
+// handle outside trigger for write
+if( after(forceWrite and readComplete@,1u64) and forceWrite) then{
+   writeReq@   = EIN;
+   forceWrite  = AUS;
+   }endif         
+:end
+////////////////////////////////////////////////////////////////////////
+// Remanent Memory
+:begin RemMemControl2(Pos,Var,forceWrite,readSuccess )
+:var remVar@
+:var readSuccess@
+:var readOK@
+:var readFault@
+:var writeFault@
+:var readDelay@
+:var changeDelay@
+:var readTimeout@
+:var writeTimeout@
+:var readPending@
+:var writePending@
+:var writeReq@
+
+
+remVar@        = Var
+readSuccess@   = EIN
+readOK@        = AUS
+readFault@    = ON
+writeFault@   = ON
+readDelay@     = 2000u64
+changeDelay@   = 60000u64
+writeTimeout@  = 120000u64
+readTimeout@   = 120000u64
+readPending@   = AUS
+writePending@  = AUS
+writeReq@      = AUS
+
+if change( remVar@) then  write( "DebugOut-10/4/0",$remVal@:$c14+convert(remVar@,$$c14)  ) endif
+
+if after(systemstart(),readDelay@)  then{
+    write( "DebugOut-10/4/0",$Init$c14 );
+   readSuccess    = EIN;
+   if( forceWrite  ) then{
+      readPending@   = AUS;
+      readFault@     = OFF;
+      }else{
+      readPending@   = EIN;
+      readFault@    = ON;
+      write( "DebugOut-10/4/0",$readflash()$c14 );
+      readFault@ = readflash( remVar@,Pos ); 
+      }endif 
+   }endif
+
+if( delay(readPending@, readTimeout@ ) and readPending@) then{
+   write( "DebugOut-10/4/0",$TimeoutR$c14 );
+   readSuccess@   = AUS;
+   readFault@     = OFF;
+   }endif
+
+if( after(!readFault@,1u64 )) then{
+      write( "DebugOut-10/4/0",$read comlete$c14 );
+      write( "DebugOut-10/4/0",$rem:$c14+convert(remVar@,$$c14)  );
+      write( "DebugOut-10/4/0",$Suc:$c14+convert(readSuccess@,$$c14)  );
+   if( readSuccess@ ) then Var = remVar@ endif;
+   readOK@        = EIN;
+   readSuccess    = readSuccess@;
+   readPending@   = AUS;
+   }endif
+
+if( delay(change(Var),changeDelay@ )) then{
+   write( "DebugOut-10/4/0",$check$c14+convert(Var,$$c14)+$!=$c14+convert(remVar@,$$c14)   );
+   if Var != remVar@ then{
+      writeReq@ = EIN;
+      write( "DebugOut-10/4/0",$write req$c14 );
+      }endif
+   }endif
+
+if (after((writeReq@ and readOK@ and !writePending@), 1u64 )) then{
+   writePending@  = EIN;
+   writeReq@      = AUS;
+   writeFault@   = ON;
+   write( "DebugOut-10/4/0",$writeflash()$c14 );
+   writeFault@   = writeflash( remVar@,Pos );
+   }endif
+
+if( delay(writePending@,writeTimeout@) and writePending@ ) then{
+   write( "DebugOut-10/4/0",$TimeoutW$c14 );
+   writeFault@   = OFF;
+   }endif
+
+if after(!writeFault@,1u64  ) then{
+   write( "DebugOut-10/4/0",$write reset$c14 );
+   writePending@ = AUS; 
+   }endif
+
+if( forceWrite ) then{
+   writeReq@   = EIN;
+   forceWrite  = AUS;
+   }endif         
+
+:end
+//////////////////////////////////////////////////////////
+:begin RemMemControl(Pos,Var,fWrite,fRead,fSuc,fInit )
+:var RWDELAY@
+:var D@
+:var fLock@
+
+:var fReadPending@
+:var fWritePending@
+:var remVar@
+:var stRead@
+:var stWrite@
+
+RWDELAY@ = 5000u64
+D@   = 120000u64
+fLock@  = EIN
+fReadPending@ = AUS
+fWritePending@= AUS
+stRead@        = AUS
+stWrite@       = AUS
+remVar@        = Var
+
+if( after(systemstart(),REMDELAY)) then{
+   fSuc     = AUS;
+   fWrite   = AUS;
+   fLock@   = AUS ;
+   fRead    = fInit
+   }endif
+
+if( after((!fLock@  ) ,1u64) and fRead ) then{
+   stRead@        = AUS;
+   fLock@         = EIN;
+   fReadPending@  = EIN;
+   stRead@ = readflash( remVar@,Pos ); 
+   }endif
+
+if( after(!fLock@ ,1u64  )and  fWrite) then{
+   stWrite@          = AUS;
+   fLock@            = EIN;
+   fWritePending@    = EIN;
+   stWrite@ = writeflash( Var,Pos ); 
+   }endif   
+
+if( delay(fReadPending@,RWDELAY@ ) and fReadPending@) then{
+   fSuc           = AUS;
+   fLock@         = AUS;
+   fReadPending@  = AUS;
+   fRead          = AUS;
+   }endif
+
+if( delay(fWritePending@,RWDELAY@ ) and fWritePending@) then{
+   fSuc           = AUS;
+   fLock@         = AUS;
+   fWrite         = AUS;
+   fWritePending@ = AUS;
+   }endif
+
+if( after(stWrite@ and fWritePending@,1u64 )) then{
+   remVar@           = Var;
+   fWritePending@    = AUS;  
+   fLock@            = AUS;
+   fSuc              = EIN;
+   stWrite@          = AUS;
+   fWrite            = AUS;
+   }endif
+
+if( after(stRead@ and fReadPending@,1u64 )) then{
+   Var            = remVar@;
+   fReadPending@  = AUS;
+   fLock@         = AUS;
+   fSuc           = EIN;
+   stRead@        = AUS;
+   fRead          = AUS;
+   }endif
+
+if( delay(change(Var), D@) and Var != remVar@   ) then fWrite = EIN endif
+
+:end

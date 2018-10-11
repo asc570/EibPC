@@ -1,0 +1,627 @@
+// $Id: BMXRemanent8.lib 62 2014-04-08 15:08:04Z asc $
+//----------------------------------------------------------------------
+//  Makros for the Enertex EiBPC
+//
+//  Remanent Variables
+//  Unfortunately the EibPC does not have a way to mark variables as remanent ones
+//  meaning the are persistent between several restarts
+//  The following collection of macros provides a way to define a variable with a 
+//  macro wrapping some code around to save the variable contents to EibPC flash
+//
+//  if you enable debug and you can also set RV_DoDump2UDP=EIN,
+//  this will send all variables to the output port as UDP packets
+//
+//  Version              : v4
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Bernd Meiners
+// 
+//  Dat.Rev.             : $Date: 2012/06/22 11:25:00 $
+//  Version              : $Revision: 1.4 $
+//----------------------------------------------------------------------
+
+// InitRemanentVariables
+// @date	22.06.2012
+// @version	4 
+// @author	Bernd Meiners
+:begin InitRemanentVariables(DebugEnabled, DebugPort, DebugIP, vFirstSlot, vLastSlot, ReadFromFlash, GAorVarReadFromFlash, GAorVarWriteToFlash, DelayTime )
+:info $Sets basics to use remanent variables with the EibPC$ \\
+	$enable Debug messages - if you want to debug then include "#define DEBUG_RV" at the beginning ob [EIBPC] section$\\
+	$Port for debug messages$\\
+	$IP adress for debug messages$ \\
+	$vFirstSlot [0u16 ... vLastSlot - 1u16]- first flash slot to be used by this macro to read information$ \\
+	$vLastSlot [vFirstSlot ... 999u16] - last slot to be used by this macro to write information$ \\
+	$ReadFromFlash - if enabled we read at program start from flash, set this to AUS when not wanting to read from flash$ \\
+	$GAorVarReadFromFlash - set this to EIN when you want to have the variables read from the flash$ \\
+	$GAorVarWriteToFlash - set this to EIN when you want to have the variables written to the flash$ \\
+	$DelayTime - time in milliseconds to wait after the last change to a remanentvariable is done$
+:shortinfo $init some stuff for usage of remanent variables$
+#define RV
+RV_Debug = DebugEnabled;				/* Turn this on if you want debug messages to be output to DebugGA */
+RV_Debug_Port = DebugPort
+RV_Debug_IP = DebugIP
+
+RV_Buffer = EMPTYSTRING;				/* Buffer for read and write operations */
+RV_MaxBufferSize = 400u16;				/* maximum fill size for a buffer to avoid overflow */
+
+/* flags and handling */
+RV_DirtyCount = 0u32					/* anytime a variable really changes its value this count will be increased, when initiating a write to flash this counter will be reset */
+RV_NeedMoreSpace = 0u16;				/* if the given buffer with RV_MaxBufferSize is too small to hold a key value pair then this variable will be increased to signalize we need another buffer */
+RV_WriteChanges = AUS;					/* if the delaytime after a varibale changed has been reached we set this to start a write to flash as soon as we enter an Idle State */
+RV_TimeUntilFlashWrite = 0u64;			/* time until the next write to flash will take place */
+
+if delayc( change(RV_DirtyCount) and RV_DirtyCount > 0u32, DelayTime, RV_TimeUntilFlashWrite ) then RV_WriteChanges = EIN endif
+if after( RV_State == RV_State_Idle and RV_WriteChanges,1u64) then {
+	RV_State = RV_State_WriteflashStart
+} endif
+
+if cycle( 0,10) and RV_TimeUntilFlashWrite > 0u64 then RV_DebugOut_String($seconds until next write2Flash: $+convert(convert(RV_TimeUntilFlashWrite/1000u64,0u32),$$)) endif
+
+RV_VariableCount = 0u16;				/* we count the number of defined variables at systemstart */
+RV_VariablesRead = 0u16;				/* we track the number of read variables, if we found a variable we will increase this number */
+RV_VariablesReadCyclus = 0u16;
+RV_VariablesWritten = 0u16;				/* same a reading, since we know how many variables we have to write, we can continue until this */
+										/* number equals the RV_VariableCount */
+
+/* Flash memory */
+RV_Slot = 0u16;							/* current slot, needs RV_FirstSlot as basis */
+RV_FirstSlot = vFirstSlot;				/* we try first */
+RV_LastSlot = vLastSlot
+RV_Invalid_Slot = 50000u16;				/* an invalid slot */
+
+RV_FlashOK = 0b01;
+RV_FlashError = 1b01;
+RV_Result = RV_FlashError
+
+/* we have a simple state machine that hops from one to the other state */
+RV_State = RV_State_Idle
+RV_State_Idle = 0u08;					/* nothing to do, ready for action */
+
+RV_State_ReadflashStart = 9u08;			/* prepare the variables to read flash */
+RV_State_Readflash = 10u08;				/* initiate a readflash */
+RV_State_ReadflashPending = 11u08;		/* we startet a readflash and wait for results */
+RV_State_ReadflashExamineBuffer = 12u08; /* we have a buffer to examine */
+RV_State_ReadflashNext = 13u08;			/* ok check wether to read another buffer */
+
+RV_State_WriteflashStart = 19u08;		/* starting */
+RV_State_WriteflashCollectData = 21u08;	/* collect data */
+RV_State_Writeflash = 20u08;			/* prepare collected data to write to flash memory */
+RV_State_WriteflashPending = 22u08;		/* we just started a writeflash and wait for results */
+RV_State_WriteflashNext = 23u08;		/* ok, what's next? collect data or finish? */
+
+/* dump all variables to UDP Port */
+RV_DoDump2UDP = AUS
+if change(RV_DoDump2UDP) and RV_DoDump2UDP == EIN then RV_DoDump2UDP = AUS endif
+
+// external setting of local variables
+// we set both items and each variable definition looks for it wether it should change its value
+// if the result for the variable is 0 then we can test against the variable name
+RV_SetVariableNumberOrName = EMPTYSTRING
+RV_SetVariableString = EMPTYSTRING
+
+
+// for debug purposes it is important to know the time and it is a good idea to define it just once a cycle
+// and reuse it where necessary
+Tick = AUS
+invticks = 0u64
+if delayc( change(second()), 999u64, invticks) then Tick = EIN endif
+RV_Currenttime = convert(hour(),$$)+$:$+convert(minute(),$$)+$:$+convert(second(),$$)+$.$+convert(convert(999u64 - invticks,0u32),$$)
+
+/* triggers from outside here */
+if change(GAorVarReadFromFlash) and GAorVarReadFromFlash and RV_State == RV_State_Idle then {RV_State = RV_State_ReadflashStart } endif
+if change(GAorVarWriteToFlash) and GAorVarWriteToFlash and RV_State == RV_State_Idle then {RV_State = RV_State_WriteflashStart } endif
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// read from flash
+//
+/* systemstart, read all variables from flash memory */
+if after(systemstart(), 1u64) and ReadFromFlash then RV_State = RV_State_ReadflashStart endif
+
+/* lets initially read from flash */
+if after(RV_State == RV_State_ReadflashStart,1u64) then {
+	RV_DebugOut_String($Start reading from flash$);
+	RV_VariablesRead = 0u16;	/* reset number of variables read */
+	RV_VariablesReadCyclus = 0u16;
+	RV_State = RV_State_Readflash;
+	RV_Slot = RV_FirstSlot;
+} endif
+
+if after(RV_State == RV_State_Readflash,1u64) then {
+	/* read first buffer, wait for success */
+	RV_Result = RV_FlashError;
+	RV_Buffer = EMPTYSTRING;
+	RV_State = RV_State_ReadflashPending;
+	RV_Result = readflash( RV_Buffer, RV_Slot);
+	RV_DebugOut_String($reading a buffer from flash ...$);
+} endif
+
+if after(RV_Result == RV_FlashOK and RV_State == RV_State_ReadflashPending,1u64) then {
+	/* RV_Buffer holds data from flash now, so allow the following variables to detect their presence */;
+	RV_VariablesReadCyclus = 0u16;
+	RV_DebugOut_String($read from flash done$);
+	if size(RV_Buffer) < 3u16 then {
+		RV_State = RV_State_Idle;
+		RV_DebugOut_String($buffer contains $+convert(size(RV_Buffer),EMPTYSTRING)+$ characters and is almost empty -> don't read further$);
+	} endif;
+	if size(RV_Buffer) > 2u16 then {
+		RV_State = RV_State_ReadflashExamineBuffer;
+		RV_DebugOut_String($buffer contains $+convert(size(RV_Buffer),EMPTYSTRING)+$ characters -> examine further$);
+		/*RV_DebugOut_String($buffer: $+RV_Buffer);*/;
+	} endif;
+} endif
+
+if after( RV_State == RV_State_ReadflashExamineBuffer, 1u64) then {
+	RV_State = RV_State_ReadflashNext;
+} endif
+
+if after( RV_State == RV_State_ReadflashNext,1u64) then {
+	/* we have read a buffer before, now check wether to read another: */;
+	RV_Buffer = EMPTYSTRING;
+	if RV_VariablesRead < RV_VariableCount and RV_Slot < RV_LastSlot then {
+		/* we did not find all variables and another buffer is available so read it */;
+		RV_State = RV_State_Readflash;
+		RV_Slot = RV_Slot + 1u16;
+		RV_DebugOut_String($decided to read another buffer from flash ...$);
+	} endif;
+	
+	if RV_Slot == RV_LastSlot then {
+		/* we can't read more buffers than we defined */;
+		RV_DebugOut_String($reading from flash stopped: no more buffers!$);
+		RV_State = RV_State_Idle;
+	} endif;
+
+	if RV_VariablesRead == RV_VariableCount then {
+		/* just read as many variables as defined */;
+		RV_DebugOut_String($reading from flash stopped: no more unread variables!$);
+		RV_State = RV_State_Idle;
+	} endif;
+} endif
+
+/* error handling */
+if RV_State == RV_State_ReadflashPending and delay( RV_State == RV_State_ReadflashPending, 5000u64) then {
+	/* seems that we got an error reading the flash */;
+	RV_State = RV_State_Idle;
+	RV_DebugOut_String($maybe an error reading the flash, giving up!$);
+} endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// write to flash
+//
+if after(RV_State == RV_State_WriteflashStart,1u64) then {
+	RV_State = RV_State_WriteflashCollectData;
+	RV_Buffer = EMPTYSTRING;
+	RV_Slot = RV_FirstSlot;
+	RV_NeedMoreSpace = 0u16;
+	RV_WriteChanges = AUS;
+	RV_DirtyCount = 0u32;
+	RV_DebugOut_String($Start data collection for writing to flash$);
+} endif
+
+if after( RV_State == RV_State_WriteflashCollectData, 1u64) then {
+	RV_State = RV_State_Writeflash;
+} endif
+
+if after(RV_State == RV_State_Writeflash,1u64) then {
+	if size(RV_Buffer) > 0u16 then {
+		RV_Result = RV_FlashError;
+		RV_State = RV_State_WriteflashPending;
+		RV_Result = writeflash( RV_Buffer, RV_Slot );
+		RV_DebugOut_String($writeflash just started and Need more space = $+convert(RV_NeedMoreSpace,EMPTYSTRING));
+	} endif;
+	if size(RV_Buffer) == 0u16 then {
+		RV_State = RV_State_Idle;
+		RV_DebugOut_String($buffer is empty so no attempt to write to flash$+$ and Need more space = $+convert(RV_NeedMoreSpace,EMPTYSTRING));
+	} endif;
+} endif
+
+if after( RV_Result == RV_FlashOK and RV_State == RV_State_WriteflashPending, 1u64) then {
+	/* ok, buffer is written to flash, now collect data for the next buffer */
+	RV_DebugOut_String($buffer was successfully written to flash$);
+	if RV_NeedMoreSpace == 0u16 then {
+		/* all variables written, we can stop here */;
+		RV_State = RV_State_Idle;
+		RV_DirtyCount = 0u32;
+		RV_DebugOut_String($nothing more to write, stopping here$);
+	} endif;
+	if RV_NeedMoreSpace > 0u16 then {
+		RV_DebugOut_String($Need more space = $+convert(RV_NeedMoreSpace,EMPTYSTRING));
+		RV_Slot = RV_Slot + 1u16;
+		RV_State = RV_State_WriteflashCollectData;
+		RV_Buffer = EMPTYSTRING;
+		RV_DebugOut_String($collecting further data for writing to flash$);
+	} endif;
+	RV_NeedMoreSpace = 0u16;
+} endif
+
+if RV_State == RV_State_WriteflashPending and delay( RV_State == RV_State_WriteflashPending , 5000u64) then {
+	/* seems that we got an error reading the flash */;
+	RV_DebugOut_String($maybe an error writing the flash, giving up!$);
+	RV_State = RV_State_Idle;
+} endif
+
+:end
+
+// RemanentVariable
+// @date	22.06.2012
+// @version	4 
+// @author	Bernd Meiners
+///////////////////////////////////////////////////////////////////////////////
+//
+// RemanentVariable
+//
+// defines a scalar variable of types u08, s08, u16, s16, u32, s32, u64, s64 
+// and saves its value
+// also b01, b02 and b04 should be possible and
+// c14 and depending on the maximum buffer size a normal string
+//
+// keep in mind however that the variable name, the equal sign, the delimiter
+// and the string itself need to fit in the maximum buffer
+//
+:begin RemanentVariable( VariableName, defaultValue )
+:info $definine a Variable as remanent$ \\
+    $Name of the variable as its used in the program$ \\
+	$defaultValue used for variable initialisation$ 
+
+// set default value at systemstart
+VariableName = defaultValue				/* the real definition of the variable */
+VariableName_OldValue = defaultValue	/* in program the variable will be checked on change against this value to detect a real value change */
+
+// use the area both versions have in common
+RVCommon( VariableName)
+
+if RV_DoDump2UDP then RV_DebugOut_String($Nr. $+convert(VariableName_Number,$$)+$:^VariableName^=$+convert( VariableName, EMPTYSTRING)+$ [def:$+convert(defaultValue,EMPTYSTRING)+$]$) endif
+
+:end
+
+// RemanentVariableNoDefinition
+// @date	22.06.2012
+// @version	4 
+// @author	Bernd Meiners
+///////////////////////////////////////////////////////////////////////////////
+//
+// RemanentVariable without definition
+//
+// defines a scalar variable of types u08, s08, u16, s16, u32, s32, u64, s64 
+// and saves its value
+// also b01, b02 and b04 should be possible and
+// c14 and depending on the maximum buffer size a normal string
+//
+// keep in mind however that the variable name, the equal sign, the delimiter
+// and the string itself need to fit in the maximum buffer
+//
+:begin RemanentVariable2( VariableName )
+:info $definine a Variable as remanent$ \\
+    $Name of the variable as its used in the program$
+
+// instead of the other version, we do not have a default value so just take zero as an old value
+VariableName_OldValue = convert( 0u08, VariableName);	/* in program the variable will be checked on change against this value to detect a real value change */
+
+if systemstart() then VariableName_OldValue = VariableName endif
+
+// use the area both versions have in common
+RVCommon( VariableName )
+
+if RV_DoDump2UDP then RV_DebugOut_String($Nr. $+convert(VariableName_Number,$$)+$:^VariableName^=$+convert( VariableName, EMPTYSTRING)) endif
+
+:end
+
+:begin RVCommon( VariableName) 
+// define a unique number throughout all variables, this will ensure that
+// in later versions all variables may be read one by one
+
+VariableName_AlreadyWritten = AUS
+VariableName_Pos1 = 0u16
+VariableName_Pos2 = 0u16
+VariableName_IsDirty = AUS
+VariableName_Buffer2 = EMPTYSTRING
+VariableName_KeyEqual = $^VariableName^=$
+VariableName_Number = 0u16;				/* we use this number for a shortcut later via command line */
+
+if systemstart() then { 
+	RV_VariableCount = RV_VariableCount + 1u16;
+	VariableName_Number = RV_VariableCount;
+} endif
+
+VariableName_Buffer =  $^VariableName^=$+convert(VariableName, EMPTYSTRING)
+if change(VariableName_Buffer) and VariableName_OldValue != VariableName then {
+	VariableName_IsDirty = EIN;
+	RV_DirtyCount = RV_DirtyCount + 1u32;
+	VariableName_OldValue = VariableName;
+	RV_DebugOut_String(VariableName_Buffer+$ changed -> increasing DirtyCount $+convert(RV_DirtyCount,EMPTYSTRING));
+} endif
+
+// read in the buffer wether the variable is found
+if after( RV_State == RV_State_ReadflashExamineBuffer,1u64)  then {
+	VariableName_Pos1 = find( RV_Buffer, VariableName_KeyEqual, 0u16 );
+	if VariableName_Pos1 >= 0u16 and VariableName_Pos1 < EOS then {
+		VariableName_Buffer2 = split( RV_Buffer, VariableName_Pos1+size(VariableName_KeyEqual), EOS );
+		VariableName_Pos2 = find( VariableName_Buffer2, CRLF, 0u16 );
+		if VariableName_Pos2 >= 0u16 and VariableName_Pos2 < EOS then {
+			VariableName_Buffer2 = split( VariableName_Buffer2, 0u16, VariableName_Pos2-1u16 );
+		} endif;
+
+		VariableName = convert(VariableName_Buffer2, VariableName);
+		RV_DebugOut_String($Slot $+convert(RV_Slot,EMPTYSTRING)+$ ReadBuffer: ^VariableName^=$+convert(VariableName,EMPTYSTRING));
+		VariableName_IsDirty = AUS;
+		/* increase the found variables counter of all variables */;
+		RV_VariablesRead = RV_VariablesRead + 1u16;
+		/* increase the found variables counter of this cyclus */;
+		RV_VariablesReadCyclus = RV_VariablesReadCyclus + 1u16;
+	} endif
+} endif
+
+/* this will only be executed once due to the validation scheme */
+if after(RV_State == RV_State_WriteflashStart,1u64) then VariableName_AlreadyWritten = AUS endif
+
+VariableName_DoAdd2Buffer = AUS
+
+if after( RV_State == RV_State_WriteflashCollectData and !VariableName_AlreadyWritten, 1u64) then {
+	VariableName_DoAdd2Buffer = size(RV_Buffer) + size(VariableName_Buffer) + size(CRLF) <= RV_MaxBufferSize;
+	if VariableName_DoAdd2Buffer then {
+		/* enough space to hold the variable */
+		if size(RV_Buffer) > 0u16 then RV_Buffer = RV_Buffer + CRLF + VariableName_Buffer else RV_Buffer = VariableName_Buffer endif;
+		VariableName_AlreadyWritten = EIN;
+		VariableName_IsDirty = AUS;
+		RV_DebugOut_String($add to flash($+convert(RV_Slot,EMPTYSTRING)+$) $+VariableName_Buffer);
+	} else {
+		RV_DebugOut_String($not enough space in buffer for flash($+convert(RV_Slot,EMPTYSTRING)+$) for $+VariableName_Buffer);
+		RV_NeedMoreSpace = RV_NeedMoreSpace + 1u16;
+	} endif;
+} endif
+
+if (VariableName_Number == convert( RV_SetVariableNumberOrName, 0u16) or RV_SetVariableNumberOrName == $^VariableName^$) then {
+	VariableName = convert( RV_SetVariableString, VariableName);
+	RV_SetVariableNumberOrName = EMPTYSTRING;
+	RV_SetVariableString = EMPTYSTRING;
+} endif
+
+:end
+
+
+// Var2GA
+// @date	22.06.2012
+// @version	1
+// @author	Bernd Meiners
+///////////////////////////////////////////////////////////////////////////////
+//
+// Variable an Gruppenadresse koppeln
+//
+:begin Var2GA( MyVar, toGA )
+:info $Eine Variable bei Änderung auf eine Gruppenadresse senden)
+
+MyVar_OldVal = MyVar
+
+if change( MyVar ) and MyVar_OldVal != MyVar then {
+	MyVar_OldVal = MyVar;
+	write( toGA, MyVar );
+} endif
+
+:end
+
+// SecureVariable
+// @date	22.06.2012
+// @version	1
+// @author	Bernd Meiners
+///////////////////////////////////////////////////////////////////////////////
+//
+// Secure Variable
+//
+// certify that a given variable is within the given range
+:begin SecureVariable( VarName, Minimum, Maximum )
+:info $Certify and eventually correct a variable to contain only values of the given range$ \\
+	$Name of the variable$ \\
+	$minimum of range$ \\
+	$maximum of range$
+:shortinfo $put a variables value into certain range$
+
+if VarName < Minimum then VarName = Minimum endif
+if VarName > Maximum then VarName = Maximum endif
+
+:end
+
+// RV_DebugOut_String
+// @date	22.06.2012
+// @version	1
+// @author	Bernd Meiners
+///////////////////////////////////////////////////////////////////////////////
+//
+// Send debug messages to UDP for reception e.g. by netcat -l -p PORT -u
+//
+
+:begin RV_DebugOut_String( OutMessage )
+:info $Send a text string to a UDP receiver$ \\
+	$Message to send$
+:shortinfo $Send debug messages via UDP$
+#ifdef DEBUG_RV
+:return if RV_Debug then sendudp(RV_Debug_Port,RV_Debug_IP, $@ $+RV_Currenttime+$, RV:$, OutMessage, 13, 10 ) endif;
+#endif DEBUG_RV
+#ifndef DEBUG_RV
+:return sun();
+#endif DEBUG_RV
+:end
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// a simple command line interface for the knx via EibPC
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+// Usage:
+//
+// include the macro. If you want to receive responses then
+// start like
+// "netcat -l -u -p /OutPort/ on computer with OutIP"
+//
+// to send a command line start netcat like
+// "netcat RemoteIP 4806 -p /RemotePort/ on computer with RemoteIP"
+// if you omit RemoteIP and leave it zero then all IP will be accepted
+
+:begin UDPCommandInterface( RemotePort, RemoteIP, Password, TimeOut, OutPort, OutIP )
+:info $provides functionality to send command via UDP to the EibPC$ \\
+	$RemotePort - the port the command uses to send lines$\\
+	$RemoteIP - if not zero then only accept packets from this IP $\\
+	$Password - needs to be sent to enable the interface$\\
+	$TimeOut - time in milliseconds after which the command interface will be password secured again$\\
+	$OutPort - this port will receive answer packets$\\
+	$OutIP - this is the accepting computer, normally the same as RemoteIP$
+:shortinfo $provides functionality to send command via UDP to the EibPC$
+
+UDPCI_Port = OutPort
+UDPCI_IP = OutIP
+
+UDPCI_ReadPort=0u16
+UDPCI_ReadIP=0u32
+UDPCI_UDPBuffer=$$
+UDPCI_Buffer = $$
+UDPCI_Commandline = $$
+UDPCI_Command = $$
+UDPCI_posLF = 0u16
+
+
+UDPCI_HG = $$; UDPCI_MG = $$; UDPCI_UG = $$
+UDPCI_GA = 2218u16
+UDPCI_Type = $$;				// b01, u08, u16, u32, s16, s32, f16, f32
+UDPCI_Value = $$
+password = $1234$
+UDPCI_Enabled = EIN;		// 
+UDPCI_pos1 = 0u16
+UDPCI_pos2 = 0u16
+UDPCI_posCR = 0u16
+
+UDPCI_EnableResponseWait = AUS;
+NewData = AUS;
+
+if event(readudp(UDPCI_ReadPort, UDPCI_ReadIP, UDPCI_UDPBuffer)) and (UDPCI_ReadPort==RemotePort) and ((RemoteIP == 0u32) or (UDPCI_ReadIP==RemoteIP)) or \\
+	( after(change(UDPCI_Buffer),1u64) and size( UDPCI_Buffer ) > 0u16 ) then {
+	if (UDPCI_ReadPort==RemotePort) and ((RemoteIP == 0u32) or (UDPCI_ReadIP==RemoteIP)) then {
+		UDPCI_Buffer = UDPCI_Buffer + UDPCI_UDPBuffer;
+		UDPCI_UDPBuffer = $$;
+	} endif;
+	sendudp( OutPort, OutIP, $Buffer$+UDPCI_Buffer, 13, 10 );
+	UDPCI_posCR = find( UDPCI_Buffer, CR, 0u16);
+	if UDPCI_posCR == 0u16 then UDPCI_Buffer = split( UDPCI_Buffer, 1u16, END) endif;
+	
+	UDPCI_posLF = find( UDPCI_Buffer, LF, 0u16);
+	if UDPCI_posLF == 0u16 then UDPCI_Buffer = split( UDPCI_Buffer, 1u16, END) endif;
+
+	if UDPCI_posLF > 0u16 and UDPCI_posLF < EOS then {
+		UDPCI_Commandline = split( UDPCI_Buffer, 0u16, UDPCI_posLF );
+		UDPCI_Buffer = split( UDPCI_Buffer, UDPCI_posLF+1u16, END );
+
+		UDPCI_Command = split( UDPCI_Commandline, 0u16, 0u16 );
+		if UDPCI_Command == $p$ then {
+			UDPCI_Value = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 0u16 )+1u16, size( UDPCI_Commandline )-2u16 );
+			UDPCI_Enabled = (UDPCI_Value == password);
+			if UDPCI_Enabled then sendudp( OutPort, OutIP, $Password was given, accepting now other commands$, 13, 10 ) endif;
+			if !UDPCI_Enabled then sendudp( OutPort, OutIP, $Passwor was wrong, accepting no other commands$, 13, 10 ) endif;
+			UDPCI_EnableResponseWait = AUS;
+		} endif;
+
+// if the remanent variables macro is included we may use the following code to dump all remanent variables
+#ifdef RV
+		if UDPCI_Command == $d$ then {
+			sendudp( OutPort, OutIP, $Dumping all remanent variables$, 13, 10 );
+			sendudp( OutPort, OutIP, $------------------------------------------------------------------------$, 13, 10 );
+			RV_DoDump2UDP = EIN;   /* The remanent variables macro defines this variable */;
+		} endif;
+
+		if UDPCI_Command == $s$ then {
+			RV_SetVariableNumberOrName = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 0u16 )+1u16, find( UDPCI_Commandline, SPACE, 1u16 )-1u16 );
+			UDPCI_pos1 = find(UDPCI_Commandline, SPACE, 1u16 );
+			UDPCI_pos2 = find(UDPCI_Commandline, LF, 0u16 );
+			if UDPCI_pos2 > UDPCI_pos1+1u16 then RV_SetVariableString = split( UDPCI_Commandline, UDPCI_pos1+1u16, UDPCI_pos2-1u16) \\
+			else RV_SetVariableString = EMPTYSTRING endif;
+		} endif;
+#endif
+		if UDPCI_Command == $h$ then {
+			sendudp( OutPort, OutIP, $list of commands for the UDP command line interface$, 13, 10 );
+			sendudp( OutPort, OutIP, $h --> help as displayed$, 13, 10 );
+			sendudp( OutPort, OutIP, $p password --> send the password, if timeout occurs the password will be reset$, 13, 10 );
+			sendudp( OutPort, OutIP, $w HG MG UG Type Value --> write a value to the bus$, 13, 10 );
+			sendudp( OutPort, OutIP, $   HG MG UG: parts of the GA like HG/MG/UG$, 13, 10 );
+			sendudp( OutPort, OutIP, $   Type as one of b, u08, u16, u32, s08, s16, s32, f16, f32, s$, 13, 10 );
+			sendudp( OutPort, OutIP, $R HG MG UG --> read a value from the bus$, 13, 10 );
+			sendudp( OutPort, OutIP, $r HG MG UG --> read a value from the EibpC$, 13, 10 );
+#ifdef RV
+			sendudp( OutPort, OutIP, $d --> dump all remanent variables$, 13, 10 );
+			sendudp( OutPort, OutIP, $s number Value --> set a value to a remanent variable, the number is given with dump and may change after new compilation$, 13, 10 );
+			sendudp( OutPort, OutIP, $s VariableName Value --> set a value to a remanent variable, the Variable Name is given with dump (will not change)$, 13, 10 );
+#endif
+			sendudp( OutPort, OutIP, $---------------------------------$, 13, 10 );
+		} endif;
+
+		if  UDPCI_Command == $w$ and UDPCI_Enabled then {
+			UDPCI_pos1 = find (UDPCI_Commandline, SPACE, 4u16 );
+			UDPCI_HG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 0u16 )+1u16, find( UDPCI_Commandline, SPACE, 1u16 )-1u16 );
+			UDPCI_MG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 1u16 )+1u16, find( UDPCI_Commandline, SPACE, 2u16 )-1u16 );
+			UDPCI_UG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 2u16 )+1u16, find( UDPCI_Commandline, SPACE, 3u16 )-1u16 );
+			UDPCI_GA = convert( UDPCI_HG, 0u16) * 2048u16 + convert( UDPCI_MG, 0u16) * 256u16 + convert( UDPCI_UG, 0u16);
+			UDPCI_Type = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 3u16 )+1u16, find( UDPCI_Commandline, SPACE, 4u16 )-1u16 );
+			UDPCI_Value = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 4u16 )+1u16, size(UDPCI_Commandline)-2u16 );
+			sendudp( OutPort, OutIP, $witing $+UDPCI_Value+$ to $+UDPCI_HG+$/$+UDPCI_MG+$/$+UDPCI_UG+$($+convert(UDPCI_GA,$$)+$) as $+UDPCI_Type, 13, 10 );
+			if find( UDPCI_Type, $b$,   0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0b01) ) endif;
+			if find( UDPCI_Type, $u08$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0u08) ) endif;
+			if find( UDPCI_Type, $u16$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0u16) ) endif;
+			if find( UDPCI_Type, $u32$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0u32) ) endif;
+			if find( UDPCI_Type, $s08$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0s16) ) endif;
+			if find( UDPCI_Type, $s16$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0s16) ) endif;
+			if find( UDPCI_Type, $s32$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0s32) ) endif;
+			if find( UDPCI_Type, $f16$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0f16) ) endif;
+			if find( UDPCI_Type, $f32$, 0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, 0f32) ) endif;
+			if find( UDPCI_Type, $s$,   0u16 ) < END then write( address( UDPCI_GA ), convert( UDPCI_Value, $$c14)) endif;
+			UDPCI_EnableResponseWait = AUS;
+		} endif;
+
+		if  UDPCI_Command == $R$ and UDPCI_Enabled then {
+			sendudp( OutPort, OutIP, $Read request detected$, 13, 10 );
+			UDPCI_HG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 0u16 )+1u16, find( UDPCI_Commandline, SPACE, 1u16 )-1u16 );
+			UDPCI_MG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 1u16 )+1u16, find( UDPCI_Commandline, SPACE, 2u16 )-1u16 );
+			UDPCI_UG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 2u16 )+1u16, END);
+			UDPCI_GA = convert( UDPCI_HG, 0u16) * 2048u16 + convert( UDPCI_MG, 0u16) * 256u16 + convert( UDPCI_UG, 0u16);
+			if UDPCI_GA != 0u16 then {
+				read( address( UDPCI_GA ));
+				UDPCI_EnableResponseWait = EIN;
+			} else {
+				UDPCI_EnableResponseWait = AUS;
+			} endif;
+		} endif;
+
+		if  UDPCI_Command == $r$ and UDPCI_Enabled then {
+			sendudp( OutPort, OutIP, $read request detected$, 13, 10 );
+			UDPCI_HG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 0u16 )+1u16, find( UDPCI_Commandline, SPACE, 1u16 )-1u16 );
+			UDPCI_MG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 1u16 )+1u16, find( UDPCI_Commandline, SPACE, 2u16 )-1u16 );
+			UDPCI_UG = split( UDPCI_Commandline, find( UDPCI_Commandline, SPACE, 2u16 )+1u16, END);
+			UDPCI_GA = convert( UDPCI_HG, 0u16) * 2048u16 + convert( UDPCI_MG, 0u16) * 256u16 + convert( UDPCI_UG, 0u16);
+			if UDPCI_GA != 0u16 then {
+				sendudp( OutPort, OutIP, $event detected to $+UDPCI_HG+$/$+UDPCI_MG+$/$+UDPCI_UG+$($+convert(UDPCI_GA,$$)+$) UDPCI_Value: $+convert( gaimage(UDPCI_GA),$$), 13, 10 );
+			} endif;
+		} endif;
+	} endif;
+} endif
+
+
+// if event( address( UDPCI_GA ) ) and UDPCI_EnableResponseWait then {
+//    sendudp( OutPort, OutIP, $response detected to $+UDPCI_HG+$/$+UDPCI_MG+$/$+UDPCI_UG+$($+convert(UDPCI_GA,$$)+$) UDPCI_Value: $+convert( gaimage(address( UDPCI_GA )),$$), 13, 10 )
+//} endif;
+
+KNXGA = 0u16
+KNXBuffer = $$
+
+if event( readknx( KNXGA, KNXBuffer ) ) and KNXGA == UDPCI_GA and UDPCI_EnableResponseWait then {
+    sendudp( OutPort, OutIP, $event detected to $+UDPCI_HG+$/$+UDPCI_MG+$/$+UDPCI_UG+$($+convert(UDPCI_GA,$$)+$) UDPCI_Value: $+convert( KNXBuffer,$$), 13, 10 )
+} endif;
+
+if event( readknx( KNXGA, KNXBuffer ) ) and KNXGA == UDPCI_GA and UDPCI_EnableResponseWait then {
+    sendudp( OutPort, OutIP, $response detected to $+UDPCI_HG+$/$+UDPCI_MG+$/$+UDPCI_UG+$($+convert(UDPCI_GA,$$)+$) UDPCI_Value: $+convert( KNXBuffer,$$), 13, 10 )
+} endif;
+
+
+:return AUS
+:end
+
+
+

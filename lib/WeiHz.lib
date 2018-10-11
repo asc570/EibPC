@@ -1,0 +1,691 @@
+// $Id: WeiHz.lib 68 2014-10-07 13:38:32Z asc $
+/////////////////////////////////////////////////////////////////////////
+// specific Macros for Heizung Weishauptstrasse
+//////////////////////////////////////////////////////////////////////////
+// globals Init SysStartDelay
+
+
+
+:begin HzStartInit( bSendHzT )
+:var  SysSdHzTsend@
+SysSdHzTsend@     = 30000u64
+   if( after(systemstart(), SysSdHzTsend@)) then bSendHzT = ON endif
+:end
+//////////////////////////////////////////////////////////////////////////
+// global modes
+//
+//////////////////////////////////////////////////////////////////////////////
+:begin Sp_MasterON( bON )
+if( after(HZ_SEND_T_DELAY,10000u64) or change( bON)) then{
+   Sp_InitHzEG( !bON );
+   Sp_InitHzOG1(!bON );
+//   Sp_InitHzDach( !bON );
+   }endif
+//
+//:var sig@
+//sig@ = AUS
+//if( after(systemstart(),10000u64) or change( bON)) then sig@ = EIN endif
+//if( after(sig@,10u64  ) ) then Sp_InitHzEG( !bON )endif
+//if( after(sig@,3000u64) ) then Sp_InitHzOG1(!bON ) endif
+//if( after(sig@,10000u64) ) then Sp_InitHzDach( !bON ); sig@ =AUS endif
+:end
+///////////////////////////////////////////////////////////////////////////
+:begin Sp_InitHzEG( bFrost )
+if( bFrost ) then{
+   write("eIHzVaRad_EG-8/6/0" ,AUS);
+   write("eIHzVaFbh_EG-8/6/14",AUS );
+	PcUvr_ModeHk1		   = PCUVR_UVR_SBY;
+   Hk5_fArme            = AUS;
+
+   Hk1_fNightOverride	= AUS; 
+   fHzEG_Boost			   = AUS;
+
+	fHzEG_EssZ_IsAuto 	= AUS;
+	fHzEG_WohnZ_IsAuto	= AUS;
+	fHzEG_WC_IsAuto		= AUS;
+	fHzEG_Gard_IsAuto	   = AUS;
+	fHzEG_Tr_IsAuto		= AUS;
+
+	MdtMode_EssZ 		= HZ_MDT_FROST;
+	MdtMode_WohnZ		= HZ_MDT_FROST;
+	MdtMode_WC			= HZ_MDT_FROST;
+	MdtMode_Gard		= HZ_MDT_FROST;
+	MdtMode_Tr			= HZ_MDT_FROST;
+
+   }else{
+   write("eIHzVaRad_EG-8/6/0" , EIN);
+   write("eIHzVaFbh_EG-8/6/14" , EIN);
+	PcUvr_ModeHk1		   = PCUVR_PCAUTO;
+   Hk5_fArme            = EIN;
+
+   Hk1_fNightOverride   = AUS; 
+   fHzEG_Boost			   = AUS;
+
+	fHzEG_EssZ_IsAuto 	= EIN;
+	fHzEG_WohnZ_IsAuto	= AUS;
+	fHzEG_WC_IsAuto		= EIN;
+	fHzEG_Gard_IsAuto	   = EIN;
+	fHzEG_Tr_IsAuto		= EIN;
+
+	MdtMode_EssZ 		= HZ_MDT_KOMFORT;
+	MdtMode_WohnZ		= HZ_MDT_FROST;
+	MdtMode_WC			= HZ_MDT_KOMFORT;
+	MdtMode_Gard		= HZ_MDT_KOMFORT;
+	MdtMode_Tr			= HZ_MDT_KOMFORT;
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////////
+:begin Sp_InitHzOG1( bFrost )
+if( bFrost )then{
+   write( "eIHzVaRad_OG1-8/6/1" ,AUS );
+
+   fNightOverride_OG1	= AUS;
+    write( "SetMEG_Emilia_LockButton-7/2/42",EIN );
+    write( "SetMEG_Marisa_LockButton-7/2/43",EIN );
+    write( "SetMEG_Buero_LockButton-7/2/44",EIN );
+
+    write("SetMEG_Emilia_HVAC-7/2/0",HZ_MDT_FROST);
+    write("SetMEG_Marisa_HVAC-7/2/14",HZ_MDT_FROST);
+    write("SetMEG_Buero_HVAC-7/2/28",HZ_MDT_FROST);
+   }else{
+
+   write( "eIHzVaRad_OG1-8/6/1" ,EIN );
+   fNightOverride_OG1	= AUS;
+    write( "SetMEG_Emilia_LockButton-7/2/42",AUS );
+    write( "SetMEG_Marisa_LockButton-7/2/43",AUS );
+    write( "SetMEG_Buero_LockButton-7/2/44",AUS );
+
+    write("SetMEG_Emilia_HVAC-7/2/0",HZ_MDT_NIGHT);
+    write("SetMEG_Marisa_HVAC-7/2/14",HZ_MDT_NIGHT);
+    write("SetMEG_Buero_HVAC-7/2/28",HZ_MDT_NIGHT);
+  }endif
+ :return bFrost
+:end
+/////////////////////////////////////////////////////////////////////////////
+:begin Sp_InitHzDach( bFrost )
+if( bFrost )then{
+      write( "eIHzVaRad_Dach-8/6/2",AUS );
+      write( "eIHzVaFbh_Dach-8/6/15",AUS );
+      fNightOverride_Dach	   = AUS;
+      Hk4_fNightOverride		= AUS;  
+//		PcUvr_ModeHk4		      = PCUVR_UVR_SBY;
+   }else{
+
+      write( "eIHzVaRad_Dach-8/6/2",EIN );
+      write( "eIHzVaFbh_Dach-8/6/15",EIN );
+      fNightOverride_Dach	   = AUS;
+      Hk4_fNightOverride		= AUS;
+//      PcUvr_ModeHk4		      = PCUVR_PCAUTO;  
+   }endif
+:end
+////////////////////////////////////////////////////////////////////////////
+:begin Sp_SetHzGlobalFrostMode(fFrostModeGA)
+if(event(fFrostModeGA)) then{
+      write( "SetMEG_Emilia_LockButton-7/2/42",EIN );
+      write( "SetMEG_Marisa_LockButton-7/2/43",EIN );
+      write( "SetMEG_Buero_LockButton-7/2/44",EIN );
+
+		write("SetMEG_Emilia_HVAC-7/2/0",HZ_MDT_FROST);
+		write("SetMEG_Marisa_HVAC-7/2/14",HZ_MDT_FROST);
+		write("SetMEG_Buero_HVAC-7/2/28",HZ_MDT_FROST);
+		fHzEG_EssZ_IsAuto 	= AUS;
+		fHzEG_WohnZ_IsAuto	= AUS;
+		fHzEG_WC_IsAuto		= AUS;
+		fHzEG_Gard_IsAuto	   = AUS;
+		fHzEG_Tr_IsAuto		= AUS;
+		MdtMode_EssZ 		= HZ_MDT_FROST;
+		MdtMode_WohnZ		= HZ_MDT_FROST;
+		MdtMode_WC			= HZ_MDT_FROST;
+		MdtMode_Gard		= HZ_MDT_FROST;
+		MdtMode_Tr			= HZ_MDT_FROST;
+	//
+		PcUvr_ModeHk1		= PCUVR_UVR_SBY;
+	//	PcUvr_ModeHk2		= PCUVR_UVR_SBY;
+	//	PcUvr_ModeHk3		= PCUVR_UVR_SBY;
+		PcUvr_ModeHk4		= PCUVR_UVR_SBY
+	}endif
+:end
+//////////////////////////////////////////////////////////////////////////
+// lokal modes
+//
+///////////////////////////////////////////////////////////////////////////
+:begin Sp_Logic_NightOverride_EG(fNoEgGA)
+if(systemstart() or event(fNoEgGA)) then{
+	if( fNoEgGA) then{
+		fHzNightOverr_EssZ 	= EIN;
+		fHzNightOverr_WohnZ	= EIN;
+		fHzNightOverr_WC	   = EIN;
+		fHzNightOverr_Gard	= EIN;
+		fHzNightOverr_Tr	   = EIN;
+		Hk1_fNightOverride	= EIN;
+      fNightOverride_EG    = EIN;
+      write( "fNightOverride_Dach-8/2/51",EIN );
+		}else{
+		fHzNightOverr_EssZ 	= AUS;
+		fHzNightOverr_WohnZ	= AUS;
+		fHzNightOverr_WC	   = AUS;
+		fHzNightOverr_Gard	= AUS;
+		fHzNightOverr_Tr	   = AUS;
+		Hk1_fNightOverride	= AUS;
+      fNightOverride_EG    = AUS;
+		}endif
+	}endif
+if( htime(TIME_RESET_NIGHT_OVERR,0u08,10u08 )) then write(fNoEgGA,AUS  ) endif;
+:end
+///////////////////////////////////////////////////////////////////////////
+:begin Sp_Logic_NightOverride_Dach(fNoDachGA)
+if(systemstart() or event(fNoDachGA)) then{
+	if( fNoDachGA) then{
+		Hk4_fNightOverride	= EIN;
+      fNightOverride_Dach   = EIN;
+		}else{
+		Hk4_fNightOverride	= AUS;
+      fNightOverride_Dach    = AUS;
+		}endif
+	}endif
+if( htime(TIME_RESET_NIGHT_OVERR,0u08,15u08 )) then write(fNoDachGA,AUS  ) endif;
+:end
+/////////////////////////////////////////////////////
+// HK control
+///////////////////////////
+// Ref Temperatur for HkX redirection and modification
+:begin Sp_UVR_RefT_Hk1( inGA,fCorr )
+if event(inGA ) then write( "Aout01-11/3/1",inGA + fCorr)endif;
+:end
+///////////////////////////
+:begin Sp_UVR_RefT_Hk3( inGA )
+if event(inGA ) then write( "Aout03-11/3/3",inGA )endif;
+:end
+////////////////////////////
+:begin Sp_UVR_RefT_Hk4( inOstGA,fCorr, inBadGA ,fDachBadBoost,outTime)
+:var TDELTA@
+:var DUR@
+TDELTA@ = 10.0f16
+DUR@     = 3600000u64
+
+if( delayc(fDachBadBoost,DUR@,outTime  )) then fDachBadBoost = AUS endif
+
+if(   change( inOstGA) or change(fCorr) ) then{
+      if( fDachBadBoost == AUS ) then{
+         write( "Aout04-11/3/4",(inOstGA - fCorr));
+         }else{
+         write( "Aout04-11/3/4",(inBadGA - TDELTA@) );
+         }endif;
+      }endif
+
+if( fDachBadBoost == EIN )then{
+      write( "SwHkD-3/4/158",AUS);               /* FBH Raum W*/
+      write( "SetPosPercE-3/4/87",0%);         /* FBH Raum O */
+      write( "SetPosPercF-3/4/88",100%);         /* FBH Bad */
+   }else{
+      write( "SwHkD-3/4/158",EIN);               /* FBH Raum W*/
+      write( "SetPosPercE-3/4/87",100%);         /* FBH Raum O */
+      write( "SetPosPercF-3/4/88",100%);         /* FBH Bad */
+   }endif
+:end
+//////////////////////////////////////////////////////////////////// 
+// HK1
+//
+//////////////////////////////////////////////////////
+:begin Sp_Hk1_Mode8Control(miniEgModeUVR8,PvcUvrMode)
+// mode UVR_xxx8 is subset of PCUVR_UVR_xxx
+if( change(miniEgModeUVR8) or change(PvcUvrMode) or delay(systemstart(),12000u64)) then{
+	if( PvcUvrMode == PCUVR_PCAUTO)  then{
+		Hk1_Uvr8Mode = miniEgModeUVR8 
+	}else{
+		Hk1_Uvr8Mode = PvcUvrMode
+	}endif
+}endif
+:end
+////////////////////////////////////////////////////
+:begin Sp_SetHk1_miniMode8(fDay,fSlave,Hk3miniMode8,outMiniModeUVR8)
+if(change(fDay) or change(Hk3miniMode8) or change(fSlave ) or delay(systemstart(),11000u64) ) then{
+	if(fSlave) then{
+		if(fDay or Hk3miniMode8 == UVR_NORMAL8) then{
+			outMiniModeUVR8 = UVR_NORMAL8 
+			}else{
+			outMiniModeUVR8 = UVR_ABGESENKT8
+			}endif
+		}else{
+		if(fDay) then outMiniModeUVR8 = UVR_NORMAL8 else outMiniModeUVR8 = UVR_ABGESENKT8 endif
+		}endif 
+	}endif
+:end
+/////////////////////////////////////////////////////////
+//	HK4
+//
+:begin Sp_SetHk4_miniMode8(fDay,fSlave,Hk3miniMode8,outMiniModeUVR8)
+if(change(fDay) or change(Hk3miniMode8)or change(fSlave ) or delay(systemstart(),11000u64) ) then{
+if(fSlave) then{
+		if(fDay or Hk3miniMode8 == UVR_NORMAL8) then{
+			outMiniModeUVR8 = UVR_NORMAL8 
+			}else{
+			outMiniModeUVR8 = UVR_ABGESENKT8
+			}endif
+		}else{
+		if(fDay) then outMiniModeUVR8 = UVR_NORMAL8 else outMiniModeUVR8 = UVR_ABGESENKT8 endif
+		}endif 
+	}endif
+:end
+/////////////////////////////////////////////////////////
+//	HK3
+//
+////////////////////////////////////////////////////
+:begin Sp_Hk3TimeMax( Hk3TimeMaxGA )
+:var setT@
+setT@ = 0u64
+if( htime(5,5,5 )or systemstart() ) then Hk3_Uvr8Mode = UVR_ABGESENKT8  endif
+if(event(Hk3TimeMaxGA)) then{
+   if( Hk3TimeMaxGA == 0u08 )then{
+      setT@ = 0u64;
+      Hk3_Uvr8Mode = UVR_ABGESENKT8 ;
+      }else{
+      setT@ = convert(Hk3TimeMaxGA,1u64) * 3600000u64;
+       Hk3_Uvr8Mode = UVR_NORMAL8 ;
+      }endif
+   }endif
+if( delay(change(setT@ ),setT@)) then write(Hk3TimeMaxGA,0u08  ) endif
+:end
+////////////////////////////////////////////////////////////
+:begin Sp_Hk3Max1Hour( fHk3Max1HourGA )
+if( event(fHk3Max1HourGA ))then{
+   if( fHk3Max1HourGA == AUS ) then{
+      write( "Hk3TimeMax-8/6/23",0u08 )
+      }else{
+      write( "Hk3TimeMax-8/6/23",1u08 )
+      }endif
+   }endif
+:end
+///////////////////////////////////////////////////////////////
+:begin Sp_Hk3TimeCheck( Uvr8ModeGA )
+if( delay(Uvr8ModeGA == UVR_NORMAL8,BOOST_DELAY_MAX)) then{
+   Uvr8ModeGA = UVR_ABGESENKT8 
+   }endif
+:end
+////////////////////////////////////////////////////
+// Hk5
+////////////////////////////////////////////////
+:begin Sp_SetHk5_minMode8_EG(minEgModeUVR8)
+if(event("HVAC_C-3/2/42") or event("HVAC_E-3/2/44")  or systemstart()) then{
+	if(min("HVAC_C-3/2/42","HVAC_E-3/2/44") == HZ_MDT_FROST ) 	then minEgModeUVR8 = UVR_SBY8 endif;
+	if(min("HVAC_C-3/2/42","HVAC_E-3/2/44") == HZ_MDT_NIGHT ) 	then minEgModeUVR8 = UVR_ABGESENKT8 endif;
+	if(min("HVAC_C-3/2/42","HVAC_E-3/2/44") < HZ_MDT_NIGHT  ) 	then minEgModeUVR8 = UVR_NORMAL8 endif;
+	}endif
+//:return minOg1ModeUVR8
+:end
+///////////////////////////////////////////////////
+:begin Sp_SetHk5_minMode8_Og1(minOg1ModeUVR8)
+InitGA( "StMEG_Emilia_HVAC1-7/2/54" )
+InitGA( "StMEG_Marisa_HVAC1-7/2/55" )
+InitGA( "StMEG_Buero_HVAC1-7/2/56" )
+if( event( "StMEG_Emilia_HVAC1-7/2/54") or event( "StMEG_Marisa_HVAC1-7/2/55") or event( "StMEG_Buero_HVAC1-7/2/56") or systemstart( ) ) then{
+      if(    "StMEG_Emilia_HVAC1-7/2/54" == 0x21u08 or 
+"StMEG_Marisa_HVAC1-7/2/55" == 0x21u08 or "StMEG_Buero_HVAC1-7/2/56" == 
+0x21u08)  then{ minOg1ModeUVR8 =   UVR_NORMAL8 
+         }else{  
+         minOg1ModeUVR8 =  UVR_ABGESENKT8
+         }endif
+   }endif
+:end
+//////////////////////////////////////////////////////////////
+:begin Sp_SetHk5_minMode8_Dach(minOg1ModeUVR8)
+:info $set minModeGA for radiatore HK to the minimum UVR_xxx8 mode for OG1 $
+if(systemstart()) then{
+	minOg1ModeUVR8 = UVR_ABGESENKT8
+	}endif
+:end
+////////////////////////////////////////////////////
+:begin Sp_SetHk5_minMode8_All(Hk3mM,minEG,minOG1,minDach,minAllModeUVR8)
+if( change(Hk3mM) or change(minEG) or change(minOG1) or change(minDach) or systemstart()) then{
+	if(Hk3mM == HK3MINI_EG) 	then minAllModeUVR8=minEG  endif;
+	if(Hk3mM == HK3MINI_OG1) 	then minAllModeUVR8=minOG1  endif;
+	if(Hk3mM == HK3MINI_Dach) 	then minAllModeUVR8=minDach  endif;
+	if(Hk3mM == HK3MINI_ALL) 	then minAllModeUVR8=min(minEG,minOG1)  endif
+	}endif
+:end
+
+////////////////////////////////////////////////////////////
+:begin Sp_InitRadEG(fDayGA)
+if(event(fDayGA)) then{
+// globals
+	HzEGdH_Global		= HzEGdH_Global;
+	HzEGnH_Global		= HzEGnH_Global;
+	fHzEG_Boost			= AUS;
+	fHzEG_Frost			= AUS;
+	write("fNightOverride_EG-8/2/50",AUS);
+	if(fDayGA) then{
+// EssZ
+		MdtMode_EssZ 		= HZ_MDT_KOMFORT;
+		fHzEG_EssZ_IsAuto 	= EIN;
+// WohnZ
+		MdtMode_WohnZ		= HZ_MDT_FROST;
+		fHzEG_WohnZ_IsAuto	= AUS;
+// WC
+		MdtMode_WC			= HZ_MDT_KOMFORT;
+		fHzEG_WC_IsAuto		= EIN;
+// Gardrobe (prop)
+		HzEgPer_Gard		= HzEgPerDay_Gard;
+		fHzEG_Gard_IsAuto	= EIN;
+// Treppe (prop)
+		HzEgPer_Tr			= HzEgPerDay_Tr;
+		fHzEG_Tr_IsAuto		= EIN
+		}else{
+// EssZ
+		MdtMode_EssZ 		= HZ_MDT_NIGHT;
+		fHzEG_EssZ_IsAuto 	= EIN;
+// WohnZ
+		MdtMode_WohnZ		= HZ_MDT_FROST;
+		fHzEG_WohnZ_IsAuto	= AUS;
+// WC
+		MdtMode_WC			= HZ_MDT_NIGHT;
+		fHzEG_WC_IsAuto		= EIN;
+// Gardrobe (prop)
+		HzEgPer_Gard		= HzEgPerNight_Gard;
+		fHzEG_Gard_IsAuto	= EIN;
+// Treppe (prop)
+		HzEgPer_Tr			= HzEgPerNight_Tr;
+		fHzEG_Tr_IsAuto		= EIN
+		}endif
+	}endif
+:end
+///////////////////////////////////////////////////////////
+:begin Sp_InitHK1(fDayGA)
+if(event(fDayGA)) then {
+	Hk1_DayStart			= Hk1_DayStart_Base;
+	Hk1_DayEnd				= Hk1_DayEnd_Base;
+	Hk1_fNightOverride		= AUS
+	}endif
+:end
+///////////////////////////////////////////////////////////
+:begin Sp_InitHK4(fDayGA)
+if(event(fDayGA)) then {
+	Hk4_DayStart			= Hk4_DayStart_Base;
+	Hk4_DayEnd				= Hk4_DayEnd_Base;
+	Hk4_fNightOverride		= AUS
+	}endif
+:end
+
+/////////////////////////////////////////////////////////
+:begin Sp_Hk5OG1control(percGA, percRef,HkSw)
+initGA( percGA )
+if( event( percGA) or after(systemstart( ),10000u64) )then{
+   if( percGA > percRef)      then HkSw = EIN endif;
+   if( percGA < percRef -5%)  then HkSw = AUS endif
+   }endif
+:end
+//////////////////////////////////////////////////////////////
+:begin Sp_Hk5OrSwitch( fArme,v1,v2,v3,vOut )
+if( fArme and (v1 or v2 or v3)) then{
+   vOut = EIN
+   }else{
+   vOut = AUS
+   }endif
+:end
+/////////////////////////////////////////////////////////////////////////
+// EG
+:begin Sp_Boost_EG( inModeGA )
+:var fMax@
+fMax@  = AUS
+if( event(inModeGA) or systemstart( ))then{
+   if( inModeGA == bM_Off )then{
+      write( "fHzLockPos_EG-8/6/17",AUS );
+      if( fMax@ == EIN ) then{
+         fMax@ = AUS;
+         Hk3_Uvr8Mode = UVR_ABGESENKT8
+         }endif
+      }else{
+      write( "fHzLockPos_EG-8/6/17",EIN )
+      }endif;
+   if( inModeGA == bM_Max )then{
+      fMax@ = EIN;
+      Hk3_Uvr8Mode = UVR_NORMAL8	
+      }else{
+      fMax@ = AUS;
+      Hk3_Uvr8Mode = UVR_ABGESENKT8
+      }endif
+   }endif
+if( delay( inModeGA > 0,BOOST_DELAY)) then write( inModeGA,bM_Off ) endif
+:end
+
+/////////////////////////////////////////////////////////////////////////
+// OG1
+:begin Sp_Boost_OG1( inModeGA )
+:var fMax@
+fMax@  = AUS
+if( event(inModeGA) or systemstart( ))then{
+   if( inModeGA == bM_Off )then{
+      write( "fHzLockPos_OG1-8/6/18" ,AUS );
+      if( fMax@ == EIN ) then{
+         fMax@ = AUS;
+         Hk3_Uvr8Mode = UVR_ABGESENKT8
+         }endif
+      }else{
+      write( "fHzLockPos_OG1-8/6/18" ,EIN )
+      }endif;
+   if( inModeGA == bM_Max )then{
+      fMax@ = EIN;
+      Hk3_Uvr8Mode = UVR_NORMAL8	
+      }else{
+      fMax@ = AUS;
+      Hk3_Uvr8Mode = UVR_ABGESENKT8
+      }endif
+   }endif
+if( delay( inModeGA > 0,BOOST_DELAY)) then write( inModeGA,bM_Off ) endif
+:end
+//////////////////////////////////////////////////////////////////////
+// Dach
+/////////////////
+// Raum Ost
+:begin RadDachOstRadTControl(TinGA,fTlimit   )
+:var TDELTA@
+:var DLY@
+TDELTA@   = 0.3f16
+DLY@ = 15000u64
+
+if( after(systemstart(),DLY@ ) or change(TinGA ) or change( fTlimit )) then{
+   if( hysteresis( TinGA,fTlimit - TDELTA@, fTlimit  )) then{
+      write( "SwHkB-3/4/156",OFF ) ;
+      }else{
+      write( "SwHkB-3/4/156",ON );
+      }endif;
+   }endif
+:end
+
+/////////////////
+// Raum West NO TEMP SENSOR!!
+:begin RadDachWestTControl(TinGA,fTlimit   )
+:var TDELTA@
+:var DLY@
+TDELTA@   = 0.5f16
+DLY@ = 15000u64
+
+if( after(systemstart(),DLY@ ) or change(TinGA )) then{
+   if( TinGA > fTlimit + TDELTA@ ) then write( "SetPosPercA-3/4/83",0u08 ) endif;
+   if( TinGA < fTlimit )  then write( "SetPosPercA-3/4/83",255u08 ) endif;
+  }endif
+:end
+////////////////////////////////////////////////
+// Bad
+:begin RadDachBadRadTControl(TinGA,fTlimit   )
+:var TDELTA@
+:var DLY@
+TDELTA@     = 1.5f16
+DLY@        = 15000u64
+if( after(systemstart(),DLY@ ) or change(TinGA ) or change( fTlimit )) then{
+   if( TinGA > fTlimit )  then{
+      write( "SetPosPercC-3/4/85",0u08 );
+      }else{
+      if( TinGA > (fTlimit - TDELTA@ )) then{
+         write( "SetPosPercC-3/4/85",205u08);
+         }else{
+         write( "SetPosPercC-3/4/85",255u08)
+         }endif;
+      }endif;
+  }endif
+:end
+
+//////////////////////////////////////////////////////////////////////////
+// Gen
+:begin Sp_Boost_ALL( inModeGA )
+if( event(inModeGA ))then{
+   if( inModeGA > 0 ) then{
+      write( "fHzLockPos_Dach-8/6/19",EIN );
+      PcUvr_ModeHk1	= PCUVR_UVR_NORMAL;
+      PcUvr_ModeHk4	= PCUVR_UVR_NORMAL
+      }else{
+      write( "fHzLockPos_Dach-8/6/19",AUS );
+      PcUvr_ModeHk1	= PCUVR_PCAUTO;
+      PcUvr_ModeHk4	= PCUVR_PCAUTO
+      }endif;
+      write( "bm_OG1-8/5/18",inModeGA );
+      write( "bm_EG-8/5/17",inModeGA )
+      }endif
+if( delay( inModeGA > 0,BOOST_DELAY)) then write( inModeGA,bM_Off ) endif     
+:end
+//////////////////////////////////////////////////////////////////////////
+// small fixes
+//
+:begin Sp_HzEgTreppeReduce(fHK5)
+// reduce valve perc when HK5 is on high temp
+if( fHK5 == EIN ) then{
+   HzEgPerDay_Tr  = HzEgPerLow_Day
+   }else{
+    HzEgPerDay_Tr = HzEgPerHigh_Day
+    }endif
+:end
+/////////////////////////////////////////////////////////////////////////
+:begin Sp_ControlEssZ_Kueche(d)
+$delta in  C$
+if(change("GetTargetTE-3/2/50") and "HVAC_E-3/2/44" == HZ_MDT_KOMFORT or systemstart()) then write("SetTKomfortF-3/2/33","GetTargetTE-3/2/50"- d) endif
+if(change("HVAC_E-3/2/44")or systemstart()) then write("HVAC_F-3/2/45","HVAC_E-3/2/44") endif
+:end
+////////////////////////////////////////////////////////////////////
+:begin Sp_BoostRoom(fInGA,fOutGA,SetTime,fBoost)
+if(event(fInGA)) then write(fOutGA,fInGA) endif
+if(delay((fInGA == EIN),convert(SetTime,1u64)*3600000u64)) then write(fInGA,AUS) endif
+if(fInGA == EIN) then{
+   write( "Hk3TimeMax-8/6/23", SetTime);
+   fBoost = EIN
+	} else {
+   write( "Hk3TimeMax-8/6/23", 0u08);
+   fBoost = AUS
+	}endif
+:end
+////////////////////////////////////////////////////////////////////////////
+:begin Sp_SetHk1_4_5Frost( fHkFrostGA )
+if( event(fHkFrostGA )) then{
+   write( "Dout05-11/1/5",!fHkFrostGA ); /* Hk1 */
+   write( "Dout06-11/1/6",!fHkFrostGA );  /* Hk4 */
+   Hk5_fArme = !fHkFrostGA
+   }endif
+:end
+////////////////////////////////////////////////////////////////////////////
+:begin Sp_SetFrostModeHaus( fAllFrostGA )
+if( event(fAllFrostGA )) then{
+   write( "fHzLockPos_All-8/6/20",fAllFrostGA ) ;
+   write( "fHk1_4_5Frost-8/6/21",fAllFrostGA )
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////////
+// Tavg
+/////////////////////////////////////////////////////////////////
+// Tavg EG
+:begin TavgEGWohnZ( TavgGA )
+:var t@
+t@ = 0f16
+initga( "tEgWohnZ_Send-6/1/12" )
+if(HZ_SEND_T_DELAY and event("tEgWohnZ_Send-6/1/12" )) then{
+   t@ = "tEgWohnZ_Send-6/1/12";
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////////
+:begin TavgEGEssZ( TavgGA )
+:var t@
+t@ = 0f16
+initga( "tEgEssZZas-6/1/1" )
+initga(  "tEgKuecheSentido-6/1/0")
+if( HZ_SEND_T_DELAY and     event("tEgEssZZas-6/1/1" )\\
+      or event( "tEgKuecheSentido-6/1/0" )) then{
+   t@ = average("tEgEssZZas-6/1/1", "tEgKuecheSentido-6/1/0"  ) ;
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////////
+:begin TavgEGWC( TavgGA )
+:var t@
+initga( "tEgWCElsnerTH_UP-6/1/11" )
+t@ = 0f16
+if( HZ_SEND_T_DELAY and HZ_SEND_T_DELAY and event( "tEgWCElsnerTH_UP-6/1/11")  ) then{
+   t@ = "tEgWCElsnerTH_UP-6/1/11"  ;
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////
+// Tavg OG1
+:begin TavgOG1Marisa( TavgGA )
+:var t@
+initga( "GetMEG_Marisa_IstT-7/2/19" )
+t@ = 0f16
+if( HZ_SEND_T_DELAY and event("GetMEG_Marisa_IstT-7/2/19")) then{
+   t@ = "GetMEG_Marisa_IstT-7/2/19" ;
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////
+:begin TavgOG1Emilia( TavgGA )
+:var t@
+t@ = 0f16
+initga("T_OG1_Emilia_MRG-6/2/2" )
+if(HZ_SEND_T_DELAY and event("T_OG1_Emilia_MRG-6/2/2")) then{
+   t@ = "T_OG1_Emilia_MRG-6/2/2" ;
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////
+:begin TavgOG1Buero( TavgGA )
+:var t@
+t@ = 0f16
+initga( "T_OG1_Buero_Merten_MEG-6/2/3" )
+if( HZ_SEND_T_DELAY and event("T_OG1_Buero_Merten_MEG-6/2/3")) then{
+   t@ = "T_OG1_Buero_Merten_MEG-6/2/3" ;
+   write(TavgGA,t@  );
+   }endif
+:end
+////////////////////////////////////////////////////////
+:begin TavgOG1Bad( TavgGA )
+:var t@
+t@ = 0f16
+initga( "T_OG1_Bad_Basalte-6/2/1" )
+if( HZ_SEND_T_DELAY and event("T_OG1_Bad_Basalte-6/2/1")) then{
+   t@ = "T_OG1_Bad_Basalte-6/2/1" ;
+   write(TavgGA,t@  );
+   }endif
+:end
+/////////////////////////////////////////////////////
+// Tavg Dach
+:begin TavgDachOst( TavgGA )
+:var t@
+t@ = 0f16
+initga("T_Dach_Ost_ZAS_Hz-6/3/2"   )
+initga( "T_Dach_F50_Ost-6/3/3" )
+initga( "T_Dach_Ost_ZAS_WWest-6/3/1" )
+if( HZ_SEND_T_DELAY and     event("T_Dach_Ost_ZAS_Hz-6/3/2" )\\
+      or event("T_Dach_F50_Ost-6/3/3" )\\
+      or event( "T_Dach_Ost_ZAS_WWest-6/3/1")) then{
+   t@ = average("T_Dach_Ost_ZAS_Hz-6/3/2", "T_Dach_F50_Ost-6/3/3","T_Dach_Ost_ZAS_WWest-6/3/1" ) ;
+   write(TavgGA,t@  );
+   }endif
+:end
+
+////////////////////////////////////////////////////////
+:begin TavgDachBad( TavgGA )
+:var t@
+t@ = 0f16
+initga("T_Dach_Bad_T_HY-6/3/0" )
+if(HZ_SEND_T_DELAY and event("T_Dach_Bad_T_HY-6/3/0")) then{
+   t@ = "T_Dach_Bad_T_HY-6/3/0" ;
+   write(TavgGA,t@  );
+   }endif
+:end
+///////////////////////////////////////////////////////////////

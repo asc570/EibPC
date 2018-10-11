@@ -1,0 +1,334 @@
+// $Id: HzViso.lib 68 2014-10-07 13:38:32Z asc $ //
+
+
+:begin ButtonHk4Mode( Id )
+:var DELAY@
+:var Mode@
+Mode@ = PCUVR_PCAUTO
+DELAY@ = 2000u64
+if(  after(systemstart(), DELAY@) or change(PcUvr_ModeHk4 ) or change( "Din08-11/0/8" )) then{
+   if( PcUvr_ModeHk4 == PCUVR_PCAUTO ) then{
+      if( "Din08-11/0/8" == EIN )then{  
+         webdisplay( Id,$Auto$,FLOORHEATING,STATE8,GREEN );
+         }else{
+         webdisplay( Id,$Sby$,FLOORHEATING,DISPLAY,GREEN );
+         }endif;
+      }endif;
+   if( PcUvr_ModeHk4 == PCUVR_UVR_SBY )then webdisplay( Id,$Frost$,FLOORHEATING,INACTIVE,GREY ) endif;
+   if( PcUvr_ModeHk4 != PCUVR_UVR_SBY and PcUvr_ModeHk4 != PCUVR_PCAUTO )then{
+      webdisplay( Id,$Error$,FLOORHEATING,BRIGHTRED,BLINKRED) ;
+      }endif;
+   }endif
+
+if( button(Id )!= 0)then{
+   if( PcUvr_ModeHk4 == PCUVR_PCAUTO ) then{
+      Mode@ = PCUVR_UVR_SBY;
+      }else{
+      Mode@ = PCUVR_PCAUTO;
+      }endif;
+      PcUvr_ModeHk4 = Mode@;
+   }endif
+:end
+///////////////////////////////////////////////
+:begin ButtonHk1Mode( Id )
+:var DELAY@
+:var Mode@
+Mode@ = PCUVR_PCAUTO
+DELAY@ = 2000u64
+if(  after(systemstart(), DELAY@) or change(PcUvr_ModeHk1 ) ) then{
+   if(PcUvr_ModeHk1 == PCUVR_PCAUTO  ) then{
+      if( "Din11-11/0/11" == EIN )then{  
+         webdisplay( Id,$Auto$,SWITCH,ACTIVE,GREEN );
+         }else{
+         webdisplay( Id,$Auto/Sby$,SWITCH,INACTIVE,GREEN );
+         }endif;
+      }endif;
+   if( PcUvr_ModeHk1 == PCUVR_UVR_SBY )then webdisplay( Id,$Frost$,ICE,DARKRED,BLINKRED ) endif;
+   if( PcUvr_ModeHk1 != PCUVR_UVR_SBY and PcUvr_ModeHk1 != PCUVR_PCAUTO )then{
+      webdisplay( Id,$Error$,WARN,BRIGHTRED,BLINKRED) ;
+      }endif;
+   }endif
+
+if( button(Id )!= 0)then{
+   if( PcUvr_ModeHk1 == PCUVR_PCAUTO ) then{
+      Mode@ = PCUVR_UVR_SBY;
+      }else{
+      Mode@ = PCUVR_PCAUTO;
+      }endif;
+      PcUvr_ModeHk1 = Mode@;
+   }endif
+:end
+//////////////////////////////////////////////
+:begin ButtonHzMasterON( Id )
+:var DELAY@
+:var bON@
+DELAY@   = 5000u64
+bON@     = bHzMasterON    
+
+if( after(systemstart(),DELAY@ ) or change( bHzMasterON  )) then{
+   if( bHzMasterON == EIN )then{
+      webdisplay( Id,$ON$,SWITCH,ACTIVE,GREEN );
+      }else{
+      webdisplay( Id,$OFF$,ICE,DARKRED,BLINKRED);
+      }endif;
+   }endif
+if( button(Id)!= 0 )then{
+   if(bHzMasterON == EIN  ) then bON@ = AUS else bON@ = EIN endif;
+   bHzMasterON = bON@;
+   }endif
+:end
+
+///////////////////////////////////////////////////
+// Page Controls
+///////////////////////////////////////////////////
+// Gen
+/////////////////////////////////////////////////////////
+:begin pButtonShutdown( Id )
+if( pbutton(Id ,PID_GEN_1) != 1u08  )then write( "EibPC_before_shutdown-8/5/25" ,EIN ) endif
+
+:end
+///////////////////////////////////////////////
+// Page Buttons , PID_EG_HZ
+//////////////////////////////////////////////
+// EG
+:begin pButtonEgFbhWohnZ( Id )
+initga("GetPosG-3/2/121")
+
+if( systemstart() or change( "GetPosG-3/2/121") or change( "Din11-11/0/11" )) then{
+   if( "GetPosG-3/2/121" ) then{
+       if( "Din11-11/0/11" ) then{
+         pdisplay( Id,$On$,FLOORHEATING,STATE6,GREEN, PID_EG_HZ);
+         }else{
+         pdisplay( Id,$On$,FLOORHEATING,DISPLAY,BLINKBLUE, PID_EG_HZ);
+         }endif;
+      }else{
+      pdisplay( Id,$Off$,FLOORHEATING,INACTIVE,GREY, PID_EG_HZ);
+      }endif;
+   }endif;
+
+if( pbutton(Id, PID_EG_HZ) !=0) then write( "HkSwG-3/2/6", !"GetPosG-3/2/121" ) endif
+:end
+//////////////////////////////////////////////////
+//
+:begin pButtonEgNightOverride( Id )
+if( systemstart() or change(fNightOverride_EG ) or change("Din09-11/0/9"   )) then{
+   if( fNightOverride_EG ) then{
+      pdisplay( Id,$Night$,NIGHT,ACTIVE,GREEN,PID_EG_HZ );   
+      }else{
+         if( "Din09-11/0/9" ) then{
+            pdisplay( Id,$Day$,NIGHT,DISPLAY,BLINKBLUE,PID_EG_HZ );
+            }else{
+             pdisplay( Id,$Day / Sby$,NIGHT,INACTIVE,GREY,PID_EG_HZ );           
+            }endif;   
+      }endif;
+   }endif
+if( pbutton(Id, PID_EG_HZ) != 0) then write( "fNightOverride_EG-8/2/50",!"fNightOverride_EG-8/2/50" ) endif
+:end
+///////////////////////////////////////////////
+// Page Buttons,  PID_DACH_HZ
+//////////////////////////////////////////////////
+// Dach
+//////////////////////////////////////////////////
+//
+:begin pButtonDachNightOverride( Id )
+if( systemstart() or change(fNightOverride_Dach ) or change("Din09-11/0/9"   )) then{
+   if( fNightOverride_Dach ) then{
+      pdisplay( Id,$Night$,NIGHT,ACTIVE,GREEN,PID_DACH_HZ );   
+      }else{
+         if( Hk1_fIsDay ) then{
+            pdisplay( Id,$Day$,NIGHT,INACTIVE,GREY,PID_DACH_HZ );
+            }else{
+             pdisplay( Id,$Night$,NIGHT,INACTIVE,GREY,PID_DACH_HZ );           
+            }endif;   
+      }endif;
+   }endif
+if( pbutton(Id, PID_DACH_HZ) != 0) then write( "fNightOverride_Dach-8/2/51",!"fNightOverride_Dach-8/2/51" ) endif
+:end
+//////////////////////////////////////////
+:begin pButDachBadOnlyBoost( Id )
+:var txt@
+txt@  =$$
+if(  change(fBoostOnlyDachBad) or cycle( 0,REFRESH )) then{
+   if fBoostOnlyDachBad == EIN  then{
+      txt@ = convert(convert( BoostOnlyDachTimeRemaining / 60000u64,0u16 ),$$) +$ min$;
+      pdisplay( Id, txt@,PETS,STATE4,BLINKRED,PID_DACH_HZ);
+      }else{
+      txt@ = $Off$;
+      pdisplay( Id, txt@,PETS,INACTIVE,GREY,PID_DACH_HZ);
+      }endif
+   }endif
+if( pbutton( Id,PID_DACH_HZ ) != 0 ) then fBoostOnlyDachBad = !fBoostOnlyDachBad endif
+:end
+//////////////////////////////////////////////////
+:begin pShifterDachOstRad( Id,fLimit )
+:var inc@
+:var txt@
+:var Tmax@
+:var Tmin@
+inc@ = 0.5f16
+txt@ = $nil$
+Tmax@ = 25f16
+Tmin@ = 16f16
+if( systemstart()  or change(fLimit)\\
+                   or change( "StSwHkB-3/4/162")\\
+                   or change( "Din09-11/0/9" )\\
+                   or change( "TavgDachOst-6/3/5"  ))then{
+      if( fLimit > Tmax@ ) then fLimit = Tmax@ endif;
+      if( fLimit < Tmin@ ) then fLimit = Tmax@ endif;
+      txt@ = $Min:$+stringformat(convert( fLimit ,0f16 ) ,4,3,3,1 )+ $C$;
+      txt@ = txt@ +$ / Ist:$+stringformat(convert( "TavgDachOst-6/3/5" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "StSwHkB-3/4/162" == ON) then{
+       if( "Din09-11/0/9" == EIN )then{
+         txt@ = $On: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,STATE8,GREEN ,PID_DACH_HZ );
+         }else{
+         txt@ = $Sby: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,DISPLAY,GREEN ,PID_DACH_HZ );
+         }endif;
+      }else{
+      txt@ = $Off: $ +txt@;
+      Pdisplay(Id, txt@,WALLHEATING,INACTIVE,GREY ,PID_DACH_HZ );
+      }endif;
+   }endif
+if( pbutton(Id,PID_DACH_HZ )== 1) then fLimit = fLimit - inc@ endif
+if( pbutton(Id,PID_DACH_HZ )== 3) then fLimit = fLimit + inc@ endif
+:end
+//////////////////////////////////////////////////
+:begin pShifterDachBadRad( Id,fLimit )
+:var inc@
+:var txt@
+:var Tmax@
+:var Tmin@
+inc@ = 0.5f16
+txt@ = $nil$
+Tmax@ = 25f16
+Tmin@ = 16f16
+if( systemstart()  or change(fLimit)\\
+                   or change( "GetPosPercC-3/4/91")\\
+                   or change( "Din09-11/0/9" )\\
+                   or change( "TavgDachBad-6/3/6"  ))then{
+      if( fLimit > Tmax@ ) then fLimit = Tmax@ endif;
+      if( fLimit < Tmin@ ) then fLimit = Tmax@ endif;
+      txt@ = $Min:$+stringformat(convert( fLimit ,0f16 ) ,4,3,3,1 )+ $C$;
+      txt@ = txt@ +$ / Ist:$+stringformat(convert( "TavgDachBad-6/3/6" ,0f16 ) ,4,3,3,1 )+ $C$;
+   if( "GetPosPercC-3/4/91" > 0u08) then{
+       if( "Din09-11/0/9" == EIN )then{
+         txt@ = $On: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,STATE8,GREEN ,PID_DACH_HZ );
+         }else{
+         txt@ = $Sby: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,DISPLAY,GREEN  ,PID_DACH_HZ );
+         }endif;
+      }else{
+      txt@ = $Off: $ +txt@;
+      Pdisplay(Id, txt@,WALLHEATING,INACTIVE,GREY ,PID_DACH_HZ );
+      }endif;
+   }endif
+if( pbutton(Id,PID_DACH_HZ )== 1) then fLimit = fLimit - inc@ endif
+if( pbutton(Id,PID_DACH_HZ )== 3) then fLimit = fLimit + inc@ endif
+:end
+//////////////////////////////////////////////////////////////////////////
+:begin pShifterDachWRad( Id )
+initGA( "GetPosPercA-3/4/89" )
+:var inc@
+:var txt@
+:var pos@ 
+inc@  = 13u08
+txt@  = $nil$
+pos@  = 0f16
+if( systemstart() or change("GetPosPercA-3/4/89" )\\
+                  or change("Din09-11/0/9" )) then{
+   pos@ = convert( "GetPosPercA-3/4/89",0f16 ) / 2.55f16;
+   txt@ = stringformat(pos@ ,4,3,3,0 ) + $%$;
+   if( "GetPosPercA-3/4/89" > 0u08) then{
+       if( "Din09-11/0/9" == EIN )then{
+         txt@ = $On: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,STATE8,GREEN ,PID_DACH_HZ );  
+         }else{
+         txt@ = $Sby: $ +txt@;
+         Pdisplay(Id, txt@,WALLHEATING,DISPLAY,GREEN ,PID_DACH_HZ );  
+         }endif;
+      }else{
+      txt@ = $Off: $ +txt@;
+      Pdisplay(Id, txt@,WALLHEATING,INACTIVE,GREY ,PID_DACH_HZ );  
+      }endif;
+   }endif
+   
+if( pbutton(Id,PID_DACH_HZ) ==1 ) then{
+   if( "GetPosPercA-3/4/89" <= inc@ ) then{
+      write( "SetPosPercA-3/4/83", 0u08 );
+      }else{      
+      write( "SetPosPercA-3/4/83", ( "GetPosPercA-3/4/89" - inc@ ));
+      }endif;
+   }endif
+
+if( pbutton(Id,PID_DACH_HZ) ==3 ) then{
+   if( "GetPosPercA-3/4/89" >= 255u08 - inc@ ) then{
+      write( "SetPosPercA-3/4/83", 255u08 );
+      }else{
+      write( "SetPosPercA-3/4/83", ( "GetPosPercA-3/4/89" + inc@ )) 
+      }endif;
+   }endif
+
+if( pbutton(Id,PID_DACH_HZ) ==2 ) then{
+   if( "GetPosPercA-3/4/89" > 0u08  ) then{
+      write( "SetPosPercA-3/4/83", 0u08 );
+      }else{
+      write( "SetPosPercA-3/4/83", 255u08) ;
+      }endif;
+   }endif
+:end
+//////////////////////////////////////////////////////////////////////////////
+:begin pShifterDachHk4( Id)
+:var DELAY@
+:var Mode@
+:var txt@
+:var Tcorr@
+:var inc@
+:var Tmin@
+:var Tmax@
+Mode@ = PCUVR_PCAUTO
+DELAY@ = 2000u64
+txt@     = $nil$
+inc@     = 0.5f16
+Tcorr@   = $nil$
+Tmin@    = -2f16
+Tmax@    = 2f16
+
+if(Hk4_TCorr > Tmax@   ) then Hk4_TCorr = Tmax@ endif
+if(Hk4_TCorr < Tmin@    ) then Hk4_TCorr = Tmin@  endif
+
+if(  after(HZ_SEND_T_DELAY, DELAY@)\\
+      or change(PcUvr_ModeHk4 )\\
+      or change( "Din08-11/0/8" )\\
+      or change(Hk4_TCorr  )) then{
+   txt@ = $corr $+stringformat( Hk4_TCorr  ,4,3,1,1 );
+   if( PcUvr_ModeHk4 == PCUVR_PCAUTO ) then{
+      if( "Din08-11/0/8" == EIN )then{  
+         txt@ = $Auto: $+ txt@;
+         pdisplay( Id,txt@,FLOORHEATING,STATE8,GREEN,PID_DACH_HZ  );
+         }else{
+         txt@ = $Sby: $+ txt@;
+         pdisplay( Id,txt@,FLOORHEATING,DISPLAY,GREEN,PID_DACH_HZ  );
+         }endif;
+      }endif;
+   if( PcUvr_ModeHk4 == PCUVR_UVR_SBY )then pdisplay( Id,$Frost$,FLOORHEATING,INACTIVE,GREY,PID_DACH_HZ  ) endif;
+   if( PcUvr_ModeHk4 != PCUVR_UVR_SBY and PcUvr_ModeHk4 != PCUVR_PCAUTO )then{
+      pdisplay( Id,$Error$,FLOORHEATING,BRIGHTRED,BLINKRED,PID_DACH_HZ ) ;
+      }endif;
+   }endif
+
+if( Pbutton(Id,PID_DACH_HZ )== 4)then{
+   if( PcUvr_ModeHk4 == PCUVR_PCAUTO ) then{
+      Mode@ = PCUVR_UVR_SBY;
+      }else{
+      Mode@ = PCUVR_PCAUTO;
+      }endif;
+      PcUvr_ModeHk4 = Mode@;
+   }endif
+if( Pbutton(Id,PID_DACH_HZ )== 1)then Hk4_TCorr = Hk4_TCorr - inc@ endif
+if( Pbutton(Id,PID_DACH_HZ )== 2)then Hk4_TCorr = 0f16 endif
+if( Pbutton(Id,PID_DACH_HZ )== 3)then Hk4_TCorr = Hk4_TCorr + inc@ endif
+
+:end
+
