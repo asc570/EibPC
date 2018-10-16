@@ -1,0 +1,29 @@
+[WebServer]
+page(DiagrammeSaunaID)[$Diagramme$,$Sauna$] 
+mtimechart(TimeChart1ID_Diagramme_Sauna)[EXTLONG,0,255,60,0,60,0]($Außentemperatur$,0,TimeBuffer1ID_Diagramme_Sauna) 
+
+[Macros]
+ZyklischMittelwertInTimeBufferSchreiben( TimeBuffer1ID_Diagramme_Sauna,Aussentemperatur,1u64,5u16,systemstart(),bSichereTimeBuffer_Diagramme_Sauna,systemstart(),5u16)
+
+[MacroLibs]
+//Makro-Bibliotheken
+./EnertexWebV3.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei 
+./Haus.esf
+
+[EibPC]
+// Die Aussentemperatur wird hier künstlich geändert. Mit dem Makro ZyklischMittelwertInTimeBufferSchreiben wird sie
+// jede Minute in den Timebuffer gespeichert. Dieser wird dann im TimeChart angezeigt.
+Aussentemperatur=12f16;
+if cycle(1,0) then {
+	if Aussentemperatur>40f16 then Aussentemperatur=Aussentemperatur-0.2f16; endif;
+	if Aussentemperatur<=40f16 then Aussentemperatur=Aussentemperatur+0.2f16; endif;
+} endif;
+
+// Hilfsvariablen - Konstanten
+bSichereTimeBuffer_Diagramme_Sauna = 0b01
+TimeChart1ID_Diagramme_Sauna = 0
+TimeBuffer1ID_Diagramme_Sauna = 0
+DiagrammeSaunaID = 2

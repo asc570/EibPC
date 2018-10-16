@@ -1,0 +1,23 @@
+
+[Macros]
+WebWertvorgabeGA(WohnenID,SollWerteID,Wohnen,"RkWohnzimmerTemp-3/1/28",25.3,19.0)
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+
+[WebServer]
+page (SollWerteID) [$Allgemein$,$Sollwert$] 
+design $black$
+pshifter(WohnenID)[PLUS,MINUS,UP,DOWN]$Heizen in °C$
+[EibPC]
+// Zugriff auf Visu
+// 
+// Ein paar Daten generieren
+// 
+SollWerteID=1
+WohnenID=1
+

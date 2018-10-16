@@ -1,0 +1,17 @@
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[Macros]
+// Der Regler schreibt alle 5 Minuten auf den Heizaktor 3/1/13 (Prozentwert)
+// Über 3/1/19 wird die Regelung aktiviert. Wenn diese auf AUS steht, wird einmalig auf 3/1/13 der 
+// Wert 0% geschickt
+PIHeizReglerGA(Wiga,"RkGästePräsens-3/1/19",22,"RkWohnzimmerTemp-3/1/28",30,0.2,"Wiga-3/1/13",5)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+
+ 

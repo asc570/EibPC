@@ -1,0 +1,679 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  WebMakros
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.7 $
+//----------------------------------------------------------------------
+
+// Schaltuhr für den Webserver: Voraussetzung der Form shifter(ID)[PLUS,MINUS,UP,DOWN]$Schaltuhr$
+:begin WebSchaltuhr(ID,PageID,Name,PresetH,PresetM)
+:info $Steuert eine Schaltuhr, die über den Webserver angesteuert wird. Voraussetzung ist ein "pshifter" mit 4 Elementen im Webserver.\\
+       Es wird eine Freigabevariable mit dem Namen FreigabeName (Name = 3.Argument) angelegt, welches als Freigabeobjekt der Schaltuhr dient$\\
+	$ID des Webelements$\\
+	$Seiten-ID des Webelements$\\
+	$Name der Schaltuhr$\\
+	$Voreinstellung der Stunden (0..24)$\\
+	$Voreinstellung der Minuten (0..59)$
+:shortinfo $Steuert eine Webserver-Schaltuhr$
+SchaltuhrH^Name=PresetH
+SchaltuhrM^Name=PresetM
+if pbutton(ID,PageID)==1 then SchaltuhrH^Name=SchaltuhrH^Name+1 endif
+if pbutton(ID,PageID)==2 then SchaltuhrH^Name=SchaltuhrH^Name-1  endif
+if pbutton(ID,PageID)==3 then SchaltuhrM^Name=SchaltuhrM^Name+1 endif
+if pbutton(ID,PageID)==4 then SchaltuhrM^Name=SchaltuhrM^Name-1 endif
+if SchaltuhrH^Name>23 then SchaltuhrH^Name=0 endif
+if SchaltuhrM^Name>59 then SchaltuhrM^Name=0 endif
+if change(SchaltuhrM^Name) or change(SchaltuhrH^Name) then {
+	pdisplay(ID,stringformat(SchaltuhrH^Name,0,3,2,2)+$:$+stringformat(SchaltuhrM^Name,0,3,2,2),DOWN,INACTIVE,GREEN,PageID) 
+} endif
+Freigabe^Name=AUS
+if chtime(SchaltuhrH^Name,SchaltuhrM^Name,0) then {
+	Freigabe^Name=EIN; 
+	pdisplay(ID,stringformat(SchaltuhrH^Name,0,3,2,2)+$:$+stringformat(SchaltuhrM^Name,0,3,2,2),DOWN,INACTIVE,BLINKBLUE,PageID) 
+} endif
+if Freigabe^Name==AUS then {
+	pdisplay(ID,stringformat(SchaltuhrH^Name,0,3,2,2)+$:$+stringformat(SchaltuhrM^Name,0,3,2,2),DOWN,INACTIVE,GREY,PageID)
+} endif
+:end 
+
+
+:begin Mbutton2(Name, ID, GA1, GA2)
+:info $Einen Multibutton (Elemente: mbutton, mshifter)  mit einer zweifachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$ID (Zahl zwischen 0 und 39) als ID des Elements$\\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mbutton oder mshifter mit zwei GA$
+
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$AUS$
+m^Name_ICON=LIGHT
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mbutton(ID,1)==255 then {
+	m^Name_Choice=1
+} endif   
+if mbutton(ID,2)==255 then {
+	m^Name_Choice=2
+} endif   
+if mbutton(ID,3)==255 then {
+	m^Name_Choice=3
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	display(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,m^Name_Choice) 
+} endif 
+
+if mbutton(ID,1)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mbutton(ID,2)==1 then {
+	write(GA2,!GA2)
+} endif   
+
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//--------------------------------------
+
+:end
+
+
+:begin Mbutton3(Name, ID, GA1, GA2, GA3)
+:info $Einen Multibutton (Elemente: mbutton, mshifter)  mit einer dreifachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$ID (Zahl zwischen 0 und 39) als ID des Elements$\\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$\\
+         :$3. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mbutton oder mshifter mit drei GA$
+
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$AUS$
+m^Name_ICON=LIGHT
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mbutton(ID,1)==255 then {
+	m^Name_Choice=1
+} endif   
+if mbutton(ID,2)==255 then {
+	m^Name_Choice=2
+} endif   
+if mbutton(ID,3)==255 then {
+	m^Name_Choice=3
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	display(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,m^Name_Choice) 
+} endif 
+
+if mbutton(ID,1)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mbutton(ID,2)==1 then {
+	write(GA2,!GA2)
+} endif   
+if mbutton(ID,3)==1 then {
+	write(GA3,!GA3)
+} endif   
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//----------------------------------
+
+:end
+
+:begin Mbutton4(Name, ID, GA1, GA2, GA3, GA4)
+:info $Einen Multibutton (Elemente: mbutton, mshifter)  mit einer vierfachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$ID (Zahl zwischen 0 und 39) als ID des Elements$\\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$\\
+         :$3. Gruppenadresse des Knopfes$\\
+         :$4. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mbutton oder mshifter mit vier GA$
+
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$AUS$
+m^Name_ICON=LIGHT
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mbutton(ID,1)==255 then {
+	m^Name_Choice=1
+} endif   
+if mbutton(ID,2)==255 then {
+	m^Name_Choice=2
+} endif   
+if mbutton(ID,3)==255 then {
+	m^Name_Choice=3
+} endif   
+if mbutton(ID,4)==255 then {
+	m^Name_Choice=4
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	display(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,m^Name_Choice) 
+} endif 
+if mbutton(ID,1)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mbutton(ID,2)==1 then {
+	write(GA2,!GA2)
+} endif   
+if mbutton(ID,3)==1 then {
+	write(GA3,!GA3)
+} endif   
+if mbutton(ID,4)==1 then {
+	write(GA4,!GA4)
+} endif   
+
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	display(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,m^Name_Choice) 
+} endif 
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA4 and m^Name_Choice==4 then { 
+	m^Name_Text=$EIN$;
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA4 and m^Name_Choice==4 then { 
+	m^Name_Text=$AUS$;
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//----------------------------------
+
+:end
+
+
+:begin Mpbutton2(Name, ID, PageID, Icon, GA1, GA2)
+:info $Einen seitenbezogenen Multibutton (Elemente: mpbutton, mpshifter)  mit einer zweifachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$Zahl zwischen 0 und 39 oder ID-Variable des Elements$\\
+         :$Zahl zwischen 0 und 99 oder ID-Variable der Seite, auf der das Element definiert wurde.$\\
+		 :$Darzustellendes Symbol$ \\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mpbutton oder mpshifter mit zwei GA$
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$AUS$
+m^Name_ICON=Icon
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mpbutton(ID,1,PageID)==255 then {
+	m^Name_Choice=1
+} endif   
+if mpbutton(ID,2,PageID)==255 then {
+	m^Name_Choice=2
+} endif   
+if mpbutton(ID,3,PageID)==255 then {
+	m^Name_Choice=3
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	pdisplay(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,PageID,m^Name_Choice) 
+} endif 
+
+if mpbutton(ID,1,PageID)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mpbutton(ID,2,PageID)==1 then {
+	write(GA2,!GA2)
+} endif   
+
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//----------------------------------
+
+:end
+
+
+
+:begin Mpbutton3(Name, ID, PageID, Icon, GA1, GA2, GA3)
+:info $Einen seitenbezogenen Multibutton (Elemente: mpbutton, mpshifter)  mit einer dreifachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$Zahl zwischen 0 und 39 oder ID-Variable des Elements$\\
+         :$Zahl zwischen 0 und 99 oder ID-Variable der Seite, auf der das Element definiert wurde.$\\
+		 :$Darzustellendes Symbol$ \\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$\\
+         :$3. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mpbutton oder mpshifter mit drei GA$
+
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$AUS$
+m^Name_ICON=Icon
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mpbutton(ID,1,PageID)==255 then {
+	m^Name_Choice=1
+} endif   
+if mpbutton(ID,2,PageID)==255 then {
+	m^Name_Choice=2
+} endif   
+if mpbutton(ID,3,PageID)==255 then {
+	m^Name_Choice=3
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	pdisplay(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,PageID,m^Name_Choice) 
+} endif 
+
+if mpbutton(ID,1,PageID)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mpbutton(ID,2,PageID)==1 then {
+	write(GA2,!GA2)
+} endif   
+if mpbutton(ID,3,PageID)==1 then {
+	write(GA3,!GA3)
+} endif   
+
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//----------------------------------
+
+:end
+
+:begin Mpbutton4(Name, ID, PageID, Icon, GA1, GA2, GA3, GA4)
+:info $Einen seitenbezogenen Multibutton (Elemente: mpbutton, mpshifter)  mit einer vierfachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01.$\\
+         :$Name des Elements$\\
+         :$Zahl zwischen 0 und 39 oder ID-Variable des Elements$\\
+         :$Zahl zwischen 0 und 99 oder ID-Variable der Seite, auf der das Element definiert wurde.$\\
+		 :$Darzustellendes Symbol$ \\
+         :$1. Gruppenadresse des Knopfes$\\
+         :$2. Gruppenadresse des Knopfes$\\
+         :$3. Gruppenadresse des Knopfes$\\
+         :$4. Gruppenadresse des Knopfes$
+:shortinfo $Implementierung eines mpbutton oder mpshifter mit vier GA$
+
+//----------------------------------
+// Implementierung von Name
+m^Name_Text=$ AUS - $+convert(settime(),$$)
+m^Name_ICON=Icon
+m^Name_State=ACTIVE
+m^Name_Deko=GREY
+m^Name_Choice=1
+if mpbutton(ID,1,PageID)==255 then {
+	m^Name_Choice=1
+} endif   
+if mpbutton(ID,2,PageID)==255 then {
+	m^Name_Choice=2
+} endif   
+if mpbutton(ID,3,PageID)==255 then {
+	m^Name_Choice=3
+} endif   
+if mpbutton(ID,4,PageID)==255 then {
+	m^Name_Choice=4
+} endif   
+if change(m^Name_Text) or change(m^Name_ICON) or change(m^Name_State) or change(m^Name_Deko) or change(m^Name_Choice) then {
+	pdisplay(ID,m^Name_Text,m^Name_ICON,m^Name_State,m^Name_Deko,PageID,m^Name_Choice) 
+} endif 
+
+if mpbutton(ID,1,PageID)==1 then {
+	write(GA1,!GA1)
+} endif   
+if mpbutton(ID,2,PageID)==1 then {
+	write(GA2,!GA2)
+} endif   
+if mpbutton(ID,3,PageID)==1 then {
+	write(GA3,!GA3)
+} endif   
+if mpbutton(ID,4,PageID)==1 then {
+	write(GA4,!GA4)
+} endif   
+
+if GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA1 and m^Name_Choice==1 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif 
+if !GA2 and m^Name_Choice==2 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA3 and m^Name_Choice==3 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+if GA4 and m^Name_Choice==4 then { 
+	m^Name_Text=$ EIN - $+convert(settime(),$$);
+	m^Name_Deko=GREEN;
+	m^Name_State=ACTIVE
+} endif
+if !GA4 and m^Name_Choice==4 then { 
+	m^Name_Text=$ AUS - $+convert(settime(),$$);
+	m^Name_Deko=GREY;
+	m^Name_State=INACTIVE
+} endif 
+//----------------------------------
+:end
+:begin ZweiRollos(ID, PageID, GA1, GA1Stop,GA2, GA2Stop)
+:info $Eine Rollosteuerung mit zwei seitenbezogenen Multibutton (Elemente: mpbutton, mpshifter) mit einer zweifachen Auswahlbox ansteuern. Die Gruppenadressen müssen Schaltelemente sein, d.h. \\
+Datentyp b01. $\\
+         :$Zahl zwischen 0 und 39 als ID des Elements$\\
+         :$Zahl zwischen 0 und 99 als ID der Seite, auf der das Element definiert wurde.$\\
+         :$Auf/Ab Gruppenadresse des 1. Rollos$\\
+		 :$Stop Gruppenadresse des 1. Rollos$\\
+		 :$Auf/Ab Gruppenadresse des 2. Rollos$\\
+		 :$Stop Gruppenadresse des 2. Rollos$
+:shortinfo $Rollosteuerung für 2 Rollos$
+
+//----------------------------------
+// Implementierung von Name
+m_^ID_^PageID_Text=$$
+m_^ID_^PageID_ICON=BLIND
+m_^ID_^PageID_State=ACTIVE
+m_^ID_^PageID_Deko=GREY
+m_^ID_^PageID_Choice=1
+if mpbutton(ID,1,PageID)==255 then {
+	m_^ID_^PageID_Choice=1
+} endif   
+if mpbutton(ID,2,PageID)==255 then {
+	m_^ID_^PageID_Choice=2
+} endif   
+if after(systemstart(),3000u64) then pdisplay(ID,m_^ID_^PageID_Text,m_^ID_^PageID_ICON,m_^ID_^PageID_State,m_^ID_^PageID_Deko,PageID,m_^ID_^PageID_Choice)  endif
+if (event(GA1) or change(m_^ID_^PageID_Choice)) and m_^ID_^PageID_Choice==1 then {
+   pdisplay(ID,m_^ID_^PageID_Text,STOP,DARKRED,m_^ID_^PageID_Deko,PageID,m_^ID_^PageID_Choice) 
+} endif 
+if (delay(event(GA1),30000u64) or change(m_^ID_^PageID_Choice) or event(GA1Stop)) and m_^ID_^PageID_Choice==1 then {
+	pdisplay(ID,m_^ID_^PageID_Text,m_^ID_^PageID_ICON,m_^ID_^PageID_State,m_^ID_^PageID_Deko,PageID,m_^ID_^PageID_Choice) 
+} endif 
+if (event(GA2) or change(m_^ID_^PageID_Choice)) and m_^ID_^PageID_Choice==2 then {
+   pdisplay(ID,m_^ID_^PageID_Text,STOP,DARKRED,m_^ID_^PageID_Deko,PageID,m_^ID_^PageID_Choice) 
+} endif 
+if (delay(event(GA2),30000u64) or change(m_^ID_^PageID_Choice) or event(GA2Stop)) and m_^ID_^PageID_Choice==2 then {
+	pdisplay(ID,m_^ID_^PageID_Text,m_^ID_^PageID_ICON,m_^ID_^PageID_State,m_^ID_^PageID_Deko,PageID,m_^ID_^PageID_Choice) 
+} endif 
+
+if mpbutton(ID,1,PageID)==1 then {
+	write(GA1,AUS)
+} endif   
+if mpbutton(ID,1,PageID)==3 then {
+	write(GA1,EIN)
+} endif   
+if mpbutton(ID,1,PageID)==2 then {
+	write(GA1Stop,EIN)
+} endif   
+if mpbutton(ID,2,PageID)==2 then {
+	write(GA2Stop,EIN)
+} endif   
+if mpbutton(ID,2,PageID)==1 then {
+	write(GA2,AUS)
+} endif   
+if mpbutton(ID,2,PageID)==3 then {
+	write(GA2,EIN)
+} endif   
+
+//----------------------------------
+
+:end
+
+:begin ToggleButton(ID, PageID, GA, StatusGA, ICON)
+:info $Einen seitenbezogenen Button mit (Elemente: pbutton, pshifter) mit einer Schaltmöglichkeit ansteuern. Beim Knopfdruck wird getoggelt. \\
+Datentyp der Gruppenaddresse b01. Die Schaltzeit der letzten Betätigung wird mit aufgezeichnet. Haben Sie keine Status-Gruppenadresse, geben sie an dieser \\
+Stelle einfach nochmals die Schaltgruppenadresse vor. Beachten Sie, dass Statusaddressen eine gewisse Zeit benötigen, bis diese vom Bus aktualisiert\\
+zurückgemeldet werden. U.u. ist der Webserver hier schneller als die Rückmeldung und der Status erst nach dem nächsten Refresh angezeigt. Die Anzeige ist für einen Button optimiet.$\\
+         :$ID des Elements$\\
+         :$SeitenID$\\
+         :$Gruppenadresse des EIN/AUS Schaltelements$\\
+         :$Status des Aktors$
+:shortinfo $Implementierung eines Um-Schalters ("Toggle")$
+if after(systemstart(),3000u64+convert(random(40000u32),0u64)) then read(GA) endif
+if pbutton(ID,PageID)==1 then {
+   write(GA,!StatusGA)
+} endif   
+if StatusGA then {
+ 	pdisplay(ID,settime(),ICON,ACTIVE,GREEN,PageID) 
+} else {
+ 	pdisplay(ID,settime(),ICON,INACTIVE,GREY,PageID) 
+} endif
+:end
+
+:begin ToggleShifter(ID, PageID, GA, StatusGA, ICON)
+:info $Einen seitenbezogenen Button mit (Elemente: pbutton, pshifter) mit einer Schaltmöglichkeit ansteuern. Beim Knopfdruck wird getoggelt. \\
+Datentyp der Gruppenaddresse b01. Die Schaltzeit der letzten Betätigung wird mit aufgezeichnet. Haben Sie keine Status-Gruppenadresse, geben sie an dieser \\
+Stelle einfach nochmals die Schaltgruppenadresse vor. Beachten Sie, dass Statusaddressen eine gewisse Zeit benötigen, bis diese vom Bus aktualisiert\\
+zurückgemeldet werden. U.u. ist der Webserver hier schneller als die Rückmeldung und der Status erst nach dem nächsten Refresh angezeigt.$\\
+         :$ID des Elements$\\
+         :$SeitenID$\\
+         :$Gruppenadresse des EIN/AUS Schaltelements$\\
+         :$Status des Aktors$
+:shortinfo $Implementierung eines Um-Schalters ("Toggle")$
+if after(systemstart(),3000u64+convert(random(40000u32),0u64)) then read(GA) endif
+if pbutton(ID,PageID)==1 then {
+   write(GA,!StatusGA)
+} endif   
+if StatusGA then {
+ 	pdisplay(ID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),ICON,ACTIVE,GREEN,PageID) 
+} else {
+ 	pdisplay(ID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),ICON,INACTIVE,GREY,PageID) 
+} endif
+:end
+
+:begin SliderDimmer(ID, PageID, GA)
+:info $Ein seitenbezogenen Slider, der einen Dimmer ansteuert. Die GA ist vom Typ u08 (= Prozenttyp). Das Icon wird dem Zustand angepasst.$\\
+         :$ID des Elements$\\
+         :$SeitenID$\\
+         :$Gruppenadresse des Dimmers (Prozenttyp)$
+:shortinfo $Einen Dimmer mit einem Slider ansteuern)$
+if after(systemstart(),3000u64+convert(random(40000u32),0u64)) then { 
+	read(GA);
+	InternDimmer_^ID_^PageID=1
+} endif
+InternDimmer_^ID_^PageID=getpslider(ID,PageID)
+// Status bei normaler Busänderung
+if delay(change(GA),500u64) then InternDimmer_^ID_^PageID=GA endif
+if change(InternDimmer_^ID_^PageID) then {
+	if InternDimmer_^ID_^PageID!=GA then {
+		write(GA,InternDimmer_^ID_^PageID)
+	} endif;
+	if InternDimmer_^ID_^PageID==0 then {
+		setpslider(ID,InternDimmer_^ID_^PageID,LIGHT,INACTIVE,PageID)
+	} endif ;
+	if InternDimmer_^ID_^PageID>=1 and InternDimmer_^ID_^PageID<50  then {
+		setpslider(ID,InternDimmer_^ID_^PageID,LIGHT,STATE4,PageID)
+	} endif;
+	if InternDimmer_^ID_^PageID>=50 and InternDimmer_^ID_^PageID<100  then {
+		setpslider(ID,InternDimmer_^ID_^PageID,LIGHT,STATE5,PageID)
+	} endif;
+	if InternDimmer_^ID_^PageID>=100 and InternDimmer_^ID_^PageID<150  then {
+		setpslider(ID,InternDimmer_^ID_^PageID,LIGHT,STATE6,PageID)
+	} endif;
+	if InternDimmer_^ID_^PageID>=200  then {
+		setpslider(ID,InternDimmer_^ID_^PageID,LIGHT,ACTIVE,PageID)
+	} endif
+} endif
+:end
+
+
+:begin Raumcontroller(ID, PageID, GA, RkGA)
+:info $Einen Raumcontroller im Webinterface ansteuern. Der Raumkontroller wird über die 8-Bit Adresse RkGA angesteuert (Umschaltung in Standby,\\
+Komfort, Nachmodus). Über die Gruppenadresse des Heizaktors GA wird ermittelt, ob tatsächlich geheizt wird.$\\
+         :$ID des Elements$\\
+         :$SeitenID$\\
+         :$Gruppenadresse des Heizaktors(Prozenttyp)$\\
+		 :$Gruppenadresse des Raumkontrollers (8-Bit Typ)$
+:shortinfo $Raumcontroller$
+Rk_^ID_^PageID=RkGA
+RkSymbol_^ID_^PageID=ABSENT
+if after(systemstart(),3000u64+convert(random(40000u32),0u64)) then { 
+	read(RkGA)
+} endif
+if pbutton(ID,PageID)==1 then Rk_^ID_^PageID=STANDBY endif
+if pbutton(ID,PageID)==2 then Rk_^ID_^PageID=KOMFORT endif
+if pbutton(ID,PageID)==3 then Rk_^ID_^PageID=NIGHTMODE endif
+
+if change(Rk_^ID_^PageID) then {	
+	write(RkGA,Rk_^ID_^PageID);
+	if Rk_^ID_^PageID==KOMFORT then RkSymbol_^ID_^PageID=PRESENT endif;
+	if Rk_^ID_^PageID==STANDBY then RkSymbol_^ID_^PageID=ABSENT endif;
+	if Rk_^ID_^PageID==NIGHTMODE then RkSymbol_^ID_^PageID=NIGHT endif
+} endif 
+
+if (change(RkSymbol_^ID_^PageID) or change(GA)) and GA>0 then {
+ 	pdisplay(ID,$Es wird geheizt$,RkSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID)
+} endif 
+if (change(RkSymbol_^ID_^PageID) or change(GA)) and GA==0 then {
+	pdisplay(ID,$AUS$,RkSymbol_^ID_^PageID,ACTIVE,GREY,PageID)
+} endif
+:end
+

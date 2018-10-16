@@ -1,0 +1,767 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+// 
+//  Beschattung von Rollos und Jalousien
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.11 $
+//----------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------
+// Rollobeschattungen mit Sonnenschutzobjekten
+//----------------------------------------------------------------------
+
+// Beschattung von Ostfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloOst(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo)
+:info $Rollo-Beschattung eines Ost-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollos$ \\
+	$Wert, welcher auf die Gruppenadresse geschrieben werden soll, wenn die Beschattung aktiviert werden soll; bei binären Objekten EIN (entspricht 1) oder AUS (entspricht 0); bei Prozentwerten und entsprechenden Aktoren lautet dann die Angabe z.B. 55%$ \\
+	$Gruppenadresse, auf die geschrieben werden soll, wenn die Beschattung ausgeschalten werden soll,d.h. Rollos hoch$
+:shortinfo $Rollo-Beschattung eines Ost-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$
+
+if Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+// Testkommentar
+if Freigabe and (elevation()>2f32) and !(azimuth()>0f32 and azimuth()<185f32) then write(GARollo,AUS) endif 
+:end 
+
+// Beschattung von Westfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloWest(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo)
+:info $Rollo-Beschattung eines West-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollos$ \\
+	$Wert, welcher auf die Gruppenadresse geschrieben werden soll, wenn die Beschattung aktiviert werden soll; bei binären Objekten EIN (entspricht 1) oder AUS (entspricht 0); bei Prozentwerten und entsprechenden Aktoren lautet dann die Angabe z.B. 55%$ \\
+	$Gruppenadresse, auf die geschrieben werden soll, wenn die Beschattung ausgeschalten werden soll,d.h. Rollos hoch$
+:shortinfo $Rollo-Beschattung eines West-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>175f32 and azimuth()<360f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>175f32 and azimuth()<360f32) then write(GARollo,AUS) endif 
+:end 
+
+
+// Beschattung von Südfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSued(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo)
+:info $Rollo-Beschattung eines Süd-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollos$ \\
+	$Wert, welcher auf die Gruppenadresse geschrieben werden soll, wenn die Beschattung aktiviert werden soll; bei binären Objekten EIN (entspricht 1) oder AUS (entspricht 0); bei Prozentwerten und entsprechenden Aktoren lautet dann die Angabe z.B. 55%$ \\
+	$Gruppenadresse, auf die geschrieben werden soll, wenn die Beschattung ausgeschalten werden soll,d.h. Rollos hoch$
+:shortinfo $Rollo-Beschattung eines Süd-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>85f32 and azimuth()<275f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>85f32 and azimuth()<275f32) then write(GARollo,AUS)  endif 
+:end 
+
+
+// Beschattung von SuedWestfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSuedWest(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo)
+:info $Rollo-Beschattung eines Süd-West-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollos$ \\
+	$Wert, welcher auf die Gruppenadresse geschrieben werden soll, wenn die Beschattung aktiviert werden soll; bei binären Objekten EIN (entspricht 1) oder AUS (entspricht 0); bei Prozentwerten und entsprechenden Aktoren lautet dann die Angabe z.B. 55%$ \\
+	$Gruppenadresse, auf die geschrieben werden soll, wenn die Beschattung ausgeschalten werden soll,d.h. Rollos hoch$
+:shortinfo $Rollo-Beschattung eines Süd-West-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>140f32 and azimuth()<320f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>140f32 and azimuth()<320f32) then write(GARollo,AUS) endif 
+:end 
+
+// Beschattung von SuedOstfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSuedOst(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo)
+:info $Rollo-Beschattung eines Süd-Ost-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollos$ \\
+	$Wert, welcher auf die Gruppenadresse geschrieben werden soll, wenn die Beschattung aktiviert werden soll; bei binären Objekten EIN (entspricht 1) oder AUS (entspricht 0); bei Prozentwerten und entsprechenden Aktoren lautet dann die Angabe z.B. 55%$ \\
+	$Gruppenadresse, auf die geschrieben werden soll, wenn die Beschattung ausgeschalten werden soll,d.h. Rollos hoch$
+:shortinfo $Rollo-Beschattung eines Süd-Ost-Fensters. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>(40f32) and azimuth()<230f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>40f32 and azimuth()<230f32) then write(GARollo,AUS) endif 
+:end 
+
+
+//----------------------------------------------------------------------
+// Rollobeschattungen mit Nachlaufzeit
+//----------------------------------------------------------------------
+// Beschattung von Ostfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloOstZeit(Freigabe, GARollo, GAStop, HochlaufZeit)
+:info $Rollo-Beschattung eines Ost-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\		$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$
+:shortinfo $Rollo-Beschattung eines Ost-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall bei Beschattung.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>0f32 and azimuth()<185f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>0f32 and azimuth()<185f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>0f32 and azimuth()<185f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>0f32 and azimuth()<185f32) then write(GARollo,AUS) endif 
+:end 
+
+// Beschattung von Westfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloWestZeit(Freigabe, GARollo, GAStop, HochlaufZeit)
+:info $Rollo-Beschattung eines West-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\		$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$
+:shortinfo $Rollo-Beschattung eines West-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall bei Beschattung.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>175f32 and azimuth()<360f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>175f32 and azimuth()<360f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>175f32 and azimuth()<360f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>175f32 and azimuth()<360f32) then write(GARollo,AUS) endif 
+:end
+
+
+// Beschattung von Südfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSuedZeit(Freigabe, GARollo, GAStop, HochlaufZeit)
+:info $Rollo-Beschattung eines Süd-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$
+:shortinfo $Rollo-Beschattung eines Süd-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall bei Beschattung.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>85f32 and azimuth()<275f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>85f32 and azimuth()<275f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>85f32 and azimuth()<275f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>85f32 and azimuth()<275f32) then write(GARollo,AUS) endif 
+:end 
+
+
+// Beschattung von SüdWestfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSuedWestZeit(Freigabe, GARollo, GAStop, HochlaufZeit)
+:info $Rollo-Beschattung eines Süd-West-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\		$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$
+:shortinfo $Rollo-Beschattung eines Süd-West-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall bei Beschattung.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>140f32 and azimuth()<320f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>140f32 and azimuth()<320f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>140f32 and azimuth()<320f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>140f32 and azimuth()<320f32) then write(GARollo,AUS) endif 
+:end 
+
+
+// Beschattung von SüdOstfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloSuedOstZeit(Freigabe, GARollo, GAStop, HochlaufZeit)
+:info $Rollo-Beschattung eines Süd-Ost-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\ 	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$
+:shortinfo $Rollo-Beschattung eines Süd-Ost-Fensters mit einstellbarer Hochlaufzeit für Lichteinfall bei Beschattung.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>40f32 and azimuth()<230f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>40f32 and azimuth()<230f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>40f32 and azimuth()<230f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>40f32 and azimuth()<230f32) then write(GARollo,AUS) endif 
+:end 
+
+
+
+//----------------------------------------------------------------------
+// Rollobeschattungen mit vorgegebenen Winkeln
+//----------------------------------------------------------------------
+
+// Beschattung von Fenster bei Angabe von Grad
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRollo(Freigabe, GARolloSonnenSchutz,WertRolloDunkel, GARollo,GradEin, GradAus)
+:info $Rollo-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Der Aktor verfügt über eine Gruppenadresse, welche einen vorher gespeicherten Beschattungsstand abspeichert.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Sonnenschutzstellung des Rollo.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$
+:shortinfo $Rollo-Beschattung eines Fensters. Die Ausrichtung in Grad muss bekannt sein.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 then write(GARolloSonnenSchutz,WertRolloDunkel) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GARollo,AUS) endif 
+:end 
+
+// Beschattung von Fenster bei Angabe von Grad und Hochlaufzeit
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungRolloGradZeit(Freigabe, GARollo, GAStop, HochlaufZeit,GradEin, GradAus)
+:info $Rollo-Beschattung eines Fensters mit einstellbarer Hochlaufzeit für Lichteinfall. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Bei Beschattung fährt der Rollo runter und anschließend wieder etwas hoch, um die Rollos auf eine Stellung zu fahren, die etwas Lichteinfall ermöglicht. Diese Hochlaufzeit kann beliebig angegeben werden.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse des Rollos zum Verfahren$ \\
+	$Gruppenadresse des Rollos zum Stoppen des Verfahrens.$ \\
+	$Zeit des Hochlaufs in Millisekunden, z.B. 2500 entspricht 2.5 Sekunden$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$
+:shortinfo $Rollo-Beschattung eines Fensters mit Nachlaufzeit. Die Ausrichtung in Grad muss bekannt sein.$
+
+if Freigabe and (elevation()>2f32) and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 then write(GARollo,EIN) endif 
+// Nach 30 Sekunden wieder hochfahren
+if after(Freigabe and (elevation()>2f32) and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32,30000u64) then write(GARollo,AUS) endif 
+// Nach Hochlaufzeit Rollo wieder stoppen
+if after(Freigabe and (elevation()>2f32) and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32,30000u64+HochlaufZeit^u64) then write(GAStop,EIN) endif 
+if Freigabe and (elevation()>2f32) and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GARollo,AUS) endif 
+:end 
+
+
+
+
+//----------------------------------------------------------------------
+// Lamellenbeschattungen mit einfachen Himmelsrichtung
+//----------------------------------------------------------------------
+// Beschattung von Ostfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleOst(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Ost-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Ost-Fensters.$
+
+if Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 and change(azimuth()) then write(GALamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>0f32 and azimuth()<185f32) then write(GALamelle,1) endif 
+:end 
+
+// Beschattung von Ostfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleOstInverse(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Ost-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$
+:shortinfo $Lamellen-Beschattung eines Ost-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$
+
+if Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>0f32 and azimuth()<185f32) then write(GALamelle,1) endif 
+:end
+
+// Beschattung von Westfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleWest(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines West-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines West-Fensters.$
+
+if Freigabe and  (elevation()>2f32) andazimuth()>185f32 and azimuth()<360f32 and change(azimuth()) then write(GALamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>185f32 and azimuth()<360f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von Westfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleWestInverse(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines West-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines West-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen.$
+
+if Freigabe and  (elevation()>2f32) andazimuth()>185f32 and azimuth()<360f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>185f32 and azimuth()<360f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von Südfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSued(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Sued-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-Fensters.$
+
+if Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 and change(azimuth()) then write(GALamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>85f32 and azimuth()<275f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von Südfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSuedInverse(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Sued-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$$
+
+if Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>85f32 and azimuth()<275f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von SüdOstfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSuedOst(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Sued-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-Ost-Fensters.$
+
+if Freigabe and (elevation()>2f32) and azimuth()>40f32 and azimuth()<230f32 and change(azimuth()) then write(GALamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>40f32 and azimuth()<230f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von SüdOstfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSuedOstInverse(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Sued-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-Ost-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$$
+
+if Freigabe and (elevation()>2f32) and azimuth()>40f32 and azimuth()<230f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>40f32 and azimuth()<230f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von SüdWestfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSuedWest(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Süd-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-West-Fensters.$
+
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<310f32 and change(azimuth()) then write(GALamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>140f32 and azimuth()<310f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von SüdWestfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleSuedWestInverse(Freigabe, GALamelle)
+:info $Lamellen-Beschattung eines Süd-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ 
+:shortinfo $Lamellen-Beschattung eines Süd-West-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$$
+
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<310f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and (elevation()>2f32) and !(azimuth()>140f32 and azimuth()<310f32) then write(GALamelle,1) endif 
+:end 
+
+
+//----------------------------------------------------------------------
+// Lamellenbeschattungen für Dachfenster mit einfachen Himmelsrichtung
+//----------------------------------------------------------------------
+// Beschattung von Ostfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelleOst(Freigabe, GALamelle,Dachneigung)
+:info $Lamellen-Beschattung eines Ost-Dach-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines Ost-Dach-Fensters.$
+
+if Freigabe and  (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  (elevation()>2f32) and !(azimuth()>0f32 and azimuth()<185f32) then write(GALamelle,1) endif 
+:end 
+
+// Beschattung von Westfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelleWest(Freigabe, GALamelle,Dachneigung)
+:info $Lamellen-Beschattung eines West-Dach-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines West-Dach-Fensters.$
+
+if Freigabe and  (elevation()>2f32) and azimuth()>175f32 and azimuth()<360f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  (elevation()>2f32) and !(azimuth()>175f32 and azimuth()<360f32) then write(GALamelle,1) endif 
+:end 
+
+// Beschattung von Südfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelleSued(Freigabe, GALamelle,Dachneigung)
+:info $Lamellen-Beschattung eines Süd-Dach-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines Süd-Dach-Fensters.$
+
+if Freigabe and  (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  (elevation()>2f32) and !(azimuth()>85f32 and azimuth()<275f32) then write(GALamelle,1) endif 
+:end 
+
+// Beschattung von SüdOstfenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelleSuedOst(Freigabe, GALamelle,Dachneigung)
+:info $Lamellen-Beschattung eines Süd-Ost-Dach-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines Süd-Ost-Dach-Fensters.$
+
+if Freigabe and  (elevation()>2f32) and azimuth()>40f32 and azimuth()<230f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  (elevation()>2f32) and !(azimuth()>40f32 and azimuth()<230f32) then write(GALamelle,1) endif 
+:end 
+
+// Beschattung von SüdfWestenster
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelleSuedWest(Freigabe, GALamelle,Dachneigung)
+:info $Lamellen-Beschattung eines Süd-West-Dach-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines Süd-West-Dach-Fensters.$ 
+
+if Freigabe and  (elevation()>2f32) and azimuth()>240f32 and azimuth()<310f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  (elevation()>2f32) and !(azimuth()>240f32 and azimuth()<310f32) then write(GALamelle,1) endif 
+:end 
+
+
+
+//----------------------------------------------------------------------
+// Lamellenbeschattungen mit Winkel (Azimuth der Beschattung)
+//----------------------------------------------------------------------
+// Lamellenbeschattung mit Winkel
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelle(Freigabe, GALamelle,GradEin, GradAus)
+:info $Lamellen-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$
+:shortinfo $Lamellen-Beschattung eines Fensters bei Angabe der Beschattungswinkel.$
+
+if Freigabe and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 and change(azimuth()) then write(GALamelle,convert((90f32-elevation())/90f32*255f32,0u08)) endif 
+if Freigabe and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Lamellenbeschattung mit Winkel - inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleInverse(Freigabe, GALamelle,GradEin, GradAus)
+:info $Lamellen-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt.  Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$
+:shortinfo $Lamellen-Beschattung eines Fensters bei Angabe der Beschattungswinkel.$
+
+if Freigabe and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GALamelle,1) endif 
+:end 
+
+
+//----------------------------------------------------------------------
+// Lamellenbeschattungen mit Winkel (Azimuth der Beschattung)
+//----------------------------------------------------------------------
+// Lamellenbeschattung mit Winkel
+// @date	29.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin BeschattungLamelleRollo(Freigabe, GAPositionRollo, GALamelle, GradEin, GradAus, LaengeProzent)
+:info $Lamellen-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Der Rollo wird so weit runter und die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+        $Gruppenadresse der Position des Rollos \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$\\
+	$Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Fensters bei Angabe der Beschattungswinkel.$
+
+// Fährt Rollo in die gewünschte Beschattungspositon 
+if Freigabe and azimuth()>GradEin^f32 and azimuth()<GradAus^f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and azimuth()>GradEin^f32 and azimuth()<GradAus^f32 and change(azimuth()) then write(GALamelle,convert((90f32-elevation())/90f32*255f32,0u08)) endif 
+if Freigabe and !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GALamelle,1) endif 
+:end 
+
+
+
+
+// Lamellenbeschattung mit Winkel - inverse
+// @date	29.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin BeschattungLamelleRolloInverse(Freigabe, GAPositionRollo, GALamelle, GradEin, GradAus, LaengeProzent)
+:info $Lamellen-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Der Rollo wird so weit runter und die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt.  Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+        $Gruppenadresse der Position des Rollos \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$\\
+	$Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Fensters bei Angabe der Beschattungswinkel.$
+
+// Fährt Rollo in die gewünschte Beschattungspositon 
+if Freigabe and azimuth()>GradEin^f32 and azimuth()<GradAus^f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 and change(azimuth()) then write(GALamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif 
+if Freigabe and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GALamelle,1) endif 
+:end 
+
+
+// Beschattung von Dachlamellen
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungDachLamelle(Freigabe, GALamelle,GradEin, GradAus,Dachneigung)
+:info $Lamellen-Beschattung eines Fensters. Die Ausrichtung in Grad (0 ist Nord, 90 Ost, 180 Süd, 270 West), bei der beschattet werden soll, muss bekannt sein. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Der Aktor verfügt über eine Gruppenadresse$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse der Lamellenverstellung$ \\
+	$Sonnenstand in Grad (als Zahl), ab der beschattet werden soll$ \\
+	$Sonnenstand in Grad (als Zahl), ab die Beschattung aufgehoben werden soll$ \\
+	$Dachneigung in Grad (nur Zahl angeben)$
+:shortinfo $Lamellen-Beschattung eines Dachfensters bei Angabe der Beschattungswinkel.$
+
+if Freigabe and  azimuth()>GradEin^f32 and azimuth()<GradAus^f32 and change(azimuth()) then if (Dachneigung^f32>elevation()) then write(GALamelle,convert((elevation()+Dachneigung^f32)/90f32*255f32,0u08)) else write(GALamelle,100.0%) endif endif 
+if Freigabe and  !(azimuth()>GradEin^f32 and azimuth()<GradAus^f32) then write(GALamelle,1) endif 
+:end 
+
+//----------------------------------------------------------------------
+// Jalusie Beschattung mit Lamellennachführung
+//----------------------------------------------------------------------
+// Beschattung von Ostfenster
+// @date	22.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin BeschattungLamelleRolloOst(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines Ost-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 100%: Lamellen vollständig geöffnet (waagerecht); 0%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Ost-Fensters. Lamellenparametrierung: 0%: Lamellen vollständig geschlossen$
+
+// Fährt Rollo in die gewünschte Beschattungspositon 
+if  Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+// Lamellenstellung
+if Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 and change(azimuth()) then write(GAPositionLamelle,convert(elevation()/90f32*255f32,0u08)) endif 
+// Rollo fährt hoch, wenn Sonne den kritischen Azimut-Winkel verlassen hat
+if Freigabe and elevation()>2f32 and !(azimuth()>0f32 and azimuth()<185f32) then write(GARolloFahren,AUF) endif
+// Rolle fährt hoch, wenn die Sonne den kritischen Höhenwinkel verlassen hat
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+//if !Freigabe then write(GARolloFahren,AUF) endif
+:end
+
+
+// Beschattung von Ostfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleRolloOstInverse(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines Ost-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Ost-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$
+
+// Fährt Rollo in die gewünschte Beschattungspositon 
+if  Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+// Lamellenstellung
+if Freigabe and (elevation()>2f32) and azimuth()>0f32 and azimuth()<185f32 and change(azimuth()) then write(GAPositionLamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif
+// Rollo fährt hoch, wenn Sonne den kritischen Azimut-Winkel verlassen hat
+if Freigabe and elevation()>2f32 and !(azimuth()>0f32 and azimuth()<185f32) then write(GARolloFahren,AUF) endif
+// Rolle fährt hoch, wenn die Sonne den kritischen Höhenwinkel verlassen hat
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+//if !Freigabe then write(GARolloFahren,AUF) endif
+:end
+
+
+// Beschattung von Westfenster
+// @date	22.05.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleRolloWest(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines West-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 100%: Lamellen vollständig geöffnet (waagerecht); 0%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines West-Fensters. Lamellenparametrierung: 0%: Lamellen vollständig geschlossen$
+
+if Freigabe and (elevation()>2f32) and azimuth()>185f32 and azimuth()<360f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>185f32 and azimuth()<360f32 and change(azimuth()) then write(GAPositionLamelle,convert(elevation()/90f32*255f32,0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>185f32 and azimuth()<360f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+//if !Freigabe then write(GARolloFahren,AUF) endif
+:end
+
+
+// Beschattung von Westfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleRolloWestInverse(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines West-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines West-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$
+
+if  Freigabe and (elevation()>2f32) and azimuth()>185f32 and azimuth()<360f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>185f32 and azimuth()<360f32 and change(azimuth()) then write(GAPositionLamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>185f32 and azimuth()<360f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+//if !Freigabe then write(GARolloFahren,AUF) endif
+:end
+
+
+// Beschattung von Südfenster
+// @date	22.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin BeschattungLamelleRolloSued(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines Süd-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 100%: Lamellen vollständig geöffnet (waagerecht); 0%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Süd-Fensters. Lamellenparametrierung: 0%: Lamellen vollständig geschlossen$
+
+if  Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 and change(azimuth()) then write(GAPositionLamelle,convert(elevation()/90f32*255f32,0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>85f32 and azimuth()<275f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+:end
+
+
+// Beschattung von Südfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleRolloSuedInverse(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines Süd-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines Süd-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$
+
+if  Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>85f32 and azimuth()<275f32 and change(azimuth()) then write(GAPositionLamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>85f32 and azimuth()<275f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+// Wenn Beschattungsfreigabe weggenommen wird, fährt der Rollo hoch
+:end
+
+// Beschattung von SuedWestfenster
+// @date	22.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin BeschattungLamelleRolloSuedWest(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines SüdWest-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 100%: Lamellen vollständig geöffnet (waagerecht); 0%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines SüdWest-Fensters. Lamellenparametrierung: 0%: Lamellen vollständig geschlossen$
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<320f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<320f32 and change(azimuth()) then write(GAPositionLamelle,convert(elevation()/90f32*255f32,0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>140f32 and azimuth()<320f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+:end
+
+
+// Beschattung von SuedWestfenster - Inverse
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BeschattungLamelleRolloSuedWestInverse(Freigabe, GAPositionRollo, GAPositionLamelle, GARolloFahren, LaengeProzent)
+:info $Rollo- und Lamellen-Beschattung eines SüdWest-Fensters. Die Lamelle wird so weit zugefahren, dass eine Beschattung gerade erfolgt. Lamellenparametrierung: 0%: Lamellen vollständig geöffnet (waagerecht); 100%: Lamellen vollständig geschlossen. Rückgabewert in %. Der Aktor verfügt über eine Gruppenadresse.$ \\
+    $Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+    $Gruppenadresse der Position der Jalousie$ \\
+    $Gruppenadresse der Position der Lamelle$ \\
+    $Gruppenadresse der Jalousiefahrt$ \\
+    $Behanglänge in %$
+:shortinfo $Rollo- und Lamellen-Beschattung eines SüdWest-Fensters. Lamellenparametrierung: 100%: Lamellen vollständig geschlossen$
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<320f32 then write(GAPositionRollo,LaengeProzent^%) endif 
+if Freigabe and (elevation()>2f32) and azimuth()>140f32 and azimuth()<320f32 and change(azimuth()) then write(GAPositionLamelle,convert(255f32-(255f32*elevation()/90f32),0u08)) endif
+if Freigabe and elevation()>2f32 and !(azimuth()>140f32 and azimuth()<320f32) then write(GARolloFahren,AUF) endif
+if Freigabe and (elevation()<2f32) then write(GARolloFahren,AUF) endif 
+:end

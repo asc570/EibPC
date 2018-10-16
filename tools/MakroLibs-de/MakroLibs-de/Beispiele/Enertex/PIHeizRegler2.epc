@@ -1,0 +1,42 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+// Der Regler als Wert in WigaPIAktor definiert
+PIHeizRegler(Wiga,WigaFreigabePI,22.0,"RkWohnzimmerTemp-3/1/28",30.0,0.2)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+
+
+// ---------------------------------------------------------------------
+// 
+// Wiga- Fussbodenheizung
+// PI Regler mit 200 min Nachstellzeit und k=30*Delta(Temperatur)
+// 
+// ---------------------------------------------------------------------
+WigaFreigabePI=EIN
+Wohnzimmertemperatur="RkWohnzimmerTemp-3/1/28"
+AussenTemperatur="ThermeAußentemperatur-3/3/13"
+
+// Und etwas Schaltuhren und Logiken: 
+//
+// Wenn es mittag schon 21° hat, kann soll Fussbodenheizung an diesem Tag ausbleiben
+// 12 Uhr mittag => die Fussbodenheizung soll angehen
+// 22 Uhr        => die Fussbodenheizung soll ausgehen
+//
+if Wohnzimmertemperatur<21.0 and AussenTemperatur<12f16 then \\
+         WigaFreigabePI=EIN endif
+if WigaFreigabePI and change(WigaPIAktor) then write("Wiga-3/1/13",WigaPIAktor) endif
+
+if htime(22,00,00) then write("Wiga-3/1/13",0%);WigaFreigabePI=AUS endif
+if htime(12,00,00) then WigaFreigabePI=EIN endif
+

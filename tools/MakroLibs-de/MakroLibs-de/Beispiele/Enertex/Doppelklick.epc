@@ -1,0 +1,21 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+//Mit einem einfachen Klick auf den Taster geht das Licht ein und mit einem Doppelklick aus
+Doppelklick(SaunaLicht,"Taster-0/2/5",EIN,"SaunaLichtDecke-1/0/2",EIN,"SaunaLichtDecke-1/0/2",AUS)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+
+
+
+

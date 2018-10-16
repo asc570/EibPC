@@ -1,0 +1,149 @@
+V1.000
+ Initial Version (German only)
+V1.002
+ + Added "PIRegler" Macro in Enertex.lib
+ + Added "WebSchaltuhr" Macro in EnertexSchaltuhren.lib
+V1.003
+ + Added "kWh_Einfach" Macro in Enertex.lib
+ + Added "kWh" Macro in Enertex.lib
+V1.004
+ Fixed some spelling errors in descriptions
+V1.005
+ + Added Command Fusion support (EnertexCommandFusion.lib)
+ + Added Ventil Macro in Enertex.lib
+V1.006
+ + Added EnertexWeb.lib
+V1.007
+ + Added Descriptions
+V1.008
+ + Added examples (German Language only)
+ + Added EnertexSqueezebox.lib
+V1.009
+ + improved LangerTasterdruck (LongKeypress)
+V1.010
+ + improved PIController 
+ + Added 1-Wire Support for HA7E Devices
+V1.011
+ + improved EnertexOneWire.lib
+V1.012
+ + Added JoinMinMax2GA Macro to EnertexCommandFusion.lib
+ + Extended EnertexBeschattung.lib
+ + Added examples for english language
+ + Added EnertexFlash Makro in english and german
+ + Added WebWertvorgabeGA Macro in EnertexWebV2.lib
+V1.013
+ + library WebV2 updated for system start
+ + improved EnertexLogic.lib
+ + improved PIHeatRuler and PIHeatRulerGA macros in Enertex.lib
+ + improved EnertexShadowing.lib
+ + added At_Sunrise_Capped_withRelease and At_Sunset_Capped_withRelease in EnertexTimeswitchesV2.lib
+ + added FloatToPercent and improved PercentToFloat makro to Enertex.lib
+ + makros for short and long press - improved EnertexCommandFusion.lib
+ + added mpchart.epc example for WebV2
+ + added EnertexCodingContest.lib
+ + added CHGLibrary_FritzBox.lib
+ + addet macro round to EnertexENG.lib
+V1.014
+ + fixed some bugs in EnertexCommandFusion.lib
+ + added ifdef-directive for debbugging in EnertexCommandFusion.lib, EnertexOneWire.lib, EnertexEibPCHomeControl.lib
+ + added OWextender and OWextenderGA makro in EnertexOneWire.lib
+ + added EnertexRussoundBeta.lib (only in german for now)
+ + added Makros JalousieMitLamellen, ZweiJalousieMitLamellen, DreiJalousieMitLamellen, Statusanzeige, Fensterkontakte, ZweiFensterkontakte, DreiFensterkontakte, 
+	UmschaltShifter2Fach, GetInfoButton, Uhrzeitanzeige, Datumsanzeige, DreiRollos, HeizungPChart, TemperaturPChart, SonnenAufUntergangRegenmeldungAnzeigeButton,
+	MinMaxTemperaturAnzeigeButton,OnlineAnzeigeButton, WindAnzeigeButton, LichtAnzeigeButton
+	to EnertexWebV2.lib (notwendig für den Visualisierungsassistenten) (only in german for now)
+ + added UmschaltMultiButton2fach,UmschaltMultiButton3fach,UmschaltMultiButton4fach, UmschaltMultiPageButton2fach, UmschaltMultiPageButton3fach, UmschaltMultiPageButton4fach to EnertexWebV2.lib (only in german for now)
+ + added Makro TemperatureSync and TemperatureGASync to EnertexOneWire.lib (only in german for now)
+V1.015
+ + added BMXHA7E_15.lib
+ + added EnertexSonosBeta.lib
+ + fixed some bugs in EnertexWebV2.lib
+ + fixed some bugs in EnertexCommandFusion.lib
+ + added PhyMonitor.lib
+ + added macro SliderDimmerButton, SliderTemperatur, SliderTemperaturVar, Raumkontroller, ToggleButtonVar to EnertexWebV2.lib
+ + added EnertexScene.lib
+ + added IPStringtoU32 adn U32toIPString to Enertex.lib
+ + added MS_Alpha_Innotec_WP.lib (only in german for now)
+ + extended GoogleWetherMacro in Enertex.lib (humidity adjusted, In addition, the parameters of wind direction / wind speed will evaluated)
+ + added ShadowingBladeBlindEast, ShadowingBladeBlindSouth, ShadowingBladeBlindSouthWest, ShadowingBladeBlindWest, ShadowingSlatInverse to EnertexShadowing.lib
+ + added EnertexRussoundENG.lib
+ + release EnertexRussoundBeta.lib to EnertexRussound.lib
+ + fixed some bugs in EnertexSqueezebox.lib
+ + added Makro TemperatureSync and TemperatureGASync to the english version EnertexOneWire.lib
+ + added Anwesenheitssimulation.lib
+ + added ToggleMultiButton2,ToggleMultiButton3,ToggleMultiButton4,ToggleMultiPageButton2,ToggleMultiPageButton3,ToggleMultiPageButton4 to english version EnertexWebV2ENG.lib
+ + added BlindWithSlat,TwoBlindsWithSlats,ThreeBlindsWithSlats, DisplayState, WindowContact, TwoWindowContacts,ThreeWindowContacts, ToggleShifter2, GetInfoButton, TimeDisplay, DateDisplay, HeatingPChart, TemperaturePChart, SunriseSunsetRainSignalDisplayButton, MinMaxTemperatureDisplayButton, OnlineDisplayButton, WindDisplayButton, LightDisplayButton (necessary for visualization assistant) to the english version EnertexWebV2.lib
+ + added example RoomcontrollerParameterize.epc to WebV2 folder
+ + added PresenceSimulation.lib
+V1.016
+ + fixed some bugs in EnertexCommandFusion.lib
+ + fixed some bugs in EnertexRussound.lib
+ + fixed some bugs in Enertex.lib
+V1.017
+ + added Makro VierJalousienMitLamellen, FuenfJalousienMitLamellen to EnertexWebV2.lib (only in german for now)
+ + added Makro TemperaturPChart2Grafen to EnertexWebV2.lib (only in german for now)
+ + added Makro UmschaltButtonFenster to EnertexWebV2.lib (only in german for now)
+ + added Makro SliderDimmerButtonZustand to EnertexWebV2.lib (only in german for now)
+ + added library EnertexeKeyBeta.lib (only in german for now)
+ + added Makro WundergroundWetter to Enertex.lib (only in german for now)
+ + added BMXHA7E_22.lib
+ + added FuenfRollos to Enertex WebV2.lib (only in german for now)
+ + added Makro JalousienMitLamellenStopp, ZweiJalousienMitLamellenStopp, DreiJalousienMitLamellenStopp, VierJalousienMitLamellenStopp,FuenfJalousienMitLamellenStopp to EnertexWebV2.lib (only in german for now)
+ + fixed some bugs in EnertexWebV2.lib
+V3.000
+ + EnertexWebV2 frozen
+    - EibPC with Enertex option V3 have to use EnertexWebV3 library
+    - EibPC without Enertex option V3 have to use EnertexWebV2 library 
+ + added Makro ZyklischMittelwertInTimeBufferSchreiben(engl. WriteCyclicInTimebuffer), UmschaltButtonZweiIconsVar(engl. ToggleButtonsTwoIconsVar) to EnertexWebV3.lib
+ + added Makro PIRaumKontrollerVar(engl. PIRoomControllerVar), LinkGaToVar(engl. LinkGaToVar) to Enertex.lib
+ + updated Makro Wetterbericht to Enertex.lib  (only in german for now)
+ + added Makro Wettervorhersage to Enertex.lib  (only in german for now)
+V3.001
+ + revised EnertexOneWire.lib and EnertexOnWireENG.lib
+ + fixed some bugs in Makro PIRaumKontrollerGA (only in german for now)
+ + fixed some bugs in EnertexRussoundRS232.lib (only in german for now)
+ + added library user.lib (only in german for now)
+ + added Makro Sandman60EIBPC-EKEY-TOCA-HOME to User.lib (only in german for now)
+ + shift Makros IPStringtoU32, U32toIPString, Wettervorhersage, Wetterbericht, GoogleWetter, Ventil from Enertex.lib to User.lib
+ + added library EnertexV2.lib
+ + frozen library Enertex.lib
+ + added Makro JoinDimmer2GA to User.lib (only in german for now)
+ + added Makro Quellenauswahl to User.lib (only in german for now)
+V3.003
+ + deleted GoogleWether Macro from User.lib
+ + added Makro Wetter to EnertexV2.lib (only in german for now)g
+ + fixed some bugs in Makro SchaltuhrMitternacht (only in german for now)
+ + added WebSchaltuhrFlash to EnertexWebV3.lib (only in german for now)
+ + added CallSceneButton to EnertexWebV3.lib (only in german for now)
+ + added MtimeChart2Grafen to EnertexWebV3.lib (only in german for now)
+ + added MtimeChart3Grafen to EnertexWebV3.lib (only in german for now)
+ + added MtimeChart4Grafen to EnertexWebV3.lib (only in german for now)
+ + added MtimeChart4Grafen4Datatyp to EnertexWebV3.lib (only in german for now)
+ + added StoreAndRead2Buffer to EnertexWebV3.lib (only in german for now)
+ + added StoreAndRead3Buffer to EnertexWebV3.lib (only in german for now)
+ + added StoreAndRead4Buffer to EnertexWebV3.lib (only in german for now)
+ + fixed some bugs in Makro EnertexCodingWettbewerb.lib
+ + added WebLogger to EnertexWebV3.lib (only in german for now)
+ + added SzenenErkenner to EnertexScene.lib (only in german for now)
+ + release EnertexeKeyBeta.lib to EnertexeKey.lib
+V3.004
+ + added MusterprojektPanel to Beispiele (only in german) 
+ + added Makro Zeischaltuhr4Schaltuhren in EnertexWebV3.lib for usage in visualisation assistent (only in german for now)
+ + fixed Makro PIRaumKontrollerGA and PIRaumKontrollerVar (conversion of variable SpeicherIndex) in EnertexV2.lib.
+V3.005
+ + fixed Makro Zeischaltuhr4Schaltuhren (time switch 1 uses false GA).
+ + added Makro SliderDimmerStatus to EnertexWebV3.lib (only in german for now)
+ + fixed Makro Wetter in EnertexV2.lib (only in german for now)
+ + added Makro SliderDimmerStatusVerzoegerung to EnertexWebV3.lib (only in german for now)
+V3.100
+ + added library EnertexSmartmeter.lib (only in german for now)
+ + improved performance of EnertexWebV3.lib
+V3.200
+ + added library EnertexSonos.lib (only in german for now)
+ + fixed Makro Zeischaltuhr4Schaltuhren (time switch 4 did not activate).
+V3.201
+ + added library EnertexHue.lib (only in german for now)
+V3.202
+ + added examples with KNX-Projects for Philips Hue, Sonos-Sound-System and Enertex Smartmeter
+V3.203
+ + shortinfo property is removed from internal macros

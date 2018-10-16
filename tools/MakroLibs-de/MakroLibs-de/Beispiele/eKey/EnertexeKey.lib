@@ -1,0 +1,51 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  eKey einbinden
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Stefanie Meier
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.2 $
+//----------------------------------------------------------------------
+
+// eKey Initalisierung
+// @date	05.09.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin eKeyCommando(eKeyIP,eKeyPort,User,FingerNr,Commando)
+:info $Über eKey Lan Converter mit dem Enertex EibPC kommunizieren. Fingerabhänging kann ein User verschiedene Aktionen auslösen.\\
+	Einstellungen des eKey Lan Converters: Empfänger IP-Adresse: IP-Adresse des EibPCs, UDP-Versand: ja, Abstandhalter: _, Protokoll Typ: net, Empfänger Port 4806 $\\
+	$IP-Adresse des Converters$\\
+	$Sender Port des Converters$\\
+	$User, der eine Aktion auslösen soll.$\\
+	$FingerNr, Finger, welcher die Aktion auslöst. 1 = linker kleiner Finger, 2 = linker Ringfinger, ..., 0 = rechter kleiner Finger$\\
+	$Aktion, die ausgelöst werden soll. (z.B. write(x,y), Status=anwesend$
+:shortinfo $Über eKey Lan Converter mit dem Enertex EibPC kommunizieren.$
+
+:var GotPort@
+:var GotIP@
+:var GotMessage@
+:var zUser@
+:var zFinger@
+
+zUser@=$$
+zFinger@=$$
+GotPort@ = 0u16
+GotIP@ = 0u32
+GotMessage@ = $$
+
+if event(readudp(GotPort@,GotIP@,GotMessage@)) and eKeyPort^u16==GotPort@ and eKeyIP==GotIP@ then {
+	zUser@=split(GotMessage@,2u16,7u16);
+	zFinger@=split(GotMessage@,9u16,9u16)
+} endif
+
+if zUser@==User and zFinger@==FingerNr then Commando; zUser@=$$; zFinger@=$$ endif
+:end

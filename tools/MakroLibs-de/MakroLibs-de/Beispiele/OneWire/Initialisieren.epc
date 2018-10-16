@@ -1,0 +1,19 @@
+
+[RS232]
+// RS232-Konfiguration: Baudrate, Datenbits, Stoppbits, Parität, Flusssteuerung
+9600
+8
+1
+0
+0
+
+[Macros]
+//Den HA7E Adapter einbinden
+HA7E()
+//Dieses Makro liest alle Geräte, die am 1-Wire angeschlossen sind aus und schreibt sie in die Variablen Device1,...,Device100, die man dann z.B. über den Debugger auslesen kann und in eine andere Variable speichern kann, die man dann später bei den anderen Makros verwenden kann.
+Initialisieren()
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWireBeta.lib
+
+[EibPC]

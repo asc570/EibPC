@@ -1,0 +1,23 @@
+
+[WebServer]
+page (1) [$Haus$,$Seite1$]
+plink(2) [INFO] [3] $Zu Seite 3$ 
+picture(3) [DOUBLE,ZOOMGRAF] ($Wetter$,$http://eur.yimg.com/w/wcom/eur_germany_outlook_DE_DE_440_dmy_y.jpg$)
+link(4) [BLIND] [$http://eur.yimg.com/w/wcom/eur_germany_outlook_DE_DE_440_dmy_y.jpg$] $Mein Link$
+
+page (2) [$Haus$,$Seite2$]
+plink(2) [INFO] [3] $Zu Seite 3$ 
+
+page (3) [$Haus$,$Seite3$]
+plink(2) [WEATHER] [1] $Zu Seite 1$ 
+
+[EibPC]
+
+SprungZiel=2
+change= 0
+if change==1 then {
+	plink(2,$Doch zu Seite 2$,MONITOR,1,SprungZiel); 
+	picture(3,$Neues Wetter$,1,$http://eur.yimg.com/w/wcom/eur_satintl_440_dmy_y.jpg$);
+	link(4,$Neuer Link$,MONITOR,1,$http://eur.yimg.com/w/wcom/eur_satintl_440_dmy_y.jpg$)
+} endif
+

@@ -1,0 +1,25 @@
+[Macros]
+// eKey Lan Converter einbinden und mit dem rechten Zeigefinger ein WakeOnLan auslösen und Licht einschalten
+eKeyCommando(192.168.22.240,58011,User,FingerNr7, WakeUp=EIN)
+eKeyCommando(192.168.22.240,58011,User,FingerNr7, write("ArbeitszimmerAllesAus-1/1/8",EIN))
+WOL(WakeUp,8C,73,6E,D8,7C,3C)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexeKey.lib
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+//-------------------------------------------
+//  eKey
+//-------------------------------------------
+// eKey UserID aus dem ekey net admin Programm
+User=$000109$
+FingerNr7=$7$
+WakeUp=OFF
+
+if after(WakeUp, 100u64) then WakeUp=OFF endif

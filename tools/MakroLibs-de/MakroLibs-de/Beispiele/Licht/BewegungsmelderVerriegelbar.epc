@@ -1,0 +1,10 @@
+[Macros]
+//Durch den Schalter kann man den Bewegungsmelder außer Kraft setzen für das Licht im PartyKeller
+BewegungsmelderVerriegelbar("KellerFlurBewegung-1/2/1","Schalter-0/2/6","PartyKeller-1/0/4")
+[MacroLibs]
+EnertexLicht.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

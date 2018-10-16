@@ -1,0 +1,1332 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Diese Makros sind von Endanwendern erstellt und getestet worden.
+//
+//  Verschiedenes und Nützliches
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex EibPC user
+//
+//  Author               : Enertex EibPC user
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.5 $
+//----------------------------------------------------------------------
+
+
+
+// Ventil
+// @date	01.01.2012
+// @version	1
+// Author       Andreas Loebnitz
+:begin Ventil(Name,Gzeit,Eingangswert,Schaltventil)
+:info $Ein Eingangssignal eines RTR wird in ein Schaltsignal für einen Ventilaktor umgewandelt, wobei die Zykluszeit frei in Minuten gewählt werden kann.$\\
+      $Name z.B. WohnzimmerVentil$ \\
+      $Gewünschte Zykluszeit in Minuten$ \\
+      $GA des Ausgangswert des RTR in % (Wert 0-255)$\\
+      $Gruppenadresse, auf welcher der Steuerbefehl gesendet wird $
+:shortinfo $Pulsweitenmodulierte Ventilansteuerung durch RTR$
+ st^Name=0b01
+if (systemstart()) then st^Name=1b01; \\
+                        read (Eingangswert) endif
+if after (st^Name,3000u64) and (Eingangswert>0u08) then write (Schaltventil,EIN) endif
+if cycle (convert(Gzeit,2u08),0)and (Eingangswert>0u08) then write (Schaltventil,EIN) endif
+if after(Schaltventil,(convert(Eingangswert,1u64)*convert(Gzeit,1u64 )*235u64)) then write (Schaltventil,AUS) endif
+:end
+
+
+// Wetterabfrage bei wunderground
+// @date	1.09.2013
+// @version	2
+// @author	Michael Schriefers, KNX-Forum
+:begin Wetterbericht(Key, Ort, Land, WetterberichtStartbedingung)
+:info $Wetterbericht bei Weather Underground abfragen. Folgende Variablen werden durch das Makro gesetzt:,\\
+	  Wetterbericht_Luftdruck = 0u16,\\
+	  Wetterbericht_Luftdruck_Trend = c80 (Mögliche Werte: -/0/+),\\
+	  Wetterbericht_Luftfeuchtigkeit = 0u16,\\
+	  Wetterbericht_Regenmenge = 0.0f16,\\
+	  Wetterbericht_Sichtgrenze = 0u16,\\
+	  Wetterbericht_Solarstrahlung = 0u16,\\
+	  Wetterbericht_Taupunkt = 0.0f16,\\
+	  Wetterbericht_Temperatur = 0.0f16,\\
+	  Wetterbericht_Temperatur_Gefuehlt = 0.0f16,\\
+	  Wetterbericht_Wetter = c1400,\\
+	  Wetterbericht_Wind = 0.0f16,\\
+	  Wetterbericht_Windrichtung = 0u16,\\
+	  Wetterbericht_WindrichtungGrad = 0u16$\\
+      $"Key": wird nach Registrierung bei Wetter unter http://www.wunderground.com/weather/api/ vergeben$\\
+      $"Ort": Der Standort der Wetterstation\\
+      (im Web Browser prüfen mit api.wunderground.com/api/...Key.../conditions/lang:DL/q/Germany/Duesseldorf.xml)$\\
+      $"Land": Das Land in englischer Sprache, z.B. Germany$\\
+      $"WetterberichtStartbedingung": Startbedingung der Abfrage, z.B. htime(5,00,00)$
+:shortinfo $Wetterdaten auf Basis von Weather Underground Daten abfragen. Min. EibPC FW V3.000 erforderlich$
+	
+// Allgemeine Variablen definieren
+
+Wetterbericht_Init = after(systemstart() == EIN, 5000u64)
+
+Wetterbericht_xmlRawData = $$c6000
+Wetterbericht_xmlText = $$c6000
+
+Wetterbericht_IP = 0u32 
+Wetterbericht_Port = 80u16
+Wetterbericht_IP_Connected = 0u32
+Wetterbericht_Port_Connected = 0u16
+
+Wetterbericht_CRLF = $$
+Wetterbericht_GET_0 = $$
+Wetterbericht_GET_1 = $$
+Wetterbericht_GET_2 = $$
+Wetterbericht_GET_3 = $$
+Wetterbericht_GET_4 = $$
+Wetterbericht_GET_5 = $$
+Wetterbericht_GET_6 = $$
+Wetterbericht_String = $$
+Wetterbericht_ErrorString = $Fehlerfrei$
+
+Wetterbericht_TCP_Error_Counter = 0u08
+Wetterbericht_TCP_ConnectionState = 6u08					/* Inititalisieren mit erlaubtem Wert aber geschlossener TCP Verbindung */
+
+Wetterbericht_Query_State_Idle = 0u08						/* Kein TCP Request aktiv */
+Wetterbericht_Query_State_QueryStarted = 1u08				/* TCP Request wurde gesendet, auf Antwort warten */
+Wetterbericht_Query_State_QuerySuccess = 2u08				/* TCP Request wurde erfolgreich beantwortet, TCP Verbindung schließen */
+Wetterbericht_Query_State = Wetterbericht_Query_State_Idle
+
+Wetterbericht_PosStart = 0u16
+Wetterbericht_PosEnd = 0u16
+Wetterbericht_Parsen = AUS
+
+// Einzelwerte der Wetterbericht (Conditions) Abfrage definieren
+
+Wetterbericht_Luftdruck = 0u16
+Wetterbericht_Luftdruck_Trend = $$c80
+Wetterbericht_Luftfeuchtigkeit = 0u16
+Wetterbericht_Regenmenge = 0.0f16
+Wetterbericht_Sichtgrenze = 0u16
+Wetterbericht_Solarstrahlung = 0s16
+Wetterbericht_Taupunkt = 0.0f16
+Wetterbericht_Temperatur = 0.0f16
+Wetterbericht_Temperatur_Gefuehlt = 0.0f16
+Wetterbericht_Wetter = $$
+Wetterbericht_Wind = 0.0f16
+Wetterbericht_Windrichtung = $$
+Wetterbericht_WindrichtungGrad = 0u16
+
+// Tageszähler der XML Abfragen
+
+Wetterbericht_Tageszaehler = 0u16
+if chtime(00,00,01) then \\
+	Wetterbericht_Tageszaehler = 0u16 \\
+	endif
+
+// TCP Message für Wetterbericht Abfrage
+
+if Wetterbericht_Init == EIN then \\
+	stringset(Wetterbericht_CRLF,0x0A0Du16,0u16); \\
+	Wetterbericht_GET_1 = $GET /api/$ + $^Key^$ + $/conditions/lang:DL/q/$ + $^Land^$ + $/$ + $^Ort^$; \\
+	Wetterbericht_GET_2 = $.xml HTTP/1.0$ + Wetterbericht_CRLF; \\
+	Wetterbericht_GET_3 = $User-Agent: Wget/ 1.0.10$ + Wetterbericht_CRLF; \\
+	Wetterbericht_GET_4 = $Accept: */*$ + Wetterbericht_CRLF; \\
+	Wetterbericht_GET_5 = $Host: api.wunderground.com$ + Wetterbericht_CRLF; \\
+	Wetterbericht_GET_6 = $Connection: Keep-Alive$ + Wetterbericht_CRLF + Wetterbericht_CRLF; \\
+	Wetterbericht_String = Wetterbericht_GET_1 + Wetterbericht_GET_2 + Wetterbericht_GET_3 + Wetterbericht_GET_4 + Wetterbericht_GET_5 + Wetterbericht_GET_6 \\
+	endif
+
+// IP Resolve bei Wetterbericht_Init == EIN oder bei WetterberichtStartbedingung == EIN
+
+if after(Wetterbericht_Init == EIN, 1u64) \\
+	or after(WetterberichtStartbedingung == EIN, 1u64) then \\
+   	Wetterbericht_Init = AUS; \\
+   	Wetterbericht_IP = resolve($api.wunderground.com$) \\
+	endif
+
+// TCP Verbindung nach Resolve öffnen, sofern sie nicht bereits hergestellt wird oder bereits besteht	
+
+if after(Wetterbericht_Init == EIN, 1000u64) \\
+	or after(WetterberichtStartbedingung, 1000u64) \\
+	and Wetterbericht_TCP_ConnectionState >= 2u08 then \\
+    Wetterbericht_TCP_ConnectionState = connecttcp(Wetterbericht_Port, Wetterbericht_IP) \\
+	endif
+	
+// Wenn TCP Verbindung besteht und Startfreigabe besteht Wetterbericht Anfrage senden
+
+if change(Wetterbericht_TCP_ConnectionState) \\
+	and Wetterbericht_TCP_ConnectionState == 0u08 then \\
+	sendtcparray(Wetterbericht_Port, Wetterbericht_IP, Wetterbericht_String, size(Wetterbericht_String)); \\
+	Wetterbericht_Tageszaehler = Wetterbericht_Tageszaehler + 1u16; \\
+	Wetterbericht_Query_State = Wetterbericht_Query_State_QueryStarted \\
+	endif
+
+// Fehlerhafte TCP Verbindung verzögert erneut aufbauen
+
+if change(Wetterbericht_TCP_ConnectionState) \\
+	and Wetterbericht_TCP_ConnectionState >= 2u08 \\
+	and Wetterbericht_TCP_ConnectionState <= 6u08 \\
+	and Wetterbericht_TCP_Error_Counter <= 5u08 then \\
+	Wetterbericht_Init = EIN \\
+	endif
+	
+// Empfang der TCP Daten
+
+if event(readtcp(Wetterbericht_Port_Connected, Wetterbericht_IP_Connected, Wetterbericht_xmlRawData)) \\
+	and Wetterbericht_TCP_ConnectionState == 0u08 \\
+	and Wetterbericht_Port_Connected == Wetterbericht_Port \\
+	and Wetterbericht_IP_Connected == Wetterbericht_IP then \\
+	Wetterbericht_xmlText = Wetterbericht_xmlRawData; \\
+	Wetterbericht_Query_State = Wetterbericht_Query_State_QuerySuccess; \\
+	endif
+
+// TCP Verbindung schliessen
+
+if after(Wetterbericht_Query_State == Wetterbericht_Query_State_QuerySuccess, 1000u64) \\
+	and (Wetterbericht_TCP_ConnectionState == 0u08 \\
+	or Wetterbericht_TCP_ConnectionState == 1u08) then \\
+   	closetcp(Wetterbericht_Port_Connected, Wetterbericht_IP_Connected); \\
+   	Wetterbericht_TCP_ConnectionState = 7u08; \\
+	Wetterbericht_Query_State = Wetterbericht_Query_State_Idle \\
+	endif
+
+// Parsen der Wetterbericht XML Daten
+
+if Wetterbericht_Query_State == Wetterbericht_Query_State_QuerySuccess then {
+    /* Parsen nach Sichtgrenze */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<visibility_km>$, 0u16) + size($<visibility_km>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</visibility_km>$, 0u16) - 1u16;
+    Wetterbericht_Sichtgrenze = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0u16);
+    /* Parsen nach Wetter */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<weather>$, 0u16) + size($<weather>$);
+   	Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</weather>$, 0u16) - 1u16;
+    Wetterbericht_Wetter = split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd);
+	/* Parsen nach Regenmenge */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<precip_today_metric>$, 0u16) + size($<precip_today_metric>$);
+    Wetterbericht_PosEnd =  find(Wetterbericht_xmlText, $</precip_today_metric>$, 0u16) - 1u16;
+    Wetterbericht_Regenmenge = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0.0f16);
+	/* Parsen nach Temperatur */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<temp_c>$, 0u16) + size($<temp_c>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</temp_c>$, 0u16) - 1u16;
+    Wetterbericht_Temperatur = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0.0f16);
+    /* Parsen nach Temperatur gefühlt */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<feelslike_c>$, 0u16) + size($<feelslike_c>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</feelslike_c>$, 0u16) - 1u16;
+    Wetterbericht_Temperatur_Gefuehlt = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0.0f16);
+    /* Parsen nach Luftfeuchtigkeit */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<relative_humidity>$, 0u16) + size($<relative_humidity>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</relative_humidity>$, 0u16) - 1u16;
+    Wetterbericht_Luftfeuchtigkeit = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0u16);
+	/* Parsen nach Windgeschwindigkeit */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<wind_kph>$, 0u16) + size($<wind_kph>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</wind_kph>$, 0u16) - 1u16;
+    Wetterbericht_Wind = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0.0f16);
+    /* Parsen nach Windrichtung */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<wind_dir>$, 0u16) + size($<wind_dir>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</wind_dir>$, 0u16) - 1u16;
+    Wetterbericht_Windrichtung = split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd);
+    /* Parsen nach Windrichtung in Grad */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<wind_degrees>$, 0u16) + size($<wind_degrees>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</wind_degrees>$, 0u16) - 1u16;
+    Wetterbericht_WindrichtungGrad = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0u16);
+    /* Parsen nach Luftdruck */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<pressure_mb>$, 0u16) + size($<pressure_mb>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</pressure_mb>$, 0u16) - 1u16;
+    Wetterbericht_Luftdruck = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0u16);
+	/* Parsen nach Luftdrucktrend */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<pressure_trend>$, 0u16) + size($<pressure_trend>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</pressure_trend>$, 0u16) - 1u16;
+    Wetterbericht_Luftdruck_Trend = split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd);
+	/* Parsen nach Taupunkt */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<dewpoint_c>$, 0u16) + size($<dewpoint_c>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</dewpoint_c>$, 0u16) - 1u16;
+    Wetterbericht_Taupunkt = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0.0);
+    /* Parsen nach Solarstrahlung (UV) */;
+    Wetterbericht_PosStart = find(Wetterbericht_xmlText, $<UV>$, 0u16) + size($<UV>$);
+    Wetterbericht_PosEnd = find(Wetterbericht_xmlText, $</UV>$, 0u16) - 1u16;
+    Wetterbericht_Solarstrahlung = convert(split(Wetterbericht_xmlText, Wetterbericht_PosStart, Wetterbericht_PosEnd), 0s16)
+	} endif
+
+:end
+
+
+
+// Abfrage von WundergroundWetter,Wettervorhersage bei Weather Underground abfragen (nur für EibPC ab Patch 3.012 oder höher)
+// @date	1.09.2013 / 04.06.2014
+// @version	2
+// @author	Michael Schriefers, KNX-Forum / Enertex Bayern GmbH, S.M.
+:begin Wettervorhersage(Key, Ort, Land, WettervorhersageStartbedingung)
+	:info $Wettervorhersage bei Weather Underground abfragen.$\\
+      $"Key": wird nach Registrierung bei Wetter unter http://www.wunderground.com/weather/api/ vergeben$\\
+      $"Ort": Der Standort der Wetterstation\\
+      (im Web Browser prüfen mit api.wunderground.com/api/...Key.../forecast/lang:DL/q/Germany/Duesseldorf.xml)$\\
+      $"Land": Das Land in englischer Sprache, z.B. Germany$\\
+      $"StartbedingungWettervorhersage": Startbedingung der Abfrage, z.B. htime(5,00,00)$
+:shortinfo $Wettervorhersage auf Basis von Weather Underground Daten abfragen. Min. EibPC FW V3.000 erforderlich$
+
+// Allgemeine Variablen definieren
+
+Wettervorhersage_Init = after(systemstart() == EIN, 10000u64)
+
+Wettervorhersage_xmlRawData = $$c10000
+Wettervorhersage_xmlText = $$c10000
+Wettervorhersage_xmlTextCut = $$c10000
+Wettervorhersage_IP = 0u32 
+Wettervorhersage_Port = 80u16
+Wettervorhersage_IP_Connected = 0u32
+Wettervorhersage_Port_Connected = 0u16
+
+Wettervorhersage_CRLF = $$
+Wettervorhersage_GET_1 = $$
+Wettervorhersage_GET_2 = $$
+Wettervorhersage_GET_3 = $$
+Wettervorhersage_GET_4 = $$
+Wettervorhersage_GET_5 = $$
+Wettervorhersage_GET_6 = $$
+Wettervorhersage_String = $$
+Wettervorhersage_ErrorString = $Fehlerfrei$
+
+Wettervorhersage_TCP_Error_Counter = 0u08
+Wettervorhersage_TCP_ConnectionState = 6u08						/* Inititalisieren mit erlaubtem Wert aber geschlossener TCP Verbindung */
+
+Wettervorhersage_Query_State_Idle = 0u08						/* Kein TCP Request aktiv */
+Wettervorhersage_Query_State_QueryStarted = 1u08				/* TCP Request wurde gesendet, auf Antwort warten */
+Wettervorhersage_Query_State_QuerySuccess = 2u08				/* TCP Request wurde erfolgreich beantwortet, TCP Verbindung schließen */
+Wettervorhersage_Query_State = Wettervorhersage_Query_State_Idle
+
+Wettervorhersage_PosStart = 0u16
+Wettervorhersage_PosEnd = 0u16
+Wettervorhersage_Buffer = $$
+Wettervorhersage_Parsen = AUS
+
+// Einzelwerte der Wettervorhersage (Forecast) Abfrage definieren
+
+Wettervorhersage_Heute_Tag = $$
+Wettervorhersage_Heute_Monat = $$
+Wettervorhersage_Heute_Jahr = $$
+Wettervorhersage_Heute_Zeitpunkt = $$
+Wettervorhersage_Heute_Monatsname = $$
+Wettervorhersage_Heute_Wochentag_Kurz = $$
+Wettervorhersage_Heute_Wochentag = $$
+Wettervorhersage_Heute_Temperatur_Max = 0.0f16
+Wettervorhersage_Heute_Temperatur_Min = 0.0f16
+Wettervorhersage_Heute_Wetter = $$
+Wettervorhersage_Heute_Regenwahrscheinlichkeit = 0u16
+Wettervorhersage_Heute_Regenmenge = 0u16
+Wettervorhersage_Heute_Regenmenge_Tag = 0u16
+Wettervorhersage_Heute_Regenmenge_Nacht = 0u16
+Wettervorhersage_Heute_Schneemenge = 0u16
+Wettervorhersage_Heute_Schneemenge_Tag = 0u16
+Wettervorhersage_Heute_Schneemenge_Nacht = 0u16
+Wettervorhersage_Heute_Wind_Max = 0u16
+Wettervorhersage_Heute_Wind = 0u16
+Wettervorhersage_Heute_Wind_Max_Richtung = $$
+Wettervorhersage_Heute_Wind_Richtung = $$
+Wettervorhersage_Heute_Feuchtigkeit = 0u16
+Wettervorhersage_Heute_Feuchtigkeit_Max = 0u16
+Wettervorhersage_Heute_Feuchtigkeit_Min = 0u16
+
+Wettervorhersage_Morgen_Tag = $$
+Wettervorhersage_Morgen_Monat = $$
+Wettervorhersage_Morgen_Jahr = $$
+Wettervorhersage_Morgen_Zeitpunkt = $$
+Wettervorhersage_Morgen_Monatsname = $$
+Wettervorhersage_Morgen_Wochentag_Kurz = $$
+Wettervorhersage_Morgen_Wochentag = $$
+Wettervorhersage_Morgen_Temperatur_Max = 0.0f16
+Wettervorhersage_Morgen_Temperatur_Min = 0.0f16
+Wettervorhersage_Morgen_Wetter = $$
+Wettervorhersage_Morgen_Regenwahrscheinlichkeit = 0u16
+Wettervorhersage_Morgen_Regenmenge = 0u16
+Wettervorhersage_Morgen_Regenmenge_Tag = 0u16
+Wettervorhersage_Morgen_Regenmenge_Nacht = 0u16
+Wettervorhersage_Morgen_Schneemenge = 0u16
+Wettervorhersage_Morgen_Schneemenge_Tag = 0u16
+Wettervorhersage_Morgen_Schneemenge_Nacht = 0u16
+Wettervorhersage_Morgen_Wind_Max = 0u16
+Wettervorhersage_Morgen_Wind = 0u16
+Wettervorhersage_Morgen_Wind_Max_Richtung = $$
+Wettervorhersage_Morgen_Wind_Richtung = $$
+Wettervorhersage_Morgen_Feuchtigkeit = 0u16
+Wettervorhersage_Morgen_Feuchtigkeit_Max = 0u16
+Wettervorhersage_Morgen_Feuchtigkeit_Min = 0u16
+
+Wettervorhersage_Uebermorgen_Tag = $$
+Wettervorhersage_Uebermorgen_Monat = $$
+Wettervorhersage_Uebermorgen_Jahr = $$
+Wettervorhersage_Uebermorgen_Zeitpunkt = $$
+Wettervorhersage_Uebermorgen_Monatsname = $$
+Wettervorhersage_Uebermorgen_Wochentag_Kurz = $$
+Wettervorhersage_Uebermorgen_Wochentag = $$
+Wettervorhersage_Uebermorgen_Temperatur_Max = 0.0f16
+Wettervorhersage_Uebermorgen_Temperatur_Min = 0.0f16
+Wettervorhersage_Uebermorgen_Wetter = $$
+Wettervorhersage_Uebermorgen_Regenwahrscheinlichkeit = 0u16
+Wettervorhersage_Uebermorgen_Regenmenge = 0u16
+Wettervorhersage_Uebermorgen_Regenmenge_Tag = 0u16
+Wettervorhersage_Uebermorgen_Regenmenge_Nacht = 0u16
+Wettervorhersage_Uebermorgen_Schneemenge = 0u16
+Wettervorhersage_Uebermorgen_Schneemenge_Tag = 0u16
+Wettervorhersage_Uebermorgen_Schneemenge_Nacht = 0u16
+Wettervorhersage_Uebermorgen_Wind_Max = 0u16
+Wettervorhersage_Uebermorgen_Wind = 0u16
+Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $$
+Wettervorhersage_Uebermorgen_Wind_Richtung = $$
+Wettervorhersage_Uebermorgen_Feuchtigkeit = 0u16
+Wettervorhersage_Uebermorgen_Feuchtigkeit_Max = 0u16
+Wettervorhersage_Uebermorgen_Feuchtigkeit_Min = 0u16
+
+// Tageszähler der XML Abfragen
+
+Wettervorhersage_Tageszaehler = 0u16
+if chtime(00,00,01) then \\
+	Wettervorhersage_Tageszaehler = 0u16 \\
+	endif
+	
+// TCP Message für Wettervorhersage Abfrage
+
+if Wettervorhersage_Init == EIN then \\
+	stringset(Wettervorhersage_CRLF,0x0A0Du16,0u16); \\
+	Wettervorhersage_GET_1 = $GET /api/$ + $^Key^$ + $/forecast/lang:DL/q/$ + $^Land^$ + $/$ + $^Ort^$; \\
+	Wettervorhersage_GET_2 = $.xml HTTP/1.0$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_3 = $User-Agent: Wget/ 1.0.10$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_4 = $Accept: */*$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_5 = $Host: api.wunderground.com$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_6 = $Connection: Keep-Alive$ + Wettervorhersage_CRLF + Wettervorhersage_CRLF; \\
+	Wettervorhersage_String = Wettervorhersage_GET_1 + Wettervorhersage_GET_2 + Wettervorhersage_GET_3 + Wettervorhersage_GET_4 + Wettervorhersage_GET_5 + Wettervorhersage_GET_6 \\
+	endif
+
+// IP Resolve bei Wettervorhersage_Init == EIN oder bei WettervorhersageStartbedingung == EIN
+
+if after(Wettervorhersage_Init == EIN, 1u64) \\
+	or after(WettervorhersageStartbedingung == EIN, 1u64) then \\
+   	Wettervorhersage_Init = AUS; \\
+    Wettervorhersage_IP = resolve($api.wunderground.com$); \\
+	endif
+
+// TCP Verbindung nach Resolve öffnen, sofern sie nicht bereits hergestellt wird oder bereits besteht	
+
+if after(Wettervorhersage_Init == EIN, 1000u64) \\
+	or after(WettervorhersageStartbedingung == EIN, 1000u64) \\
+	and Wettervorhersage_TCP_ConnectionState >= 2u08 then \\
+    Wettervorhersage_TCP_ConnectionState = connecttcp(Wettervorhersage_Port, Wettervorhersage_IP); \\
+	endif
+
+// Wenn TCP Verbindung besteht und Startfreigabe besteht Wettervorhersage Anfrage an Wunderground senden
+
+if change(Wettervorhersage_TCP_ConnectionState) \\
+	and Wettervorhersage_TCP_ConnectionState == 0u08 then \\
+	Wettervorhersage_TCP_Error_Counter = 0u08; \\
+	sendtcparray(Wettervorhersage_Port, Wettervorhersage_IP, Wettervorhersage_String, size(Wettervorhersage_String)); \\
+	Wettervorhersage_Tageszaehler = Wettervorhersage_Tageszaehler + 1u16; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_QueryStarted; \\
+	endif
+
+// Fehlerhafte TCP Verbindung verzögert erneut aufbauen
+
+if change(Wettervorhersage_TCP_ConnectionState) \\
+	and Wettervorhersage_TCP_ConnectionState >= 2u08 \\
+	and Wettervorhersage_TCP_ConnectionState <= 6u08 \\
+	and Wettervorhersage_TCP_Error_Counter <= 5u08 then \\
+	Wettervorhersage_Init = EIN \\
+	endif
+
+// Empfang der TCP Daten
+
+if event(readtcp(Wettervorhersage_Port_Connected, Wettervorhersage_IP_Connected, Wettervorhersage_xmlRawData)) \\
+	and Wettervorhersage_TCP_ConnectionState == 0u08 \\
+	and Wettervorhersage_Port_Connected == Wettervorhersage_Port \\
+	and Wettervorhersage_IP_Connected == Wettervorhersage_IP then \\
+	Wettervorhersage_xmlText = Wettervorhersage_xmlRawData; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_QuerySuccess; \\
+        Wettervorhersage_ParseTeil=0; \\
+	Wettervorhersage_Len=size(Wettervorhersage_xmlText); \\
+	endif
+
+// TCP Verbindung schliessen
+
+if after(Wettervorhersage_Query_State == Wettervorhersage_Query_State_QuerySuccess, 4000u64) \\
+	and (Wettervorhersage_TCP_ConnectionState == 0u08 \\
+	or Wettervorhersage_TCP_ConnectionState == 1u08) then \\
+   	closetcp(Wettervorhersage_Port_Connected, Wettervorhersage_IP_Connected); \\
+   	Wettervorhersage_TCP_ConnectionState = 7u08; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_Idle; \\
+	endif
+
+// Parsen der XML Daten
+Wettervorhersage_ParseTeil = 0
+Wettervorhersage_Len = 0u16
+
+if Wettervorhersage_Query_State == Wettervorhersage_Query_State_QuerySuccess and Wettervorhersage_ParseTeil==0 then {
+	/* --------------------------------------------------------------------- HEUTE ------------------------------------------------------------------------ */;
+ 	Wettervorhersage_PosStart = find(Wettervorhersage_xmlText,$<day>$, 0u16) + size($<day>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlText,$</day>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Tag = split(Wettervorhersage_xmlText,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   	// String abschneiden, um die Stringsuche zu beschleunigen
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlText,Wettervorhersage_PosEnd,END);
+	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<month>$, 0u16) + size($<month>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</month>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Monat = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<year>$, 0u16) + size($<year>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</year>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Jahr = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+   	Wettervorhersage_Heute_Zeitpunkt = Wettervorhersage_Heute_Tag + $.$ + Wettervorhersage_Heute_Monat + $.$ + Wettervorhersage_Heute_Jahr;
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<monthname>$, 0u16) + size($<monthname>$);
+   	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</monthname>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Monatsname = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday_short>$, 0u16) + size($<weekday_short>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday_short>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wochentag_Kurz = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday>$, 0u16) + size($<weekday>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wochentag = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Temperatur_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 1u16) - 1u16;
+   Wettervorhersage_Heute_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+   Wettervorhersage_ParseTeil=1;
+
+} endif
+
+if Wettervorhersage_ParseTeil==1 then {
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Regenmenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Regenmenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);    
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Regenmenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);      
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Schneemenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);       
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Schneemenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Schneemenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=2;
+
+} endif 
+if Wettervorhersage_ParseTeil==2 then {
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+    	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wind_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wind = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+    	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$, 0u16) - 1u16;
+    Wettervorhersage_Heute_Wind_Max_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$, 0u16) - 1u16;
+    Wettervorhersage_Heute_Wind_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<avehumidity>$, 0u16) + size($<avehumidity>$);
+    	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</avehumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Heute_Feuchtigkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<maxhumidity>$, 0u16) + size($<maxhumidity>$);
+	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</maxhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Heute_Feuchtigkeit_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<minhumidity>$, 0u16) + size($<minhumidity>$);
+    	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</minhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Heute_Feuchtigkeit_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+   Wettervorhersage_ParseTeil=3;
+
+} endif 
+if Wettervorhersage_ParseTeil==3 then {
+	/* --------------------------------------------------------------------- MORGEN ------------------------------------------------------------------------ */;
+ 	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<day>$, 0u16) + size($<day>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</day>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Tag = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+        Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<month>$, 0u16) + size($<month>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</month>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Monat = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<year>$, 0u16) + size($<year>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</year>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Jahr = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+    Wettervorhersage_Morgen_Zeitpunkt = Wettervorhersage_Morgen_Tag + $.$ + Wettervorhersage_Morgen_Monat + $.$ + Wettervorhersage_Morgen_Jahr;
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<monthname>$, 0u16) + size($<monthname>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</monthname>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Monatsname = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday_short>$, 0u16) + size($<weekday_short>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday_short>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wochentag_Kurz = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday>$, 0u16) + size($<weekday>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wochentag = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Temperatur_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=4;
+
+} endif 
+if Wettervorhersage_ParseTeil==4 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 1u16) - 1u16;
+    Wettervorhersage_Morgen_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Regenmenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Regenmenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);    
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+    Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=5;
+} endif 
+
+if Wettervorhersage_ParseTeil==5 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Regenmenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);      
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Schneemenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);       
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Schneemenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Schneemenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wind_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wind = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wind_Max_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+    Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=6;
+} endif 
+
+if Wettervorhersage_ParseTeil==6 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wind_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<avehumidity>$, 0u16) + size($<avehumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</avehumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Feuchtigkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<maxhumidity>$, 0u16) + size($<maxhumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</maxhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Feuchtigkeit_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<minhumidity>$, 0u16) + size($<minhumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</minhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Feuchtigkeit_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=7;
+
+} endif 
+if Wettervorhersage_ParseTeil==7 then {
+
+
+	/* --------------------------------------------------------------------- ÜBERMORGEN ------------------------------------------------------------------------ */;
+ 	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<day>$, 0u16) + size($<day>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</day>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Tag = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<month>$, 0u16) + size($<month>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</month>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Monat = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<year>$, 0u16) + size($<year>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</year>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Jahr = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+    Wettervorhersage_Uebermorgen_Zeitpunkt = Wettervorhersage_Uebermorgen_Tag + $.$ + Wettervorhersage_Uebermorgen_Monat + $.$ + Wettervorhersage_Uebermorgen_Jahr;
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<monthname>$, 0u16) + size($<monthname>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</monthname>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Monatsname = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday_short>$, 0u16) + size($<weekday_short>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday_short>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wochentag_Kurz = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<weekday>$, 0u16) + size($<weekday>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</weekday>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wochentag = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+    Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=8;
+
+} endif 
+if Wettervorhersage_ParseTeil==8 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Temperatur_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Regenmenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Regenmenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);    
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<mm>$, 0u16) + size($<mm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</mm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Regenmenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);      
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Schneemenge = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);       
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=9;
+
+} endif 
+if Wettervorhersage_ParseTeil==9 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Schneemenge_Tag = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<cm>$, 0u16) + size($<cm>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</cm>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Schneemenge_Nacht = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wind_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<kph>$, 0u16) + size($</kph>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</kph>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wind = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wind_Max_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+    Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_ParseTeil=10;
+
+} endif 
+if Wettervorhersage_ParseTeil==10 then {
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<dir>$, 0u16) + size($<dir>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</dir>$,0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wind_Richtung = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<avehumidity>$, 0u16) + size($<avehumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</avehumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Feuchtigkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<maxhumidity>$, 0u16) + size($<maxhumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</maxhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Feuchtigkeit_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<minhumidity>$, 0u16) + size($<minhumidity>$);
+    Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</minhumidity>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Feuchtigkeit_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16);
+
+} endif
+
+// Konvertierung der Windrichtungen
+
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Nord-Nordost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $NNO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Nordost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $NO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Ost-Nordost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $ONO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Ost-Südost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $OSO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Südost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Süd-Südost$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SSO$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Süd-Südwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SSW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Südwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $West-Südwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $WSW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $West-Nordwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $WNW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Nordwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $NW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $NNW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Heute_Wind_Max_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Max_Richtung = $SW-NW$ endif
+
+if Wettervorhersage_Heute_Wind_Richtung == $Nord-Nordost$ then Wettervorhersage_Heute_Wind_Richtung = $NNO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Nordost$ then Wettervorhersage_Heute_Wind_Richtung = $NO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Ost-Nordost$ then Wettervorhersage_Heute_Wind_Richtung = $ONO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Ost-Südost$ then Wettervorhersage_Heute_Wind_Richtung = $OSO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Südost$ then Wettervorhersage_Heute_Wind_Richtung = $SO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Süd-Südost$ then Wettervorhersage_Heute_Wind_Richtung = $SSO$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Süd-Südwest$ then Wettervorhersage_Heute_Wind_Richtung = $SSW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Südwest$ then Wettervorhersage_Heute_Wind_Richtung = $SW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $West-Südwest$ then Wettervorhersage_Heute_Wind_Richtung = $WSW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $West-Nordwest$ then Wettervorhersage_Heute_Wind_Richtung = $WNW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Nordwest$ then Wettervorhersage_Heute_Wind_Richtung = $NW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Richtung = $NNW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Heute_Wind_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Heute_Wind_Richtung = $SW-NW$ endif
+
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Nord-Nordost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $NNO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Nordost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $NO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Ost-Nordost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $ONO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Ost-Südost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $OSO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Südost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Südost$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SSO$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Süd-Südwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SSW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Südwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $West-Südwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $WSW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $West-Nordwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $WNW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Nordwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $NW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $NNW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Morgen_Wind_Max_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Max_Richtung = $SW-NW$ endif
+
+if Wettervorhersage_Morgen_Wind_Richtung == $Nord-Nordost$ then Wettervorhersage_Morgen_Wind_Richtung = $NNO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Nordost$ then Wettervorhersage_Morgen_Wind_Richtung = $NO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Ost-Nordost$ then Wettervorhersage_Morgen_Wind_Richtung = $ONO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Ost-Südost$ then Wettervorhersage_Morgen_Wind_Richtung = $OSO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Südost$ then Wettervorhersage_Morgen_Wind_Richtung = $SO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Süd-Südost$ then Wettervorhersage_Morgen_Wind_Richtung = $SSO$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Süd-Südwest$ then Wettervorhersage_Morgen_Wind_Richtung = $SSW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Südwest$ then Wettervorhersage_Morgen_Wind_Richtung = $SW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $West-Südwest$ then Wettervorhersage_Morgen_Wind_Richtung = $WSW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $West$ then Wettervorhersage_Morgen_Wind_Richtung = $West$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $West-Nordwest$ then Wettervorhersage_Morgen_Wind_Richtung = $WNW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Nordwest$ then Wettervorhersage_Morgen_Wind_Richtung = $NW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Richtung = $NNW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Morgen_Wind_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Morgen_Wind_Richtung = $SW-NW$ endif
+
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Nord-Nordost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $NNO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Nordost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $NO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Ost-Nordost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $ONO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Ost-Südost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $OSO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Südost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Südost$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SSO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Süd-Südwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SSW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Südwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $West-Südwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $WSW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $West-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $WNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $NW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $NNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Max_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Max_Richtung = $SW-NW$ endif
+
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Nord-Nordost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $NNO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Nordost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $NO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Ost-Nordost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $ONO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Ost-Südost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $OSO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Südost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Süd-Südost$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SSO$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Süd-Südwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SSW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Südwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $West-Südwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $WSW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $West$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $West$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $West-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $WNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $NW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $NNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Süd-Südwest-Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SSW-NNW$ endif
+if Wettervorhersage_Uebermorgen_Wind_Richtung == $Südwest-Nord-Nordwest$ then Wettervorhersage_Uebermorgen_Wind_Richtung = $SW-NW$ endif
+
+:end
+
+
+// Abfrage von WundergroundWetter,Wettervorhersage bei Weather Underground abfragen (nur für EibPC ab Patch 3.012 oder höher)
+// @date	1.09.2013 / 04.06.2014
+// @version	2
+// @author	Michael Schriefers, KNX-Forum / Enertex Bayern GmbH, S.M.
+:begin WettervorhersageLight(Key, Ort, Land, WettervorhersageStartbedingung)
+	:info $Basis Wettervorhersage bei Wunderground abfragen.$\\
+      $"Key": wird nach Registrierung bei Wetter unter http://www.wunderground.com/weather/api/ vergeben$\\
+      $"Ort": Der Standort der Wetterstation\\
+      (im Web Browser prüfen mit api.wunderground.com/api/...Key.../forecast/lang:DL/q/Germany/Duesseldorf.xml)$\\
+      $"Land": Das Land in englischer Sprache, z.B. Germany$\\
+      $"StartbedingungWettervorhersage": Startbedingung der Abfrage, z.B. htime(5,00,00)$
+:shortinfo $Basis Wettervorhersage auf Basis von Weather Underground Daten abfragen. Min. EibPC FW V3.000 erforderlich$
+
+// Allgemeine Variablen definieren
+
+Wettervorhersage_Init = after(systemstart() == EIN, 10000u64)
+
+Wettervorhersage_xmlRawData = $$c10000
+Wettervorhersage_xmlText = $$c10000
+Wettervorhersage_xmlTextCut = $$c10000
+Wettervorhersage_IP = 0u32 
+Wettervorhersage_Port = 80u16
+Wettervorhersage_IP_Connected = 0u32
+Wettervorhersage_Port_Connected = 0u16
+
+Wettervorhersage_CRLF = $$
+Wettervorhersage_GET_1 = $$
+Wettervorhersage_GET_2 = $$
+Wettervorhersage_GET_3 = $$
+Wettervorhersage_GET_4 = $$
+Wettervorhersage_GET_5 = $$
+Wettervorhersage_GET_6 = $$
+Wettervorhersage_String = $$
+Wettervorhersage_ErrorString = $Fehlerfrei$
+
+Wettervorhersage_TCP_Error_Counter = 0u08
+Wettervorhersage_TCP_ConnectionState = 6u08						/* Inititalisieren mit erlaubtem Wert aber geschlossener TCP Verbindung */
+
+Wettervorhersage_Query_State_Idle = 0u08						/* Kein TCP Request aktiv */
+Wettervorhersage_Query_State_QueryStarted = 1u08				/* TCP Request wurde gesendet, auf Antwort warten */
+Wettervorhersage_Query_State_QuerySuccess = 2u08				/* TCP Request wurde erfolgreich beantwortet, TCP Verbindung schließen */
+Wettervorhersage_Query_State = Wettervorhersage_Query_State_Idle
+
+Wettervorhersage_PosStart = 0u16
+Wettervorhersage_PosEnd = 0u16
+Wettervorhersage_Buffer = $$
+Wettervorhersage_Parsen = AUS
+
+// Einzelwerte der Wettervorhersage (Forecast) Abfrage definieren
+
+Wettervorhersage_Heute_Temperatur_Max = 0.0f16
+Wettervorhersage_Heute_Temperatur_Min = 0.0f16
+Wettervorhersage_Heute_Wetter = $$
+Wettervorhersage_Heute_Regenwahrscheinlichkeit = 0u16
+Wettervorhersage_Morgen_Temperatur_Max = 0.0f16
+Wettervorhersage_Morgen_Temperatur_Min = 0.0f16
+Wettervorhersage_Morgen_Wetter = $$
+Wettervorhersage_Morgen_Regenwahrscheinlichkeit = 0u16
+Wettervorhersage_Uebermorgen_Temperatur_Max = 0.0f16
+Wettervorhersage_Uebermorgen_Temperatur_Min = 0.0f16
+Wettervorhersage_Uebermorgen_Wetter = $$
+Wettervorhersage_Uebermorgen_Regenwahrscheinlichkeit = 0u16
+
+// Tageszähler der XML Abfragen
+
+Wettervorhersage_Tageszaehler = 0u16
+if chtime(00,00,01) then \\
+	Wettervorhersage_Tageszaehler = 0u16 \\
+	endif
+	
+// TCP Message für Wettervorhersage Abfrage
+
+if Wettervorhersage_Init == EIN then \\
+	stringset(Wettervorhersage_CRLF,0x0A0Du16,0u16); \\
+	Wettervorhersage_GET_1 = $GET /api/$ + $^Key^$ + $/forecast/lang:DL/q/$ + $^Land^$ + $/$ + $^Ort^$; \\
+	Wettervorhersage_GET_2 = $.xml HTTP/1.0$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_3 = $User-Agent: Wget/ 1.0.10$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_4 = $Accept: */*$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_5 = $Host: api.wunderground.com$ + Wettervorhersage_CRLF; \\
+	Wettervorhersage_GET_6 = $Connection: Keep-Alive$ + Wettervorhersage_CRLF + Wettervorhersage_CRLF; \\
+	Wettervorhersage_String = Wettervorhersage_GET_1 + Wettervorhersage_GET_2 + Wettervorhersage_GET_3 + Wettervorhersage_GET_4 + Wettervorhersage_GET_5 + Wettervorhersage_GET_6 \\
+	endif
+
+// IP Resolve bei Wettervorhersage_Init == EIN oder bei WettervorhersageStartbedingung == EIN
+
+if after(Wettervorhersage_Init == EIN, 1u64) \\
+	or after(WettervorhersageStartbedingung == EIN, 1u64) then \\
+   	Wettervorhersage_Init = AUS; \\
+    Wettervorhersage_IP = resolve($api.wunderground.com$); \\
+	endif
+
+// TCP Verbindung nach Resolve öffnen, sofern sie nicht bereits hergestellt wird oder bereits besteht	
+
+if after(Wettervorhersage_Init == EIN, 1000u64) \\
+	or after(WettervorhersageStartbedingung == EIN, 1000u64) \\
+	and Wettervorhersage_TCP_ConnectionState >= 2u08 then \\
+    Wettervorhersage_TCP_ConnectionState = connecttcp(Wettervorhersage_Port, Wettervorhersage_IP); \\
+	endif
+
+// Wenn TCP Verbindung besteht und Startfreigabe besteht Wettervorhersage Anfrage an Wunderground senden
+
+if change(Wettervorhersage_TCP_ConnectionState) \\
+	and Wettervorhersage_TCP_ConnectionState == 0u08 then \\
+	Wettervorhersage_TCP_Error_Counter = 0u08; \\
+	sendtcparray(Wettervorhersage_Port, Wettervorhersage_IP, Wettervorhersage_String, size(Wettervorhersage_String)); \\
+	Wettervorhersage_Tageszaehler = Wettervorhersage_Tageszaehler + 1u16; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_QueryStarted; \\
+	endif
+
+// Fehlerhafte TCP Verbindung verzögert erneut aufbauen
+
+if change(Wettervorhersage_TCP_ConnectionState) \\
+	and Wettervorhersage_TCP_ConnectionState >= 2u08 \\
+	and Wettervorhersage_TCP_ConnectionState <= 6u08 \\
+	and Wettervorhersage_TCP_Error_Counter <= 5u08 then \\
+	Wettervorhersage_Init = EIN \\
+	endif
+
+// Empfang der TCP Daten
+if event(readtcp(Wettervorhersage_Port_Connected, Wettervorhersage_IP_Connected, Wettervorhersage_xmlRawData)) \\
+	and Wettervorhersage_TCP_ConnectionState == 0u08 \\
+	and Wettervorhersage_Port_Connected == Wettervorhersage_Port \\
+	and Wettervorhersage_IP_Connected == Wettervorhersage_IP then \\
+	Wettervorhersage_xmlText = Wettervorhersage_xmlRawData; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_QuerySuccess; \\
+	Wettervorhersage_Len=size(Wettervorhersage_xmlText); \\
+	endif
+
+// TCP Verbindung schliessen
+
+if after(Wettervorhersage_Query_State == Wettervorhersage_Query_State_QuerySuccess, 4000u64) \\
+	and (Wettervorhersage_TCP_ConnectionState == 0u08 \\
+	or Wettervorhersage_TCP_ConnectionState == 1u08) then \\
+   	closetcp(Wettervorhersage_Port_Connected, Wettervorhersage_IP_Connected); \\
+   	Wettervorhersage_TCP_ConnectionState = 7u08; \\
+	Wettervorhersage_Query_State = Wettervorhersage_Query_State_Idle; \\
+	endif
+
+// Parsen der XML Daten
+Wettervorhersage_Len = 0u16
+if Wettervorhersage_Query_State == Wettervorhersage_Query_State_QuerySuccess then {
+	/* --------------------------------------------------------------------- HEUTE ------------------------------------------------------------------------ */;
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlText,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlText,$</celsius>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Temperatur_Max = convert(split(Wettervorhersage_xmlText,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlText,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 1u16) - 1u16;
+   Wettervorhersage_Heute_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    	Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+   Wettervorhersage_Heute_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+	/* --------------------------------------------------------------------- MORGEN ------------------------------------------------------------------------ */;
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Temperatur_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 1u16) - 1u16;
+    Wettervorhersage_Morgen_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+    Wettervorhersage_Morgen_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+
+	/* --------------------------------------------------------------------- ÜBERMORGEN ------------------------------------------------------------------------ */;
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Temperatur_Max = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<celsius>$, 0u16) + size($<celsius>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</celsius>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Temperatur_Min = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0.0f16);   
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<conditions>$, 0u16) + size($<conditions>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</conditions>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Wetter = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd); 
+   // Wettervorhersage_Len=Wettervorhersage_Len-Wettervorhersage_PosEnd;
+   Wettervorhersage_xmlTextCut = split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosEnd,END);
+    Wettervorhersage_PosStart = find(Wettervorhersage_xmlTextCut,$<pop>$, 0u16) + size($<pop>$);
+ 	Wettervorhersage_PosEnd = find(Wettervorhersage_xmlTextCut,$</pop>$, 0u16) - 1u16;
+    Wettervorhersage_Uebermorgen_Regenwahrscheinlichkeit = convert(split(Wettervorhersage_xmlTextCut,Wettervorhersage_PosStart,Wettervorhersage_PosEnd), 0u16); 
+
+} endif
+
+:end
+
+
+
+//----------------------------------------------------------------------
+//  Macro for the Enertex EibPC
+//
+//  EKEY-TOCA-HOME Monitor (Tested with EKey TOCA HOME INTEGRA1 und UDP-Converter)
+//
+//  Version              : v3.100
+//
+//  Dat.Rev.             : Date: 2011/12/20
+//
+//  License              : GPL (v2)                    
+//
+//  History and Author   : 2011/12/20 v3.100 - Sandman60 (http://knx-user-forum.de/members/sandman60.html)
+//
+//  Description          : Verarbeitung der UDP-Pakete des EKEY UDP Converters und Darstellung in der VISU
+//
+//----------------------------------------------------------------------
+:begin EKEYUDP1a(ID,PageID,Port,IP)
+:info $Dieses Makro reagiert auf EKEY-UDP-Pakete$ \\
+    $ID des Elementes$ \\
+    $Page ID der Seite$ \\
+    $SenderPort für Kontrolle$ \\
+    $Sender-Ip-Adresse für Kontrolle$ \\
+:shortinfo $EKEY-UDP-Paketverarbeitung und Darstellung$
+UDPPort=0u16;UDPIP=0u32;Name=$$;EkeyPort=Port^u16;EkeyPaket1=0u32;EkeyPaket2=0u32;EkeyPaket3=0u32;EkeyPaket4=0u32;EkeyPaket5=0u32;EkeyPaket6=0u32;EkeyPaket7=0u32;EkeyPaket8=0u32;EkeyPaket9=0u32
+// Paket2=136 ok; 137=Fehlversuch
+// Paket3=Seriennummer
+// Paket4=Relay (0=1.tes Relay)
+// Paket8=Person (1-9)
+// Paket9=Finger der Person (0-9)
+if event(readudp(UDPPort,UDPIP,EkeyPaket1,EkeyPaket2,EkeyPaket3,EkeyPaket4,EkeyPaket5,EkeyPaket6,EkeyPaket7,EkeyPaket8,EkeyPaket9)) and UDPPort==EkeyPort and UDPIP==IP then {
+    if EkeyPaket8==1u32 then Name=$Person1$ endif;
+    if EkeyPaket8==2u32 then Name=$Person2$ endif;
+    if EkeyPaket8==3u32 then Name=$Person3$ endif;
+    if EkeyPaket8==4u32 then Name=$Person4$ endif;
+    if EkeyPaket8==5u32 then Name=$Person5$ endif;
+    if EkeyPaket8==6u32 then Name=$Person6$ endif;
+    if EkeyPaket8==7u32 then Name=$Person7$ endif;
+    if EkeyPaket8==8u32 then Name=$Person8$ endif;
+    if EkeyPaket8==9u32 then Name=$Person9$ endif;
+    if EkeyPaket2==137u32 then Name=$Fehlversuch$ endif;
+   pdisplay(ID,Name+$ am $+convert(settime(),$$),WINDOW,DISPLAY,GREEN,PageID)
+} endif
+:end
+
+
+
+
+// u32 to IP String
+// @date	30.01.2012
+// @version	1 
+// @author	Bernd Meiners
+:begin U32toIPString(MyIP,MyIPString)
+:info $Umwandeln eines U32 in eine IP der Form ppp.qqq.rrr.sss$
+      $IP Adresse (u32)$
+      $String in Form ppp.qqq.rrr.sss (c1400)$\\
+:shortinfo $Umwandeln einer IP vom Typ U32-Typ in einen String der Form ppp.qqq.rrr.sss$
+:return {
+    MyIPString = convert( (MyIP and 0xFF000000u32) / 0x01000000u32, $$) +$.$+ \\
+    convert( (MyIP and 0x00FF0000u32) / 0x00010000u32, $$) +$.$+ \\
+    convert( (MyIP and 0x0000FF00u32) / 0x00000100u32, $$) +$.$+ \\
+    convert( (MyIP and 0x000000FFu32), $$);
+}
+:end
+
+
+
+// IP String to u32
+// @date	30.01.2012
+// @version	1 
+// @author	Bernd Meiners
+:begin IPStringtoU32(MyIPString,MyIP)
+:info $Umwandeln eines Strings einer IP in Form ppp.qqq.rrr.sss in ein U32$
+      $String in Form ppp.qqq.rrr.sss (c1400)$\\
+      $IP Adresse (u32)$
+:shortinfo $Umwandeln eines Strings einer IP der Form ppp.qqq.rrr.sss in einen U32-Typ$
+:var ByteOne@
+:var ByteTwo@
+:var ByteThree@
+:var ByteFour@
+:var DotOne@
+:var DotTwo@
+:var DotThree@
+ByteOne@ = 0u32
+ByteTwo@ = 0u32
+ByteThree@ = 0u32
+ByteFour@ = 0u32
+DotOne@ = 0u16
+DotTwo@ = 0u16
+DotThree@ = 0u16
+:return {
+    DotOne@ = find(MyIPString,$.$,0u16);
+    DotTwo@ = find(MyIPString,$.$,1u16);
+    DotThree@ = find(MyIPString,$.$,2u16);
+    if DotThree@ < END then {
+        ByteOne@ = convert( split( MyIPString, 0u16, DotOne@), 0u32 );
+        ByteTwo@ = convert( split( MyIPString, DotOne@+1u16, DotTwo@), 0u32 );
+        ByteThree@ = convert( split( MyIPString, DotTwo@+1u16, DotThree@), 0u32 );
+        ByteFour@ = convert( split( MyIPString, DotThree@+1u16, END), 0u32 );
+        MyIP = (((ByteOne@ * 256u32 + ByteTwo@) * 256u32) + ByteThree@) * 256u32 + ByteFour@;
+    } endif;
+    if DotThree@ == END then MyIP = 0u32 endif;
+}   
+:end 
+
+
+// Commandfusion Dimmer mit Rückmeldung
+// @date	10.05.2014
+// @version	1 
+// @author	GoldenEye ( KNX-User-Forum, http://knx-user-forum.de/eibpc/34018-commandfusion-joindimmer-makro.html)
+:begin JoinDimmer2GA(Name,JoinID,GA,StatusGA)
+:info $Dieses Makro verbindet eine Gruppenadresse vom Typ u08 mit einen analogen Join des Command Fusion Teilnehmers. \\
+ Der analoge Join wird dabei passend auf einen Dimmerwert (%) skaliert. \\
+ Durch eine Statusgruppenadresse wird der Join nachgeführt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. a123$\\
+      $Die Gruppenadresse vom Datentyp u08 (%-Wert), die mit dem Join des Command Fusion verbunden werden soll$
+      $Die Status-Gruppenadresse vom Datentyp u08 (%-Wert), die mit dem Join des Command Fusion verbunden werden soll. (Feedback, Status)$
+:shortinfo $Join für einen Dimmer mit gesondertem Statusobjekt$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+   	if convert(convert(Name_Arg,0u16)/256u16,0)!=GA then write(GA,convert(convert(Name_Arg,0u16)/256u16,0)) endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$,$$c14)+convert(convert(Name_Arg,0u16)/256u16,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering delayed
+if after(change(StatusGA),4000u64) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(convert(StatusGA,0u16)*255u16,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($R^JoinID^$+$=$,$$c14)+convert(convert(StatusGA,0u16)*255u16,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if StatusGA!=0 then {
+             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(convert(StatusGA,0u16)*255u16,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end
+
+
+// Russound Quellenwahl 
+// @date	10.06.2014
+// @version	1 
+// @author	MrKNX ( KNX-User-Forum, http://knx-user-forum.de/eibpc/19346-russound-cav-6-6-a-4.html)
+:begin Quellenauswahl(Name,TasteGA,Zone,Quelle)
+:info $Mit diesem Makro können Sie die Eingangsquelle für jede Zone wählen$\\
+	$Name der Quelle in der Zone (Bsp. "Source1Zone1")$\\
+	$Gruppenadresse Taster$\\
+	$Zonen Auswahl (Bsp. "0" steht für Zone 1, "1" für Zone 2...)$\\
+	$Quellenauswahl (Bsp. "0" steht für erste Eingangsquelle, "1" für die Zweite...)$
+:shorthinf $Mit diesem Makro können Sie die Eingangsquelle für jede Zone wählen$
+Name^__SetStateRussound__StateChecksumme=0u08
+
+if (TasteGA) then {	Name^__SetStateRussound__StateChecksumme=getChecksumForSet(0xf0,0,0x00,0x7f,0x00,Zone,0x70,0x05,0x02,0x00,0x00,0x00,0xf1,0x3e,0x00,0x00,0x00,Quelle,0x00,0x01);	sendudp(ServerPort,ServerIP,0xf0,0,0x00,0x7f,0x00,Zone,0x70,0x05,0x02,0x00,0x00,0x00,0xf1,0x3e,0x00,0x00,0x00,Quelle,0x00,0x01,Name^__SetStateRussound__StateChecksumme,0xf7)} endif
+:end
+
+
+

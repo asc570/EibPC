@@ -1,0 +1,18 @@
+[Macros]
+//Den HA7E Adapter einbinden
+HA7E()
+// Richtige Daten hier eintragen
+TemperatureGASync(NameD1, ROMID1,'1/2/3'f16,Sync,0)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWire.lib
+
+[EibPC]
+
+//Die ROM-ID des Sensors im Wohnzimmer
+ROMID1 = $8D000801D29B2410$
+
+Sync=AUS
+// Sync alle 5 Minuten!
+if cycle(2,5) then { Sync=!Sync } endif 

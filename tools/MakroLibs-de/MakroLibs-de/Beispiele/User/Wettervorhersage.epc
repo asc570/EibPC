@@ -1,0 +1,8 @@
+
+[Macros]
+Wettervorhersage(xxxxx,Forchheim,Germany,cycle(60,0))
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]

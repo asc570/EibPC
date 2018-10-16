@@ -1,0 +1,744 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC - FROZEN 04.06.2014
+//
+//  Verschiedenes und Nützliches
+//
+//  Version              : v1.016
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2014/06/11 09:58:09 $
+//  Version              : $Revision: 1.19 $
+//----------------------------------------------------------------------
+
+// Taupunkt
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Taupunkt(SensorLuftfeuchte,SensorTemperatur)
+:info $Dieses Makro berechent den Taupunkt, er wird in der Variable TaupunktTemp(Datentyp f32) gespeichert$ $Adresse Luftfeuchtesensor$ $Adresse Temperatursensor$
+:shortinfo $Taupunktberechnung$
+TaupunktTemp=0f32
+r=0f32
+T=0f32
+a=7.5f32
+b= 237.3f32
+SDDT = 0f32
+DDrT = 0f32
+v = 0f32
+	
+if change(SensorLuftfeuchte) or change(SensorTemperatur) then \\
+	r=convert((convert(SensorLuftfeuchte, 0u32) + 1u32)*100u32 / 256u32,0f32) /100f32;\\
+	T=convert(SensorTemperatur, a);\\
+	SDDT=6.1078f32 * pow(10f32,(a*T)/(b+T));\\
+	DDrT= r*SDDT;\\
+	v=log(10f32,(DDrT/6.1078f32));\\
+	TaupunktTemp=b*v/(a-v) \\
+	endif 
+
+:end
+
+
+// Online 
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Online()
+:info $Berechnet die Zeit seit letztem Start des Awendungsprogramms. Es wird ein c14-String AnzeigeOnline definiert, der zur Ausgabe der Daten auf ein KNX Anzeigeelement dient$ 
+// Variablendefintionen
+:shortinfo $Zeigt an wie lange der EibPC online ist$
+TageOnline=0u16
+StundenOnline=0
+MinutenOnline=0
+if mtime(59,00) then 							\\
+	if StundenOnline<23 then 						\\
+  		StundenOnline=StundenOnline+1 					\\
+	     else                          						\\
+		StundenOnline=0;			                \\
+		TageOnline=TageOnline+1u16 					\\
+	 endif 						\\
+     endif 
+
+if stime(59) then 							\\
+	 if MinutenOnline<59 then        						\\
+		MinutenOnline=MinutenOnline+1 					\\
+	     else 				      		\\
+		MinutenOnline=0 			    	        \\
+	     endif						\\
+	endif  
+
+// Minuten
+AnzeigeM0=$00$c14
+if MinutenOnline<10 and change(MinutenOnline) then AnzeigeM0=$0$c14+convert(MinutenOnline,$xx$c14) endif
+if MinutenOnline>9 and change(MinutenOnline) then AnzeigeM0=convert(MinutenOnline,$xx$c14) endif 
+// Stunden
+AnzeigeS0=$00$c14
+if StundenOnline<10 and change(StundenOnline) then AnzeigeS0=$0$c14+convert(StundenOnline,$xx$c14) endif
+if StundenOnline>9 and change(StundenOnline) then AnzeigeS0=convert(StundenOnline,$xx$c14) endif 
+// Tage
+AnzeigeT0=$000$c14
+if TageOnline<10u16 and change(TageOnline) then AnzeigeT0=$00$c14+convert(TageOnline,$xx$c14) endif
+if TageOnline>9u16 and TageOnline<100u16 and change(TageOnline) then AnzeigeT0=$0$c14+convert(TageOnline,$xx$c14) endif 
+if TageOnline>99u16 and change(TageOnline) then AnzeigeT0=convert(TageOnline,$xx$c14) endif 
+// Ausgabe Ein String im Format dd.hh:mm
+AnzeigeOnline=AnzeigeT0+$.$c14+AnzeigeS0+$:$c14+AnzeigeM0
+:end 
+
+
+// Doppelklick
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Doppelklick(Name,TasteGA,TasteWert,Klick1GA,Klick1Wert,Klick2GA,Klick2Wert)
+:info $Mit diesem Funktionsblock können Sie einen Doppelklick auf eine Taste realisieren: Wenn Sie innerhalb von 0.8 Sekunden zweimal auf den Taster drücken, wird eine andere Aktion ausgelöst, als wie wenn Sie einmal drücken. Beide Aktionen können Sie mit diesem FunktionsblockMakro steuern$ \\
+      $Name des Taster (zwecks Eindeutigkeit)$\\
+      $Grupenadresse, auf welcher der Taster Werte sendet$\\
+      $Der vom Taster gesendete Wert (z.B. EIN oder AUS) $\\
+      $Gruppenadresse für Telegramm bei einfachen Tastendruck$\\
+      $Wert für Telegramm bei einfachen Tastendruck (z.B. EIN oder AUS oder 23%$\\
+      $Gruppenadresse für Telegramm bei doppelten Tastendruck$\\
+      $Wert für Telegramm bei doppelten Tastendruck (z.B. EIN oder AUS oder 23%$
+:shortinfo $Eine Taste mit Doppelklick$ 
+
+Name^DoppelKlick=0
+if event(TasteGA) and (TasteGA==TasteWert) then Name^DoppelKlick=Name^DoppelKlick+1 endif
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==1 then write(Klick1GA,Klick1Wert) endif 
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==2 then write(Klick2GA,Klick2Wert) endif 
+if after(Name^DoppelKlick>0, 1000u64) then Name^DoppelKlick=0 endif 
+
+:end
+
+
+// Doppelklick umschalten
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DoppelklickUM(Name,TasteGA,TasteWert,Klick1GA,Klick2GA)
+:info $Mit diesem Funktionsblock können Sie einen Doppelklick auf eine Taste \\
+realisieren: Wenn Sie innerhalb von 0.8 Sekunden zweimal auf den Taster \\
+drücken, wird eine andere Aktion ausgelöst, als wie wenn Sie einmal drücken. \\
+Beide Aktionen können Sie mit diesem FunktionsblockMakro steuern- Die \\
+jeweiligen GAs werden umgeschaltet (getoggelt)$ \\
+      $Name des Taster (zwecks Eindeutigkeit)$\\
+      $Grupenadresse, auf welcher der Taster Werte sendet$\\
+      $Der vom Taster gesendete Wert (z.B. EIN oder AUS) $\\
+      $Gruppenadresse für Telegramm bei einfachen Tastendruck$\\
+      $Gruppenadresse für Telegramm bei doppelten Tastendruck$
+:shortinfo $Eine Taste mit Doppelklick$ 
+Name^DoppelKlick=0
+Name^StatusKlick=AUS
+Name^StatusDoppelKlick=AUS
+if event(TasteGA) and (TasteGA==TasteWert) then Name^DoppelKlick=Name^DoppelKlick+1 endif
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==1 and Name^StatusKlick==AUS then write(Klick1GA,EIN) endif 
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==1 and Name^StatusKlick==EIN then write(Klick1GA,AUS) endif 
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==2 and Name^StatusDoppelKlick==AUS then write(Klick2GA,EIN) endif 
+if after(Name^DoppelKlick==1, 800u64) and Name^DoppelKlick==2 and Name^StatusDoppelKlick==EIN then write(Klick2GA,AUS) endif 
+if after(Name^DoppelKlick>0, 1000u64) then Name^DoppelKlick=0 endif 
+if after(Name^DoppelKlick==1 and Name^StatusKlick==AUS, 1000u64) then Name^StatusKlick=EIN endif
+if after(Name^DoppelKlick==1 and Name^StatusKlick==EIN, 1000u64) then Name^StatusKlick=AUS endif
+if after(Name^DoppelKlick==1 and Name^StatusDoppelKlick==AUS, 1000u64) then Name^StatusDoppelKlick=EIN endif
+if after(Name^DoppelKlick==1 and Name^StatusDoppelKlick==EIN, 1000u64) then Name^StatusDoppelKlick=AUS endif
+:end 
+
+
+// Langer Tastendruck
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin LangerTastendruck(Name,TasteGA,Zeit,Kommando1,Kommando2)
+:info $Mit diesem Funktionsblock können Sie einen kurzen und langen Tastendruck auswerten: Wenn Sie länger als Zeit (in ms) auf den Taster drücken, wird Kommando2 ausgeführt, sonst Kommando1. Kommandos können beliebige durch Strichpunkt getrennte Anweisungen sein (kein Strichpunkt am Ende).  \\
+    $ \\
+      $Name des Taster (zwecks Eindeutigkeit)$\\
+      $Grupenadresse, auf welcher der Taster Werte ein EIN beim Drücken und AUS beim Loslassen sendet$\\
+      $Zeit in ms (z.B. 200) , ab der ein langer Tastdruck erkannt wird. Erst nach Ablauf dieser Zeit werden nach Tasterbetätigung Kommandos ausgeführt.$\\
+      $Kommando für den kurzen Tastendruck, z.B. write('1/2/3'b01,EIN)$\\
+      $Kommando für den langen Tastendruck, z.B. write('1/2/3'b01,AUS)$
+:shortinfo $Mit diesem Funktionsblock können Sie einen kurzen und langen Tastendruck auswerten$ 
+Name_Command1 = EIN
+Name_Lang = EIN
+if TasteGA then Name_Command1=AUS;Name_Lang = AUS endif
+if after(TasteGA,Zeit^u64) then Name_Lang = EIN endif
+if (!TasteGA) and !Name_Lang then {
+   Kommando1;
+   Name_Command1=EIN
+} endif
+if (!TasteGA) and Name_Lang and !Name_Command1 then {
+   Kommando2
+} endif
+
+:end
+
+// Langer Tastendruck GA
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin LangerTastendruckGA(Name,TasteGA,Zeit,KurzGA,KurzWert,LangGA,LangWert)
+:info $Mit diesem Funktionsblock können Sie einen kurzen und langen Tastendruck auswerten: Wenn Sie länger als Zeit (in ms) auf den Taster drücken, wird KurzGA geschalten, sonst LangGA.$ \\
+      $Name des Taster (zwecks Eindeutigkeit)$\\
+      $Grupenadresse, auf welcher der Taster Werte ein EIN beim Drücken und AUS beim Loslassen sendet$\\
+      $Zeit in ms (z.B. 200) , ab der ein langer Tastdruck erkannt wird. Erst nach Ablauf dieser Zeit werden nach Tasterbetätigung Kommandos ausgeführt.$\\
+      $GA für den kurzen Tastendruck$\\
+      $Wert für den kurzen Tastendruck, muss zum Datentyp der GA passen$\\
+      $GA für den langen Tastendruck$\\
+      $Wert für den kurzen Tastendruck, muss zum Datentyp der GA passen$
+:shortinfo $Mit diesem Funktionsblock können Sie einen kurzen und langen Tastendruck auswerten$ 
+Name_Command1 = EIN
+Name_Lang = EIN
+if TasteGA then Name_Command1=AUS;Name_Lang = AUS endif
+if after(TasteGA,Zeit^u64) then Name_Lang = EIN endif
+if (!TasteGA) and !Name_Lang then {
+   write(KurzGA,KurzWert);
+   Name_Command1=EIN
+} endif
+if (!TasteGA) and Name_Lang and !Name_Command1 then {
+   write(LangGA,LangWert)
+} endif
+
+
+:end
+
+
+// PI Heizregler
+// @date	09.01.2013
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin PIHeizRegler(Name,Freigabe,SollWert,IstWert,KFaktor,IFaktor)
+:info $Mit diesem Funktionsblock können Sie einen PI-Regler für eine Heizungsregelung realisieren. Der Ausgangswert wird in Prozent berechnet und in eine Variable NamePIAktor gespeichert, wobei hier Name für den Namen des 1. Arguments steht.$\\
+      $Name des Reglers (zwecks Eindeutigkeit)$\\
+      $Gruppenadresse oder Variable als Freigabeobjekt für den Regler$\\
+      $Gruppenadresse oder Variable als Sollwertvorgabe (z.B. 22.3 für 22.3 Grad) $\\
+      $Gruppenadresse oder Variable des Istwerts (Fließkomma, 16Bit)$\\
+      $KFaktor: Faktor 1.0 entspricht 1% ReglerAusgang bei 1 Grad Abweichung. Demnach entspricht der Faktor 100.0 bei 1 Grad Abweichung 100%.$\\
+      $IFaktor: Faktor 1.0 entspricht 1% ReglerAusgang bei 1 Grad Abweichung über 1 Minute. Demnach entspricht der Faktor 1.0 bei 1 Grad Abweichung über 100 Minuten dem Ausgang 100%.$
+:shortinfo $PIRegler für Heizung mit Prozentwert$
+
+Name^KRegler=(convert(SollWert,0f32)-convert(IstWert,0f32))*2.55f32
+Name^IRegler=0.0f32
+if change(Freigabe) then Name^IRegler=0.0f32 endif
+
+// 100 Min => 100% Abweichung bei einem Grad Temp. Differenz
+if cycle(1,0) then Name^IRegler=Name^IRegler+Name^KRegler; \\
+                   Name^PIAusgang=convert(Name^KRegler*convert(KFaktor,0f32) +Name^IRegler*convert(IFaktor,0f32),0f32) endif
+// In Prozentwert umbauen
+Name^PIAktor=0
+Name^PIAusgang=0.0f32
+// Reglerbegrenzungen
+if Name^IRegler*convert(IFaktor,0f32)>255f32 then Name^IRegler=255f32/convert(IFaktor,0f32) endif
+if Name^IRegler*convert(IFaktor,0f32)<-255f32 then Name^IRegler=-255f32/convert(IFaktor,0f32) endif
+if Name^PIAusgang>255.0f32 then Name^PIAusgang=255.0f32 endif
+if Name^PIAusgang<0.0f32 then Name^PIAusgang=0.0f32 endif
+if Name^PIAusgang>=0.0f32 and cycle(2,0)  then Name^PIAktor=min(100%,convert(Name^PIAusgang,0)) endif
+if Name^PIAusgang<0.0f32 then Name^PIAktor=0 endif
+:end
+
+
+// Leseflag simulieren
+// @date	11.03.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin LeseFlag(GA)
+:info $Wird diese Funktion gesetzt, so wird der EibPC auf eine Leseanforderung auf der GA antworten$
+:shortinfo $Leseflag im EibPC setzen$
+:return if eventread(GA) then writeresponse(GA,GA) endif 
+:end
+
+
+
+
+// PI Heizregler GA
+// @date	11.01.2013
+// @version	3
+// @author	Enertex Bayern GmbH
+:begin PIHeizReglerGA(Name,Freigabe,SollWert,IstWert,KFaktor,IFaktor,GA,Min)
+:info $Mit diesem Funktionsblock können Sie einen PI-Regler für eine Heizungsregelung realisieren. Der Ausgangswert wird in Prozent berechnet und in eine Variable NamePIAktor gespeichert, wobei hier Name für den Namen des 1. Arguments steht. Der Reglerausgang wird direkt mit zyklischer Ausgabe auf eine Gruppenadresse gesendet.$\\
+      $Name des Reglers (zwecks Eindeutigkeit)$\\
+      $Gruppenadresse oder Variable als Freigabeobjekt für den Regler$\\
+      $Gruppenadresse oder Variable als Sollwertvorgabe (z.B. 22.3 für 22.3 Grad) $\\
+      $Gruppenadresse oder Variable des Istwerts (Fließkomma, 16Bit)$\\
+      $KFaktor: Faktor 1.0 entspricht 1% ReglerAusgang bei 1 Grad Abweichung. Demnach entspricht der Faktor 100.0 bei 1 Grad Abweichung 100%.$\\
+      $IFaktor: Faktor 1.0 entspricht 1% ReglerAusgang bei 1 Grad Abweichung über 1 Minute. Demnach entspricht der Faktor 1.0 bei 1 Grad Abweichung über 100 Minuten dem Ausgang 100%.$\\
+      $Gruppenadresse (Prozent) auf die zyklisch der Wert ausgegeben werden soll.$\\
+      $Min: Zykluszeit in Minuten (max. 255) der Ausgabe auf die Gruppenadresse.$
+:shortinfo $PIRegler für Heizung mit Prozentwert und zyklischer Ausgabe auf Gruppenadresse$
+
+Name^KRegler=(convert(SollWert,0f32)-convert(IstWert,0f32))*2.55f32
+Name^IRegler=0.0f32
+if change(Freigabe) then Name^IRegler=0.0f32 endif
+
+
+// 100 Min => 100% Abweichung bei einem Grad Temp. Differenz
+if cycle(1,0) then Name^IRegler=Name^IRegler+Name^KRegler; \\
+                   Name^PIAusgang=convert(Name^KRegler*convert(KFaktor,0f32) +Name^IRegler*convert(IFaktor,0f32),0f32) endif
+// In Prozentwert umbauen
+Name^PIAktor=0
+Name^PIAusgang=0.0f32
+// Reglerbegrenzungen
+if Name^IRegler*convert(IFaktor,0f32)>255f32 then Name^IRegler=255f32/convert(IFaktor,0f32) endif
+if Name^IRegler*convert(IFaktor,0f32)<-255f32 then Name^IRegler=-255f32/convert(IFaktor,0f32) endif
+if Name^PIAusgang>255.0f32 then Name^PIAusgang=255.0f32 endif
+if Name^PIAusgang<0.0f32 then Name^PIAusgang=0.0f32 endif
+if Name^PIAusgang>=0.0f32 and cycle(1,0)  then Name^PIAktor=min(100%,convert(Name^PIAusgang,0)) endif
+if Name^PIAusgang<0.0f32 then Name^PIAktor=0 endif
+
+if after(cycle(Min,0),convert(random(60000u32),0u64)) and Freigabe then write(GA,Name^PIAktor) endif
+if change(Freigabe) and !Freigabe then write(GA,0%) endif
+
+:end
+
+// Raumkontroller komplett parametrierbar
+// @date	02.03.2012 / 03.06.2014
+// @version	2 
+// @author	Enertex Bayern GmbH / S. Meier
+:begin PIRaumKontrollerGA(Name,GAFreigabe,GASperre,Sollwert,IstWert,StandbyAbsenkung,NachtAbsenkung,K,T,IFaktor,GA,Min, RemanentSpeichern, RemanentLaden,Reset,SpeicherIndex)
+:info $Mit diesem Funktionsblock können Sie einen PI-Regler für eine Heizungsregelung realisieren. Der Ausgangswert wird in Prozent berechnet und in eine Variable NamePIAktor gespeichert, wobei hier Name für den Namen des 1. Arguments steht. Der Reglerausgang wird direkt mit zyklischer Ausgabe auf eine Gruppenadresse gesendet.Beim Systemstart werden im Flash abgespeicherte Werte geladen, wenn Reset auf EIN steht.$\\
+      $Name des Reglers (zwecks Eindeutigkeit)$\\
+      $Gruppenadresse als Konnex-Freigabeobjekt für den Regler vom Typ u08$\\
+      $Gruppenadresse als 1-Bit Sperrobjekt für den Regler$\\
+      $Gruppenadresse als Sollwertvorgabe z.B. 22.3 für 22.3 Grad (Fließkomma, 16Bit) $\\
+      $Gruppenadresse des Istwerts (Fließkomma, 16Bit)$\\
+      $Gruppenadresse der StandbyAbsenkung(Fließkomma, 16Bit)$\\
+      $Gruppenadresse der NachtAbsenkung(Fließkomma, 16Bit)$\\
+      $KFaktor in Kelvin (Fließkomma, 16Bit)$\\
+      $UFaktor in Kelvin (Fließkomma, 16Bit)$\\
+      $IFaktor: Faktor 1.0 entspricht 1% ReglerAusgang bei 1 Grad Abweichung über 1 Minute. Demnach entspricht der Faktor 1.0 bei 1 Grad Abweichung über 100 Minuten dem Ausgang 100%.  (Fließkomma, 16Bit)$\\$\\
+      $Gruppenadresse (Prozent) auf die zyklisch der Wert ausgegeben werden soll$\\
+      $Min: Zykluszeit in Minuten (max. 255) der Ausgabe auf die Gruppenadresse$\\
+      $Wenn Wechsel auf EIN werden alle Konfigparameter remanent gespeichert$\\
+      $Wenn Wechsel auf EIN werden alle Konfigparameter aus dem Flash geladen$\\
+      $Wenn EIN werden alle Konfigparameter beim Reset aus dem Flash geladen$\\
+      $Flash-Speicherplatz im EibPC für die remanete Speicherung$
+
+:shortinfo $Heizungsregler mit Ablegen von Daten im Flashspeicher$
+
+initga(GAFreigabe)
+
+Name^Intern_KFaktor=100.0/K
+Name^Intern_TFaktor=100.0/T
+
+
+Name^Intern_dd=convert(split(convert(setdate(),$$),0u16,1u16),0)
+Name^Intern_mm=convert(split(convert(setdate(),$$),3u16,4u16),0)
+Name^Intern_yy=convert(split(convert(setdate(),$$),6u16,10u16),0u16)
+
+Name^Intern_h =0
+Name^Intern_min=0
+Name^Intern_s=0
+
+Name^SollWert=Sollwert
+Name^KRegler=(convert(Name^SollWert,0f32)-convert(IstWert,0f32)) * 2.55f32
+Name^IRegler=0.0f32
+if GAFreigabe==KOMFORT then Name^SollWert=Sollwert endif
+if GAFreigabe==STANDBY then Name^SollWert=Sollwert-StandbyAbsenkung endif
+if GAFreigabe==NIGHTMODE then Name^SollWert=Sollwert-NachtAbsenkung endif
+
+if GASperre==EIN then Name^IRegler=0.0f32 endif
+
+// Leseflags setzten
+LeseFlag(Sollwert)
+LeseFlag(NachtAbsenkung)
+LeseFlag(StandbyAbsenkung)
+
+Name^ReglerFlash=$$
+
+if (Reset and systemstart()) or RemanentLaden  then readflash(Name^ReglerFlash,SpeicherIndex^u16);RemanentLaden=EIN endif
+if after(RemanentLaden,50u64) then {
+   K=stringcast(Name^ReglerFlash,K,0u16);
+   T=stringcast(Name^ReglerFlash,T,4u16);
+   write(GAFreigabe,stringcast(Name^ReglerFlash, GAFreigabe, 6u16));
+   write(GASperre,stringcast(Name^ReglerFlash, GASperre,7u16));
+   write(Sollwert,stringcast(Name^ReglerFlash,Sollwert,8u16));
+   write(StandbyAbsenkung,stringcast(Name^ReglerFlash,StandbyAbsenkung,10u16));
+   write(NachtAbsenkung,stringcast(Name^ReglerFlash,NachtAbsenkung,12u16));
+   Name^Intern_yy=stringcast(Name^ReglerFlash,Name^Intern_yy,14u16);
+   Name^Intern_mm=stringcast(Name^ReglerFlash,Name^Intern_mm,15u16);
+   Name^Intern_dd=stringcast(Name^ReglerFlash,Name^Intern_dd,16u16);
+   Name^Intern_h =stringcast(Name^ReglerFlash,Name^Intern_h ,17u16);
+   Name^Intern_min =stringcast(Name^ReglerFlash,Name^Intern_min ,18u16);
+   Name^Intern_s =stringcast(Name^ReglerFlash,Name^Intern_s ,19u16);
+   RemanentLaden=AUS
+ } endif
+
+if RemanentSpeichern then {
+   stringset(Name^ReglerFlash,K,0u16);
+   stringset(Name^ReglerFlash,T,4u16);
+   stringset(Name^ReglerFlash, GAFreigabe,6u16);
+   stringset(Name^ReglerFlash, GASperre,7u16);
+   stringset(Name^ReglerFlash,Sollwert,8u16);
+   stringset(Name^ReglerFlash,StandbyAbsenkung,10u16);
+   stringset(Name^ReglerFlash,NachtAbsenkung,12u16);
+   stringset(Name^ReglerFlash,Name^Intern_yy,14u16);
+   stringset(Name^ReglerFlash,Name^Intern_mm,15u16);
+   stringset(Name^ReglerFlash,Name^Intern_dd,16u16);
+   stringset(Name^ReglerFlash,hour(),17u16);
+   stringset(Name^ReglerFlash,minute(),18u16);
+   stringset(Name^ReglerFlash,second(),19u16);
+   writeflash(Name^ReglerFlash,SpeicherIndex^u16);
+   RemanentSpeichern=AUS
+} endif
+
+
+
+
+ 
+// 100 Min => 100% Abweichung bei einem Grad Temp. Differenz
+if cycle(1,0) and !GASperre then Name^IRegler=Name^IRegler+Name^KRegler; \\
+                   Name^PIAusgang=convert(Name^KRegler*convert(Name^Intern_KFaktor,0f32) +Name^IRegler*convert(Name^Intern_TFaktor,0f32),0f32) endif
+// In Prozentwert umbauen
+Name^PIAktor=0
+Name^PIAusgang=0.0f32
+// Reglerbegrenzungen
+if Name^IRegler*convert(IFaktor,0f32)>255f32 then Name^IRegler=255f32/convert(IFaktor,0f32) endif
+if Name^IRegler*convert(IFaktor,0f32)<-255f32 then Name^IRegler=-255f32/convert(IFaktor,0f32) endif
+if Name^PIAusgang>255.0f32 then Name^PIAusgang=255.0f32 endif
+if Name^PIAusgang<0.0f32 then Name^PIAusgang=0.0f32 endif
+if after(cycle(1,0),convert(random(20000u32),0u64)) and !GASperre then Name^PIAktor=min(100%,convert(Name^PIAusgang,0)) endif
+if after(cycle(1,0),convert(random(20000u32),0u64)) and GASperre then Name^PIAktor=0 endif
+if Name^PIAusgang<0.0f32 then Name^PIAktor=0 endif
+
+if after(cycle(Min,0),convert(random(60000u32),0u64)) or change(Name^PIAktor/5%) then write(GA,Name^PIAktor) endif
+
+:end
+
+
+
+
+// kWh einfach
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin kWh_Einfach(Name,GA)
+:info $Ein Integrator für einen Zähler für  Aktoren mit Stromerkennung (z.B. ABB SA/S x.16.5S). Der mA Wert wird in eine Variable kWh_Name gespeichert, welche vom Typ f32 ist.\\
+    Annahme: Der Aktor gibt den Wert in mA über die GA aus (Leseanforderung muss möglich sein). Alle 15 Min schickt der EibPC eine Leseanforderung an diese Adresse, um den \\
+    Wert aktuell zu halten. Das Makro geht von einer Spannung 230V und einem Cosinus-PHI von 1 aus.$\\
+    $Name des Zählers$\\
+    $Gruppenadresse des Aktors (gemessener Stromwert in mA)$
+:shortinfo $Einfacher Stromzähler aus mA Aktorsignal, Spannung 230V und Cosinus-PHI = 1$
+// Sekundenzähler
+Name^t=0f32
+if cycle(0,1) then Name^t=Name^t+1f32 endif
+// Integrationsintervall
+Name^t0=0f32
+// Steuervariable
+Name^Int=AUS
+// Stromwert
+Name^Strom=0u16
+// Zähler
+kWh_Name=0f32
+// Der Integrator
+// kwH=Strom*Delta_Zeit
+// mit Delta_Zeit=t-t0
+// Dimension kWh: I(A)/1000*230V* Delta_Zeit s/3600 *1/1000= I*Delta_Zeit*6.3888888888888888888e-8
+if event(GA) then Name^Int=EIN;kWh_Name=kWh_Name+convert(Name^Strom,0f32)*(Name^t-Name^t0)*6.38888888888888888888e-8f32 endif
+// Speichern der Werte
+if Name^Int then Name^t0=Name^t;Name^Int=AUS;Name^Strom=convert(GA, 0u16) endif
+// Alle 15 min in jedem Fall den Zähler auslesen
+if cycle(15,0) then read(GA) endif
+:end
+
+// kWh
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin kWh(Name,GA,Un,Cos)
+:info $Ein Integrator für einen Zähler für  Aktoren mit Stromerkennung (z.B. ABB SA/S x.16.5S). Der mA Wert wird in eine Variable kWh_Name gespeichert, welche vom Typ f32 ist.\\
+    Annahme: Der Aktor gibt den Wert in mA über die GA aus (Leseanforderung muss möglich sein). Alle 15 Min schickt der EibPC eine Leseanforderung an diese Adresse, um den \\
+    Wert aktuell zu halten. Die Spannung und der Cosinus-PHI muss angegeben werden.$\\
+    $Name des Zählers$\\
+    $Gruppenadresse des Aktors (gemessener Stromwert in mA)$\\
+    $Nennspannung als Zahl (in V, z.B. 110, 60)$\\
+    $Cosinus Phi als Zahl (z.B. 0.8, 0.9)$
+:shortinfo $Einfacher Stromzähler aus mA Aktorsignal$
+// Sekundenzähler
+Name^t=0f32
+if cycle(0,1) then Name^t=Name^t+1f32 endif
+// Integrationsintervall
+Name^t0=0f32
+// Steuervariable
+Name^Int=AUS
+// Stromwert
+Name^Strom=0u16
+// Zähler
+kWh_Name=0f32
+Name^Faktor=1e-6f32/3600.0f32*Un^f32*Cos^f32
+// Der Integrator
+if event(GA) then Name^Int=EIN;kWh_Name=kWh_Name+convert(Name^Strom,0f32)*(Name^t-Name^t0)*Name^Faktor endif
+// Speichern der Werte
+if Name^Int then Name^t0=Name^t;Name^Int=AUS;Name^Strom=convert(GA, 0u16) endif
+// Alle 15 min in jedem Fall den Zähler auslesen
+if cycle(15,0) then read(GA) endif
+:end
+
+
+// Foor loop
+// @date	21.07.2012
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin ForLoop(Name,Start,CountMax,Aktion)
+:info $Eine Aktion (ein oder mehrere Funktionsaufrufe, ausführbarer Code) in einer Schleife Ausführen. Als Schleifenzähler wird Name^Counter genutzt. Dieser Zähler wird um 1 erhöht und läuft bis zur Grenze CountMax. Danach wird die Startvariable wieder auf AUS gesetzt.$\\
+      $Name der Schleife$\\
+      $Startvariable (EIN oder AUS). Bei Wechsel auf EIN fängt die Schleife an zu arbeiten$\\
+      $Maximale Zahl der Durchläufe als Zahl zwischen 0 und 4294967295$\\
+      $Ein oder mehrere Anweisungen (entspricht Code des Anwendungsprogramms). Zwischen den Anweisungen (nicht am Ende) durch Strichpunkt getrennt.$
+:shortinfo $For-Schleife$
+Name^Counter=99u32
+:var Next@
+Next@=AUS          
+if (Start) then Name^Counter=0u32 endif
+if change(Name^Counter) then Next@=!Next@ endif 
+if change(Next@) and Name^Counter<CountMax^u32 then Aktion; Name^Counter=Name^Counter+1u32 endif
+:end 
+
+
+// While loop
+// @date	21.07.2012
+// @version	2
+// @author	Enertex Bayern GmbH
+:begin WhileLoop(Name,Start,Bedingung,Aktion)
+:info $Eine Aktion (ein oder mehrere Funktionsaufrufe, ausführbarer Code) in einer While-Schleife Ausführen. Danach wird die Startvariable wieder auf AUS gesetzt.$\\
+      $Name der Schleife$\\
+      $Startvariable (EIN oder AUS). Bei Wechsel auf EIN fängt die Schleife an zu arbeiten$\\
+      $Solange diese Bedingung wahr ist, wird die Aktion ausgeführt.(Maximal aber 4294967295-mal)$\\
+      $Ein oder mehrere Anweisungen (entspricht Code des Anwendungsprogramms). Zwischen den Anweisungen (nicht am Ende) durch Strichpunkt getrennt.$
+:shortinfo $While-Schleife$
+:var Next@
+Next@=AUS          
+Name^Counter=99u32
+if (Start) then Name^Counter=0u32 endif
+if change(Name^Counter) then Next@=!Next@ endif 
+if change(Next@) and (Bedingung) then Aktion; Name^Counter=Name^Counter+1u32 endif
+:end 
+
+
+// Wake on lan
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin WOL(Trigger,MAC1,MAC2,MAC3,MAC4,MAC5,MAC6)
+:info $Ein Wake-On-LAN Telegramm an das Gerät mit der Macadresse schicken. Die Argumente werden als Hexcode (ohne führendes "0x") angegeben.\\
+ Sie müssen Option NP auf Ihrem EibPC installiert haben$.\\
+      $Trigger$ \\
+      $1. Byte  als Hexcode ohne führendes "0x" $\\
+      $2. Byte  als Hexcode ohne führendes "0x" $\\
+      $3. Byte  als Hexcode ohne führendes "0x" $\\
+      $4. Byte  als Hexcode ohne führendes "0x" $\\
+      $5. Byte  als Hexcode ohne führendes "0x" $\\
+      $6. Byte  als Hexcode ohne führendes "0x" $
+:shortinfo $Wake on Lan$
+if (Trigger) then  sendudp(10000u16, 255.255.255.255, 255,255,255,255,255,255,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08,\\
+0x^MAC1^u08,0x^MAC2^u08,0x^MAC3^u08,0x^MAC4^u08,0x^MAC5^u08,0x^MAC6^u08) endif 
+:end 
+
+
+
+// Percent to float
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PercentToFloat(PercentGA, Name)
+:info $Konvertiert einen Prozentwert(Datentyp u08) in eine f32 Variable, deren Namen Sie wählen können, z.B. 50% wird zu 0.5f32$\\
+	$Gruppenadresse von welcher der Prozent Wert gelesen werden soll$\\
+	$Name der Variable$
+:shortinfo $Konvertiert einen Prozentwert in eine Fließkommazahl$
+if systemstart() then read(PercentGA) endif
+Name = convert(PercentGA,0f32) /255f32
+:end
+
+// float to percent
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin FloatToPercent(FloatGA, Name)
+:info $Konvertiert eine Fließkommazahl(Datentyp f32) in eine vorzeichenlose ganze Zahl(Datentyp u08), deren Namen Sie wählen können.$\\
+	$Gruppenadresse von welcher die Fließkommazahl gelesen wird$\\
+	$Name der Variable$
+:shortinfo $Konvertiert eine Fließkommazahl in einen Prozentwert$
+if systemstart() then read(FloatGA) endif
+Name = convert(FloatGA*100.04f32,0f16)
+:end
+
+
+// Uhr Synchronisation auf GA
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin UhrenSynchronisation(UhrGA)
+:info $Täglich um 3:00 Uhr wird die entsprechende Uhr mit der Uhrzeit des EibPCs synchronisiert. Dazu muss es möglich sein auf die Gruppenadresse zu schreiben.$\\
+$Gruppenadresse der Uhr$
+:shortinfo $Täglich um 3:00 Uhr eine Uhr synchronisieren$
+if htime(03,00,00) then write(UhrGA, settime()) endif
+:end
+
+
+
+
+
+
+// Runden
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Runden(FloatGA, Zahl)
+:info $Eine Fliesskommazahl(Datentyp f16) wird auf- bzw. abgerundet, z.B. wird aus dem Wert 2.5 die Zahl(Datentyp u08) 3$\\
+	$Gruppenadresse von welcher die Fliesskommazahl gelesen wird$\\
+	$Name der Variable, welche die gerundete Zahl darstellt$
+:shortinfo $Rundet eine Fliesskommazahl(Datentyp f16) auf bzw. ab$
+initGA(FloatGA)
+Zahl = 0u08
+Numberconv = convert(FloatGA,0u08)
+updown = FloatGA - convert(Numberconv,0f16)
+
+if (updown >= 0.5f16) then Zahl = convert(FloatGA + 1.0,0u08) else Zahl = convert(FloatGA,0u08) endif
+:end
+
+
+
+
+
+
+// Raumkontroller komplett parametrierbar
+// @date	16.01.2014
+// @version	1
+// @author	Enertex Bayern GmbH (J.S.)
+:begin PIRaumKontrollerVar(Name,PageID,VarFreigabe,VarSperre,Sollwert,IstWert,StandbyAbsenkung,NachtAbsenkung,K,T,GaHeizAktor,Min, RemanentSpeichern, RemanentLaden,Reset,SpeicherIndex)
+:info $Mit diesem Funktionsblock können Sie einen PI-Regler für eine Heizungsregelung realisieren. Der Ausgangswert wird in Prozent berechnet und in eine Variable NamePIAktor gespeichert,\\
+wobei hier Name für den Namen des 1. Arguments steht. Der Reglerausgang wird direkt mit zyklischer Ausgabe auf eine Gruppenadresse GaHeizAktor gesendet.\\
+Beim Systemstart werden im Flash abgespeicherte Werte geladen, wenn Reset auf EIN steht.\\
+Vorsicht: Für den Speicherindex muss ein Wert zwischen 1 und 1000 gewählt werden. Dieser Speicherindex sollte pro Regler nur 1x verwendet werden, da sich die Reglerparameter im Flash sonst\\
+gegenseitig überschreibenV$\\
+      $Name des Reglers (zwecks Eindeutigkeit)$\\
+      $Beliebige ganze Zahl für die eindeutige Kennzeichnung im Visuassi$\\
+      $Variable als Konnex-Freigabeobjekt für den Heizregler (u08)$\\
+      $Variable als 1-Bit Sperrobjekt für den Regler (b01)$\\
+      $Variable als Sollwertvorgabe z.B. 22.3 für 22.3 Grad (f16)$\\
+      $Gruppenadresse des Istwerts (f16)$\\
+      $Variable der StandbyAbsenkung (f16)$\\
+      $Variable der NachtAbsenkung (f16)$\\
+      $KFaktor in Kelvin (f16)$\\
+      $UFaktor in Kelvin (f16)$\\
+      $Gruppenadresse auf die zyklisch der Aktorwert ausgegeben werden soll (u08)$\\
+      $Min: Zykluszeit in Minuten (max. 255) der Ausgabe auf die Gruppenadresse (u08)$\\
+      $Wenn Wechsel auf EIN werden alle Konfigparameter remanent gespeichert (b01)$\\
+      $Wenn Wechsel auf EIN werden alle Konfigparameter aus dem Flash geladen (b01)$\\
+      $Wenn EIN werden alle Konfigparameter beim Reset aus dem Flash geladen (b01)$\\
+      $Flash-Speicherplatz im EibPC für die remanete Speicherung (ganze Zahl)$
+
+:shortinfo $Heizungsregler mit Ablegen von Daten im Flashspeicher. Im Visu-Assistenten verwendet.$
+
+Name^PageID^Intern_KFaktor=100.0/K
+Name^PageID^Intern_TFaktor=100.0/T
+
+
+Name^PageID^Intern_dd=convert(split(convert(setdate(),$$),0u16,1u16),0)
+Name^PageID^Intern_mm=convert(split(convert(setdate(),$$),3u16,4u16),0)
+Name^PageID^Intern_yy=convert(split(convert(setdate(),$$),6u16,10u16),0u16)
+
+Name^PageID^Intern_h =0
+Name^PageID^Intern_min=0
+Name^PageID^Intern_s=0
+
+Name^PageID^SollWert=Sollwert
+Name^PageID^KRegler=convert(Name^PageID^SollWert,0f32)-convert(IstWert,0f32)
+Name^PageID^IRegler=0.0f32
+if VarFreigabe==KOMFORT then Name^PageID^SollWert=Sollwert endif
+if VarFreigabe==STANDBY then Name^PageID^SollWert=Sollwert-StandbyAbsenkung endif
+if VarFreigabe==NIGHTMODE then Name^PageID^SollWert=Sollwert-NachtAbsenkung endif
+
+if VarSperre==EIN then Name^PageID^IRegler=0.0f32 endif
+
+Name^PageID^ReglerFlash=$A$
+
+if (Reset and systemstart()) or RemanentLaden  then readflash(Name^PageID^ReglerFlash,SpeicherIndex^u16);RemanentLaden=EIN endif
+if after(RemanentLaden,50u64) then {
+   K=stringcast(Name^PageID^ReglerFlash,K,0u16);
+   T=stringcast(Name^PageID^ReglerFlash,T,4u16);
+   VarFreigabe=stringcast(Name^PageID^ReglerFlash, VarFreigabe, 6u16);
+   VarSperre=stringcast(Name^PageID^ReglerFlash, VarSperre,7u16);
+   Sollwert=stringcast(Name^PageID^ReglerFlash,Sollwert,8u16);
+   StandbyAbsenkung=stringcast(Name^PageID^ReglerFlash,StandbyAbsenkung,10u16);
+   NachtAbsenkung=stringcast(Name^PageID^ReglerFlash,NachtAbsenkung,12u16);
+   Name^PageID^Intern_yy=stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_yy,14u16);
+   Name^PageID^Intern_mm=stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_mm,15u16);
+   Name^PageID^Intern_dd=stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_dd,16u16);
+   Name^PageID^Intern_h =stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_h ,17u16);
+   Name^PageID^Intern_min =stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_min ,18u16);
+   Name^PageID^Intern_s =stringcast(Name^PageID^ReglerFlash,Name^PageID^Intern_s ,19u16);
+   RemanentLaden=AUS
+ } endif
+
+if RemanentSpeichern then {
+   stringset(Name^PageID^ReglerFlash,K,0u16);
+   stringset(Name^PageID^ReglerFlash,T,4u16);
+   stringset(Name^PageID^ReglerFlash, VarFreigabe,6u16);
+   stringset(Name^PageID^ReglerFlash, VarSperre,7u16);
+   stringset(Name^PageID^ReglerFlash,Sollwert,8u16);
+   stringset(Name^PageID^ReglerFlash,StandbyAbsenkung,10u16);
+   stringset(Name^PageID^ReglerFlash,NachtAbsenkung,12u16);
+   stringset(Name^PageID^ReglerFlash,Name^PageID^Intern_yy,14u16);
+   stringset(Name^PageID^ReglerFlash,Name^PageID^Intern_mm,15u16);
+   stringset(Name^PageID^ReglerFlash,Name^PageID^Intern_dd,16u16);
+   stringset(Name^PageID^ReglerFlash,hour(),17u16);
+   stringset(Name^PageID^ReglerFlash,minute(),18u16);
+   stringset(Name^PageID^ReglerFlash,second(),19u16);
+   writeflash(Name^PageID^ReglerFlash,SpeicherIndex^u16);
+   RemanentSpeichern=AUS
+} endif
+ 
+// 100 Min => 100% Abweichung bei einem Grad Temp. Differenz
+if cycle(1,0) and !VarSperre then Name^PageID^IRegler=Name^PageID^IRegler+Name^PageID^KRegler; \\
+                   Name^PageID^PIAusgang=convert(Name^PageID^KRegler*convert(Name^PageID^Intern_KFaktor,0f32) +Name^PageID^IRegler*convert(Name^PageID^Intern_TFaktor,0f32),0f32) endif
+// In Prozentwert umbauen
+Name^PageID^PIAktor=0
+Name^PageID^PIAusgang=0.0f32
+// Reglerbegrenzungen
+if Name^PageID^IRegler>100000.0f32 then Name^PageID^IRegler=100000.0f32 endif
+if Name^PageID^IRegler<-100000.0f32 then Name^PageID^IRegler=-10000.0f32 endif
+if Name^PageID^PIAusgang>255.0f32 then Name^PageID^PIAusgang=255.0f32 endif
+if Name^PageID^PIAusgang<0.0f32 then Name^PageID^PIAusgang=0.0f32 endif
+if after(cycle(1,0),convert(random(20000u32),0u64)) and !VarSperre then Name^PageID^PIAktor=min(100%,convert(Name^PageID^PIAusgang,0)) endif
+if after(cycle(1,0),convert(random(20000u32),0u64)) and VarSperre then Name^PageID^PIAktor=0 endif
+if Name^PageID^PIAusgang<0.0f32 then Name^PageID^PIAktor=0 endif
+
+if after(cycle(Min,0),convert(random(60000u32),0u64)) or change(Name^PageID^PIAktor/5%) then write(GaHeizAktor,Name^PageID^PIAktor) endif
+:end
+
+
+
+// Verknüpft eine Variable bidirektional mit einer Status GA
+// @date	16.01.2014
+// @version	1
+// @author	Enertex Bayern GmbH (J.S.)
+:begin LinkGaToVar(Var, GA, StatusGA)
+:info $Verknüpft eine Variable mit einer StatusGA, so dass die Variable immer den gleichen Wert hat, wie die StatusGA\\
+Wenn sich die StatusGA ändert, dann wird ebenfalls die Variable namens Var geändert. Wenn sich die Variable Var ändert, dann wird\\
+ebenfalls die GA namens Ga geändert$\\
+		 :$Variablenname$\\
+         :$Gruppenaddresse$\\
+         :$Status der Gruppenaddresse$\\
+:shortinfo $Verknüpft die Werte einer Gruppenaddresse bidirektional mit den Werten einer Variablen. Im Visu-Assistenten verwendet.$
+initga(StatusGA)
+if systemstart() then Var=convert(0,Var) endif;
+if change(StatusGA) then Var=StatusGA endif  
+if change(Var) then if Var!=StatusGA then write(GA,Var) endif endif
+:end
+
+

@@ -1,0 +1,216 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Physikalische Gruppenüberwachung
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+///
+/// (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+///
+/// Author               : Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+/// Mail                 : schuster@enertex.de
+///
+/// Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+/// Version              : $Revision: 1.5 $
+//----------------------------------------------------------------------
+
+
+// PhyMonitor
+// @date	18.03.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin PhyMonitor(Name,Dev,ZeitAlarm)
+:info $Es wird überprüft, ob vom einem KNX Gerät in vorgebbaren Zeitintervallen ein beliebiges Gruppenntelegramm eintrifft. Außerdem werden Durchschnittswerte ermittlet und in Variablen abgespeichtert$\\
+	$Name des Monitors, z.B. Aktor1. Die Fehlervariable heisst dann "Aktor1Raw_Error". "Aktor1Raw_AvgTime" ergibt dann die Zeit zwischen zwei Telegrammen.$\\
+	$Physikalische Adresse des zu überwachenden Geräts, z.B. 1.12.182$\\
+	$Zeit, in der ein Telegramm eingetroffen sein sollte in Minuten $
+:shortinfo: $Gerätewächter$
+// ---------------------------------------
+// Physikalische Geräteadresse  
+// ---------------------------------------
+Name^RawDev=Dev 
+
+// Auswertung
+// ---------------------------------------
+// Maximale Zeit zwischen zwei Telegrammen vom selben Gerät seit Beginn der Aufzeichnung
+Name^Raw_MaxTime=0u16
+// Minimale Zeit zwischen zwei Telegrammen vom selben Gerät seit Beginn der Aufzeichnung
+Name^Raw_MinTime=65365u16
+// Letzte ermittlete Zeit 
+Name^Raw_CalcTime=0u16
+// Durchschnittswert über alle Telegramme vom selben Gerät 
+Name^Raw_AvgTime=0u64
+
+// Fehlerzeit: Wann soll ein Fehler erkannt werden
+Name^Raw_TimeWatch=ZeitAlarm^u64*60000u64
+
+
+// Argumente von readrawknx:
+Name^Raw_Kontroll=0
+Name^Raw_Sender=0.0.0
+Name^Raw_GA=0u16
+Name^Raw_IsGa=AUS
+Name^Raw_RoutingCnt=0
+Name^Raw_Len=0
+Name^Raw_Data=$$
+
+
+// ---------------------------------------
+// Hilfsvariablen
+Name^Raw_AvgTrigger=0u64
+Name^Raw_Error=AUS
+Name^Raw_AvgTimeSum=0u64
+// In welcher Zeitskala wird gerechnet:  1000 entspricht in Sekundengenauigkeit
+//                                      60000 entspricht in Minutengenauigkeit
+Name^Raw_TimeScale=1000u64
+
+Name^Raw_Time=Name^Raw_TimeWatch
+
+
+// Nur bei Gruppentelegrammen auf den EibPC reagieren und auch nur, wenn die SenderAdresse die richtige ist
+//
+if event(readrawknx(Name^Raw_Kontroll,Name^Raw_Sender,Name^Raw_GA,Name^Raw_IsGa,Name^Raw_RoutingCnt,Name^Raw_Len,Name^Raw_Data)) and  Name^Raw_Sender==Name^RawDev and Name^Raw_IsGa then {
+	// Zeit seit letzem Diagramm in Sekunden wandeln und Min und Max berechnen
+	// Name^Raw_Time wird über die Delayc-Funktion berechnet und kann damit hier ausgewertet werden
+	Name^Raw_CalcTime=convert((Name^Raw_TimeWatch-Name^Raw_Time)/Name^Raw_TimeScale,0u16);
+	if Name^Raw_MaxTime<Name^Raw_CalcTime then Name^Raw_MaxTime=Name^Raw_CalcTime endif;
+	if Name^Raw_MinTime>Name^Raw_CalcTime then Name^Raw_MinTime=Name^Raw_CalcTime endif;
+	// Durchschnittswert=Name^Raw_AvgTime/Name^Raw_Trigger
+	Name^Raw_AvgTimeSum=Name^Raw_AvgTimeSum+convert(Name^Raw_CalcTime,0u64);
+	Name^Raw_AvgTrigger=Name^Raw_AvgTrigger+1u64;
+	Name^Raw_AvgTime=Name^Raw_AvgTimeSum/Name^Raw_AvgTrigger
+} endif
+
+// Alle Name^Raw_TimeWatch wird ein Telgramm erwartet: Dann wird delay immer wieder neu getriggert
+// sonst Fehlerbedingung!
+if delayc(change(Name^Raw_AvgTrigger),Name^Raw_TimeWatch,Name^Raw_Time) then {
+	Name^Raw_Error=EIN
+} endif 
+:end 
+
+
+// PhyGAMonitor
+// @date	18.03.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin PhyGAMonitor(Name,Dev,GATelegramm,ZeitAlarm)
+:info $Es wird überprüft, ob vom einem KNX Gerät in vorgebbaren Zeitintervallen ein bestimmtes Gruppenntelegramm eintrifft. Außerdem werden Durchschnittswerte ermittlet und in Variablen abgespeichtert$\\
+	$Name des Monitors, z.B. Aktor1. Die Fehlervariable heisst dann "Aktor1Raw_Error". "Aktor1Raw_AvgTime" ergibt dann die Zeit zwischen zwei Telegrammen.$\\
+	$Physikalische Adresse des zu überwachenden Geräts, z.B. 1.12.182$\\
+	$Gruppenadresse, die vom zu überwachenden Gerät eintreffen soll$\\
+    $Zeit, in der ein Telegramm eingetroffen sein sollte in Minuten$
+:shortinfo: $Gerätewächter für eine bestimmte GA$
+// ---------------------------------------
+// Physikalische Geräteadresse  
+// ---------------------------------------
+Name^RawDev=Dev 
+
+// Auswertung
+// ---------------------------------------
+// Maximale Zeit zwischen zwei Telegrammen vom selben Gerät seit Beginn der Aufzeichnung
+Name^Raw_MaxTime=0u16
+// Minimale Zeit zwischen zwei Telegrammen vom selben Gerät seit Beginn der Aufzeichnung
+Name^Raw_MinTime=65365u16
+// Letzte ermittlete Zeit 
+Name^Raw_CalcTime=0u16
+// Durchschnittswert über alle Telegramme vom selben Gerät 
+Name^Raw_AvgTime=0u64
+
+// Fehlerzeit: Wann soll ein Fehler erkannt werden
+Name^Raw_TimeWatch=ZeitAlarm^u64*60000u64
+
+
+// Argumente von readrawknx:
+Name^Raw_Kontroll=0
+Name^Raw_Sender=0.0.0
+Name^Raw_GA=0u16
+Name^Raw_IsGa=AUS
+Name^Raw_RoutingCnt=0
+Name^Raw_Len=0
+Name^Raw_Data=$$
+
+
+// ---------------------------------------
+// Hilfsvariablen
+Name^Raw_AvgTrigger=0u64
+Name^Raw_Error=AUS
+Name^Raw_AvgTimeSum=0u64
+// In welcher Zeitskala wird gerechnet:  1000 entspricht in Sekundengenauigkeit
+//                                      60000 entspricht in Minutengenauigkeit
+Name^Raw_TimeScale=1000u64
+
+Name^Raw_Time=Name^Raw_TimeWatch
+
+
+// Nur bei Gruppentelegrammen auf den EibPC reagieren und auch nur, wenn die SenderAdresse die richtige ist
+//
+if event(readrawknx(Name^Raw_Kontroll,Name^Raw_Sender,Name^Raw_GA,Name^Raw_IsGa,Name^Raw_RoutingCnt,Name^Raw_Len,Name^Raw_Data)) and  Name^Raw_Sender==Name^RawDev and Name^Raw_IsGa and getaddress(GATelegramm)==Name^Raw_GA then {
+	// Zeit seit letzem Diagramm in Sekunden wandeln und Min und Max berechnen
+	// Name^Raw_Time wird über die Delayc-Funktion berechnet und kann damit hier ausgewertet werden
+	Name^Raw_CalcTime=convert((Name^Raw_TimeWatch-Name^Raw_Time)/Name^Raw_TimeScale,0u16);
+	if Name^Raw_MaxTime<Name^Raw_CalcTime then Name^Raw_MaxTime=Name^Raw_CalcTime endif;
+	if Name^Raw_MinTime>Name^Raw_CalcTime then Name^Raw_MinTime=Name^Raw_CalcTime endif;
+	// Durchschnittswert=Name^Raw_AvgTime/Name^Raw_Trigger
+	Name^Raw_AvgTimeSum=Name^Raw_AvgTimeSum+convert(Name^Raw_CalcTime,0u64);
+	Name^Raw_AvgTrigger=Name^Raw_AvgTrigger+1u64;
+	Name^Raw_AvgTime=Name^Raw_AvgTimeSum/Name^Raw_AvgTrigger
+} endif
+
+// Alle Name^Raw_TimeWatch wird ein Telgramm erwartet: Dann wird delay immer wieder neu getriggert
+// sonst Fehlerbedingung!
+if delayc(change(Name^Raw_AvgTrigger),Name^Raw_TimeWatch,Name^Raw_Time) then {
+	Name^Raw_Error=EIN
+} endif 
+:end 
+
+
+// PhyGAMonitorZeit
+// @date	18.03.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+
+:begin PhyGAMonitorZeit(Name,Dev,GATelegramm,Zeitzyklus )
+:info $Es wird überprüft, ob vom einem KNX Gerät auf eine Readadresse antwortet. Außerdem werden Durchschnittswerte ermittlet und in Variablen abgespeichtert$\\
+	$Name des Monitors, z.B. Aktor1. Die Fehlervariable heisst dann "Aktor1Raw_Error" und wird auf EIN gesetzt, wenn nicht innerhalb von 10 Sekunden eine Antwort eintrifft.$\\
+	$Physikalische Adresse des zu überwachenden Geräts, z.B. 1.12.182$\\
+	$Gruppenadresse, die vom zu überwachenden Gerät eintreffen soll$\\
+    $Zeit, in der eine Leseanforderung auf GATelgramm geschickt wird  (max. 255)$
+:shortinfo: $Aktorwächter$
+// ---------------------------------------
+// Physikalische Geräteadresse  
+// ---------------------------------------
+Name^RawDev=Dev 
+
+
+
+//Fehlervariablen
+Name^Raw_ErrorTime=10000u64
+Name^Raw_Error=AUS
+
+// Argumente von readrawknx:
+Name^Raw_Kontroll=0
+Name^Raw_Sender=0.0.0
+Name^Raw_GA=0u16
+Name^Raw_IsGa=AUS
+Name^Raw_RoutingCnt=0
+Name^Raw_Len=0
+Name^Raw_Data=$$
+Name^Raw_Response=AUS
+
+
+// Nur bei Gruppentelegrammen auf den EibPC reagieren und auch nur, wenn die SenderAdresse die richtige ist
+//
+if event(readrawknx(Name^Raw_Kontroll,Name^Raw_Sender,Name^Raw_GA,Name^Raw_IsGa,Name^Raw_RoutingCnt,Name^Raw_Len,Name^Raw_Data)) and  Name^Raw_Sender==Name^RawDev and Name^Raw_IsGa and getaddress(GATelegramm)==Name^Raw_GA then {
+	Name^Raw_Response=EIN;
+} endif
+
+if cycle(Zeitzyklus,convert(random(64u32),0)) then read(GATelegramm);Name^Raw_Response=AUS endif 
+// Alle Name^Raw_TimeWatch wird ein Telgramm erwartet: Dann wird delay immer wieder neu getriggert
+// sonst Fehlerbedingung!
+if delay(eventread(GATelegramm),Name^Raw_ErrorTime) and !Name^Raw_Response then {
+	Name^Raw_Error=EIN
+} endif 
+:end 

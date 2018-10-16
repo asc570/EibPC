@@ -1,0 +1,20 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+// Der Regler als Wert in WigaPIAktor definiert
+PIHeizRegler(Wiga,WigaFreigabePI,22.0,"RkWohnzimmerTemp-3/1/28",30.0,0.2)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+WigaFreigabePI=EIN
+//Mit einem Taster steuern, ob der PI-Regler die Heizung steuern soll oder nicht
+If "Taster-0/2/5" then WigaFreigabePI=EIN else WigaFreigabePI=AUS endif

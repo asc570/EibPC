@@ -1,0 +1,12 @@
+// Makros für den Raum Wetterseite in der Etage Allgemein: 
+// Makros für den Raum Party in der Etage Keller: 
+UmschaltShifter( Licht1ID, KellerPartyID, asd, asd, LIGHT)
+// Makros für den Raum Lager in der Etage Keller: 
+// Makros für den Raum Heizung in der Etage Keller: 
+// Makros für den Raum Wohnzimmer in der Etage Erdgeschoss: 
+// Makros für den Raum Esszimmer in der Etage Erdgeschoss: 
+// Makros für den Raum Kueche in der Etage Erdgeschoss: 
+// Makros für den Raum Flur in der Etage Erdgeschoss: 
+// Makros für den Raum Schlafzimmer_Eltern in der Etage Stock_1: 
+// Makros für den Raum Schlafzimmer_Kinder in der Etage Stock_1: 
+

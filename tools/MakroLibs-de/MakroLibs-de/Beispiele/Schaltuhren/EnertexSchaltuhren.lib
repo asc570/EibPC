@@ -1,0 +1,74 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Schaltuhren
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.6 $
+//----------------------------------------------------------------------
+
+// Schaltuhr
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Schaltuhr(TAG,Stunde,Minute,GASchalten,Wert)
+:info $Gibt jede Woche zur festgelegten Zeit einen Wert auf die Gruppenadresse aus$\\
+$Wochentag des Schaltzeitpunkts$ $Stunde des Schaltzeitpunkts$ $Minute des Schaltzeitpunkts$\\
+$Gruppenadresse des Schaltaktors$\\
+$Wert, der an die Gruppenadresse des Schaltaktors gesendet werden soll. Muss zum Datentyp des Schaltaktors passen$
+:shortinfo $Jede Woche zu einem bestimmten Zeitpunkt eine Gruppenadresse schalten$
+if wtime(Stunde,Minute,0u08,TAG) then write(GASchalten,Wert) endif
+:end
+
+// Schaltuhr GA
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Schaltuhr_2GA(TAG,Stunde,Minute,GA1Schalten, Wert1,GA2Schalten,Wert2)
+:info $Gibt jede Woche zur festgelegten Zeit je einen Wert auf die Gruppenadressen aus$\\
+$Wochentag des Schaltzeitpunkts$ $Stunde des Schaltzeitpunkts$ $Minute des Schaltzeitpunkts$\\
+$Gruppenadresse des Schaltaktors 1$\\
+$Wert, der an die Gruppenadresse des Schaltaktors 1 gesendet werden soll. Muss zum Datentyp des Schaltaktors 1 passen$\\
+$Gruppenadresse des Schaltaktors 2$\\
+$Wert, der an die Gruppenadresse des Schaltaktors 2 gesendet werden soll. Muss zum Datentyp des Schaltaktors 2 passen
+:shortinfo $Jede Woche zu einem bestimmten Zeitpunkt zwei Gruppenadresse schalten$
+if wtime(Stunde,Minute,0u08,TAG) then write(GA1Schalten,Wert1); write(GA2Schalten,Wert2) endif
+:end
+
+// schaltet täglich
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin TagesSchaltuhr(Stunde,Minute,GASchalten,Wert)
+:info $Gibt jeden Tag zur festgelegten Zeit einen Wert auf die Gruppenadresse aus$\\
+$Stunde des Schaltzeitpunkts$ $Minute des Schaltzeitpunkts$\\
+$Gruppenadresse des Schaltaktors$\\
+$Wert, der an die Gruppenadresse des Schaltaktors gesendet werden soll. Muss zum Datentyp des Schaltaktors passen$
+:shortinfo $Jeden Tag zu einem bestimmten Zeitpunkt eine Gruppenadresse schalten$
+if htime(Stunde,Minute,0u08) then write(GASchalten,Wert) endif
+:end
+
+// TagesSchaltuhr GA
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin TagesSchaltuhr_2GA(TAG,Stunde,Minute,GA1Schalten,Wert1,GA2Schalten,Wert2)
+:info $Gibt jeden Tag zur festgelegten Zeit je einen Wert auf die Gruppenadressen aus$\\
+$Wochentag des Schaltzeitpunkts$ $Stunde des Schaltzeitpunkts$ $Minute des Schaltzeitpunkts$\\
+$Gruppenadresse des Schaltaktors 1$\\
+$Wert, der an die Gruppenadresse des Schaltaktors 1 gesendet werden soll. Muss zum Datentyp des Schaltaktors 1 passen$\\
+$Gruppenadresse des Schaltaktors 2$\\
+$Wert, der an die Gruppenadresse des Schaltaktors 2 gesendet werden soll. Muss zum Datentyp des Schaltaktors 2 passen
+:shortinfo $Jeden Tag zu einem bestimmten Zeitpunkt zwei Gruppenadresse schalten$
+if wtime(Stunde,Minute,0u08,TAG) then write(GA1Schalten,Wert1); write(GA2Schalten,Wert2) endif
+:end
+

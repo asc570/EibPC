@@ -1,0 +1,8 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+// Ca. jede Stunde die Uhrzeit aktualisieren
+if cycle(59,37) then write("Uhr-7/0/1",settime());write("Datum-7/0/0",setdate()) endif

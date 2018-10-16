@@ -1,0 +1,451 @@
+Haus
+EibPC.Heizung.0/0/1	Heizvorlauf	Uncertain (1 Byte)	Low	
+EibPC.Heizung.0/0/2	LüftenArbeiten	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/3	LüftenWohnen	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/4	LüftenEssen	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/5	LüftenKüche	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/6	LüftenHans	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/7	LüftenSchorschi	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/8	LüftenJohanna	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/9	LüftenBib	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/10	LüftenBad	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/11	LüftenKinderBad	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/12	LüftenEltern	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/13	LüftenKeller	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/14	LüftenOG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/17	LüftenFlur	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/18	LüftenGästeWC	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Heizung.0/0/19	HeizunEinAnforderung	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/0	Display	EIS 15 'Character String' (14 Byte)	Low
+EibPC.Werte.0/1/1	Temp58	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/2	Temp56	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/3	Temp54	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/4	Temp52	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/5	FussbodenBadEin-Aus	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.0/1/6	LED-Brenner	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Schalten.0/2/0	GrillenAn	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Schalten.0/2/1	FlurText	EIS 15 'Character String' (14 Byte)	Low	
+EibPC.Schalten.0/2/2	WohnzimmerSzene	Uncertain (1 Byte)	Low	
+EibPC.Schalten.0/2/4	Esszimmerszene	Uncertain (1 Byte)	Low	
+EibPC.Schalten.0/2/5	Taster		EIS 1 'Switching' (1 Bit)	Low
+EibPC.Schalten.0/2/6	Schalter	EIS 1 'Switching' (1 Bit)	Low
+EibPC.InfoLED.0/3/0	EssenLED3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/1	EssenLED4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/2	EssenLED5	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/3	EssenLED6	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/4	EssenLED7	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/5	EssenLED8	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.InfoLED.0/3/6	EssenLED9	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/0	KellerWC	EIS 1 'Switching' (1 Bit)	Low	1/3/0
+Beleuchtung Steckdosen.Keller.1/0/1	SaunaLichterGesamt	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/10
+Beleuchtung Steckdosen.Keller.1/0/2	SaunaLichtDecke	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/1
+Beleuchtung Steckdosen.Keller.1/0/3	SaunaDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/4	PartyKeller	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/9 1/2/14
+Beleuchtung Steckdosen.Keller.1/0/5	WäscheSchacht	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/2/15 1/2/2
+Beleuchtung Steckdosen.Keller.1/0/6	LagerKeller	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/2/17
+Beleuchtung Steckdosen.Keller.1/0/7	Flur	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/2/8
+Beleuchtung Steckdosen.Keller.1/0/8	PartyKellerDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/9	PartyKellerGesamt	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/10	SaunaDimmerAn	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/11	Heizung	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/2/23
+Beleuchtung Steckdosen.Keller.1/0/12	KellerFlurLichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/13	PartyKellerDimmerEin	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/9
+Beleuchtung Steckdosen.Keller.1/0/14	SaunaDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Keller.1/0/15	GartenlichtDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/16	GartenlichtDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Keller.1/0/17	GartenlichtDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/3/0
+Beleuchtung Steckdosen.Keller.1/0/18	GartenDimmerStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Keller.1/0/19	PartykellerLichStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/20	LagerLichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/21	WäscheschachtLichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/23	Saunieren	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/24	SaunierenLED	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Keller.1/0/25	PartyKellerDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Keller.1/0/26	SaunaDimmerStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Keller.1/0/27	PartKellerDimmerStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/0	FlurLicht	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/2/7
+Beleuchtung Steckdosen.EG.1/1/1	WohnzimmerDimmerStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/2	GästeWCLicht	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/2/5
+Beleuchtung Steckdosen.EG.1/1/3	GästeWCSpiegel	EIS 1 'Switching' (1 Bit)	Low	1/3/3
+Beleuchtung Steckdosen.EG.1/1/4	EsszimmerWandleuchte	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/1/21
+Beleuchtung Steckdosen.EG.1/1/5	SpeisLicht	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/2/6
+Beleuchtung Steckdosen.EG.1/1/6	KücheLicht	EIS 1 'Switching' (1 Bit)	Low	1/1/9 1/3/3
+Beleuchtung Steckdosen.EG.1/1/7	ArbeitszimmerWandleuchte	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/1/8
+Beleuchtung Steckdosen.EG.1/1/8	ArbeitszimmerAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/9	KücheGesamt	EIS 1 'Switching' (1 Bit)	Low	1/1/6 1/3/3
+Beleuchtung Steckdosen.EG.1/1/10	TerasseLichtEssZimmer	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/3/3 1/1/42
+Beleuchtung Steckdosen.EG.1/1/11	WigaDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/12	GartenLichtWohnzimmer	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/13	WohnzimmerHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/1/14 1/3/3
+Beleuchtung Steckdosen.EG.1/1/14	WohnzimmerAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/15	EsszimmerLicht	EIS 1 'Switching' (1 Bit)	Low	1/1/21 1/1/4
+Beleuchtung Steckdosen.EG.1/1/16	ArbeitszimmerLicht	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/1/8 1/1/7
+Beleuchtung Steckdosen.EG.1/1/17	EsszimmerDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/18	EsszimmerDimmerAnStatus	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/1/21
+Beleuchtung Steckdosen.EG.1/1/19	WohnzimmerDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/20	WohnzimmerDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/1/14 1/3/3
+Beleuchtung Steckdosen.EG.1/1/21	EsszimmerAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/22	WigaDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/23	WigaDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/1/14 1/3/3
+Beleuchtung Steckdosen.EG.1/1/24	WigaDimmerSchalter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/25	TerasseLichtWohnzimmer	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/3/3 1/1/42
+Beleuchtung Steckdosen.EG.1/1/26	KücheSchrankLicht	EIS 1 'Switching' (1 Bit)	Low	1/1/9 1/3/3 1/1/41
+Beleuchtung Steckdosen.EG.1/1/27	WohnzimmerDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/28	WohnzimmerCouch	EIS 1 'Switching' (1 Bit)	Low	1/1/14 1/3/3
+Beleuchtung Steckdosen.EG.1/1/29	EsszimmerDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/30	WigaDimmerStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/31	AußenCarport	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/32	LichtszeneWohnzimmerpanel	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/33	SzeneFlurPanel	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/34	TerassenLichtWohnzimmerStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/35	TerassenLichtEsszimmerStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/36	FlurLichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/37	AußenCarportLichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/38	AußenHaustür	EIS 1 'Switching' (1 Bit)	Low	1/3/2
+Beleuchtung Steckdosen.EG.1/1/39	GästeWCMeldung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/40	AußenTürStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/41	KücheBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/42	TerasseLicht	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/44	TerasseEssen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/45	EssenWandDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.EG.1/1/46	EssenWandDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.EG.1/1/47	EssenDimmerWandWertStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/0	KellerFlurMeldung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/1	KellerFlurBewegung	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/7
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/2	WäschschachtBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/3	HeizungBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/4	LagerkellerBewegung	EIS 1 'Switching' (1 Bit)	Low	1/3/0 1/0/6
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/5	GästeWCSchalten	EIS 1 'Switching' (1 Bit)	Low	1/1/3 1/1/2 1/3/3
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/6	SpeisBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/7	EGFlurBewegung	EIS 1 'Switching' (1 Bit)	Low	1/3/3 1/1/0
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/8	KellerFlurBMSchalten	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/9	EG-FlurMelden	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/11	GäsetWCBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/12	PartykellerBewegung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/14	PartyBMSchalten	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/15	WäscheBMSchalten	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/17	LagerBMSchalten	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/21	OGFlurLichtManuell	EIS 1 'Switching' (1 Bit)	Low	1/3/4
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/22	OGFlurLichtMeldung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Bewegungsmelder-Schalten.1/2/23	HeizungBMSchalten	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/0	KellerAlleLichter	EIS 1 'Switching' (1 Bit)	Low	1/3/1 1/4/1 1/0/4 1/0/7 1/2/1 1/0/6 1/2/4 1/0/11
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/1	KellerSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/2	AußenAlles	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/3	EGAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/4	OGAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/5	OG-Steckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/6	Weihnachten-Steckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.Zentrale Licht und Steckdosen.1/3/13	EG-Steckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/0	PartySteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/1
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/1	WäscheschachtSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/1
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/2	SaunaSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/1
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/3	StatusSaunaSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/4	FlurSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/1
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/5	StatusFlurSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/6	StatusPartyKellerSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.KellerSteckdosen.1/4/7	StatusWäscheschachtSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/0	EsszimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	1/1/21 1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/1	EsszimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/2	ArtbeitszimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/3	ArbeitszimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/4	SpeisSteckdosen	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/5	WigaSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/6	TerasseWohnzimmerSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/7	KücheSteckdose2	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/8	KücheSteckdose1	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/9	WohnzimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/10	WohnzimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/11	TerasseEsszimmerSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/5/6 1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/12	FlurSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/13
+Beleuchtung Steckdosen.EGSteckdosen.1/5/13	StatusKücheSteckdose1	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/15	StatusEsszimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/16	StatusEsszimmerTerasseSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/17	StatusWohnzimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/18	StatusWohnzimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/19	StatusWohnzimmerTerasseSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/20	StatusFlurSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/21	StatusEsszimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/23	StatusSpeisSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/24	StatusArbeitszimmerSteckdose1	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/25	StatusArbeitszimmerSteckdose2	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.EGSteckdosen.1/5/26	StatusWigaSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/0	ElternSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/1	SteckdoseHans	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/2	SteckdoseSchorschi	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/3	SteckdoseJohanna	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/4	SteckdoseBalkonSchorschi	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/5	SteckdoseBalkonEltern	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/7	BibSteckdose	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/8	ZustandSteckdoseBalkonEltern	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/10	StatusSteckdoseDac	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/11	StatusSteckdoseJohanna	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/12	StatusSteckdoseBalkonKinder	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/13	StatusSteckdoseSchorschi	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/14	StatusSteckdoseEltern	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OGSteckdosen.1/6/15	StatusSteckdoseHans	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OGSteckdosen.1/6/16	StatusSteckdoseBib	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/0	BadHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/1 1/7/2 1/7/3
+Beleuchtung Steckdosen.OG.1/7/1	BadAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/2	BadSpiegelLinks	EIS 1 'Switching' (1 Bit)	Low	1/7/1 1/3/4
+Beleuchtung Steckdosen.OG.1/7/3	BadSpiegelRechts	EIS 1 'Switching' (1 Bit)	Low	1/7/1 1/3/4
+Beleuchtung Steckdosen.OG.1/7/4	ElternDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/5	ElternDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/7/6 1/7/7 1/3/4
+Beleuchtung Steckdosen.OG.1/7/6	ElternAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/7	ElternHauptLicht	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/8	ElternBalkonLicht	EIS 1 'Switching' (1 Bit)	Low	1/3/2 1/7/6 1/3/4
+Beleuchtung Steckdosen.OG.1/7/9	HansAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/10	HansHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/9 1/3/4
+Beleuchtung Steckdosen.OG.1/7/11	HansWandleuchte	EIS 1 'Switching' (1 Bit)	Low	1/7/9 1/3/4
+Beleuchtung Steckdosen.OG.1/7/12	HansBalkonLicht	EIS 1 'Switching' (1 Bit)	Low	1/6/4 1/3/2 1/3/4
+Beleuchtung Steckdosen.OG.1/7/13	HansStatusBalkon	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/14	SchorschiHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/15 1/3/4
+Beleuchtung Steckdosen.OG.1/7/15	SchorschiAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/16	SchorschiWandleuchte	EIS 1 'Switching' (1 Bit)	Low	1/7/15 1/3/4
+Beleuchtung Steckdosen.OG.1/7/17	JohannaWandLeuchte	EIS 1 'Switching' (1 Bit)	Low	1/7/19 1/3/4
+Beleuchtung Steckdosen.OG.1/7/18	JohannaHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/19 1/3/4
+Beleuchtung Steckdosen.OG.1/7/19	JohannaAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/20	OGFlurLichtAn	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/21	KinderBadAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/22	KinderBadSpiegel	EIS 1 'Switching' (1 Bit)	Low	1/7/1 1/7/21 1/3/4
+Beleuchtung Steckdosen.OG.1/7/23	KinderBadHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/21 1/3/4
+Beleuchtung Steckdosen.OG.1/7/24	BibHauptLicht	EIS 1 'Switching' (1 Bit)	Low	1/7/25 1/3/4
+Beleuchtung Steckdosen.OG.1/7/25	BibAllesAus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/27	ElternWandleuchte	EIS 1 'Switching' (1 Bit)	Low	1/7/6 1/3/4
+Beleuchtung Steckdosen.OG.1/7/28	Dach	EIS 1 'Switching' (1 Bit)	Low	1/3/5
+Beleuchtung Steckdosen.OG.1/7/29	ElternBalkonStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/30	FlurDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/3/4
+Beleuchtung Steckdosen.OG.1/7/31	FlurDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.OG.1/7/32	FlurDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/33	ElternDimmerWertStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.OG.1/7/34	ElternDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.OG.1/7/35	FlurDimmerWertStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.OG.1/7/37	ElternSchrank	EIS 1 'Switching' (1 Bit)	Low	1/7/6 1/3/4
+Beleuchtung Steckdosen.OG.1/7/38	FlurLED	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/39	BadDimmerAn	EIS 1 'Switching' (1 Bit)	Low	1/7/1 1/3/4
+Beleuchtung Steckdosen.OG.1/7/40	BadDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung Steckdosen.OG.1/7/41	BadDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung Steckdosen.OG.1/7/42	BadDimmerWertStatus	Uncertain (1 Byte)	Low	
+Beleuchtung Außen.Bewässerung.2/0/0	WasserWiga	Uncertain (1 Byte)	Low	2/0/6
+Beleuchtung Außen.Bewässerung.2/0/2	WasserTür	Uncertain (1 Byte)	Low	2/0/6
+Beleuchtung Außen.Bewässerung.2/0/3	WasserSüd	Uncertain (1 Byte)	Low	2/0/6
+Beleuchtung Außen.Bewässerung.2/0/5	Wasserkreis4	Uncertain (1 Byte)	Low	2/0/6
+Beleuchtung Außen.Bewässerung.2/0/6	Gesamtwasser	Uncertain (1 Byte)	Low	
+Beleuchtung Außen.Bewässerung.2/0/10	Wasser123Auto	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Bewässerung.2/0/11	BewässerungAnzeige	EIS 15 'Character String' (14 Byte)	Low	
+Beleuchtung Außen.Licht.2/1/0	GartenLinks	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Licht.2/1/1	GartenRechts	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Licht.2/1/2	ZustandGartenLichtLinks	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Licht.2/1/3	ZustandGartenLichtRechts	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Steckdosen.2/2/0	Marderschreck	EIS 1 'Switching' (1 Bit)	Low	1/3/2
+Beleuchtung Außen.Steckdosen.2/2/1	Garagenllcht	EIS 1 'Switching' (1 Bit)	Low	1/3/2 2/2/0
+Beleuchtung Außen.Steckdosen.2/2/2	MarderschreckStatus	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung Außen.Steckdosen.2/2/3	GaragenlichtStatus	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/0	RkSauna	Uncertain (1 Byte)	Low	3/4/7
+Heizen, Temperatur.Keller.3/0/1	Sauna	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/2	Flur	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/3	Party	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/4	Lager	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/5	WäscheSchacht	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/6	RkSaunaPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/7	RkParty	Uncertain (1 Byte)	Low	3/4/7
+Heizen, Temperatur.Keller.3/0/8	SaunaIstTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/9	WäscheschachtTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/10	KellerSollSommer	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/12	LagerTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/13	RkWäscheschachtPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/14	RlFlurPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/16	KGFlurTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/17	PartyTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Keller.3/0/18	RKLager	Uncertain (1 Byte)	Low	3/4/7
+Heizen, Temperatur.Keller.3/0/20	RkLagerPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/29	RkPartyPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Keller.3/0/30	RkWäscheschacht	Uncertain (1 Byte)	Low	3/4/7
+Heizen, Temperatur.Keller.3/0/32	RkFlur	Uncertain (1 Byte)	Low	3/4/7
+Heizen, Temperatur.EG.3/1/0	Flur	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/1	GästeWC	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/2	RkKüche	Uncertain (1 Byte)	Low	3/4/0
+Heizen, Temperatur.EG.3/1/3	Küche	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/4	Esszimmer	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/5	Wohnzimmer	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/6	RkEssen	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/7	Arbeitszimmer	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/8	RkWohnzimmer	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/9	RkGästeWC	Uncertain (1 Byte)	Low	3/4/0
+Heizen, Temperatur.EG.3/1/10	Frostschutz	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.EG.3/1/11	RkEssenPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.EG.3/1/12	RkArbeitszimmer	Uncertain (1 Byte)	Low	3/4/0
+Heizen, Temperatur.EG.3/1/13	Wiga	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.EG.3/1/14	KücheTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.EG.3/1/15	RkKüchePräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.EG.3/1/16	GWCTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.EG.3/1/17	FlurTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.EG.3/1/18	ArbeitenTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.EG.3/1/19	RkGästePräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.EG.3/1/23	RkArbeitszimmerPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.EG.3/1/28	RkWohnzimmerTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.EG.3/1/29	RkEssenTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/0	BadWandkörper	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/1	Bib	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/2	Johanna	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/3	Schorschi	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/4	Hans	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/5	Eltern	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/6	KinderBad	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/8	Bad	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/9	RkBad	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/10	RkBadPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/12	RkBib	Uncertain (1 Byte)	Low	3/4/1
+Heizen, Temperatur.OG.3/2/13	RkBadTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/15	FrostSchutz	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/16	RkEltern	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.OG.3/2/17	ElternTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/18	RkJohannaIstTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/19	RkHansPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/20	FussbodenMan	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/21	RkSchorschi	Uncertain (1 Byte)	Low	3/4/1
+Heizen, Temperatur.OG.3/2/22	RkHans	Uncertain (1 Byte)	Low	3/4/1
+Heizen, Temperatur.OG.3/2/23	RkJohanna	Uncertain (1 Byte)	Low	3/4/1
+Heizen, Temperatur.OG.3/2/24	RkSchorschiPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/25	RkHansTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/26	KinderbadTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/27	RkSchorschiTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/28	RkJohannaPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/29	RkBibTemp	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.OG.3/2/30	RkKinderbad	Uncertain (1 Byte)	Low	3/4/1
+Heizen, Temperatur.OG.3/2/31	RkKinderBadPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.OG.3/2/36	RkBibPräsens	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/0	PumpenStatus	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/1	SollwertVorlauf	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Therme.3/3/2	BrennerTemperatur	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Therme.3/3/3	BrennerBetriebsart	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/4	StörungHeizung	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/5	WarmwasserBetriebsartAuto	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/6	WarmWasserTagNacht	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/7	WarmWasserSolltermperatur	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Therme.3/3/8	WarmWasserZirkulationAutomatisch	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/9	WarmWasserZirkulationTagAus	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/10	WarmwasserIstWert	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Therme.3/3/12	Warmwassereinmalladung	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Therme.3/3/13	ThermeAußentemperatur	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Therme.3/3/14	HeizkreisAutoMan	EIS 1 'Switching' (1 Bit)	Low	
+Heizen, Temperatur.Zentral.3/4/0	EGHeizung	Uncertain (1 Byte)	Low	3/1/6
+Heizen, Temperatur.Zentral.3/4/1	OGHeizen	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Zentral.3/4/7	KellerHeizung	Uncertain (1 Byte)	Low	
+Heizen, Temperatur.Werte.3/5/0	Außentemperatur	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Werte.3/5/1	Wind	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Werte.3/5/2	Licht	Uncertain (2 Byte)	Low	
+Heizen, Temperatur.Werte.3/5/3	Luftfeuchtigkeit	Uncertain (1 Byte)	Low
+Heizen, Temperatur.Automatik.3/7/0	KellerAuto	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/0	GästeWC	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/1	Speis	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/2	Küche	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/3	EsszimmerFenster	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/4	EsszimmerTür	EIS 1 'Switching' (1 Bit)	Low	5/0/44
+Beschattung.EG.5/0/5	WohnzimmerStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/6	WigaFenster	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/10	ArbeitsZimmerRechts	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/11	ArbeitszimmerLinks	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/12	ArbeitszimmerMitte	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/13	EsszimmerStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/14	Küche-Speis-Stop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/15	GästeWCStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/16	ArbeitszimmerStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/17	ArbeitszimmerPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.EG.5/0/18	ArbeitszimmerSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.EG.5/0/19	GästeWCBeschattung	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.EG.5/0/20	GästeWCMerkeBeschattung	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.EG.5/0/21	MarkiseEsszimmer	EIS 1 'Switching' (1 Bit)	Low	5/2/1
+Beschattung.EG.5/0/22	MarkiseWohnzimmer	EIS 1 'Switching' (1 Bit)	Low	5/2/3
+Beschattung.EG.5/0/23	MarkiseWohnzimmerStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/24	MarkiseEsszimmerStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/25	WinterGartenFensterEsszimmer	EIS 1 'Switching' (1 Bit)	Low	5/0/39 5/0/6 5/2/3
+Beschattung.EG.5/0/26	WintergartenFensterWohnzimmer	EIS 1 'Switching' (1 Bit)	Low	5/0/39 5/0/6 5/2/3
+Beschattung.EG.5/0/27	WintergartenFensterStop	EIS 1 'Switching' (1 Bit)	Low	5/0/28
+Beschattung.EG.5/0/28	WintergartenFenster1/2	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/30	WigaMarkise	EIS 1 'Switching' (1 Bit)	Low	5/2/1
+Beschattung.EG.5/0/31	WigaMarkiseStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/32	WohnzimmerTüre	EIS 1 'Switching' (1 Bit)	Low	5/0/44
+Beschattung.EG.5/0/33	WohnzimmerTüreStop	EIS 1 'Switching' (1 Bit)	Low	5/0/5
+Beschattung.EG.5/0/34	WohnzimmeSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.EG.5/0/35	WohnzimmerFenster	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/3/1
+Beschattung.EG.5/0/36	WohnzimmerFensterStop	EIS 1 'Switching' (1 Bit)	Low	5/0/5
+Beschattung.EG.5/0/37	Wohnzimmer1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.EG.5/0/39	WintergartenFensterBelüftung	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.5/0/40	EsszimmerPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.EG.5/0/41	KüchePos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.EG.5/0/42	KücheSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.EG.5/0/43	Esszimmerspeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.EG.5/0/44	EG-Rollos	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/0	BadFensterKinderBad	EIS 1 'Switching' (1 Bit)	Low	5/1/41 5/3/1
+Beschattung.OG.5/1/1	BadFensterStraße	EIS 1 'Switching' (1 Bit)	Low	5/1/41 5/3/1
+Beschattung.OG.5/1/2	BadFensterStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/3	BadFensterSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/4	BadFensterPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.OG.5/1/5	ElternFenster	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/6	ElternTüre	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/7	ElternStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/8	ElternPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/1 5/3/5
+Beschattung.OG.5/1/9	ElternSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/10	HansStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/11	HansFenster	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/12	HansTür	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/13	HansPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/1 5/3/5
+Beschattung.OG.5/1/14	HansSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/15	SchorschiStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/16	SchorschiFenster	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/17	SchorschiTür	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/18	SchorschiPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/1 5/3/5
+Beschattung.OG.5/1/19	SchorschiSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/21	BibSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/22	JohannaPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/1 5/3/5
+Beschattung.OG.5/1/23	JohannaFensterStraße	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/25	JohannaFensterSüd	EIS 1 'Switching' (1 Bit)	Low	5/1/41
+Beschattung.OG.5/1/26	JohannaStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/27	JohannaSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/28	Aufgang	EIS 1 'Switching' (1 Bit)	Low	5/0/44 5/1/41 5/3/1
+Beschattung.OG.5/1/29	KinderBadStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/30	KinderBad	EIS 1 'Switching' (1 Bit)	Low	5/1/41 5/3/1
+Beschattung.OG.5/1/31	KinderBadPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.OG.5/1/32	KinderBadSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/33	BibLinks	EIS 1 'Switching' (1 Bit)	Low	5/1/41 5/3/1
+Beschattung.OG.5/1/34	BibRechts	EIS 1 'Switching' (1 Bit)	Low	5/1/41 5/3/1
+Beschattung.OG.5/1/35	BibPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.OG.5/1/36	BibStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/37	AufgangStop	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.5/1/38	AufgangSpeichern	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Beschattung.OG.5/1/39	AufgangPos1/2	EIS 1 'Switching' (1 Bit)	Low	5/3/5
+Beschattung.OG.5/1/41	OG-Rollo	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/0	TextilerSonnenschutz	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/1	SicherheitWindRegenMarkise	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/2	RegenMeldung	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/3	SicherheitWindRegenFenster	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/4	Sicherheit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Wetterzentrale.5/2/44	WigaAutomatik	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Beschattung.5/3/1	RollosNacht	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Beschattung.5/3/2	Nachtautomatik	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Beschattung.5/3/4	BeschattungSpeichern	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Beschattung.5/3/5	BeschattungWiederherstellen	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Beschattung.5/3/7	Schattenautomatik	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Ventilator.5/4/0	WigaLüfterAn	EIS 1 'Switching' (1 Bit)	Low	1/1/14
+Beschattung.Ventilator.5/4/1	WigaLüfterWert	Uncertain (1 Byte)	Low	
+Beschattung.Ventilator.5/4/2	WigaLüfterStatus	Uncertain (1 Byte)	Low	
+Beschattung.Ventilator.5/4/3	WigaLüfterPlusMinus	EIS 2 'Dimming - control' (4 Bit)	Low	
+Auto.Zeitfunktion.7/0/0	Datum	Uncertain (3 Byte)	Low	
+Auto.Zeitfunktion.7/0/1	Uhr	Uncertain (3 Byte)	Low	
+Auto.Zeitfunktion.7/0/2	Zeitanfrage	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Zeitfunktion.7/0/3	22Uhr	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Makros.7/1/0	WohnzimmerPanel	Uncertain (1 Byte)	Low	
+Auto.Alarm.7/3/0	Keller	Uncertain (1 Byte)	Low	
+Auto.Alarm.7/3/1	AlarmHeizaktorEG-1	Uncertain (1 Byte)	Low	
+Auto.Alarm.7/3/2	AlarmHeizaktorEG-2	Uncertain (1 Byte)	Low	
+Auto.Alarm.7/3/3	AlarmRolloEG-1	EIS 1 'Switching' (1 Bit)	Low	5/3/4
+Auto.Alarm.7/3/4	AlarmRolloEG-2	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/5	AlarmHeizaktorOG-2	Uncertain (1 Byte)	Low	
+Auto.Alarm.7/3/6	AlarnRolloOG-1	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/7	AlarmRolloOG-2	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/8	OGFlurDimmer	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/10	AlarmRolloEG-3	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/11	AlarmRolloEG-4	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/12	OGElternDimmer	EIS 1 'Switching' (1 Bit)	Low	
+Auto.Alarm.7/3/16	AlarmHeizaktorOG-1	Uncertain (1 Byte)	Low	
+

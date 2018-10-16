@@ -1,0 +1,99 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+// Seite mit Wetterdaten erstellen
+page(WeatherID)[$Allgemein$,$Wetter$]
+pshifter(InfoID)[Info]$Aktuell$ pshifter(SunID)[INFO]$Sonnenauf- und Untergang$
+button(TimeID)[CLOCK]$Uhrzeit$	button(DateID)[DATE]$Datum$ pshifter(TempID)[INFO]$Aktuelle Aussentemperatur$ 
+button(LuxID)[WEATHER] $Licht in Lux $ button(WindID)[WIND]$Wind in km/h$ pshifter(TempMMID)[TEMPERATURE]$Außentemp.: Min und Max in °C$ 
+line $Wettervorhersage$
+picture(0)[DOUBLE,CENTERGRAF]($Vorhersage$,$http://de.weather.yahoo.com/images/eur_germany_outlook_DE_DE_440_dmy_y.jpg$)\\
+picture(1)[DOUBLE,CENTERGRAF]($Satellitenbild$,$http://de.weather.yahoo.com/images/eur_satintl_440_dmy_y.jpg$)
+
+
+[EibPC]
+//Definitionen
+
+//Webserver-IDs
+WeatherID = 1
+InfoID = 1
+SunID = 2
+TimeID = 3
+DateID = 4
+TempID = 5
+LuxID = 6
+WindID = 7
+TempMMID = 8
+
+
+//Windsensor
+Wind = "Wind-3/5/1"
+//Lichtsensor
+Licht ="Licht-3/5/2"
+//Temperatursensor
+AussenTemperatur="ThermeAußentemperatur-3/3/13"
+//Regensensor
+Regen="RegenMeldung-5/2/2"
+//Regenmeldung konfigurieren
+RegenText=$$
+if Regen then RegenText=$Es regnet$ else RegenText=$Es regnet nicht$ endif 
+
+//Sonnenaufgang und Sonnenuntergang in einen String konvertieren
+Sonnenaufgang=stringformat(sunrisehour(),0,3,2,2)+$:$+stringformat(sunriseminute(),0,3,2,2)
+Sonnenuntergang=stringformat(sunsethour(),0,3,2,2)+$:$+stringformat(sunsetminute(),0,3,2,2)
+
+// Maximale und Minimale Temperatur eines Tages berechnen
+MaxTemp=-99.0
+MinTemp=99.0
+if htime(00,00,00) then { 
+   MaxTemp=AussenTemperatur;
+   MinTemp=AussenTemperatur
+} endif
+if MaxTemp<AussenTemperatur then MaxTemp=AussenTemperatur endif
+if MinTemp>AussenTemperatur then MinTemp=AussenTemperatur endif
+
+
+// ----------------------------
+//
+// Webserver Wetterdaten
+//
+// ----------------------------
+
+//Initialisierung immer etwas nach Systemstart um die Buslast bei Systemstart zu verringern
+Init=after(systemstart(),5000u64)
+
+//Jede Minute die Uhrzeit aktualisieren
+if stime(0) or Init then webdisplay(TimeID,settime(),CLOCK,DISPLAY,GREEN) endif
+
+//Wenn sich das Datum ändert, die Anzeige aktualisieren
+if change(setdate()) or Init then webdisplay(DateID,setdate(),DATE,DISPLAY,GREEN) endif
+
+//Wenn sich die Windstärke ändert, die Anzeige aktualisieren
+if change(Wind) then webdisplay(WindID,Wind*3.6,WIND,DISPLAY,GREY) endif
+
+//Wenn sich die Helligkeit verändert, die Anzeige aktualisieren
+if change(Licht) then webdisplay(LuxID,Licht,WEATHER,DISPLAY,GREY) endif
+
+//Wenn sich der Sonnenaufgang ändert, die Anzeige aktualisieren
+if change(Sonnenaufgang) or Init then{
+	 pdisplay(SunID,Sonnenaufgang+$ - $+Sonnenuntergang,INFO,DISPLAY,GREY,WeatherID)
+} endif
+
+//Wenn sich der RegenText ändert, die Anzeige aktualisieren
+if change(RegenText) or Init then pdisplay(InfoID,RegenText,INFO,DISPLAY,GREY,WeatherID) endif
+
+//Wenn sich die aktuelle Temperatur ändert, die Anzeige aktualisieren
+if change(AussenTemperatur) or Init then pdisplay(TempID,convert(AussenTemperatur,$$),TEMPERATURE,DISPLAY,GREY,WeatherID) endif
+
+//Wenn sich MinTemp oder MaxTemp ändert die Anzeige aktualisieren
+if change(MinTemp) or change(MaxTemp) then {
+	pdisplay(TempMMID,convert(MinTemp,$$) +$ : $+ convert(MaxTemp,$$),TEMPERATURE,DISPLAY,GREY,WeatherID) 
+}endif 
+
+
+
+//Zu Testzwecke damit Werte angezeigt werden, kann gelöscht werden
+if after(systemstart(),6000u64) then Wind = 20f16; Licht = 80f16; AussenTemperatur = 10f16; Regen = EIN endif

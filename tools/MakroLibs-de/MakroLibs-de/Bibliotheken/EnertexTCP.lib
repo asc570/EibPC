@@ -1,0 +1,87 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Makros zur TCP Kommunikation (allgemein gehalten)
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/11/15 15:00:47 $
+//  Version              : $Revision: 1.1 $
+//----------------------------------------------------------------------
+
+:begin IPGetClient(Name,IP,Directory,RecieveBytes, Start,ResponseTime)
+:info $Dieses Makro führt einen GET Befehl (Standard HTTP) auf Port 80 auf die Zieladresse aus. Die Zieladresse kann entweder in der Form 192.168.1.2 oder resolve("www.enertex.de") angegeben werden (Hochkomma durch Dollarzeichen ersetzen). 
+Bei Rückanwort wird die Variable NameRecieved (mit Name = Parameter des Aufrufs) auf EIN gesetzt. Der User muss diese selbst wieder auf AUS setzen, wenn die Daten verarbeitet sind bzw. wird vom Makro auf AUS gesetzt, 
+wenn ein neuer Transfer initiiert wird - druch einen Übergang der Variable Start von AUS auf EIN. Die Daten finden sich anschließend im String NameRawData. Die Länge des Empfangsstrings ist mit RecieveBytes als Zahl zwischen 1 und 65564 anzugeben.$ 
+      $Name der Verbindung, z.B. TankAnzeige.$ \\
+      $IP des Webservers, der abgefragt wird. z.B. entweder in der Form 192.168.1.2 oder resolve("www.enertex.de") - (Hochkomma durch Dollarzeichen ersetzen) $ \\
+      $Zielverzeichnis auf dem Webserver, z.B. "\xml"(Hochkomma durch Dollarzeichen ersetzen)$ \\
+      $Anzahl der erwarteten Bytes, zB. 1400$ $Start (Typ b01). Bei Wechsel auf EIN wird die Abfrage gestartet, nach Abarbeitung, ca. 5 Sekunden nach Start der Abfrage, geht diese wieder auf AUS$ \\
+      $Die Antwortzeit des Ziel-Webservers (je nach Erreichbarkeit einige Sekunden dauern) in Millisekunden$
+:shortinfo $GET auf HTTP-Server ausführen$
+
+Name^CRLF=tostring(0x0D,0x0A)
+Name^Port=80u16
+// Initialisieren mit dem Wert 10 => Nach der Erstinitialsierung wird 
+// der Wert auf 11 gehen (== bereit)
+Name^ConnectionState=10
+Name^Get = AUS; 
+Name^StringGet=  $GET $+Directory+ $ HTTP/1.1$ + Name^CRLF+ \\
+                 $User-Agent: Wget/ 1.0$ + Name^CRLF + \\
+                 $Accept: */*$ + Name^CRLF+ \\
+                 $Connection: keep-alive$ + Name^CRLF+ \\
+                 Name^CRLF+ Name^CRLF;
+Name^RawData=$$c^RecieveBytes
+Name^RawDataIn=$$c^RecieveBytes
+Name^RemotePort=0u16
+Name^RemoteIP=0u32
+Name^Recieved=AUS
+Name^DateIn=AUS
+Name^InternRecieved=AUS
+// Built up TCP Connection
+if Start then Name^ConnectionState = connecttcp(Name^Port, IP) endif
+
+if change(Name^ConnectionState) and Name^ConnectionState == 0u08 then {
+    Name^Get = EIN; 
+    Name^RawData=$$c^RecieveBytes;
+    Name^Recieved=AUS;
+}endif
+// Send Request to TCP Server
+if Name^Get then {
+    sendtcparray(Name^Port, IP, Name^StringGet, size(Name^StringGet));
+} endif
+
+if event(readtcp(Name^RemotePort,Name^RemoteIP,Name^RawDataIn)) and Name^Get then {
+    Name^RawData=Name^RawData+Name^RawDataIn;
+}endif
+
+// Close TCP Connection after 3 seconds after the maximum Transfertime
+if after(Name^Get,ResponseTime^u64+3000u64) then {
+    closetcp(Name^Port, IP);
+    Start=AUS;
+    // Initialisierungsprozess?
+    Name^ConnectionState=11;
+    Name^Recieved=EIN;
+    Name^Get = AUS; 
+} endif
+
+:end
+
+:begin XMLParse(XMLString,Mask,Occurence,Result)
+:info $Parst einen String im XML Schema. Wenn der String mit der XML-Schema (Argument Mask) nicht gefunden wird, erfolgt keine Zuweisung auf Result. Sollte das XML-Schema mehrfach vorkommen, so kann dies mit dem Argument Occurence angegeben werden, wobei "0" das erste Auftreten und "1" das zweite Auftreten usw. bedeutet. $ $Der zu parsende String$ $Das  XML-Werteschema (Maske) ohne String-Doller Zeichen als einfacher Text$ $Das (n-1)-te Augrtreten des Schemas im XMLString$ $Eine Ergebnisvariable$
+:shortinfo $XML Parser$
+:var Pos@
+Pos@=0u16
+:return { 
+        Pos@=find(XMLString, $<^Mask^>$, Occurence^u16); 
+        if Pos@!=EOS then Result=convert(split(XMLString, Pos@+ size($<^Mask^>$),find(XMLString, $</^Mask^>$, Occurence^u16)-1u16),Result) endif;
+}
+:end
+

@@ -1,0 +1,21 @@
+[Macros]
+GAStatus2("Weihnachten-Steckdosen-1/3/6","EsszimmerSteckdose1-1/5/1","EsszimmerSteckdose2-1/5/0")
+GAStatus3("EsszimmerSteckdose1-1/5/1","EsszimmerSteckdose1-1/5/1","EsszimmerSteckdose2-1/5/0","ArtbeitszimmerSteckdose1-1/5/2")
+GAStatus4("EG-Steckdosen-1/3/13","WohnzimmerSteckdose1-1/5/9","EsszimmerSteckdose1-1/5/1","EsszimmerSteckdose2-1/5/0","ArtbeitszimmerSteckdose1-1/5/2")
+GAStatus5("EGAlleLichter-1/3/3","WohnzimmerSteckdose1-1/5/9","EsszimmerSteckdose1-1/5/1","EsszimmerSteckdose2-1/5/0","SaunaSteckdose-1/4/2","FlurSteckdose-1/5/12")
+
+[MacroLibs]
+//Makro-Bibliotheken
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/Demos/status/EnertexStatus.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/Demos/Haus.esf
+
+[EibPC]
+
+x= Status2("GästeWC-5/0/0","Speis-5/0/1")
+y= Status3("GästeWC-5/0/0","Speis-5/0/1","Küche-5/0/2")
+z= Status4("FlurLicht-1/1/0","GästeWCSpiegel-1/1/3","GästeWCLicht-1/1/2","EsszimmerWandleuchte-1/1/4")
+w= Status5("FlurLicht-1/1/0","GästeWCSpiegel-1/1/3","GästeWCLicht-1/1/2","EsszimmerWandleuchte-1/1/4","WigaLüfterAn-5/4/0")

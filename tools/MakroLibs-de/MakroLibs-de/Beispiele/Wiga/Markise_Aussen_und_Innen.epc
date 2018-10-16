@@ -1,0 +1,12 @@
+[Macros]
+//Bei folgenden Bedingungen wird die Markise eingefahren: 1) Außentemperatur < Innentemperatur, 2) Regen, 3) Windstärke > Windschwelle 4) Außentemperatur < Temperaturschwelle, ansonsten wird sie ausgefahren, wenn die Freigabe auf EIN ist.
+Markise_Aussen_und_Innen(Markise,"Regen-3/5/4","Wind-3/5/1",10,"Außentemperatur-3/5/0",5,"FlurTemp-3/1/17","WigaMarkise-5/0/30")
+[MacroLibs]
+EnertexWiga.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Markise darf nur tagsüber ausgefahren werden
+Markise = chtime(9,0,0) and !chtime(22,0,0)

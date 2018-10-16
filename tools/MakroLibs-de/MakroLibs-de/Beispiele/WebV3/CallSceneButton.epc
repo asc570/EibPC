@@ -1,0 +1,28 @@
+
+[WebServer]
+//Seite erstellen
+Page(FlurPageID) [$Erdgeschoss$,$Flur$]
+//pbutton(oder pshifter) erstellen ist Vorraussetzung für das Makro CallSceneButton
+pbutton(FlurLichtID)[SCENES]$Flur$
+
+[Macros]
+// Angabe on Element- und SeitenID; Taster, welcher die Scenen aufruft, Scenenummern, Icon
+CallSceneButton(FlurLichtID,FlurPageID,"Taster-0/2/5",'10/1/1'u08,1,2,SCENES)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV3.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+FlurPageID = 1
+FlurLichtID = 1
+
+// Im EibPC angelegte und vordefinierte Scenen
+scene('10/1/1'u08,"WigaDimmerWert-1/1/11","WohnzimmerHauptLicht-1/1/13")
+presetscene('10/1/1'u08,1,EIN,60%,EIN,EIN,EIN)
+presetscene('10/1/1'u08,2,EIN,0%,EIN,AUS,EIN)

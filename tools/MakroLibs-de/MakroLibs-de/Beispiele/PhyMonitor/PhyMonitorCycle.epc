@@ -1,0 +1,16 @@
+[Macros]
+// Das Gerät 2.4.56 überprüfen: Alle 100 Minuten wird eine Leseanforderung auf die GA gegeben.
+//
+// Aktor1Raw_Error wird auf EIN gesetzt, wenn der Aktor nicht in 10 Sekunden antwortet
+
+PhyGAMonitorZeit(Aktor1,2.4.56,"Wind-3/5/1",100)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexPhyMonitor.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+

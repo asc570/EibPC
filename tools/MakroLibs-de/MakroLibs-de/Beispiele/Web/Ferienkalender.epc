@@ -1,0 +1,35 @@
+[Macros]
+//Mit diesem Makro wird der Ferienkalender visualisiert, man braucht dazu noch die Webelemente die unten implementiert sind
+Ferienkalender(DayID,MonthID,FerienID,PageID)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+page(PageID)[$Kalender$,$Ferien$]
+//Auswahl des Monats und des Tages
+mpbutton(MonthID)[$Januar$,$Februar$,$März$,$April$,$Mai$,$Juni$,$Juli$,$August$,$September$,$Oktober$,$November$,$Dezember$][DATE]$Monat$ \\
+mpbutton(DayID)[$1$,$2$,$3$,$4$,$5$,$6$,$7$,$8$,$9$,$10$,$11$,$12$,$13$,$14$,$15$,$16$,$17$,$18$,$19$,$20$,$21$,$22$,$23$,$24$,$25$,$26$,$27$,$28$,$29$,$30$,$31$][DATE]$Tag$
+//Shifter, der den Ferienstatus anzeigt und mit dem man den Status auch manuell umschalten kann
+shifter(FerienID)[INFO]$Ferien Status:$
+
+[EibPC]
+//Definitionen der IDs für den Webserver
+PageID = 1
+MonthID = 1
+DayID = 2
+FerienID = 3
+BeginID = 4
+EndID = 5
+Begin2ID = 6
+End2ID = 7
+
+
+
+
+
+

@@ -1,0 +1,27 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+Page1 = 1
+Chart1 = 1
+
+// Skalierung der y-Achse
+Webzeit=convert(hour(),0.0)+convert(minute(),0.0)/60.0+convert(second(),0.0)/3600.0
+//Webzeit=convert(hour(),0.0)+convert(minute(),0.0)/60.0
+
+L1="Licht-3/5/2"
+T1="Auﬂentemperatur-3/5/0"
+W1="Wind-3/5/1"
+
+if cycle(1,0) then {
+ 	mpchart(Chart1,Webzeit,L1,0,Page1);
+ 	mpchart(Chart1,Webzeit,T1,1,Page1);
+ 	mpchart(Chart1,Webzeit,W1,2,Page1)
+} endif
+
+[WebServer]
+page(Page1)[$Startseite$,$MP-Chart$]
+mpchart(Chart1)[DOUBLE,SXY]($Licht$,LINE,$Temperatur$,LINE,$Wind$,LINE)
+

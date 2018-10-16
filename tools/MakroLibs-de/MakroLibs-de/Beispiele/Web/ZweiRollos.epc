@@ -1,0 +1,25 @@
+[MacroLibs]
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+BeschattungsPageID = 1
+RolloID = 1
+
+
+[WebServer]
+//Seite erstellen
+Page(BeschattungsPageID) [$Beschattung$,$Esszimmer$]
+//mpshifter erstellen ist Vorraussetzung für das Makro ZweiRollo
+mpshifter(RolloID)[$Fenster$,$Markise$][UP,BLIND,DOWN]$Rollo$
+
+
+[Macros]
+//Hiermit verbindet man den mpshifter mit zwei Rollos
+ZweiRollos(RolloID,BeschattungsPageID,"EsszimmerFenster-5/0/3","EsszimmerStop-5/0/13","MarkiseEsszimmer-5/0/21","MarkiseEsszimmerStop-5/0/24")
+
+

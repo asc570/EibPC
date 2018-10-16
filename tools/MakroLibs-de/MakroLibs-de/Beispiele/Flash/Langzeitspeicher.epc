@@ -1,0 +1,48 @@
+[Macros]
+// Speicher im Flash zyklisch laden
+FlashCycleGA(Essen2Temp,0,'2/3/4'f16,cycle(2,0),0,26,12,10)
+FlashCycleGA(EssenTemp,4,'2/3/4'f16,cycle(4,0),0, 26,12,10)
+// Darstellen der aktuellen Daten und bei Neustart des Programms von bereits vergangenen Daten
+VisuFlash(Essen2Temp,0,Logger2VisuID,LoggerPageID)
+VisuFlash(EssenTemp,0,LoggerVisuID,LoggerPageID)
+// Aus dem Speicher holen und darstellen (Slider als %-Angabe)
+VisuFlashHistory(EssenTemp,0,LoggerHistoryID,SliderID,InfoID,LoggerPageID)
+VisuFlashHistory(Essen2Temp,0,Logger2HistoryID,Slider2ID,Info2ID,LoggerPageID)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexFlash.lib
+
+[WebServer]
+page (LoggerPageID) [$Allgemein$,$Logger$] 
+// Charts mit aktuellen Werten
+line $Aktuelle Werte$
+mpchart(LoggerVisuID) [DOUBLE,SXY] ($Min$,LINE,$MAX$,LINE,$MITTELWERT$,LINEDOTS) \\
+     mpchart(Logger2VisuID) [DOUBLE,SXY] ($Min$,LINE,$MAX$,LINE,$MITTELWERT$,LINEDOTS)
+// Werte aus dem Flash mit Slider einstellbar
+line $Historie$
+pslider(SliderID)[DATE]$Ringpuffer - Position%$ pslider(Slider2ID)[DATE]$Ringpuffer - Position$ 
+pshifter(InfoID)[INFO]$Beobachtungszeitraum$ pshifter(Info2ID)[INFO]$Beobachtungszeitraum$
+mpchart(LoggerHistoryID) [Single,SXY] ($Min$,LINE,$MAX$,LINE,$MITTELWERT$,LINEDOTS) \\
+mpchart(Logger2HistoryID) [Single,SXY] ($Min$,LINE,$MAX$,LINE,$MITTELWERT$,LINEDOTS) 
+
+[EibPC]
+// Zugriff auf Visu
+LoggerPageID=1
+Logger2VisuID=0
+LoggerVisuID=1
+SliderID=2
+Slider2ID=7
+InfoID=4
+Info2ID=8
+LoggerHistoryID=5
+Logger2HistoryID=6
+// 
+// Ein paar Daten generieren
+// 
+u='1/3/4'c14
+changet=AUS
+if cycle(0,2) and Store_EssenTemp_Start then  {
+	changet=!changet;
+	write('2/3/4'f16,convert(sin((convert(minute(),0f32)/60f32+convert(second(),0f32)/260f32+convert(hour(),0f32))/60f32*3.14f32)+convert(random(1000u32),0f32)/10000f32,0.0)) 
+} endif 

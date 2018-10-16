@@ -1,0 +1,13 @@
+[Macros]
+//Diese Uhr wird täglich um 3:00 Uhr mit der Uhrzeit des EibPCs synchronisiert
+UhrenSynchronisation("Uhr-7/0/1")
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

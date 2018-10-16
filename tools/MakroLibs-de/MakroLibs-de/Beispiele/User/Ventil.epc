@@ -1,0 +1,11 @@
+[Macros]
+//Das Eingangssignal des RTRs wird in ein Schaltsignal für einen Ventilaktor umgewandelt mit einer Zykluszeit von 20Minuten
+Ventil(WohnzimmerVentil,20,"RTRWohnzimmer-0/0/20","WohnzimmerHeizVentil-0/0/21")
+[MacroLibs]
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

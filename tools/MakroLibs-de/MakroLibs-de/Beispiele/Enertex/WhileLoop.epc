@@ -1,0 +1,19 @@
+[Macros]
+//While Schleife, die x auf ein Display schreibt, solange x kleiner als 11 ist. Man muss von x noch eins abziehen, da der Compiler zuerst x erhöht und dann x auf das Display schreibt
+WhileLoop(Test,V,x < 11u32,write("Display-0/1/0", convert(x - 1u32, $$c14)); x = x + 1u32)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitonen
+x = 1u32
+V = AUS
+//While Schleife wird aktiviert mit einem Taster
+if event("Taster-0/2/5") then V = EIN endif
+

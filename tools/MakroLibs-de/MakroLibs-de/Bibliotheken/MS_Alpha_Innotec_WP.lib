@@ -1,0 +1,977 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+// RS232 Gateway für Alpha Innotec Wärmepumpen mit Luxtronik 1.0 Steuerung (bis Baujahr 2008) 
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Michael Schriefers
+//
+//  Author               : Michael Schriefers
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.5 $
+//
+// -----------------------------------------------------------------------------------------------------------
+// RS232 Gateway für Alpha Innotec Wärmepumpen mit Luxtronik 1.0 Steuerung (bis Baujahr 2008) 
+// -----------------------------------------------------------------------------------------------------------
+// - die Anbindung der Wärmepumpe erfolgt über ein serielles 1:1 Kabel (Pin 2&3 Data, Pin 5 GND)
+// - die Wärmepumpe muß im Menüpunkt Einstellungen, Datenzugang auf Standard stehen (PIN 9445)
+// - Schnittstellen-Parameter: 57600, 8, N, 1, Xon/Xoff
+//
+// copyright Michael Schriefers, 2011
+//
+// Rechtlicher Hinweis
+// Die private Nutzung und Weitergabe der angebotenen Software erfolgt ausdrücklich nur unter den folgenden 
+// Bedingungen, die der Nutzer mit der Ingebrauchsnahme des Programms anerkennt:
+// a) Der Autor der Software gibt keine Garantien irgendeiner Art, weder ausdrücklich noch implizit, zur 
+//    Verwendung der unentgeltlich zur Verfügung gestellten Software für irgendeinen Zweck. 
+// b) Unter keinen Umständen ist der Autor haftbar für jedwede Schäden, Folgeschäden, einschließlich aller 
+//    entgangenen Gewinne und Vermögensverluste oder anderer mittelbarer oder unmittelbarer Schäden, die durch 
+//    den Gebrauch oder die Nichtverwendbarkeit der Software und seiner begleitenden Dokumentation entstehen. 
+// c) Eine über den eigenen Gebrauch hinausgehende kommerzielle Nutzung der Software bzw. von Elementen dieser 
+//    Software ist nicht zulässig.
+//
+//
+:begin Luxtronik1(Abfrageperiode)
+:info $Abfrage des Anlagenstatus einer Alpha Innotec Wärmepumpe mit Luxtronik 1.0 Steuerung über RS232$ \\
+	$Eingabe der Abfrageperiode in Minuten, z.B. 5$
+:shortinfo $Alpha Innotec Wärmepumpen Gateway (Luxtronik 1.0)$
+Rawdata=$$
+Buffer=$$
+Len=0u16
+StartPos=0u16
+EndPos=0u16
+Data_Temperatur=$$
+Data_Eingaenge=$$
+Data_Ausgaenge=$$
+Data_Ablaufzeiten=$$
+Data_Betriebsstunden=$$
+Data_Fehler1=$$
+Data_Fehler2=$$
+Data_Fehler3=$$
+Data_Fehler4=$$
+Data_Fehler5=$$
+Data_Abschaltungen1=$$
+Data_Abschaltungen2=$$
+Data_Abschaltungen3=$$
+Data_Abschaltungen4=$$
+Data_Abschaltungen5=$$
+Data_Anlagenstatus=$$
+// Anlagenstatus über RS232 in periodischem Abstand abfragen
+sendrs232($1800$,0x0d,0x0a)
+if cycle(Abfrageperiode,0) then \\
+	Rawdata=$$; \\
+	Buffer=$$; \\
+	Len=0u16; \\
+	sendrs232($1800$,0x0d,0x0a); \\
+	endif
+// Empfangen des Anlagenstatus über RS232 und füllen des Buffers 
+if event(readrs232(Rawdata,Len)) then \\
+    	Buffer=split(Rawdata,0u16,Len) \\
+	endif
+// Parsen der einzelnen Informationsblöcke der Wärmepumpendaten 
+if delay(change(Buffer),2000u64) and size(Buffer)>=10u16 then \\
+	/* Temperaturdaten */; \\
+	StartPos=0u16; \\
+	EndPos=0u16; \\
+	StartPos=find(Buffer,$1100;12;$,0u16)+size($1100;12;$); \\
+	EndPos=find(Buffer,$1200;6;$,0u16)-2u16; \\
+	Data_Temperatur=split(Buffer,StartPos,EndPos); \\
+	Data_Temperatur=Data_Temperatur+$;$; \\
+	/* Status der Eingänge */; \\
+	StartPos=find(Buffer,$1200;6;$,0u16)+size($1200;6;$); \\
+	EndPos=find(Buffer,$1300;13;$,0u16)-2u16; \\
+	Data_Eingaenge=split(Buffer,StartPos,EndPos); \\
+	Data_Eingaenge=Data_Eingaenge+$;$; \\
+	/* Status der Ausgänge */; \\
+	StartPos=find(Buffer,$1300;13;$,0u16)+size($1300;13;$); \\
+	EndPos=find(Buffer,$1400;29;$,0u16)-2u16; \\
+	Data_Ausgaenge=split(Buffer,StartPos,EndPos); \\
+	Data_Ausgaenge=Data_Ausgaenge+$;$; \\
+	/* Ablaufzeiten */; \\
+	StartPos=find(Buffer,$1400;29;$,0u16)+size($1400;29;$); \\
+	EndPos=find(Buffer,$1450;9;$,0u16)-2u16; \\
+	Data_Ablaufzeiten=split(Buffer,StartPos,EndPos); \\
+	Data_Ablaufzeiten=Data_Ablaufzeiten+$;$; \\
+	/* Betriebsstunden */; \\
+	StartPos=find(Buffer,$1450;9;$,0u16)+size($1450;9;$); \\
+	EndPos=find(Buffer,$1500;5$,0u16)-2u16; \\
+	Data_Betriebsstunden=split(Buffer,StartPos,EndPos); \\
+	Data_Betriebsstunden=Data_Betriebsstunden+$;$; \\
+	/* Fehlercodes */; \\
+	StartPos=find(Buffer,$1500;1500;6;$,0u16)+size($1500;1500;6;$); \\
+	EndPos=find(Buffer,$ 1500;1501;6$,0u16)-2u16; \\
+	Data_Fehler1=split(Buffer,StartPos,EndPos); \\
+	Data_Fehler1=Data_Fehler1+$;$; \\
+	StartPos=find(Buffer,$1500;1501;6;$,0u16)+size($1500;1501;6;$); \\
+	EndPos=find(Buffer,$ 1500;1502;6$,0u16)-2u16; \\
+	Data_Fehler2=split(Buffer,StartPos,EndPos); \\
+	Data_Fehler2=Data_Fehler2+$;$; \\
+	StartPos=find(Buffer,$1500;1502;6;$,0u16)+size($1500;1502;6;$); \\
+	EndPos=find(Buffer,$ 1500;1503;6$,0u16)-2u16; \\
+	Data_Fehler3=split(Buffer,StartPos,EndPos); \\
+	Data_Fehler3=Data_Fehler3+$;$; \\
+	StartPos=find(Buffer,$1500;1503;6;$,0u16)+size($1500;1503;6;$); \\
+	EndPos=find(Buffer,$ 1500;1504;6$,0u16)-2u16; \\
+	Data_Fehler4=split(Buffer,StartPos,EndPos); \\
+	Data_Fehler4=Data_Fehler4+$;$; \\
+	StartPos=find(Buffer,$1500;1504;6;$,0u16)+size($1500;1504;6;$); \\
+	EndPos=find(Buffer,$ 1500;5$,0u16)-2u16; \\
+	Data_Fehler5=split(Buffer,StartPos,EndPos); \\
+	Data_Fehler5=Data_Fehler5+$;$; \\
+	/* Abschaltungen */; \\
+	StartPos=find(Buffer,$1600;1600;6;$,0u16)+size($1600;1600;6;$); \\
+	EndPos=find(Buffer,$1600;1601;6$,0u16)-2u16; \\
+	Data_Abschaltungen1=split(Buffer,StartPos,EndPos); \\
+	Data_Abschaltungen1=Data_Abschaltungen1+$;$; \\
+	StartPos=find(Buffer,$1600;1601;6;$,0u16)+size($1600;1601;6;$); \\
+	EndPos=find(Buffer,$1600;1602;6$,0u16)-2u16; \\
+	Data_Abschaltungen2=split(Buffer,StartPos,EndPos); \\
+	Data_Abschaltungen2=Data_Abschaltungen2+$;$; \\
+	StartPos=find(Buffer,$1600;1602;6;$,0u16)+size($1600;1602;6;$); \\
+	EndPos=find(Buffer,$1600;1603;6$,0u16)-2u16; \\
+	Data_Abschaltungen3=split(Buffer,StartPos,EndPos); \\
+	Data_Abschaltungen3=Data_Abschaltungen3+$;$; \\
+	StartPos=find(Buffer,$1600;1603;6;$,0u16)+size($1600;1603;6;$); \\
+	EndPos=find(Buffer,$1600;1604;6$,0u16)-2u16; \\
+	Data_Abschaltungen4=split(Buffer,StartPos,EndPos); \\
+	Data_Abschaltungen4=Data_Abschaltungen4+$;$; \\
+	StartPos=find(Buffer,$1600;1604;6;$,0u16)+size($1600;1604;6;$); \\
+	EndPos=find(Buffer,$1600;1605;6$,0u16)-2u16; \\
+	Data_Abschaltungen5=split(Buffer,StartPos,EndPos); \\
+	Data_Abschaltungen5=Data_Abschaltungen5+$;$; \\
+	/* Anlagenstatus */; \\
+	StartPos=find(Buffer,$1700;12;$,0u16)+size($1700;12;$); \\
+	EndPos=find(Buffer,$1800;8;$,0u16)-2u16; \\
+	Data_Anlagenstatus=split(Buffer,StartPos,EndPos); \\
+	Data_Anlagenstatus=Data_Anlagenstatus+$;$ \\
+	endif
+// Einzelwerte zu den Temperaturen definieren
+WP_Temp_Heizkreis_Ist_Vorlauftemperatur=0.0
+WP_Temp_Heizkreis_Ist_Ruecklauftemperatur=0.0
+WP_Temp_Heizkreis_Soll_Ruecklauftemperatur=0.0
+WP_Temp_Heissgastemperatur=0.0
+WP_Temp_Aussentemperatur=0.0
+WP_Temp_Warmwasser_Ist_Temperatur=0.0
+WP_Temp_Brauchwarmwasser_Soll_Temperatur=0.0
+WP_Temp_Waermequellen_Eintrittstemperatur=0.0
+WP_Temp_Waermequellen_Austrittstemperatur=0.0
+WP_Temp_Mischkreis_1_Ist_Vorlauftemperatur=0.0
+WP_Temp_Mischkreis_1_Soll_Vorlauftemperatur=0.0
+WP_Temp_Raumstation=0.0
+// Parsen der einzelnen Temperaturwerte
+if change(Data_Temperatur) and Data_Temperatur!=$$ then \\
+	/* Parsen von Heizkreis_Ist_Vorlauftemperatur */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Temperatur,$;$,0u16)-1u16; \\
+	WP_Temp_Heizkreis_Ist_Vorlauftemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Heizkreis_Ist_Ruecklauftemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,1u16)-1u16;\\
+	WP_Temp_Heizkreis_Ist_Ruecklauftemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Heizkreis_Soll_Ruecklauftemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,2u16)-1u16; \\
+	WP_Temp_Heizkreis_Soll_Ruecklauftemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Heissgastemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,3u16)-1u16; \\
+	WP_Temp_Heissgastemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Aussentemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,4u16)-1u16; \\
+	WP_Temp_Aussentemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Brauchwarmwasser_Ist_Temperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,5u16)-1u16; \\
+	WP_Temp_Warmwasser_Ist_Temperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Brauchwarmwasser_Soll_Temperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,6u16)-1u16; \\
+	WP_Temp_Brauchwarmwasser_Soll_Temperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Waermequellen_Eintrittstemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,7u16)-1u16; \\
+	WP_Temp_Waermequellen_Eintrittstemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Waermequellen_Austrittstemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,8u16)-1u16; \\
+	WP_Temp_Waermequellen_Austrittstemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Mischkreis_1_Ist_Vorlauftemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,9u16)-1u16; \\
+	WP_Temp_Mischkreis_1_Ist_Vorlauftemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Mischkreis_1_Soll_Vorlauftemperatur */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,10u16)-1u16; \\
+	WP_Temp_Mischkreis_1_Soll_Vorlauftemperatur=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	/* Parsen von Raumstation */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Temperatur,$;$,11u16)-1u16; \\
+	WP_Temp_Raumstation=convert(split(Data_Temperatur,StartPos,EndPos),0.0)*0.1; \\
+	endif
+// Einzelwerte zu den Wärmepumpeneingängen definieren 
+WP_Eingaenge_Abtau_Soledruck_Durchfluss=0b01
+WP_Eingaenge_Sperrzeit_vom_EVU=0b01
+WP_Eingaenge_Hochdruckpressostat=0b01
+WP_Eingaenge_Motorschutz=0b01
+WP_Eingaenge_Niederdruckpressostat=0b01
+WP_Eingaenge_Anschluss_einer_Fremdstromanode=0b01
+// Parsen der einzelnen Wärmepumpeneingänge
+if change(Data_Eingaenge) and Data_Eingaenge!=$$ then \\
+	/* Parsen von Abtau_Soledruck_Durchfluss */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Eingaenge,$;$,0u16)-1u16; \\
+	WP_Eingaenge_Abtau_Soledruck_Durchfluss=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Sperrzeit_vom_EVU */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Eingaenge,$;$,1u16)-1u16;\\
+	WP_Eingaenge_Sperrzeit_vom_EVU=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Hochdruckpressostat */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Eingaenge,$;$,2u16)-1u16;\\
+	WP_Eingaenge_Hochdruckpressostat=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Motorschutz */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Eingaenge,$;$,3u16)-1u16;\\
+	WP_Eingaenge_Motorschutz=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Niederdruckpressostat */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Eingaenge,$;$,4u16)-1u16;\\
+	WP_Eingaenge_Niederdruckpressostat=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Anschluss_einer_Fremdstromanode */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Eingaenge,$;$,5u16)-1u16;\\
+	WP_Eingaenge_Anschluss_einer_Fremdstromanode=convert(split(Data_Eingaenge,StartPos,EndPos),0b01); \\
+	endif
+// Einzelwerte zu den Wärmepumpenausgängen definieren 
+WP_Ausgaenge_Abtauventil=0b01
+WP_Ausgaenge_Brauchwarmwasserumwaelzpumpe=0b01
+WP_Ausgaenge_Fussbodenheizungsumwaelzpumpe=0b01
+WP_Ausgaenge_Heizungsumwaelzpumpe=0b01
+WP_Ausgaenge_Mischer_1_Auf=0b01
+WP_Ausgaenge_Mischer_1_Zu=0b01
+WP_Ausgaenge_Ventilation_des_Waermepumpengehaeuses=0b01
+WP_Ausgaenge_Ventilator_Brunnen_oder_Soleumwaelzpumpe=0b01
+WP_Ausgaenge_Verdichter_1_in_Waermepumpe=0b01
+WP_Ausgaenge_Verdichter_2_in_Waermepumpe=0b01
+WP_Ausgaenge_Zusatzumwaelzpumpe_Zirkulationspumpe=0b01
+WP_Ausgaenge_Zweiter_Waermeerzeuger_1=0b01
+WP_Ausgaenge_Zweiter_Waermeerzeuger_2_Sammelstoerung=0b01
+// Parsen der einzelnen Wärmepumpeneausgänge
+if change(Data_Ausgaenge) and Data_Ausgaenge!=$$ then \\
+	/* Parsen von Abtauventil */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,0u16)-1u16; \\
+	WP_Ausgaenge_Abtauventil=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Brauchwarmwasserumwaelzpumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,1u16)-1u16; \\
+	WP_Ausgaenge_Brauchwarmwasserumwaelzpumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Fussbodenheizungsumwaelzpumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,2u16)-1u16; \\
+	WP_Ausgaenge_Fussbodenheizungsumwaelzpumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Heizungsumwaelzpumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,3u16)-1u16; \\
+	WP_Ausgaenge_Heizungsumwaelzpumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Mischer_1_Auf */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,4u16)-1u16; \\
+	WP_Ausgaenge_Mischer_1_Auf=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Mischer_1_Zu */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,5u16)-1u16; \\
+	WP_Ausgaenge_Mischer_1_Zu=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Ventilation_des_Waermepumpengehaeuses */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,6u16)-1u16; \\
+	WP_Ausgaenge_Ventilation_des_Waermepumpengehaeuses=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Ventilator_Brunnen_oder_Soleumwaelzpumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,7u16)-1u16; \\
+	WP_Ausgaenge_Ventilator_Brunnen_oder_Soleumwaelzpumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Verdichter_1_in_Waermepumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,8u16)-1u16; \\
+	WP_Ausgaenge_Verdichter_1_in_Waermepumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Verdichter_2_in_Waermepumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,9u16)-1u16; \\
+	WP_Ausgaenge_Verdichter_2_in_Waermepumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Zusatzumwaelzpumpe_Zirkulationspumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,10u16)-1u16; \\
+	WP_Ausgaenge_Zusatzumwaelzpumpe_Zirkulationspumpe=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Zweiter_Waermeerzeuger_1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,11u16)-1u16; \\
+	WP_Ausgaenge_Zweiter_Waermeerzeuger_1=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	/* Parsen von Zweiter_Waermeerzeuger_2_Sammelstoerung */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ausgaenge,$;$,12u16)-1u16; \\
+	WP_Ausgaenge_Zweiter_Waermeerzeuger_2_Sammelstoerung=convert(split(Data_Ausgaenge,StartPos,EndPos),0b01); \\
+	endif
+// Einzelwerte zu den Ablaufzeiten definieren
+WP_Ablaufzeiten_Waermepumpe=$$
+WP_Ablaufzeiten_Zweiter_Waermeerzeuger_1=$$
+WP_Ablaufzeiten_Zweiter_Waermeerzeuger_2=$$
+WP_Ablaufzeiten_Netzeinschaltverzoegerung=$$
+WP_Ablaufzeiten_Standzeit_Schaltspielsperre=$$
+WP_Ablaufzeiten_Einschaltverzoegerung_Schaltspielsperre=$$
+WP_Ablaufzeiten_Verdichter_Standzeit=$$
+WP_Ablaufzeiten_Heizungsregler_Mehr_Zeit=$$
+WP_Ablaufzeiten_Heizungsregler_Weniger_Zeit=$$
+WP_Ablaufzeiten_Thermische_Desinfektion=$$
+WP_Ablaufzeiten_Sperre_Brauchwarmwasser=$$
+Ablaufstunde=$$
+Ablaufminute=$$
+Ablaufsekunde=$$
+// Parsen der einzelnen Ablaufzeiten
+if change(Data_Ablaufzeiten) and Data_Ablaufzeiten!=$$ then \\
+	/* Parsen von Waermepumpe */; \\
+	/* Ablaufstunde */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,0u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,1u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,2u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Waermepumpe=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Zweiter_Waermeerzeuger_1 */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,3u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,4u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,5u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Zweiter_Waermeerzeuger_1=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Zweiter_Waermeerzeuger_2 */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,6u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,7u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,8u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Zweiter_Waermeerzeuger_2=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Netzeinschaltverzoegerung */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,9u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Netzeinschaltverzoegerung=Ablaufstunde; \\
+	/* Parsen von Standzeit_Schaltspielsperre */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,10u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,11u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Standzeit_Schaltspielsperre=Ablaufstunde+$:$+Ablaufminute; \\
+	/* Parsen von Einschaltverzoegerung_Schaltspielsperre */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,12u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,13u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Einschaltverzoegerung_Schaltspielsperre=Ablaufstunde+$:$+Ablaufminute; \\
+	/* Parsen von Verdichter_Standzeit */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,14u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,15u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,16u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Verdichter_Standzeit=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Heizungsregler_Mehr_Zeit */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,17u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,18u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,19u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Heizungsregler_Mehr_Zeit=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Heizungsregler_Weniger_Zeit */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,20u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,21u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,22u16)-1u16; \\
+	WP_Ablaufzeiten_Heizungsregler_Weniger_Zeit=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Thermische_Desinfektion */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,23u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,24u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,25u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Thermische_Desinfektion=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	/* Parsen von Sperre_Brauchwarmwasser */; \\
+	/* Ablaufstunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,26u16)-1u16; \\
+	Ablaufstunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufminute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,27u16)-1u16; \\
+	Ablaufminute=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	/* Ablaufsekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Ablaufzeiten,$;$,28u16)-1u16; \\
+	Ablaufsekunde=split(Data_Ablaufzeiten,StartPos,EndPos); \\
+	WP_Ablaufzeiten_Sperre_Brauchwarmwasser=Ablaufstunde+$:$+Ablaufminute+$:$+Ablaufsekunde; \\
+	endif
+// Einzelwerte zu den Betriebstunden definieren
+WP_BetrStd_Betriebsstunden_Verdichter_1=0u32
+WP_BetrStd_Impulse_Verdichter_1=0u32
+WP_BetrStd_Durchschnittliche_Laufzeit_Verdichter_1=0u32
+WP_BetrStd_Betriebsstunden_Verdichter_2=0u32
+WP_BetrStd_Impulse_Verdichter_2=0u32
+WP_BetrStd_Durchschnittliche_Laufzeit_Verdichter_2=0u32
+WP_BetrStd_Betriebsstunden_Zweiter_Waermeerzeuger_1=0u32
+WP_BetrStd_Betriebsstunden_Zweiter_Waermeerzeuger_2=0u32
+WP_BetrStd_Betriebsstunden_Waermepumpe=0u32
+// Parsen der einzelnen Betriebstunden
+if change(Data_Betriebsstunden) and Data_Betriebsstunden!=$$ then \\
+	/* Parsen von Betriebsstunden_Verdichter_1 */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,0u16)-1u16; \\
+	WP_BetrStd_Betriebsstunden_Verdichter_1=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Impulse_Verdichter_1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,1u16)-1u16; \\
+	WP_BetrStd_Impulse_Verdichter_1=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Durchschnittliche_Laufzeit_Verdichter */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,2u16)-1u16; \\
+	WP_BetrStd_Durchschnittliche_Laufzeit_Verdichter_1=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Betriebsstunden_Verdichter_2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,3u16)-1u16; \\
+	WP_BetrStd_Betriebsstunden_Verdichter_2=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Impulse_Verdichter_2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,4u16)-1u16; \\
+	WP_BetrStd_Impulse_Verdichter_2=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Durchschnittliche_Laufzeit_Verdichter_2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,5u16)-1u16; \\
+	WP_BetrStd_Durchschnittliche_Laufzeit_Verdichter_2=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Betriebsstunden_Zweiter_Waermeerzeuger_1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,6u16)-1u16; \\
+	WP_BetrStd_Betriebsstunden_Zweiter_Waermeerzeuger_1=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Betriebsstunden_Zweiter_Waermeerzeuger_2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,7u16)-1u16; \\
+	WP_BetrStd_Betriebsstunden_Zweiter_Waermeerzeuger_2=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	/* Parsen von Betriebsstunden_Waermepumpe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Betriebsstunden,$;$,8u16)-1u16; \\
+	WP_BetrStd_Betriebsstunden_Waermepumpe=convert(split(Data_Betriebsstunden,StartPos,EndPos),0u32)/3600u32; \\
+	endif
+// Einzelwerte zu den Fehlern definieren
+WP_Fehler_1_Code=$$
+WP_Fehler_1_Datum=$$
+WP_Fehler_1_Uhrzeit=$$
+WP_Fehler_2_Code=$$
+WP_Fehler_2_Datum=$$
+WP_Fehler_2_Uhrzeit=$$
+WP_Fehler_3_Code=$$
+WP_Fehler_3_Datum=$$
+WP_Fehler_3_Uhrzeit=$$
+WP_Fehler_4_Code=$$
+WP_Fehler_4_Datum=$$
+WP_Fehler_4_Uhrzeit=$$
+WP_Fehler_5_Code=$$
+WP_Fehler_5_Datum=$$
+WP_Fehler_5_Uhrzeit=$$
+Fehlertag=$$
+Fehlermonat=$$
+Fehlerjahr=$$
+Fehlerstunde=$$
+Fehlerminute=$$
+Jahresanpassung=0u16
+Minutenanpassung=0u16
+// Parsen der einzelnen Fehler
+if change(Data_Fehler1) and Data_Fehler1!=$$ then \\
+	/* Parsen von Fehler 1 */; \\
+	/* Parsen von WP_Fehler_1_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Fehler1,$;$,0u16)-1u16; \\
+	WP_Fehler_1_Code=split(Data_Fehler1,StartPos,EndPos); \\
+	/* Parsen von Datum 1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler1,$;$,1u16)-1u16; \\
+	Fehlertag=split(Data_Fehler1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler1,$;$,2u16)-1u16; \\
+	Fehlermonat=split(Data_Fehler1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler1,$;$,3u16)-1u16; \\
+	Fehlerjahr=split(Data_Fehler1,StartPos,EndPos); \\
+	Jahresanpassung=convert(Fehlerjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Fehlerjahr=convert(Jahresanpassung,$$); \\
+	WP_Fehler_1_Datum=Fehlertag+$.$+Fehlermonat+$.$+Fehlerjahr; \\
+	/* Parsen von Uhrzeit 1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler1,$;$,4u16)-1u16; \\
+	Fehlerstunde=split(Data_Fehler1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler1,$;$,5u16)-6u16; \\
+	Fehlerminute=split(Data_Fehler1,StartPos,EndPos); \\
+	Minutenanpassung=convert(Fehlerminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Fehlerminute=$0$+Fehlerminute \\
+		endif; \\
+	WP_Fehler_1_Uhrzeit=Fehlerstunde+$:$+Fehlerminute \\
+	endif
+if change(Data_Fehler2) and Data_Fehler2!=$$ then \\
+	/* Parsen von Fehler 2 */; \\
+	/* Parsen von WP_Fehler_2_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Fehler2,$;$,0u16)-1u16; \\
+	WP_Fehler_2_Code=split(Data_Fehler2,StartPos,EndPos); \\
+	/* Parsen von Datum 2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler2,$;$,1u16)-1u16; \\
+	Fehlertag=split(Data_Fehler2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler2,$;$,2u16)-1u16; \\
+	Fehlermonat=split(Data_Fehler2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler2,$;$,3u16)-1u16; \\
+	Fehlerjahr=split(Data_Fehler2,StartPos,EndPos); \\
+	Jahresanpassung=convert(Fehlerjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Fehlerjahr=convert(Jahresanpassung,$$); \\
+	WP_Fehler_2_Datum=Fehlertag+$.$+Fehlermonat+$.$+Fehlerjahr; \\
+	/* Parsen von Uhrzeit 2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler2,$;$,4u16)-1u16; \\
+	Fehlerstunde=split(Data_Fehler2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler2,$;$,5u16)-6u16; \\
+	Fehlerminute=split(Data_Fehler2,StartPos,EndPos); \\
+	Minutenanpassung=convert(Fehlerminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Fehlerminute=$0$+Fehlerminute \\
+		endif; \\
+	WP_Fehler_2_Uhrzeit=Fehlerstunde+$:$+Fehlerminute \\
+	endif
+if change(Data_Fehler3) and Data_Fehler3!=$$ then \\
+	/* Parsen von Fehler 3 */; \\
+	/* Parsen von WP_Fehler_3_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Fehler3,$;$,0u16)-1u16; \\
+	WP_Fehler_3_Code=split(Data_Fehler3,StartPos,EndPos); \\
+	/* Parsen von Datum 3 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler3,$;$,1u16)-1u16; \\
+	Fehlertag=split(Data_Fehler3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler3,$;$,2u16)-1u16; \\
+	Fehlermonat=split(Data_Fehler3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler3,$;$,3u16)-1u16; \\
+	Fehlerjahr=split(Data_Fehler3,StartPos,EndPos); \\
+	Jahresanpassung=convert(Fehlerjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Fehlerjahr=convert(Jahresanpassung,$$); \\
+	WP_Fehler_3_Datum=Fehlertag+$.$+Fehlermonat+$.$+Fehlerjahr; \\
+	/* Parsen von Uhrzeit 3 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler3,$;$,4u16)-1u16; \\
+	Fehlerstunde=split(Data_Fehler3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler3,$;$,5u16)-6u16; \\
+	Fehlerminute=split(Data_Fehler3,StartPos,EndPos); \\
+	Minutenanpassung=convert(Fehlerminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Fehlerminute=$0$+Fehlerminute \\
+		endif; \\
+	WP_Fehler_3_Uhrzeit=Fehlerstunde+$:$+Fehlerminute \\
+	endif
+if change(Data_Fehler4) and Data_Fehler4!=$$ then \\
+	/* Parsen von Fehler 4 */; \\
+	/* Parsen von WP_Fehler_4_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Fehler4,$;$,0u16)-1u16; \\
+	WP_Fehler_4_Code=split(Data_Fehler4,StartPos,EndPos); \\
+	/* Parsen von Datum 4 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler4,$;$,1u16)-1u16; \\
+	Fehlertag=split(Data_Fehler4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler4,$;$,2u16)-1u16; \\
+	Fehlermonat=split(Data_Fehler4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler4,$;$,3u16)-1u16; \\
+	Fehlerjahr=split(Data_Fehler4,StartPos,EndPos); \\
+	Jahresanpassung=convert(Fehlerjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Fehlerjahr=convert(Jahresanpassung,$$); \\
+	WP_Fehler_4_Datum=Fehlertag+$.$+Fehlermonat+$.$+Fehlerjahr; \\
+	/* Parsen von Uhrzeit 4 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler4,$;$,4u16)-1u16; \\
+	Fehlerstunde=split(Data_Fehler4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler4,$;$,5u16)-6u16; \\
+	Fehlerminute=split(Data_Fehler4,StartPos,EndPos); \\
+	Minutenanpassung=convert(Fehlerminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Fehlerminute=$0$+Fehlerminute \\
+		endif; \\
+	WP_Fehler_4_Uhrzeit=Fehlerstunde+$:$+Fehlerminute \\
+	endif
+if change(Data_Fehler5) and Data_Fehler5!=$$ then \\
+	/* Parsen von Fehler 5 */; \\
+	/* Parsen von WP_Fehler_5_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Fehler5,$;$,0u16)-1u16; \\
+	WP_Fehler_5_Code=split(Data_Fehler5,StartPos,EndPos); \\
+	/* Parsen von Datum 5 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler5,$;$,1u16)-1u16; \\
+	Fehlertag=split(Data_Fehler5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler5,$;$,2u16)-1u16; \\
+	Fehlermonat=split(Data_Fehler5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler5,$;$,3u16)-1u16; \\
+	Fehlerjahr=split(Data_Fehler5,StartPos,EndPos); \\
+	Jahresanpassung=convert(Fehlerjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Fehlerjahr=convert(Jahresanpassung,$$); \\
+	WP_Fehler_5_Datum=Fehlertag+$.$+Fehlermonat+$.$+Fehlerjahr; \\
+	/* Parsen von Uhrzeit 5 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler5,$;$,4u16)-1u16; \\
+	Fehlerstunde=split(Data_Fehler5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Fehler5,$;$,5u16)-6u16; \\
+	Fehlerminute=split(Data_Fehler5,StartPos,EndPos); \\
+	Minutenanpassung=convert(Fehlerminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Fehlerminute=$0$+Fehlerminute \\
+		endif; \\
+	WP_Fehler_5_Uhrzeit=Fehlerstunde+$:$+Fehlerminute \\
+	endif
+// Einzelwerte zu den Abschaltungen definieren
+WP_Abschaltung_1_Code=$$
+WP_Abschaltung_1_Datum=$$
+WP_Abschaltung_1_Uhrzeit=$$
+WP_Abschaltung_2_Code=$$
+WP_Abschaltung_2_Datum=$$
+WP_Abschaltung_2_Uhrzeit=$$
+WP_Abschaltung_3_Code=$$
+WP_Abschaltung_3_Datum=$$
+WP_Abschaltung_3_Uhrzeit=$$
+WP_Abschaltung_4_Code=$$
+WP_Abschaltung_4_Datum=$$
+WP_Abschaltung_4_Uhrzeit=$$
+WP_Abschaltung_5_Code=$$
+WP_Abschaltung_5_Datum=$$
+WP_Abschaltung_5_Uhrzeit=$$
+Abschaltungstag=$$
+Abschaltungsmonat=$$
+Abschaltungsjahr=$$
+Abschaltungsstunde=$$
+Abschaltungsminute=$$
+// Parsen der einzelnen Abschaltungen
+if change(Data_Abschaltungen1) and Data_Abschaltungen1!=$$ then \\
+	/* Parsen von Abschaltung 1 */; \\
+	/* Parsen von WP_Abschaltung_1_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,0u16)-1u16; \\
+	WP_Abschaltung_1_Code=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	/* Parsen von Datum 1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,1u16)-1u16; \\
+	Abschaltungstag=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,2u16)-1u16; \\
+	Abschaltungsmonat=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,3u16)-1u16; \\
+	Abschaltungsjahr=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	Jahresanpassung=convert(Abschaltungsjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Abschaltungsjahr=convert(Jahresanpassung,$$); \\
+	WP_Abschaltung_1_Datum=Abschaltungstag+$.$+Abschaltungsmonat+$.$+Abschaltungsjahr; \\
+	/* Parsen von Uhrzeit 1 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,4u16)-1u16; \\
+	Abschaltungsstunde=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen1,$;$,5u16)-1u16; \\
+	Abschaltungsminute=split(Data_Abschaltungen1,StartPos,EndPos); \\
+	Minutenanpassung=convert(Abschaltungsminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Abschaltungsminute=$0$+Abschaltungsminute \\
+		endif; \\
+	WP_Abschaltung_1_Uhrzeit=Abschaltungsstunde+$:$+Abschaltungsminute \\
+	endif
+if change(Data_Abschaltungen2) and Data_Abschaltungen2!=$$ then \\
+	/* Parsen von Abschaltung 2 */; \\
+	/* Parsen von WP_Abschaltung_2_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,0u16)-1u16; \\
+	WP_Abschaltung_2_Code=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	/* Parsen von Datum 2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,1u16)-1u16; \\
+	Abschaltungstag=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,2u16)-1u16; \\
+	Abschaltungsmonat=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,3u16)-1u16; \\
+	Abschaltungsjahr=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	Jahresanpassung=convert(Abschaltungsjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Abschaltungsjahr=convert(Jahresanpassung,$$); \\
+	WP_Abschaltung_2_Datum=Abschaltungstag+$.$+Abschaltungsmonat+$.$+Abschaltungsjahr; \\
+	/* Parsen von Uhrzeit 2 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,4u16)-1u16; \\
+	Abschaltungsstunde=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen2,$;$,5u16)-1u16; \\
+	Abschaltungsminute=split(Data_Abschaltungen2,StartPos,EndPos); \\
+	Minutenanpassung=convert(Abschaltungsminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Abschaltungsminute=$0$+Abschaltungsminute \\
+		endif; \\
+	WP_Abschaltung_2_Uhrzeit=Abschaltungsstunde+$:$+Abschaltungsminute \\
+	endif
+if change(Data_Abschaltungen3) and Data_Abschaltungen3!=$$ then \\
+	/* Parsen von Abschaltung 3 */; \\
+	/* Parsen von WP_Abschaltung_3_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,0u16)-1u16; \\
+	WP_Abschaltung_3_Code=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	/* Parsen von Datum 3 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,1u16)-1u16; \\
+	Abschaltungstag=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,2u16)-1u16; \\
+	Abschaltungsmonat=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,3u16)-1u16; \\
+	Abschaltungsjahr=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	Jahresanpassung=convert(Abschaltungsjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Abschaltungsjahr=convert(Jahresanpassung,$$); \\
+	WP_Abschaltung_3_Datum=Abschaltungstag+$.$+Abschaltungsmonat+$.$+Abschaltungsjahr; \\
+	/* Parsen von Uhrzeit 3 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,4u16)-1u16; \\
+	Abschaltungsstunde=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen3,$;$,5u16)-1u16; \\
+	Abschaltungsminute=split(Data_Abschaltungen3,StartPos,EndPos); \\
+	Minutenanpassung=convert(Abschaltungsminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Abschaltungsminute=$0$+Abschaltungsminute \\
+		endif; \\
+	WP_Abschaltung_3_Uhrzeit=Abschaltungsstunde+$:$+Abschaltungsminute \\
+	endif
+if change(Data_Abschaltungen4) and Data_Abschaltungen4!=$$ then \\
+	/* Parsen von Abschaltung 4 */; \\
+	/* Parsen von WP_Abschaltung_4_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,0u16)-1u16; \\
+	WP_Abschaltung_4_Code=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	/* Parsen von Datum 4 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,1u16)-1u16; \\
+	Abschaltungstag=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,2u16)-1u16; \\
+	Abschaltungsmonat=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,3u16)-1u16; \\
+	Abschaltungsjahr=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	Jahresanpassung=convert(Abschaltungsjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Abschaltungsjahr=convert(Jahresanpassung,$$); \\
+	WP_Abschaltung_4_Datum=Abschaltungstag+$.$+Abschaltungsmonat+$.$+Abschaltungsjahr; \\
+	/* Parsen von Uhrzeit 4 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,4u16)-1u16; \\
+	Abschaltungsstunde=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen4,$;$,5u16)-1u16; \\
+	Abschaltungsminute=split(Data_Abschaltungen4,StartPos,EndPos); \\
+	Minutenanpassung=convert(Abschaltungsminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Abschaltungsminute=$0$+Abschaltungsminute \\
+		endif; \\
+	WP_Abschaltung_4_Uhrzeit=Abschaltungsstunde+$:$+Abschaltungsminute \\
+	endif
+if change(Data_Abschaltungen5) and Data_Abschaltungen5!=$$ then \\
+	/* Parsen von Abschaltung 5 */; \\
+	/* Parsen von WP_Abschaltung_5_Code */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,0u16)-1u16; \\
+	WP_Abschaltung_5_Code=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	/* Parsen von Datum 5 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,1u16)-1u16; \\
+	Abschaltungstag=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,2u16)-1u16; \\
+	Abschaltungsmonat=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,3u16)-1u16; \\
+	Abschaltungsjahr=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	Jahresanpassung=convert(Abschaltungsjahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	Abschaltungsjahr=convert(Jahresanpassung,$$); \\
+	WP_Abschaltung_5_Datum=Abschaltungstag+$.$+Abschaltungsmonat+$.$+Abschaltungsjahr; \\
+	/* Parsen von Uhrzeit 5 */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,4u16)-1u16; \\
+	Abschaltungsstunde=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Abschaltungen5,$;$,5u16)-6u16; \\
+	Abschaltungsminute=split(Data_Abschaltungen5,StartPos,EndPos); \\
+	Minutenanpassung=convert(Abschaltungsminute,0u16); \\
+	if Minutenanpassung<=9u16 then \\
+		Abschaltungsminute=$0$+Abschaltungsminute \\
+		endif; \\
+	WP_Abschaltung_5_Uhrzeit=Abschaltungsstunde+$:$+Abschaltungsminute \\
+	endif
+// Einzelwerte zum Anlagenstatus definieren
+WP_Anlagenstatus_Waermepumpentyp=$$
+WP_Anlagenstatus_Software_Version=$$
+WP_Anlagenstatus_Bivalenzstufe=0b01
+WP_Anlagenstatus_Aktueller_Betriebszustand=0b01
+WP_Anlagenstatus_Startdatum=$$
+WP_Anlagenstatus_Startuhrzeit=$$
+WP_Anlagenstatus_Compact=0b01
+WP_Anlagenstatus_Comfort=0b01
+StartTag=$$
+StartMonat=$$
+StartJahr=$$
+StartStunde=$$
+StartMinute=$$
+StartSekunde=$$
+Compact=$$
+Comfort=$$
+// Parsen der einzelnen Werte des Anlagenstatus
+if change(Data_Anlagenstatus) and Data_Anlagenstatus!=$$ then \\
+	/* Parsen von Waermepumpentyp */; \\
+	StartPos=0u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,0u16)-1u16; \\
+	WP_Anlagenstatus_Waermepumpentyp=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Parsen von Software_Version */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,1u16)-1u16;\\
+	WP_Anlagenstatus_Software_Version=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Parsen von Bivalenzstufe */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,2u16)-1u16;\\
+	WP_Anlagenstatus_Bivalenzstufe=convert(split(Data_Anlagenstatus,StartPos,EndPos),0b01); \\
+	/* Parsen von Aktueller_Betriebszustand */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,3u16)-1u16;\\
+	WP_Anlagenstatus_Aktueller_Betriebszustand=convert(split(Data_Anlagenstatus,StartPos,EndPos),0b01); \\
+	/* Parsen von Einschaltzeitpunkt (Datum, Uhrzeit) */; \\
+	/* Tag */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,4u16)-1u16;\\
+	StartTag=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Monat */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,5u16)-1u16;\\
+	StartMonat=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Jahr */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,6u16)-1u16;\\
+	StartJahr=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	Jahresanpassung=convert(StartJahr,0u16); \\
+	Jahresanpassung=2000u16+Jahresanpassung; \\
+	StartJahr=convert(Jahresanpassung,$$); \\
+	WP_Anlagenstatus_Startdatum=StartTag+$.$+StartMonat+$.$+StartJahr; \\
+	/* Stunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,7u16)-1u16;\\
+	StartStunde=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Minute */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$;$,8u16)-1u16;\\
+	StartMinute=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	/* Sekunde */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$,$,0u16)-1u16;\\
+	StartSekunde=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	WP_Anlagenstatus_Startuhrzeit=StartStunde+$:$+StartMinute+$:$+StartSekunde; \\
+	/* Parsen von Wärmepumpenausstattung */; \\
+	/* Compact-Version */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=find(Data_Anlagenstatus,$,$,1u16)-1u16; \\
+	Compact=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	WP_Anlagenstatus_Compact=convert(Compact,0b01); \\
+	/* Comfort-Platine */; \\
+	StartPos=EndPos+2u16; \\
+	EndPos=StartPos+1u16; \\
+	Comfort=split(Data_Anlagenstatus,StartPos,EndPos); \\
+	WP_Anlagenstatus_Comfort=convert(Comfort,0b01) \\
+	endif
+:end

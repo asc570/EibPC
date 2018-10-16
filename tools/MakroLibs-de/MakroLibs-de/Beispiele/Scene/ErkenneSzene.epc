@@ -1,0 +1,53 @@
+[Macros]
+// Szene auf '10/0/100'u08,
+// - Das Makro überwacht hört die Szene 4
+// - als Aktor wurde der EibPC gewählt (in diesem Fall Adresse 0.0.0)
+// - Schaltobjekt '10/0/101'b01 geht auf EIN, wenn Szene aktiv
+// - Autoload auf EIN, d.h. die Szene wird bei der Neuinitialisierung aufgerufen und gespeichert
+// - Speicherplatz 440 und 441 im Flash belegt.
+SzenenErkenner(S4,'10/0/100'u08,0,4,0.0.0,'10/0/101'b01,EIN,440,441)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexScene.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+1148-Firmengebaeude-13.esf
+
+[EibPC] 
+// Szene auf '10/0/100'u08,
+// - Das Makro überwacht hört die Szene 4
+// - als Aktor wurde der EibPC gewählt (in diesem Fall Adresse 0.0.0)
+// - Schaltobjekt '10/0/101'b01 geht auf EIN, wenn Szene aktiv
+// - Autoload auf EIN, d.h. die Szene wird bei der Neuinitialisierung aufgerufen und gespeichert
+// - Speicherplatz 440 und 441 im Flash belegt.
+scene('10/0/100'u08,"Feuchtigkeit-9/6/5","TreppeEGOGDimmerWert-0/2/11","Büro1_3-0/2/2","Feuchtigkeit-9/5/5")
+
+
+//------------------------------------------------------------------------------------------------------------
+// Hier zu Testzwecken: Die Werte werden zurückgegeben:
+//if eventread("Feuchtigkeit-9/6/5") then writeresponse("Feuchtigkeit-9/6/5", 63.2) endif 
+//if eventread("TreppeEGOGDimmerWert-0/2/11") then writeresponse("TreppeEGOGDimmerWert-0/2/11",16%) endif 
+//if eventread("Büro1_3-0/2/2") then writeresponse("Büro1_3-0/2/2",EIN) endif 
+//if eventread("Feuchtigkeit-9/5/5") then writeresponse("Feuchtigkeit-9/5/5",1.26) endif 
+//// Debuggen
+//xx=0
+//if xx==0 then write("Feuchtigkeit-9/6/5",23.1) endif
+//if xx==1 then write("TreppeEGOGDimmerWert-0/2/11",12%) endif
+//if xx==2 then write("Büro1_3-0/2/2",EIN) endif
+//
+//if xx==10 then write("Feuchtigkeit-9/6/5", 63.2) endif 
+//if xx==11 then write("TreppeEGOGDimmerWert-0/2/11",16%) endif 
+//if xx==12 then write("Büro1_3-0/2/2",EIN) endif 
+//if xx==13 then write("Feuchtigkeit-9/5/5",1.26) endif 
+//
+//
+//if xx==20 then write("Feuchtigkeit-9/6/5", 63.2) endif 
+//if xx==21 then writeresponse("Feuchtigkeit-9/6/5", 63.2) endif 
+//if xx==22 then read("Feuchtigkeit-9/6/5") endif 
+//
+//if xx==30 then storescene('10/0/100'u08,0) endif
+//
+//if systemstart() then storescene('10/0/100'u08,0) endif
+

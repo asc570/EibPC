@@ -1,0 +1,19 @@
+[WebServer]
+page (PageID)[$Allgemein$,$Logger$]
+design $black$
+weboutput(LoggerOutID)[QUAD,NOICON]
+
+
+[Macros]
+WebLogger(LoggerOutID,MyText)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV3.lib
+
+[EibPC]
+PageID = 1
+LoggerOutID = 1
+
+// Bei Jeder Veränderung der Variable Text wird ein neuer Eintrag mit Zeitstempel generiert
+MyText=$Hier ist das Event um $+convert(settime(),$$) 

@@ -1,0 +1,29 @@
+[WebServer]
+#include /share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/eibstudio/epcEts/visuassi/validierung/Raumheizregler-ger/VA_EibPC_Webserver.epc
+
+[Macros]
+#include /share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/eibstudio/epcEts/visuassi/validierung/Raumheizregler-ger/VA_EibPC_Macros.epc
+
+
+[MacroLibs]
+//Makro-Bibliotheken
+///share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Bibliotheken/EnertexWebV3.lib
+///share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/eibstudio/epcEts/visuassi/validierung/Raumheizregler-ger/libs/EnertexWebV2.lib
+///share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/eibstudio/epcEts/visuassi/validierung/Raumheizregler-ger/libs/Enertex.lib
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Bibliotheken/EnertexWebV3.lib
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLiTbs/Bibliotheken/EnertexWebV2.lib
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Bibliotheken/Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/WebV2/Haus.esf
+ 
+[EibPC]
+#include /share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/eibstudio/epcEts/visuassi/validierung/Raumheizregler-ger/VA_EibPC.epc
+
+
+// Isttemperatur = "SaunaIstTemp-3/0/8"
+// Heizaktor = "Sauna-3/0/1"
+// Überwachen: HeizreglerKellerSaunaIDPIAktor mittels des Diagramms
+changed=0
+fIsttemp="SaunaIstTemp-3/0/8"

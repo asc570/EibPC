@@ -1,0 +1,22 @@
+[Macros]
+//For-Schleife, es werden die Zahlen 1-10 auf ein Display geschrieben.
+ForLoop(Test,V,10,write("Display-0/1/0", convert(x,$$c14)); x=x+1u32)
+//Alternativ kann man auch den Schleifenindex(Name^Counter) dafür nehmen
+ForLoop(Test2,V2,10,write("Display-0/1/0", convert(Test2Counter,$$c14)))
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+x = 0u32
+V = AUS
+V2 = AUS
+//Die 1.For-Schleife wird aktiviert durch einen Taster
+if "Taster-0/2/5" then V = EIN endif
+//Die 2.For-Schleife wird durch diesen Schalter aktiviert
+if "FlurLicht-1/1/0" then V2 = EIN endif

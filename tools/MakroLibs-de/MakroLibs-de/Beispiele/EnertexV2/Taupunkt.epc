@@ -1,0 +1,23 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+//Taupunkt berechnen, er wird in der Variable TaupunktTemp abgespeichert
+Taupunkt("Luftfeuchtigkeit-3/5/3","Auﬂentemperatur-3/5/0")
+
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+//Immer wenn sich der Taupunkt ‰ndert, wird das Display aktualisiert
+if change(TaupunktTemp) then write("Display-0/1/0", convert(TaupunktTemp, $$c14)) endif
+
+
+

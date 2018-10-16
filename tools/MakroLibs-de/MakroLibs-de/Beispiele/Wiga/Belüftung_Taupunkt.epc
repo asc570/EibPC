@@ -1,0 +1,13 @@
+[Macros]
+//Wenn Wiga =EIN, Taupunkttemperatur > Taupunktschwelle und es nicht regnet, dann wird gelüftet, sonst geht das Fenster zu.
+Belüftung_Taupunkt(Wiga,"Luftfeuchtigkeit-3/5/3","Außentemperatur-3/5/0","Regen-3/5/4",3,"WigaFenster-5/0/6")
+[MacroLibs]
+EnertexWiga.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+//Fenster dürfen nur tagsüber geöffnet werden
+Wiga = chtime(8,0,0) and !chtime(22,0,0)

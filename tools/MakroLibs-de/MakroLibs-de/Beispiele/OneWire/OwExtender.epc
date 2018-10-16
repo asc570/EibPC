@@ -1,0 +1,23 @@
+[Macros]
+//Mit diesem Makro wird der Temperatur-Sensor im Bad alle 60 Minuten ausgelesen und in der Variable BadTemp_Value gespeichert
+OWextender(BadTemp,192.168.22.174,28.AF6A0E020000,temperature, cycle(60,0))
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWire.lib
+
+[EibPC]
+
+// Visualisierung
+Page1 = 1
+Chart1 = 1
+Webzeit=convert(hour(),0.0)+convert(minute(),0.0)/60.0+convert(second(),0.0)/3600.0
+if cycle(1,0) then {
+ 	mpchart(Chart1,Webzeit,BadTemp_Value,0,Page1)
+} endif
+
+
+[WebServer]
+page(Page1)[$One-Wire$,$Sensoren$]
+mpchart(Chart1)[SINGLE,SXY]($Wohnzimmer$,LINE)
+ 

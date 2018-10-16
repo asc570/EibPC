@@ -1,0 +1,36 @@
+
+[RS232]
+// RS232-Konfiguration: Baudrate, Datenbits, Stoppbits, Parität, Flusssteuerung
+9600
+8
+1
+0
+0
+
+[Macros]
+//Den HA7E Adapter einbinden
+HA7E()
+//Mit diesem Makro wird der Sensor im Wohnzimmer alle 2 Minuten ausgelesen und in der Variable Wohnzimmer_Temperature gespeichert
+Temperature(Wohnzimmer,WohnSensor,2)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWireBeta.lib
+
+
+[EibPC]
+//Die ROM-ID des Sensors im Wohnzimmer
+WohnSensor = $3F000002A72C7028$
+
+// Visualisierung
+Page1 = 1
+Chart1 = 1
+Webzeit=convert(hour(),0.0)+convert(minute(),0.0)/60.0+convert(second(),0.0)/3600.0
+if cycle(1,0) then {
+ 	mpchart(Chart1,Webzeit,Wohnzimmer_Temperature,0,Page1)
+} endif
+
+
+[WebServer]
+page(Page1)[$One-Wire$,$Sensoren$]
+mpchart(Chart1)[SINGLE,SXY]($Wohnzimmer$,LINE)

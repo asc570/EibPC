@@ -1,0 +1,35 @@
+//Initialisierung der Webelement IDs für den Visalisierungsassistenten
+ClockID = 1
+DateID = 2
+Licht1ID = 3
+Licht2ID = 4
+Dimmer1ID = 5
+Dimmer2ID = 6
+SteckdosenID = 7
+RolloID = 8
+JalousieID = 9
+LamellenID = 10
+FensterID = 11
+RkID = 12
+VisuHeizID = 13
+VisuTempID = 14
+OnlineID = 15
+WindID = 16
+LuxID = 17
+TempID = 18
+RegenID = 19
+VorhersageID = 20
+SatellitID = 21
+//Initialisierung der PageIDs für den Visalisierungsassistenten
+ErdgeschossKuecheID = 7
+KellerPartyID = 2
+ErdgeschossWohnzimmerID = 5
+ErdgeschossFlurID = 8
+KellerLagerID = 3
+ErdgeschossEsszimmerID = 6
+Stock_1Schlafzimmer_ElternID = 9
+Stock_1Schlafzimmer_KinderID = 10
+AllgemeinWetterseiteID = 1
+KellerHeizungID = 4
+WebZeit=convert(convert(hour(), 0f32)+convert(minute(),0f32)/60f32,0f16)
+

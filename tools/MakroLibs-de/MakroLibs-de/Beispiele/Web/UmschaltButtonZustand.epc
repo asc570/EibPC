@@ -1,0 +1,35 @@
+[MacroLibs]
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+FlurPageID = 1
+KuechePageID = 2
+FlurLichtID = 1
+KuecheLichtID = 2
+
+
+[WebServer]
+//Seite erstellen
+Page(FlurPageID) [$Erdgeschoss$,$Flur$]
+//pbutton(oder pshifter) erstellen ist Vorraussetzung für das Makro UmschaltButtonZustand
+pbutton(FlurLichtID)[LIGHT]$Flur$
+//2.Seite erstellen
+Page(KuechePageID) [$Erdgeschoss$,$Küche$]
+//Alternativ kann man auch einen pshifter nehmen
+pshifter(KuecheLichtID)[LIGHT]$Flur$
+
+[Macros]
+//Hiermit verbindet man den pbutton mit der Gruppenadresse
+UmschaltButtonZustand(FlurLichtID,FlurPageID,"FlurLicht-1/1/0","FlurLicht-1/1/0",LIGHT,INACTIVE,ACTIVE)
+//Und so verbindet man den pshifter mit der Gruppenadresse
+UmschaltButtonZustand(KuecheLichtID,KuechePageID,"KücheLicht-1/1/6","KücheLicht-1/1/6",LIGHT,INACTIVE,ACTIVE)
+
+
+
+
+

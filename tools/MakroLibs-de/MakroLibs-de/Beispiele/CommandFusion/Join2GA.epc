@@ -1,0 +1,13 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Hier wird der Join d2 mit dem Taster verknüpft, man schreibt auf diese Adresse, aber eine Statusveränderung bekommt der Join d2 durch die Status-GA trotzdem mit
+Join2GA(IPod,d2,"Taster-0/2/5","TasterStatus-0/2/6")
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

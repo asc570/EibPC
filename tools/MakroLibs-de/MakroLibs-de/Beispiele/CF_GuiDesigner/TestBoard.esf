@@ -1,0 +1,44 @@
+1137-HausEmPC
+Schalten.Board.0/0/1	Licht1	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/2	Licht2	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/4	Licht4	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/5	Akt1	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/6	Akt2	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/7	Akt4	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/8	Akt3	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/9	Akt5	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/12	Akt6	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/13	Akt7	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/14	Akt8	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/15	LED1	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Board.0/0/16	LED2	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/1	Licht2Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/2	Licht3Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/3	Licht4Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/4	Licht5Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/5	Licht1Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/6	Licht6Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/7	Licht7Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Status.0/1/8	Licht8Status	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Dimmer.0/2/0	DimmerProzentWert	Uncertain (1 Byte)	Low	
+Schalten.Dimmer.0/2/1	DimmerStatus	Uncertain (1 Byte)	Low	
+Schalten.Dimmer.0/2/2	DimmerAn	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Dimmer.0/2/3	Dimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Schalten.Dimmer.0/2/4	DimmerLangsamAn	EIS 1 'Switching' (1 Bit)	Low	
+Schalten.Dimmer.0/2/5	DimmerLangsamProzentWert	Uncertain (1 Byte)	Low	
+Heizen.Regler.1/0/0	HeizungEin	EIS 1 'Switching' (1 Bit)	Low	
+Heizen.Regler.1/0/1	Temperatur	Uncertain (2 Byte)	Low	
+Heizen.Regler.1/0/2	Status	Uncertain (1 Byte)	Low	
+Heizen.Regler.1/0/3	Heiztaster	EIS 1 'Switching' (1 Bit)	Low	
+Heizen.Regler.1/0/4	HeizSollWert	Uncertain (2 Byte)	Low	
+Heizen.Regler.1/0/5	Heizaktor	Uncertain (1 Byte)	Low	
+Heizen.Regler.1/0/6	HeizungAn	EIS 1 'Switching' (1 Bit)	Low	
+Heizen.Regler.1/0/7	BasisSollwert	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/0	Strom A	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/1	Strom B	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/2	Strom C	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/3	Strom D	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/4	Strom E	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/5	Strom F	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/6	Strom G	Uncertain (2 Byte)	Low	
+Stromwert.Neue Mittelgruppe.3/0/7	Strom H	Uncertain (2 Byte)	Low	

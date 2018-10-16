@@ -1,0 +1,15 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Hier kann mit einem Join die Soll-Wert Temperatur steuern, in diesem Fall sind nur Werte zwischen 19° und 25° möglich, es wird entsprechend skaliert.
+JoinMinMax(IPod,a77,"KücheTemp-3/1/14",19,25)
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+

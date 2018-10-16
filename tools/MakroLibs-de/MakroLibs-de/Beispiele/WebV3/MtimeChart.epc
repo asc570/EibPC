@@ -1,0 +1,57 @@
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV3.lib
+
+
+[WebServer]
+page(Page1)[$Startseite$,$Mtime-Chart$]
+// ein Zeitgrafen für zwei Werte erstellen; die Parameter bestimmten die Optik und das Zoomverhalten
+// Die Buffer-Angabe bestimmt welche Werte angezeigt werden
+mtimechart(Chart1)[EXTTRIPLE,2,256,0,100,0,100]($IST-Temp$,0,Buffer1,$Soll-Temp$,0,Buffer2)
+// ein Zeitgrafen für drei Werte erstellen; die Parameter bestimmten die Optik und das Zoomverhalten
+// Die Buffer-Angabe bestimmt welche Werte angezeigt werden
+mtimechart(Chart2)[EXTLONG,2,256,0,100,0,100]($VorlaufTemp$,0,Buffer3,$BrennerTemp$,0,Buffer4,$AußenTemp$,0,Buffer5)
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+[EibPC]
+Page1 = 1
+Chart1 = 1
+Chart2 = 1
+
+//-------------------------------------------
+//  Je Buffer werden Werte für einen Graphen gespeichert 
+//-------------------------------------------
+Buffer1=0 // IST-Temp
+Buffer2=1 // Soll-Temp
+
+Buffer3=2 // Vorlauf
+Buffer4=3 // Brenner
+Buffer5=4 // Außentemperatur
+
+// Der Zeitbuffer besteht dabei immer aus Wertepaar UTC-Zeitstempel plus Wert
+// Die Buffer müssen hinsichtlich Speichertyp, Datenlänge und Datentyp vorkonfiguriert werden
+MemTyp=0
+Len=10000u16
+Datatyp=3.3f16
+
+IstTemp = "WarmwasserIstWert-3/3/10"
+SollTemp = "WarmWasserSolltermperatur-3/3/7"
+Vorlauf = "SollwertVorlauf-3/3/1"
+Brenner = "BrennerTemperatur-3/3/2"
+AussenTemp= "ThermeAußentemperatur-3/3/13"
+
+[Macros]
+// Makro schreibt IstTemp in Buffer1 und SollTemp in Buffer2
+MtimeChart2Graphen(Buffer1, IstTemp, Buffer2, SollTemp, MemTyp,Len, Datatyp)
+// Makro für einen Chart mit drei Graphen
+MtimeChart3Graphen(Buffer3, Vorlauf, Buffer4, Brenner, Buffer5, AussenTemp, MemTyp,Len, Datatyp)
+
+//Daten der Buffer zyklisch (mm,ss) ins Falsh speichern und bei Systemstart wieder laden$
+StoreAndRead2Buffer(Buffer1, Buffer2, 60,00)
+StoreAndRead3Buffer(Buffer3, Buffer4, Buffer5, 60,00)

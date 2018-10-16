@@ -13,15 +13,6 @@ C:\Users\asc\repo\EibPC/EtsExport/Weisshauptstr.12v5.esf
 
 
 
-
-
-
-
-
-
-// Test
-
-
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken
@@ -55,14 +46,15 @@ C:\Users\asc\repo\EibPC/lib/RemMem.lib
 // EibPC-UVR1611
 //
 // HK
-
+ButtonON = 1
+if webbutton(ButtonON)==1 then display(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
 [WebServer]
 
 page(1)[$Allgemein$,$Übersicht$]
 header(0)
 footer(0)
 design $black$
-pbutton(1)[STOP]$Shutdown$
+pbutton(ButtonON)[STOP]$Shutdown$
 
 //////////////////////////////////////////////////////
 

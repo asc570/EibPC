@@ -1,0 +1,23 @@
+[Macros]
+//Den HA7E Adapter einbinden
+HA7E()
+// ID des Sensors 8D000801D29B2410, generiert Variable "Wohnzimmer_Temperature"
+Temperature(Wohnzimmer,$8D000801D29B2410$,5)
+// PI Regler auf 22° verknüpft mit Temperatur des 1-Wire Sensors im Wohnzimmer
+PIHeizReglerGA(Wohnzimmer,'1/2/3'b01,22,Wohnzimmer_Temperature,20.0,1.5,'2/10/10'u08,5)
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+EnertexOneWire.lib
+
+[EibPC]
+// 
+
+[RS232]
+// RS232-Konfiguration: Baudrate, Datenbits, Stoppbits, Parität, Flusssteuerung
+9600
+8
+1
+0
+0

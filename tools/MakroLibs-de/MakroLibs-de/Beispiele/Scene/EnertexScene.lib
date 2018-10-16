@@ -1,0 +1,408 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Szenen mit Vorbelegung
+// 
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $<        <       
+//  Version              : $Revision: 1.5 $
+//----------------------------------------------------------------------
+
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen3Baustein(GA,Var1,Var2,Var3)
+:info $Szenenbaustein mit 3 Gruppenadressen oder Variablen definieren.Mit dem Makro Szenen3PresetNr können die Defaultwerte für verschiedene Szenennummern vorgegeben werden und einzelne Gruppenadressen pro Szenennummer inaktiv geschaltet werden.$ \\
+	$Gruppenadresse, über welche der Szenenbaustein angesprochen werden kann (Typ u08)$ \\
+	$1. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$2. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$3. Gruppenadresse oder Variable des Szeneaktor$ 
+:shortinfo $Szenenbaustein mit 3 Gruppenadressen oder Variablen definieren$
+scene(GA,Var1,Var2, Var3)
+
+:end
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen5Baustein(GA,Var1,Var2,Var3, Var4, Var5)
+:info $Szenenbaustein mit 5 Gruppenadressen oder Variablen definieren. Mit dem Makro Szenen3PresetNr können die Defaultwerte für verschiedene Szenennummern vorgegeben werden und einzelne Gruppenadressen pro Szenennummer inaktiv geschaltet werden.$ \\
+	$Gruppenadresse, über welche der Szenenbaustein angesprochen werden kann (Typ u08)$ \\
+	$1. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$2. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$3. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$4. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$5. Gruppenadresse oder Variable des Szeneaktor$ 
+:shortinfo $Szenenbaustein mit 5 Gruppenadressen oder Variablen definieren$
+scene(GA,Var1,Var2, Var3,Var4, Var5)
+
+:end
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen10Baustein(GA,Var1,Var2,Var3, Var4, Var5,Var6,Var7,Var8, Var9, Var10)
+:info $Szenenbaustein mit 10 Gruppenadressen oder Variablen definieren. Mit dem Makro Szenen10PresetNr können die Defaultwerte für verschiedene Szenennummern vorgegeben werden und einzelne Gruppenadressen pro Szenennummer inaktiv geschaltet werden.$ \\
+	$Gruppenadresse, über welche der Szenenbaustein angesprochen werden kann (Typ u08)$ \\
+	$1. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$2. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$3. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$4. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$5. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$6. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$7. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$8. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$9. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$10. Gruppenadresse oder Variable des Szeneaktor$ 
+:shortinfo $Szenenbaustein mit 10 Gruppenadressen oder Variablen definieren$
+scene(GA,Var1,Var2, Var3,Var4, Var5,Var6,Var7,Var8,Var9,Var10)
+
+:end
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen20Baustein(GA,Var1,Var2,Var3, Var4, Var5,Var6,Var7,Var8, Var9, Var10,Var11,Var12,Var13, Var14, Var15,Var16,Var17,Var18, Var19, Var20)
+:info $Szenenbaustein mit 20 Gruppenadressen oder Variablen definieren. Mit dem Makro Szenen20PresetNr können die Defaultwerte für verschiedene Szenennummern vorgegeben werden und einzelne Gruppenadressen pro Szenennummer inaktiv geschaltet werden.$ \\
+	$Gruppenadresse, über welche der Szenenbaustein angesprochen werden kann (Typ u08)$ \\
+	$1. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$2. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$3. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$4. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$5. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$6. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$7. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$8. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$9. Gruppenadresse oder Variable des Szeneaktor$ \\
+	$10. Gruppenadresse oder Variable des Szeneaktor$ 
+:shortinfo $Szenenbaustein mit 20 Gruppenadressen oder Variablen definieren$
+scene(GA,Var1,Var2,Var3,Var4, Var5,Var6,Var7,Var8,Var9,Var10,Var11,Var12,Var13, Var14, Var15,Var16,Var17,Var18, Var19, Var20)
+
+:end
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen3PresetNr(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3)
+:info $Konfiguriert eine SzenenNummer eines Szenenbaustein mit 3 Gruppenadressen.$ \\
+	$Gruppenadresse, über die die Szene angesprochen wird.$\\
+	$Szenennummer 0...64, welche über SzeneGA angesprochen wird$\\
+	$Wenn hier auf EIN parametriert wird, so wird die Szene beim Neustart des EibPCs initialisiert und im Flashspeicher abgelegt. Wenn diese auf AUS parametriert wird, dann wird die Szene nur mit den Default werten gespeichert, wenn diese vorher noch nicht gespeichert wurde$\\
+	$Der Defaultwert der 1. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 1. Grupennadresse auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 2. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 2. Grupennadresse auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 3. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 3. Grupennadresse auch aktiv, sonst (AUS) nicht$
+:shortinfo $Vorbelegung einer Szenennummer eines Szenenbausteins$
+presetscene(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3)
+
+:end
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen5PresetNr(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5)
+:info $Konfiguriert eine SzenenNummer eines Szenenbaustein mit 3 Gruppenadressen.$ \\
+	$Gruppenadresse, über die die Szene angesprochen wird.$ \\
+	$Szenennummer 0...64, welche über SzeneGA angesprochen wird$\\
+	$Wenn hier auf EIN parametriert wird, so wird die Szene beim Neustart des EibPCs initialisiert und im Flashspeicher abgelegt. Wenn diese auf AUS parametriert wird, dann wird die Szene nur mit den Default werten gespeichert, wenn diese vorher noch nicht gespeichert wurde$ \\
+	$Der Defaultwert der 1. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 1. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 2. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 2. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 3. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 3. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 4. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 4. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 5. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 5. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$
+
+:shortinfo $Vorbelegung einer Szenennummer eines Szenenbausteins$
+
+presetscene(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5)
+
+:end
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen10PresetNr(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5,Var6,Preset6,Var7,Preset7,Var8,Preset8,Var9,Preset9,Var10,Preset10)
+:info $Konfiguriert eine SzenenNummer eines Szenenbaustein mit 10 Gruppenadressen.$ \\
+	$Gruppenadresse, über die die Szene angesprochen wird.$ \\
+	$Szenennummer 0...64, welche über SzeneGA angesprochen wird$ \\
+	$Wenn hier auf EIN parametriert wird, so wird die Szene beim Neustart des EibPCs initialisiert und im Flashspeicher abgelegt. Wenn diese auf AUS parametriert wird, dann wird die Szene nur mit den Default werten gespeichert, wenn diese vorher noch nicht gespeichert wurde$ \\
+	$Der Defaultwert der 1. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 1. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 2. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 2. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 3. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 3. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 4. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 4. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 5. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 5. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+	$Der Defaultwert der 6. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 6. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 7. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 7. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 8. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 8. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+  	$Der Defaultwert der 9. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 9. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 10. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 10. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$
+:shortinfo $Vorbelegung einer Szenennummer eines Szenenbausteins$
+
+presetscene(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5,Var6,Preset6,Var7,Preset7,Var8,Preset8,Var9,Preset9,Var10,Preset10)
+
+:end
+
+
+// @date	11.03.2012
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin Szenen20PresetNr(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5,Var6,Preset6,Var7,Preset7,Var8,Preset8,Var9,Preset9,Var10,Preset10,Var11,Preset11,Var12,Preset12,Var13,Preset13,Var14,Preset14,Var15,Preset15,Var16,Preset16,Var17,Preset17,Var18,Preset18,Var19,Preset19,Var20,Preset20)
+:info $Konfiguriert eine SzenenNummer eines Szenenbaustein mit 20 Gruppenadressen.$ \\
+	$Gruppenadresse, über die die Szene angesprochen wird.$ \\
+	$Szenennummer 0...64, welche über SzeneGA angesprochen wird$ \\
+	$Wenn hier auf EIN parametriert wird, so wird die Szene beim Neustart des EibPCs initialisiert und im Flashspeicher abgelegt. Wenn diese auf AUS parametriert wird, dann wird die Szene nur mit den Default werten gespeichert, wenn diese vorher noch nicht gespeichert wurde$ \\
+	$Der Defaultwert der 1. Gruppenadresse oder Variablen des Szenenaktors$\\
+	$Wenn EIN parametriert wird, ist die 1. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 2. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 2. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 3. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 3. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 4. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 4. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 5. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 5. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+	$Der Defaultwert der 6. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 6. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 7. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 7. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 8. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 8. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 9. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 9. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 10. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 10. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+	$Der Defaultwert der 11. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 11. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 12. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 12. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 13. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 13. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 14. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 14. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 15. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 15. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+	$Der Defaultwert der 16. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 16. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 17. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 17. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 18. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 18. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$\\
+  	$Der Defaultwert der 19. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 19. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$ \\
+	$Der Defaultwert der 20. Gruppenadresse oder Variablen des Szenenaktors$ \\
+	$Wenn EIN parametriert wird, ist die 20. Grupennadresse oder Variable auch aktiv, sonst (AUS) nicht$
+
+:shortinfo $Vorbelegung einer Szenennummer eines Szenenbausteins$
+
+presetscene(SzeneGA,SzeneNr,LoadStart,Var1,Preset1,Var2,Preset2,Var3,Preset3,Var4,Preset4,Var5,Preset5,Var6,Preset6,Var7,Preset7,Var8,Preset8,Var9,Preset9,Var10,Preset10,Var11,Preset11,Var12,Preset12,Var13,Preset13,Var14,Preset14,Var15,Preset15,Var16,Preset16,Var17,Preset17,Var18,Preset18,Var19,Preset19,Var20,Preset20)
+
+:end
+
+
+
+// @date	15.07.2014
+// @version	1 
+// @author	Dr.-Ing. M. Schuster  Enertex Bayern GmbH
+:begin SzenenErkenner(SzeneName,SzeneGA,SzeneNr,AnzahlGAs,AdresseAktor,StatusBitGA,Autoload,Speicherplatz1, Speicherplatz2)
+:info $Dieses Makro erkennt selbstständig, ob eine Szene aktiv ist. Es lernt die Szene beim Speichern automatisch mit. Die gelernten Daten werden in zwei Speicherplätzen im Flash gespeichert. Bei einem Neustart werden die Daten aus dem Flash, falls vorhanden, neu geladen. Der Status der in der Szene aktiven GAs wird beim Starten des EibPCs mit Lesetelegrammen abgefragt. Wenn die Szene nocht nicht gelernt wurde und noch nicht gespeichert wurde, so kann per Argument Autoload einmalig die Szene erneut gespeichert werden. Damit lernt das Makro die im Szenenaktor gespeicherten Gruppenadressen und deren Werte. Wenn die Szene aktiv ist, d.h. alle Gruppenadressen den in der Szene gespeicherten Wert annehmen, so wird ein 1-Bit Telegramm geschrieben (EIN für aktiv). Falls sich ein Wert einer beteiligten Gruppenadresse ändert, so wird ein AUS-Telegramm geschrieben. Das Makro wird per Zufallszahl innerhalb der ersten Verarbeitungsminute initialisiert. An der Szene können bis zu 64 Gruppenadressen aktiv sein.$\\
+      $Ein eindeutiger Name für den Szenenerkennern, z.B. SzeneEssen.$\\
+      $Die Gruppenadresse, über die die Szene im Szenenaktor aufgerufen wird.$\\
+      $Die Szenennummer der Gruppenadresse$\\
+      $Die Anzahl der beteiligten Gruppenadressen in dieser Szene (max. 64)$\\
+      $Die phy. Adresse des Szenenaktors, z.B. 1.2.43. Sollte der EibPC der Szenenaktor sein, so muss hier 0.0.0 stehen.$\\
+      $Die Statusgruppenadresse, auf die ein EIN gesendet wird, wenn alle Gruppenadressen auf dem Wert der Szene stehen.$\\
+      $Wenn die Szene bei erstmaligen Start des Makros eingelernt werden soll, so löst der EibPC die Szene und das Abspeichern der Szene automatisch aus. Hier muss hier EIN stehen, ansonsten AUS.$\\
+      $Das Makro benötigt zwei Speicherplätze im Flash (Zahl von 0 bis 999).$\\
+      $Das Makro benötigt zwei Speicherplätze im Flash (Zahl von 0 bis 999) ungleich des Speicherplatzes 1.$
+:shortinfo $Lernfähiger Szenerkenner für Statusbits$
+// Variables for readrawknx
+SzeneName_Kontroll=0
+SzeneName_Sender=0.0.0
+SzeneName_GA=0u16
+SzeneName_IsGa=AUS
+SzeneName_RoutingCnt=0
+SzeneName_Len=0
+SzeneName_NrGA=AnzahlGAs
+
+// Every Bit is an active GA (Bitmask) in CRC: If all bits (len) are set, the GA is 
+// active 
+SzeneName_CRC=0u64
+// CRC to compare
+SzeneName_CRCActive=shift(1u64,convert(SzeneName_NrGA,0s08))-1u64
+
+SzeneName_Active=AUS
+SzeneName_Type=1
+SzeneName_Val=0u32
+SzeneName_ValOrg=0u32
+// We need only 400 Bytes, as there are maximum 64 GAs monitored
+// all data is converted to u32
+SzeneName_Store=$$c400
+SzeneName_GAs=$$c400
+SzeneName_Data=$$c400
+SzeneName_ID=0u16
+SzeneName_GAAutoread=0u16
+SzeneName_GALoad=0
+SzeneName_Next=AUS
+// Check, if the scene is called to be stored
+SzeneName_SzeneRecord=AUS
+SzeneName_SzeneNrCount=0
+SzeneName_Clear=AUS
+
+// an "storescene" occurs: Start recording
+if event(SzeneGA) and SzeneGA==128+SzeneNr then {
+   SzeneName_SzeneRecord=EIN;
+   SzeneName_SzeneNrCount=0;
+   SzeneName_GALoad=0;
+   // Delete an old monitor, if already stored, as a new is initiated
+   SzeneName_GAs=$$;
+} endif
+
+if after(SzeneName_GALoad==2, 10000u64)  then {
+   callscene(SzeneGA,SzeneNr) 
+}endif
+
+if after(SzeneName_GALoad==2, 40000u64) then {
+   storescene(SzeneGA,SzeneNr)
+}endif
+
+
+// Clear the whole buffer
+if SzeneName_Clear then {
+   SzeneName_GAs=$$;
+   SzeneName_Data=$$;
+   SzeneName_Clear=AUS;
+   SzeneName_Active=AUS;
+   writeflash(SzeneName_Store,Speicherplatz1^u16);
+   writeflash(SzeneName_GAs,Speicherplatz2^u16);
+} endif
+
+// Read the flash
+if after(systemstart(),convert(random(30000u32),0u64)) then {
+	if  !SzeneName_SzeneRecord then {
+       readflash(SzeneName_Store,Speicherplatz1^u16); 
+	   readflash(SzeneName_GAs,Speicherplatz2^u16); 
+	} endif
+} endif 
+
+// Check if there are "old" scene are already stored in the past and
+// these are to be reloaded
+if after(systemstart(),convert(random(30000u32),0u64)+30000u64) then {
+	SzeneName_SzeneNrCount=0;
+	// Only read from flash, if nothing is already running
+	if size(SzeneName_GAs)>0u16 and !SzeneName_SzeneRecord then {
+	     SzeneName_Next=!SzeneName_Next; 
+         SzeneName_SzeneRecord=EIN;
+	     SzeneName_GALoad=1;
+	} else {
+         if Autoload then SzeneName_GALoad=2 endif;
+   } endif
+} endif
+
+// Initialize the read sequences after an reload of the GAs
+if after(change(SzeneName_Next),250u64) then {
+	SzeneName_GAAutoread=convert(split(SzeneName_GAs, convert(SzeneName_SzeneNrCount,0u16)*6u16 , convert(SzeneName_SzeneNrCount,0u16)*6u16 +5u16),0u16);
+	if (SzeneName_SzeneNrCount < SzeneName_NrGA) and SzeneName_GAAutoread!=0u16 then {
+	     read(address(SzeneName_GAAutoread));
+	     SzeneName_SzeneNrCount=SzeneName_SzeneNrCount+1;
+	     SzeneName_Next=!SzeneName_Next;
+	} endif;
+} endif 
+// If an scenes learns 
+if event(readrawknx(SzeneName_Kontroll,SzeneName_Sender,SzeneName_GA,SzeneName_IsGa,SzeneName_RoutingCnt,SzeneName_Len,SzeneName_Data)) and SzeneName_IsGa then {
+	// Second Bytes contains 
+        // Bit 7 = 1   => write
+        // Bit 6 = 1   => writeresponse
+        // Bit 7/6 = 0 => read
+	SzeneName_Type=stringcast(SzeneName_Data,0u08,1u16) and 0xC0;
+	//------------------------------------------------------------------
+	// Check if an GA is to be monitored
+	if !SzeneName_SzeneRecord and (SzeneName_Type==128) then 
+	{
+	    SzeneName_ID=find(SzeneName_GAs, stringformat(SzeneName_GA,0,3,5,0)+$@$,0u16);
+	    if SzeneName_ID!=EOS then 
+            {
+                 SzeneName_Val=stringcast(SzeneName_Store,0u32,SzeneName_ID);
+                 if SzeneName_Len==1 then {
+       			SzeneName_ValOrg=convert(stringcast(SzeneName_Data,0u08,1u16) and 0x3F,0u32);
+                 } else {
+			SzeneName_ValOrg=stringcast(SzeneName_Data,0u32,2u16) ;
+                 } endif ;
+	         if SzeneName_Val==SzeneName_ValOrg then {
+   		     // Set the bit in CRC, if the value is the same
+                     SzeneName_CRC=SzeneName_CRC or shift(1u64,convert((SzeneName_ID)/6u16,0s08));
+                 } else {
+		    // Unset the bit in CRC, if the value is the same
+		    SzeneName_CRC=SzeneName_CRC and !shift(1u64,convert((SzeneName_ID)/6u16,0s08));
+		 } endif;
+		 if SzeneName_CRC== SzeneName_CRCActive then {
+		    SzeneName_Active=EIN;	
+                 } else SzeneName_Active=AUS endif;
+            } endif;
+	} endif;
+
+
+	//------------------------------------------------------------------
+	//read Telegramm for a certain GA 
+	if (SzeneName_Type==0) and SzeneName_SzeneRecord  and SzeneName_Sender==AdresseAktor and SzeneName_GALoad==0 then {
+		SzeneName_GAs=SzeneName_GAs+stringformat(SzeneName_GA,0,3,5,0) +$@$;
+		SzeneName_SzeneNrCount=SzeneName_SzeneNrCount+1;
+        } endif;
+	
+	//------------------------------------------------------------------
+	// The answers must be stored
+	// but there was a read before the 
+	if (SzeneName_Type==64) and SzeneName_SzeneRecord then {
+	    SzeneName_ID=find(SzeneName_GAs, stringformat(SzeneName_GA,0,3,5,0)+$@$,0u16);
+	    if SzeneName_ID!=EOS then {
+                // Data can be found at Byte 2
+        	if SzeneName_Len==1 then {
+         	    stringset(SzeneName_Store,stringcast(SzeneName_Data,0,1u16)and 0x3F ,SzeneName_ID);
+		} else {
+		    stringset(SzeneName_Store,stringcast(SzeneName_Data,0u32,2u16),SzeneName_ID);
+		} endif;
+        	// End of recording
+		if SzeneName_SzeneNrCount==SzeneName_NrGA then {
+	            SzeneName_SzeneRecord=AUS;
+		    SzeneName_GALoad=0;
+		    writeflash(SzeneName_Store,Speicherplatz1^u16);
+		    writeflash(SzeneName_GAs,Speicherplatz2^u16);
+		    SzeneName_Active=EIN;
+	        } endif;
+	    } endif;
+       } endif;
+
+} endif
+
+if SzeneName_Active then write(StatusBitGA,EIN) else write(StatusBitGA,AUS)  endif
+:end 
+

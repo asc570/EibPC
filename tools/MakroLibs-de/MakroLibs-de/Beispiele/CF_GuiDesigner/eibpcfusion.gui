@@ -1,0 +1,694 @@
+<gui>
+  <properties>
+    <project>eibpcfusion</project>
+    <designer>michel38</designer>
+    <size>
+      <portrait width="320" height="480" />
+      <landscape width="480" height="320" />
+    </size>
+    <controlsystem connectionStatus="0" disconnectionStatus="0">
+      <hostname>michels88.dyndns.org</hostname>
+      <commandPort>4809</commandPort>
+    </controlsystem>
+    <imagefolder>
+    </imagefolder>
+    <debug loaderrors="1" connectionerrors="1" />
+  </properties>
+  <themes>
+    <theme type="background" name=".portrait"><![CDATA[ background-image: url(portrait.png); background-repeat: no-repeat;]]></theme>
+    <theme type="background" name=".landscape"><![CDATA[ background-image: url(landscape.png); background-repeat: no-repeat;]]></theme>
+    <theme type="button" name=".transparent[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(transparent.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".transparent[state='1']"><![CDATA[padding: 0px 0px 0px 10px; background-image: url(transparent.png); text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: White; font-size: 20px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".return[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_zurueck.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".return[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_zurueck.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".return_press[state='0']"><![CDATA[padding: 0px 0px 0px 10px; -webkit-border-image: url(haus_auswahl_zurueck.png) 0 0 0 10; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".return_press[state='1']"><![CDATA[padding: 0px 0px 0px 10px; -webkit-border-image: url(haus_auswahl_zurueck_aktiv.png) 0 0 0 10; color: White; font-size: 20px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_auswahl[state='0']"><![CDATA[padding: 0px 0px 0px 10px; -webkit-border-image: url(haus_menue_auswahl.png) 0 0 0 10; text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: White; font-size: 20px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_auswahl[state='1']"><![CDATA[padding: 0px 0px 0px 10px; -webkit-border-image: url(haus_menue_auswahl_press.png) 0 0 0 10; text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: White; font-size: 20px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_home[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_home.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_home[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_home_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_wetter[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_wetter.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_wetter[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_wetter_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="text" name=".haus_header_left"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 12px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".haus_header_center"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 12px; font-family: 'Verdana'; text-align: center; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".haus_header_right"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 12px; font-family: 'Verdana'; text-align: right; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".haus_menue_kamera[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_kamera.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_kamera[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_kamera_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="gauge" name=".licht[state='0']"><![CDATA[ background-image: url(Slider_inaktiv.png);]]></theme>
+    <theme type="gauge" name=".licht[state='1']"><![CDATA[ background-image: url(Slider_Licht.png);]]></theme>
+    <theme type="button" name=".haus_menue_musik[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_musik.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_musik[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_musik_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="background" name=".popup_heizung"><![CDATA[ background-image: url(raum_popup.png); background-repeat: no-repeat;]]></theme>
+    <theme type="text" name=".raum_temp_ist"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: #00A844; font-size: 24px; font-family: 'Tahoma'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".raum_temp_klein"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -1px 1px; color: #E6E6E6; font-size: 11px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".raum_temp_soll"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -1px 1px; color: Red; font-size: 14px; font-family: 'Tahoma'; text-align: right; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".haus_menue_tv[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_tv.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".haus_menue_tv[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_menue_tv_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_licht_status[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_licht_off.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_licht_status[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_licht_on.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_ein_aus[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_aus.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_ein_aus[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_ein.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_komfort[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(transparent.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_komfort[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_komfort.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_komfort_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_komfort.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_komfort_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_komfort_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_standby[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(transparent.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_standby[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_standby.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="text" name=".raum_temp_basis"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -1px 1px; color: #E6E6E6; font-size: 12px; font-family: 'Tahoma'; text-align: right; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".raum_heizung_standby_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_standby.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_standby_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_standby_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_nacht[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(transparent.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_nacht[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_nacht.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="text" name=".raum_pos_ist"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: #E6E6E6; font-size: 20px; font-family: 'Tahoma'; text-align: right; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".raum_pos_klein"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -1px 1px; color: #E6E6E6; font-size: 11px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".raum_heizung_nacht_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_nacht.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_nacht_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_nacht_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_frost[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(transparent.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_frost[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_frost.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_frost_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_frost.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_frost_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_frost_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_plus_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_plus.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_plus_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_plus_aktiv.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_minus_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_minus.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_minus_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_auswahl_minus_akiv.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_heizen[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_off.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_heizung_heizen[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_heizung_on.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_fenster_status[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_fenster_close.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_fenster_status[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_fenster_open.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_auf_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_up.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_auf_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_up_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_ab_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_down.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_ab_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_down_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_stop_press[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_stop.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollladen_stop_press[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_jalousie_stop_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollo_status[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_rollo_close.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_rollo_status[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_rollo_open.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_all_off[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_all_off.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_all_off[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_all_off_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_1[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene1.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_1[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene1_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_2[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene2.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_2[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene2_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_3[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene3.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_szene_3[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_szene3_press.png) 0 0 0 0; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="text" name=".media_header_left"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: #E6E6E6; font-size: 20px; font-family: 'Tahoma'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".popup_header_left"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 16px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".media_kamera_center"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -1px 1px; color: #E6E6E6; font-size: 11px; font-family: 'Verdana'; text-align: center; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="input" name=".url"><![CDATA[ border-width: 0px; color: #FF8000; font-size: 16px; font-family: 'Trebuchet MS'; text-align: center; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="background" name=".popup_rollo"><![CDATA[ background-image: url(raum_popup_rollo.png); background-repeat: no-repeat;]]></theme>
+    <theme type="text" name=".popup_header_right"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 16px; font-family: 'Verdana'; text-align: right; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".haus_emz_center"><![CDATA[ text-shadow: rgba(0,0,0,1) 1px -2px 1px; color: White; font-size: 20px; font-family: 'Verdana'; text-align: center; vertical-align: middle; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".raum_button[state='0']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_button.png) 0 0 0 0; text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: Gray; font-size: 11px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".raum_button[state='1']"><![CDATA[padding: 0px 0px 0px 0px; -webkit-border-image: url(haus_raum_button_press.png) 0 0 0 0; text-shadow: rgba(0,0,0,1) 1px -2px 2px; color: Gray; font-size: 14px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+  </themes>
+  <page name="Haus_0000_Etage" j="0" transition="fade" subtype="None" time="3" ease="easeInEaseOut" start="1">
+    <portrait t="portrait">
+      <img x="0" y="73" w="320" h="358" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl.png</img>
+      <img x="0" y="0" w="320" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <img x="0" y="431" w="320" h="49" j="0" clickthrough="0" refresh="0" l="0">haus_footer.png</img>
+      <btn j="0" x="0" y="432" w="64" h="48" t="haus_menue_home" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="64" y="432" w="64" h="48" t="haus_menue_wetter" flip="Media_4000_Wetter" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="128" y="432" w="64" h="48" t="haus_menue_kamera" flip="Media_4200_Kamera" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="192" y="432" w="64" h="48" t="haus_menue_musik" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="256" y="432" w="64" h="48" t="haus_menue_tv" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <img x="0" y="29" w="320" h="44" j="0" clickthrough="0" refresh="0" l="0">haus_header_status.png</img>
+      <btn j="0" x="50" y="74" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">Kellergeschoss</inactive>
+        <active s="0">Kellergeschoss</active>
+      </btn>
+      <img x="5" y="75" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kg.png</img>
+      <btn j="0" x="50" y="119" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">Erdgeschoss</inactive>
+        <active s="0">Erdgeschoss</active>
+      </btn>
+      <img x="5" y="120" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_eg.png</img>
+      <btn j="0" x="50" y="164" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">Aussen</inactive>
+        <active s="0">Aussen</active>
+      </btn>
+      <img x="5" y="165" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_aussen.png</img>
+      <btn j="0" x="50" y="209" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">Garage</inactive>
+        <active s="0">Garage</active>
+      </btn>
+      <img x="5" y="210" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_garage.png</img>
+      <btn j="0" x="50" y="254" w="250" h="40" t="haus_menue_auswahl" flip="Haus_0001_Raum" sim="1" l="0" s="1">
+        <inactive s="0">Obergeschoss *</inactive>
+        <active s="0">Obergeschoss *</active>
+      </btn>
+      <img x="5" y="255" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_og.png</img>
+      <img x="280" y="30" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_haus.png</img>
+      <btn j="0" x="50" y="299" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">Dachgeschoss</inactive>
+        <active s="0">Dachgeschoss</active>
+      </btn>
+      <img x="5" y="300" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_dg.png</img>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="100" y="0" w="90" h="28" t="haus_header_right" wrap="False" l="0">Zeit</txt>
+      <txt j="0" x="195" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+      <txt j="3101" x="235" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="290" y="0" w="25" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+    </portrait>
+    <landscape />
+  </page>
+  <page name="Haus_0600_Wohnzimmer" j="0" transition="fade" subtype="None" time="3" ease="easeIn">
+    <portrait t="portrait">
+      <img x="0" y="29" w="320" h="44" j="0" clickthrough="0" refresh="0" l="0">haus_header_status.png</img>
+      <img x="0" y="0" w="320" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <img x="0" y="431" w="320" h="49" j="0" clickthrough="0" refresh="0" l="0">haus_footer.png</img>
+      <btn j="0" x="0" y="432" w="64" h="48" t="haus_menue_home" flip="Haus_0001_Raum" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="64" y="432" w="64" h="48" t="haus_menue_wetter" flip="Media_4000_Wetter" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="128" y="432" w="64" h="48" t="haus_menue_kamera" flip="Media_4200_Kamera" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="192" y="432" w="64" h="48" t="haus_menue_musik" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="256" y="432" w="64" h="48" t="haus_menue_tv" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="113" y="122" w="180" h="15" t="haus_header_right" wrap="False" l="0">Deckenleuchte</txt>
+      <slider j="601" d="0" x="105" y="92" w="160" h="40" min="0" max="100" decimals="0" unit="decimal" t="licht" sim="0" l="0">
+        <indicator state="0" offsetX="0" offsetY="0" x="0" y="0" w="0" h="0" t="">slider_indicator.png</indicator>
+      </slider>
+      <btn j="601" x="13" y="97" w="40" h="40" t="raum_licht_status" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <img x="280" y="30" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_whz.png</img>
+      <txt j="0" x="75" y="27" w="20" h="26" t="raum_temp_klein" wrap="False" l="0">°C</txt>
+      <txt j="632" x="22" y="52" w="53" h="21" t="raum_temp_soll" wrap="False" l="0">Soll</txt>
+      <txt j="631" x="5" y="25" w="90" h="35" t="raum_temp_ist" wrap="False" l="0">Ist</txt>
+      <btn j="602" x="13" y="142" w="40" h="40" t="raum_licht_status" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="113" y="167" w="180" h="15" t="haus_header_right" wrap="False" l="0">Esstisch</txt>
+      <slider j="602" d="0" x="105" y="137" w="160" h="40" min="0" max="100" decimals="0" unit="decimal" t="licht" sim="0" l="0">
+        <indicator state="0" offsetX="0" offsetY="0" x="0" y="0" w="0" h="0" t="">slider_indicator.png</indicator>
+      </slider>
+      <btn j="603" x="13" y="187" w="40" h="40" t="raum_licht_status" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="113" y="212" w="180" h="15" t="haus_header_right" wrap="False" l="0">Wandlampe Sofa</txt>
+      <btn j="604" x="13" y="232" w="40" h="40" t="raum_ein_aus" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="113" y="257" w="180" h="15" t="haus_header_right" wrap="False" l="0">Wandlampe Fernseher</txt>
+      <btn j="605" x="13" y="277" w="40" h="40" t="raum_ein_aus" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="113" y="302" w="180" h="15" t="haus_header_right" wrap="False" l="0">Stehlampe</txt>
+      <txt j="651" x="218" y="30" w="42" h="40" t="raum_pos_ist" wrap="False" l="0">Pos</txt>
+      <txt j="0" x="260" y="27" w="20" h="26" t="raum_pos_klein" wrap="False" l="0">%</txt>
+      <btn j="691" x="10" y="346" w="71" h="38" t="raum_szene_all_off" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="692" x="86" y="346" w="71" h="38" t="raum_szene_1" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="693" x="162" y="346" w="71" h="38" t="raum_szene_2" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="694" x="239" y="346" w="71" h="38" t="raum_szene_3" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="624" x="100" y="30" w="35" h="35" t="raum_heizung_frost" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="623" x="100" y="30" w="35" h="35" t="raum_heizung_nacht" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="622" x="100" y="30" w="35" h="35" t="raum_heizung_standby" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="621" x="100" y="30" w="35" h="35" t="raum_heizung_komfort" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="10601" x="5" y="30" w="125" h="40" t="transparent" flip="None" sim="2" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="628" x="145" y="30" w="35" h="35" t="raum_fenster_status" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="100" y="0" w="90" h="28" t="haus_header_right" wrap="False" l="0">Zeit</txt>
+      <txt j="3101" x="235" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="290" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+      <btn j="651" x="185" y="30" w="35" h="35" t="raum_rollo_status" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="10602" x="145" y="30" w="125" h="40" t="transparent" flip="None" sim="2" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <subpage name="Haus_0602_Jalousie" x="0" y="73" j="10602" transition1="fade" subtype1="None" time1="3" ease1="easeIn" transition2="fade" subtype2="None" time2="3" ease2="easeOut" clickthrough="0" v="0" l="0" />
+      <subpage name="Haus_0601_Regler" x="0" y="73" j="10601" transition1="fade" subtype1="None" time1="2" ease1="easeIn" transition2="fade" subtype2="None" time2="2" ease2="easeOut" clickthrough="0" v="0" l="0" />
+      <txt j="0" x="195" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+    </portrait>
+    <landscape />
+  </page>
+  <page name="Haus_0001_Raum" j="0" transition="fade" subtype="None" time="3" ease="easeInEaseOut">
+    <portrait t="portrait">
+      <img x="0" y="73" w="320" h="358" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl.png</img>
+      <img x="0" y="0" w="320" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <img x="0" y="431" w="320" h="49" j="0" clickthrough="0" refresh="0" l="0">haus_footer.png</img>
+      <btn j="0" x="0" y="432" w="64" h="48" t="haus_menue_home" flip="Haus_0000_Etage" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="64" y="432" w="64" h="48" t="haus_menue_wetter" flip="Media_4000_Wetter" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="128" y="432" w="64" h="48" t="haus_menue_kamera" flip="Media_4200_Kamera" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="192" y="432" w="64" h="48" t="haus_menue_musik" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="256" y="432" w="64" h="48" t="haus_menue_tv" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <img x="0" y="29" w="320" h="44" j="0" clickthrough="0" refresh="0" l="0">haus_header_status.png</img>
+      <btn j="0" x="50" y="74" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Arbeitszimmer</inactive>
+        <active s="0">Arbeitszimmer</active>
+      </btn>
+      <img x="5" y="75" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_a-zimmer.png</img>
+      <btn j="0" x="50" y="119" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Kinderzimmer</inactive>
+        <active s="0">Kinderzimmer</active>
+      </btn>
+      <img x="5" y="120" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_k-zimmer.png</img>
+      <btn j="0" x="50" y="164" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Schlafzimmer</inactive>
+        <active s="0">Schlafzimmer</active>
+      </btn>
+      <img x="5" y="165" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_s-zimmer.png</img>
+      <btn j="0" x="50" y="209" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Wintergarten</inactive>
+        <active s="0">Wintergarten</active>
+      </btn>
+      <img x="5" y="210" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_foyer.png</img>
+      <btn j="0" x="50" y="254" w="250" h="40" t="haus_menue_auswahl" flip="Haus_0600_Wohnzimmer" sim="1" l="0" s="0">
+        <inactive s="0">Wohnzimmer *</inactive>
+        <active s="0">Wohnzimmer *</active>
+      </btn>
+      <img x="5" y="255" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_whz.png</img>
+      <img x="280" y="30" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_og.png</img>
+      <btn j="0" x="50" y="299" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Küche</inactive>
+        <active s="0">Küche</active>
+      </btn>
+      <img x="5" y="300" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kueche.png</img>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="100" y="0" w="90" h="28" t="haus_header_right" wrap="False" l="0">Zeit</txt>
+      <txt j="0" x="195" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+      <btn j="0" x="50" y="344" w="250" h="40" t="haus_menue_auswahl" flip="None" sim="0" l="0" s="0">
+        <inactive s="0">Diele</inactive>
+        <active s="0">Diele</active>
+      </btn>
+      <img x="5" y="345" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_foyer.png</img>
+      <txt j="3101" x="235" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="290" y="0" w="25" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+    </portrait>
+    <landscape />
+  </page>
+  <page name="Media_4200_Kamera" j="0" transition="moveIn" subtype="fromLeft" time="3" ease="easeIn">
+    <portrait t="portrait">
+      <img x="0" y="0" w="320" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <img x="0" y="431" w="320" h="49" j="0" clickthrough="0" refresh="0" l="0">haus_footer.png</img>
+      <btn j="0" x="0" y="432" w="64" h="48" t="haus_menue_home" flip="Haus_0000_Etage" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="64" y="432" w="64" h="48" t="haus_menue_wetter" flip="Media_4000_Wetter" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="128" y="432" w="64" h="48" t="haus_menue_kamera" flip="Media_4000_Wetter" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="192" y="432" w="64" h="48" t="haus_menue_musik" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="256" y="432" w="64" h="48" t="haus_menue_tv" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <img x="0" y="29" w="320" h="44" j="0" clickthrough="0" refresh="0" l="0">haus_header_status.png</img>
+      <img x="278" y="30" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <txt j="9010" x="5" y="36" w="90" h="28" t="media_header_left" wrap="False" l="0">Coburg</txt>
+      <img x="5" y="93" w="310" h="233" j="9000" clickthrough="0" refresh="50" l="0">http://217.24.53.20/record/current.jpg</img>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="100" y="0" w="90" h="28" t="haus_header_right" wrap="False" l="0">Zeit</txt>
+      <txt j="3101" x="235" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="290" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+      <img x="12" y="341" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <img x="76" y="341" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <txt j="0" x="0" y="371" w="64" h="20" t="media_kamera_center" wrap="False" l="0">Einfahrt</txt>
+      <txt j="0" x="64" y="371" w="64" h="20" t="media_kamera_center" wrap="False" l="0">Berlin</txt>
+      <img x="140" y="341" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <txt j="0" x="128" y="371" w="64" h="20" t="media_kamera_center" wrap="False" l="0">Coburg</txt>
+      <img x="204" y="341" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <txt j="0" x="192" y="371" w="64" h="20" t="media_kamera_center" wrap="False" l="0">
+      </txt>
+      <img x="268" y="341" w="40" h="40" j="0" clickthrough="0" refresh="0" l="0">haus_auswahl_kamera.png</img>
+      <txt j="0" x="256" y="371" w="64" h="20" t="media_kamera_center" wrap="False" l="0">
+      </txt>
+      <btn j="9002" x="64" y="341" w="64" h="60" t="transparent" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="9003" x="128" y="341" w="64" h="60" t="transparent" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="9001" x="0" y="341" w="64" h="60" t="transparent" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="9004" x="192" y="341" w="64" h="60" t="transparent" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="9005" x="256" y="341" w="64" h="60" t="transparent" flip="None" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="0" y="73" w="320" h="251" t="transparent" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <txt j="0" x="195" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+    </portrait>
+    <landscape t="landscape">
+      <img x="0" y="0" w="480" h="320" j="9000" clickthrough="0" refresh="50" l="0">http://217.24.53.20/record/current.jpg</img>
+    </landscape>
+  </page>
+  <page name="Media_4000_Wetter" j="0" transition="moveIn" subtype="fromRight" time="3" ease="easeIn">
+    <portrait t="portrait">
+      <img x="0" y="0" w="320" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <img x="0" y="431" w="320" h="49" j="0" clickthrough="0" refresh="0" l="0">haus_footer.png</img>
+      <btn j="0" x="0" y="432" w="64" h="48" t="haus_menue_home" flip="Haus_0000_Etage" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="64" y="432" w="64" h="48" t="haus_menue_wetter" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="128" y="432" w="64" h="48" t="haus_menue_kamera" flip="Media_4200_Kamera" sim="1" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="192" y="432" w="64" h="48" t="haus_menue_musik" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <btn j="0" x="256" y="432" w="64" h="48" t="haus_menue_tv" flip="None" sim="0" l="0" s="1">
+        <inactive s="0">
+        </inactive>
+        <active s="0">
+        </active>
+      </btn>
+      <img x="0" y="29" w="320" h="44" j="0" clickthrough="0" refresh="0" l="0">haus_header_status.png</img>
+      <txt j="0" x="5" y="36" w="130" h="28" t="media_header_left" wrap="False" l="0">Wetter</txt>
+      <img x="5" y="76" w="310" h="174" j="0" clickthrough="0" refresh="50" l="0">http://service6.tagesschau.de/wetter.tagesschau.de/import/wetter-cms/vorhersagen/img/de-vs-tt_teaser.jpg</img>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="100" y="0" w="90" h="28" t="haus_header_right" wrap="False" l="0">Zeit</txt>
+      <txt j="3101" x="235" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="290" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+      <img x="5" y="254" w="310" h="174" j="0" clickthrough="0" refresh="50" l="0">http://service6.tagesschau.de/wetter.tagesschau.de/import/wetter-cms/vorhersagen/img/de-vs-tn_teaser.jpg</img>
+      <txt j="0" x="195" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+    </portrait>
+    <landscape t="landscape">
+      <img x="0" y="39" w="480" h="270" j="0" clickthrough="0" refresh="50" l="0">http://service6.tagesschau.de/wetter.tagesschau.de/import/wetter-cms/vorhersagen/img/de-vs-3t_webL.jpg</img>
+      <img x="0" y="0" w="4800" h="29" j="0" clickthrough="0" refresh="0" l="0">haus_header_info.png</img>
+      <txt j="3001" x="5" y="0" w="90" h="28" t="haus_header_left" wrap="False" l="0">Datum</txt>
+      <txt j="3002" x="193" y="0" w="90" h="28" t="haus_header_center" wrap="False" l="0">Zeit</txt>
+      <txt j="3101" x="395" y="0" w="55" h="28" t="haus_header_right" wrap="False" l="0">AT</txt>
+      <txt j="0" x="450" y="0" w="30" h="28" t="haus_header_left" wrap="False" l="0"> °C</txt>
+    </landscape>
+  </page>
+  <subpage name="Haus_0601_Regler" w="320" h="358" t="popup_heizung">
+    <btn j="621" x="80" y="165" w="40" h="40" t="raum_heizung_komfort_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="622" x="200" y="165" w="40" h="40" t="raum_heizung_standby_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="623" x="80" y="230" w="40" h="40" t="raum_heizung_nacht_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="624" x="200" y="230" w="40" h="40" t="raum_heizung_frost_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="625" x="78" y="80" w="40" h="40" t="raum_heizung_plus_press" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="626" x="202" y="80" w="40" h="40" t="raum_heizung_minus_press" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="633" x="130" y="90" w="40" h="20" t="raum_temp_klein" wrap="False" l="0">xx,xx</txt>
+    <btn j="627" x="165" y="130" w="35" h="22" t="raum_heizung_heizen" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="634" x="107" y="136" w="40" h="20" t="raum_temp_basis" wrap="False" l="0">xxx</txt>
+    <txt j="0" x="147" y="136" w="15" h="20" t="raum_temp_basis" wrap="False" l="0">%</txt>
+    <txt j="0" x="170" y="90" w="20" h="20" t="raum_temp_klein" wrap="False" l="0">°C</txt>
+    <txt j="0" x="100" y="30" w="170" h="40" t="popup_header_left" wrap="False" l="0">Temperaturregler</txt>
+    <txt j="0" x="70" y="205" w="60" h="20" t="haus_header_center" wrap="False" l="0">Komfort</txt>
+    <txt j="0" x="190" y="205" w="60" h="20" t="haus_header_center" wrap="False" l="0">Standby</txt>
+    <txt j="0" x="70" y="270" w="60" h="20" t="haus_header_center" wrap="False" l="0">Nacht</txt>
+    <txt j="0" x="190" y="270" w="60" h="20" t="haus_header_center" wrap="False" l="0">Frost</txt>
+    <btn j="624" x="55" y="30" w="40" h="40" t="raum_heizung_frost" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="623" x="55" y="30" w="40" h="40" t="raum_heizung_nacht" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="622" x="55" y="30" w="40" h="40" t="raum_heizung_standby" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="621" x="55" y="30" w="40" h="40" t="raum_heizung_komfort" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+  </subpage>
+  <subpage name="Haus_0602_Jalousie" w="320" h="358" t="popup_rollo">
+    <txt j="3003" x="175" y="76" w="50" h="20" t="haus_header_center" wrap="False" l="0">xx:xx</txt>
+    <txt j="3004" x="175" y="96" w="50" h="20" t="haus_header_center" wrap="False" l="0">xx:xx</txt>
+    <btn j="652" x="70" y="240" w="60" h="38" t="raum_rollladen_ab_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="653" x="190" y="240" w="60" h="38" t="raum_rollladen_auf_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="651" x="205" y="30" w="35" h="40" t="popup_header_right" wrap="False" l="0">xxx</txt>
+    <txt j="0" x="245" y="34" w="20" h="20" t="raum_pos_klein" wrap="False" l="0">%</txt>
+    <btn j="654" x="130" y="240" w="60" h="38" t="raum_rollladen_stop_press" flip="None" sim="1" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="0" x="55" y="76" w="110" h="20" t="haus_header_left" wrap="False" l="0">Sonnenaufgang</txt>
+    <txt j="0" x="227" y="76" w="35" h="20" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+    <txt j="0" x="55" y="96" w="110" h="20" t="haus_header_left" wrap="False" l="0">Sonnenuntergang</txt>
+    <txt j="0" x="227" y="96" w="35" h="20" t="haus_header_left" wrap="False" l="0">Uhr</txt>
+    <txt j="0" x="100" y="30" w="110" h="40" t="popup_header_left" wrap="False" l="0">Rollladen</txt>
+    <btn j="651" x="55" y="30" w="40" h="40" t="raum_rollo_status" flip="None" sim="0" l="0" s="1">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="0" x="70" y="270" w="60" h="20" t="haus_header_center" wrap="False" l="0">ab</txt>
+    <txt j="0" x="190" y="270" w="60" h="20" t="haus_header_center" wrap="False" l="0">auf</txt>
+    <txt j="0" x="55" y="116" w="60" h="20" t="haus_header_left" wrap="False" l="0">Azimut</txt>
+    <txt j="0" x="55" y="136" w="60" h="20" t="haus_header_left" wrap="False" l="0">Elevation</txt>
+    <txt j="3005" x="175" y="116" w="95" h="20" t="haus_header_center" wrap="False" l="0">
+    </txt>
+    <txt j="3006" x="175" y="136" w="95" h="20" t="haus_header_center" wrap="False" l="0">
+    </txt>
+    <img x="64" y="163" w="69" h="69" j="3117" clickthrough="0" refresh="0" l="0">haus_raum_azimut_000.png</img>
+    <img x="185" y="163" w="69" h="69" j="3119" clickthrough="0" refresh="0" l="0">haus_raum_elevation_000.png</img>
+  </subpage>
+</gui>

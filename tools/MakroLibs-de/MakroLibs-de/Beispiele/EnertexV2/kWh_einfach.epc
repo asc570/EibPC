@@ -1,0 +1,13 @@
+[Macros]
+//misst wieviel Strom das Garagenlicht(mit Stromerkennung) verbraucht
+kWh_Einfach(Garagenlicht,"Garagenllcht-2/2/1")
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

@@ -1,0 +1,116 @@
+
+[WebServer]
+page(PageID1)[$Russound$,$Wohnzimmer$]
+header(1)
+footer(1)
+pbutton(ButtonWohnenOn)[PLAY]$Wohnen State$ none none none 
+pshifter(ButtonTurnOnVolume)[PLUS,MINUS]$TurnOnVolume Wohnen$ pbutton(ButtonGetTurnOnVolume)[INFO]$Get TurnOnVolume$
+pshifter(ButtonVolume)[PLUS,MINUS]$Volume Wohnen$ pbutton(ButtonGetVolume)[INFO]$Get Volume$
+pshifter(ButtonBass)[PLUS,MINUS]$Bass Wohnen$ pbutton(ButtonGetBass)[INFO]$Get Bass$
+pshifter(ButtonBalance)[PLUS,MINUS]$Balance Wohnen$ pbutton(ButtonGetBalance)[INFO]$Get Balance$
+pshifter(ButtonTreble)[PLUS,MINUS]$Treble Wohnen$ pbutton(ButtonGetTreble)[INFO]$Get Treble$
+pbutton(ButtonLoudness)[PLUS]$Loudness Wohnen$ pbutton(ButtonGetLoudness)[INFO]$Get Loudness$
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexRussound.lib
+EnertexWebV2.lib
+
+[Macros]
+// Sie müssen dieses Makro einmal verwenden um die anderen Makros für die Russound verwenden zu können.
+// Moxa Einstellungen:
+// Serielle Einstellungen: baud rad: 19200, data bits: 8, stop bits: 1, parity: none, flow control: none, FIFO: enable; 
+// Netzwerkeinstellungen: operation mode: UPD Mode, packing length: 0, delimiter 1: f7 - enable, delimiter 2: 0, Destination IP adresse 1: Adresse des EibPCs, Port 480
+
+// Initialisiert Russound bzw. Moxa
+InitRussound(4806,192.168.22.254)
+
+UmschaltButton(ButtonWohnenOn,PageID1,'10/0/0'b01,'10/0/0'b01,PLAY)
+// TurnOnVolume über WebServer schalten und abfragen
+UmschaltShifter2Fach(ButtonTurnOnVolume,PageID1,'10/0/1'b01,'10/0/2'b01,MINUS,$TurnOnVol$, WohnenTurnOnVolume)
+GetInfoButton(ButtonGetTurnOnVolume,PageID1,GetTurnOnVolume,INFO,$TurnOnVol$,WohnenGetTurnOnVolume)
+// Volume über WebServer schalten und abfragen
+UmschaltShifter2Fach(ButtonVolume,PageID1,'10/1/1'b01,'10/1/2'b01,MINUS,$Volume$, WohnenVolume)
+GetInfoButton(ButtonGetVolume,PageID1,GetVolume,INFO,$Volume$,WohnenGetVolume)
+// Bass über WebServer schalten und abfragen
+UmschaltShifter2Fach(ButtonBass,PageID1,'10/2/1'b01,'10/2/2'b01,MINUS,$Bass$, WohnenBass)
+GetInfoButton(ButtonGetBass,PageID1,GetBass,INFO,$Bass$,WohnenGetBass)
+// Balance über WebServer schalten und abfragen
+UmschaltShifter2Fach(ButtonBalance,PageID1,'10/3/1'b01,'10/3/2'b01,MINUS,$Balance$, WohnenBalance)
+GetInfoButton(ButtonGetBalance,PageID1,GetBalance,INFO,$Balance$,WohnenGetBalance)
+// Treble über WebServer schalten und abfragen
+UmschaltShifter2Fach(ButtonTreble,PageID1,'10/4/1'b01,'10/4/2'b01,MINUS,$Treble$, WohnenTreble)
+GetInfoButton(ButtonGetTreble,PageID1,GetTreble,INFO,$Treble$,WohnenGetTreble)
+// Loudness über WebServer schalten und abfragen
+UmschaltButton(ButtonLoudness,PageID1,'10/5/1'b01,'10/5/1'b01,PLUS)
+GetInfoButton(ButtonGetLoudness,PageID1,GetLoudness,INFO,$Loudness$,WohnenGetLoudness)
+
+[EibPC]
+
+// Moxa: 192.168.22.254
+// Schaltet Zone 0  von Controller 0 
+SetStateRussoundToggle(Wohnen,'10/0/0'b01,0,0)
+// Schaltet TurnOnVolume von Controller 0 und Zone 0
+SetTurnOnVolumeRussound(Wohnen,'10/0/1'b01,'10/0/2'b01,0,0)
+// Ließt TurnOnVolume von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenTurnOnVolume
+GetTurnOnVolume(Wohnen,GetTurnOnVolume,0,0)
+
+// Schaltet Volume von Controller 0 und Zone 0
+SetVolumeRussound(Wohnen,'10/1/1'b01,'10/1/2'b01,0,0)
+// Ließt Volume von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenVolume
+GetVolume(Wohnen,GetVolume,0,0)
+// Schaltet Bass von Controller 0 und Zone 0
+SetBassRussound(Wohnen,'10/2/1'b01,'10/2/2'b01,0,0)
+// Ließt Bass von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenBass
+GetBass(Wohnen,GetBass,0,0)
+// Schaltet Balance von Controller 0 und Zone 0
+SetBalanceRussound(Wohnen,'10/3/1'b01,'10/3/2'b01,0,0)
+// Ließt Balance von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenBalance
+GetBalance(Wohnen,GetBalance,0,0)
+// Schaltet Treble von Controller 0 und Zone 0
+SetTrebleRussound(Wohnen,'10/4/1'b01,'10/4/2'b01,0,0)
+// Ließt Treble von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenTreble
+GetTreble(Wohnen,GetTreble,0,0)
+// Schaltet (toogeln) Loudenss von Controller 0 und Zone 0
+SetLoudnessRussoundToggle(Wohnen,'10/5/1'b01,0,0)
+// Ließt Loudness von Controller 0 und Zone 0 und schreibt den Wert in die Variable WohnenLoudness
+GetLoudness(Wohnen,GetLoudness,0,0)
+
+// Variablen zum Steuern der Russound Anlage
+GetTurnOnVolume=OFF
+GetVolume=OFF
+GetBass=OFF
+GetBalance=OFF
+GetTreble=OFF
+GetLoudness=OFF
+
+// Manuell angelegte Gruppenadresse zum Steuern der Russound Anlage
+SetStateToggle='10/0/0'b01
+SetTurnOnVolumeUp='10/0/1'b01
+SetTurnOnVolumeDown='10/0/2'b01
+SetVolumeUp='10/2/1'b01
+SetVolumeDown='10/2/2'b01
+SetBassUp='10/2/1'b01
+SetBassDown='10/2/2'b01
+SetBalanceUp='10/3/1'b01
+SetBalanceDown='10/3/2'b01
+SetTrebleUp='10/4/1'b01
+SetTrebleDown='10/4/2'b01
+SetLoudnessToggle='10/5/1'b01
+
+// Webserver
+PageID1= 1
+ButtonWohnenOn = 1
+ButtonVolume=2
+ButtonGetVolume=3
+ButtonBass=4
+ButtonGetBass=5
+ButtonTreble=6
+ButtonGetTreble=7
+ButtonBalance=8
+ButtonGetBalance=9
+ButtonLoudness=10
+ButtonGetLoudness=11
+ButtonTurnOnVolume=12
+ButtonGetTurnOnVolume=13
+

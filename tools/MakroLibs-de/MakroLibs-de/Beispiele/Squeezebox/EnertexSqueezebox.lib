@@ -1,0 +1,415 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Squeezebox einbinden
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/09/01 09:02:37 $
+//  Version              : $Revision: 1.3 $
+//----------------------------------------------------------------------
+
+// Init Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Squeezebox(PortServer, IPServer, LagTime)
+:info $Sie müssen dieses Makro einmal verwenden um die anderen Makros für die Squeezebox zu verwenden.Außerdem ist es zu empfehlen eine Variable der MAC-Adresse ihrer Squeezebox anzulegen um bei den anderen Makros nur die Variable angeben zu müssen und nicht die ganze Adresse.(z.B.: MAC1 = §00:04:20:12:85:fc§ oder SQ1 = §Squeezebox§, anstatt § ein Dollarzeichen verwenden)$\\
+	$Port des Squeezeboxserver(im Normalfall "9090")$\\
+	$IP des Squeezeboxservers(z.B. "192.168.0.20")$\\
+	$Zeit, die gebraucht wird um eine TCP-Verbindung aufzubauen. Bei langsameren Netzwerken, wie z.B. WLAN, sollte man mit einer längeren Zeit rechnen. Ansonsten sollten "100" (= 100ms) reichen.$
+:shortinfo $Squeezebox Einbinden$
+ServerPort = PortServer^u16
+ServerIP = IPServer
+TimeLag = LagTime^u64
+TCPStatus = 99
+TCPConnected = EIN
+//
+// Fehler in der Verbindung: Diese Variable rausnehmen: TCPConnected
+//
+//if after(systemstart(), convert(random(1000u32),0u64)) then TCPStatus = connecttcp(ServerPort,ServerIP) endif
+//if TCPStatus == 0 or TCPStatus == 3 then TCPConnected = EIN else TCPConnected = AUS endif 
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PowerSchalter(PlayerID, SchalterGA)
+:info $Wenn der Schalter EIN sendet, geht die Squeezebox an, wenn er AUS sendet, geht sie aus. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Schalters$
+:shortinfo $Die Squeezebox über einen Schalter an- und ausschalten$
+
+if event(SchalterGA) then connecttcp(ServerPort, ServerIP) endif
+if after(event(SchalterGA) and SchalterGA, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ power 1$) endif
+if after(event(SchalterGA) and !SchalterGA, TimeLag)  and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ power 0$) endif
+:end
+	
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PowerGA(PlayerID,AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird die Squeezebox aus- bzw. angeschalten.Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Die Squeezebox wird über einen Aktor aus- bzw. angeschalten.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ power$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PowerVAR(PlayerID,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird die Squeezebox aus- bzw. angeschalten, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$
+:shortinfo $Die Squeezebox wird über eine Variable aus- bzw. angeschalten.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ power$); Var = AUS endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PlayGA(PlayerID,AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird an die Squeezebox "play" gesendet. Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Es wird über einen Aktor "play" an die Squeezebox gesendet.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ play$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PlayVAR(PlayerID,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird an die Squeezebox "Play" gesendet, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$
+:shortinfo $Es wird über eine Variable "Play" an die Squeezebox gesendet.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ play$); Var = AUS endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin ForwardGA(PlayerID,AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird an die Squeezebox "Forward" gesendet. Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Es wird über einen Aktor "Forward" an die Squeezebox gesendet.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ button fwd_single$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin ForwardVAR(PlayerID,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird an die Squeezebox "Forward" gesendet, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$
+:shortinfo $Es wird über eine Variable "Forward" an die Squeezebox gesendet.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ button fwd_single$); Var = AUS endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin RewindGA(PlayerID,AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird an die Squeezebox "Rewind" gesendet. Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Es wird über einen Aktor "Rewind" an die Squeezebox gesendet.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ button rew_single$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin RewindVAR(PlayerID,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird an die Squeezebox "Rewind" gesendet, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$
+:shortinfo $Es wird über eine Variable "Rewind" an die Squeezebox gesendet.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ button rew_single$); Var = AUS endif					
+:end
+
+
+
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PauseGA(PlayerID,AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird an die Squeezebox "Pause" gesendet. Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Es wird über einen Aktor "Pause" an die Squeezebox gesendet.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ pause$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin PauseVAR(PlayerID,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird an die Squeezebox "Pause" gesendet, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$
+:shortinfo $Es wird über eine Variable "Pause" an die Squeezebox gesendet.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ pause$); Var = AUS endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin IndexGA(PlayerID,Index, AktorGA, AktorWert)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird das Lied an der angegeben Stelle in der Playlist gespielt. Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Index des Liedes in der Playlist.("1" für 1. Lied)$\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$
+:shortinfo $Es wird über einen Aktor ein bestimmtes Lied gespielt.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ playlist index $ + convert(Index-1u08, $$)) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin IndexVAR(PlayerID,Index,Var)
+:info $Wenn die Variable den Wert EIN annimmt wird das Lied an der angegeben Stelle in der Playlist gespielt, danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Index des Liedes in der Playlist.("1" für 1. Lied)$\\
+	$Variable$
+:shortinfo $Es wird über eine Variable ein bestimmtes Lied gespielt.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP,PlayerID + $ playlist index $ + convert(Index - 1u08, $$)); Var = AUS endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BefehlGA(PlayerID, AktorGA, AktorWert,Befehl)
+:info $Wenn der Aktor den angegebenen Wert annimmt wird der entsprechende Befehl an die Squeezebox gesendet(Die Befehle kann man im Squeezeboxserver unter Hilfe --> Technische Informationen --> The Squeezebox Server Remote Control nachlesen). Es können Schalter, Taster etc. verwendet werden. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$\\
+	$Befehl der gesendet werden soll, z.B. pause oder mixer volume 100$
+:shortinfo $Es wird ein beliebiger Befehl über einen Aktor an die Squeezebox gesendet.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ $ + $^Befehl^$) endif					
+:end								
+
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BefehlVAR(PlayerID,Var,Befehl)
+:info $Wenn die Variable den Wert EIN annimmt wird der entsprechende Befehl an die Squeezebox gesendet(Die Befehle kann man im Squeezeboxserver unter Hilfe --> Technische Informationen --> The Squeezebox Server Remote Control nachlesen). Danach wird der Variable wieder AUS zugewiesen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$\\
+	$Befehl der gesendet werden soll, z.B. pause oder mixer volume 100$
+:shortinfo $Es wird ein beliebiger Befehl über eine Variable an die Squeezebox gesendet.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ $ + $^Befehl^$); Var = AUS endif					
+:end								
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Regler(PlayerID, ReglerGA)
+:info $Sie können die Lautstärke der Squeezebox mit einem Regler/Drehknopf ihrer Wahl steuern. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Reglers$
+:shortinfo $Es wird über einen Regler die Lautstärke der Squeezebox gesteuert.$
+
+if change(ReglerGA) then connecttcp(ServerPort, ServerIP) endif
+if after(change(ReglerGA), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ mixer volume $ + convert((convert(ReglerGA, 0u32) + 1u32)*100u32 / 256u32,$String$) ) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DisplayStringGA(PlayerID, AktorGA, AktorWert, String)
+:info $Sendet einen String über einen Aktor auf das Display. Kann man zum Beispiel für Statusnachrichten nutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$\\
+	$String, der gesendet werden soll, z.B. "Schlafzimmer Licht:%20EIN 3"(d.h. "Schlafzimmer" steht in Zeile 1, "Licht: EIN"(%20 steht für Leerzeichen) in Zeile 2 und es wird 3 Sekunden lang angezeigt)$
+:shortinfo $Sendet einen String über einen Aktor auf das Display$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ display $ + $^String^$) endif					
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DisplayWertZyklus(PlayerID, SensorGA, String, Minute)
+:info $Sendet einen Wert regelmäßig auf das Display. Kann man zum Beispiel zur Temperaturanzeige nutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Sensors$\\
+	$String, der gesendet werden soll, z.B. "Wohnzimmertemperatur:"(d.h. "Wohnzimmertemperatur:" steht in Zeile 1, die Temperatur in Zeile 2, für Leerzeichen %20 schreiben)$\\
+	$Gibt an in welchem zeitlichen Abstand der Wert gesendet wird, z.B. "60" für jede Stunde$
+:shortinfo $Sendet einen Wert regelmäßig auf das Display.$
+
+if cycle(Minute,0) then connecttcp(ServerPort, ServerIP) endif
+if after(cycle(Minute,0), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ display $ + $^String^ $ + convert(SensorGA, $ $) + $ 5$) endif 
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DisplayWertGA(PlayerID, AktorGA, AktorWert, SensorGA, String, Zeit)
+:info $Sendet einen Wert über einen Aktor auf das Display. Kann man zum Beispiel zur Temperaturanzeige nutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$\\
+	$Gruppenadresse des Sensors$\\
+	$String, der gesendet werden soll, z.B. "Wohnzimmertemperatur:"(d.h. "Wohnzimmertemperatur:" steht in Zeile 1, die Temperatur in Zeile 2, für Leerzeichen %20 schreiben)$\\
+	$Gibt an wie lange der Wert gezeigt wird, z.B. "5" für 5 Sekunden$
+:shortinfo $Sendet einen Wert über einen Aktor auf das Display.$
+
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert), TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ display $ + $^String^ $ + convert(SensorGA, $ $) + $ ^Zeit^$) endif 
+:end
+
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DisplayStringVar(PlayerID,Var,String)
+:info $Sendet einen String auf das Display, wenn die Variable den Wert EIN annimmt. Danach wird sie wieder auf AUS gesetzt. Kann man zum Beispiel für Statusnachrichten nutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$\\
+	$String, der gesendet werden soll, z.B. "Schlafzimmer Licht:%20EIN 3"(d.h. "Schlafzimmer" steht in Zeile 1, "Licht: EIN"(%20 steht für Leerzeichen) in Zeile 2 und es wird 3 Sekunden lang angezeigt)$
+:shortinfo $Sendet einen String über eine Variable auf das Display$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ display $ + $^String^$); Var = AUS endif					
+:end
+
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DisplayWertVar(PlayerID, Var, SensorGA, String, Zeit)
+:info $Sendet einen Wert auf das Display, wenn die Variable den Wert EIN annimmt, danach wird sie wieder auf AUS gesetzt. Kann man zum Beispiel zur Temperaturanzeige nutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$\\
+	$Gruppenadresse des Sensors$\\
+	$String, der gesendet werden soll, z.B. "Wohnzimmertemperatur:"(d.h. "Wohnzimmertemperatur:" steht in Zeile 1, die Temperatur in Zeile 2, für Leerzeichen %20 schreiben)$\\
+	$Gibt an wie lange der Wert gezeigt wird, z.B. "5" für 5 Sekunden$
+:shortinfo $Sendet einen Wert über eine Variable auf das Display.$
+
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then sendtcp(ServerPort, ServerIP, PlayerID + $ display $ + $^String^ $ + convert(SensorGA, $ $) + $ ^Zeit^$); Var = AUS endif 
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin SignalGA(PlayerID, AktorGA, AktorWert, Zeit, Signal)
+:info $Wenn der Aktor den angegeben Wert annimmt, spielt die Squeezebox das Signal ab. Davor wird die aktuelle Playlist gespeichert und danach wieder geladen. Kann man z.B. als Klingel benutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Gruppenadresse des Aktors$\\
+	$Wert bei dem gesendet werden soll, muss zum Datentyp des Aktors passen(z.B. EIN/AUS bei einem Schalter).$\\
+	$Gibt die Zeit in s an, wie lange das Signal abgespielt werden soll, bis die alte Playlist wieder geladen wird.(z.B. "30" für 30s)$\\
+	$Relativer Pfad zum Signal, ausgehend vom Musik-Ordner.(z.B. "/Signale/Signal1.mp3")$
+:shortinfo $Die Squeezebox spielt über einen Aktor ein Signal ab$
+SignalTest = EIN
+if event(AktorGA) and (AktorGA == AktorWert) then connecttcp(ServerPort, ServerIP) endif
+if after(event(AktorGA) and (AktorGA == AktorWert) and SignalTest, TimeLag) and TCPConnected then {
+	SignalTest = AUS;
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist save Temp$);
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist play ^Signal^$);
+	}endif		
+if delay(event(AktorGA) and (AktorGA == AktorWert), Zeit^000u64 + 3000u64 + TimeLag) and TCPConnected then {
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist load Temp$);
+	sendtcp(ServerPort, ServerIP, PlayerID + $ stop$);
+	SignalTest = EIN
+	}endif		
+:end
+
+// Squeezebox
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin SignalVar(PlayerID, Var, Zeit, Signal)
+:info $Wenn die Variable den Wert EIN annimmt, spielt die Squeezebox das Signal ab. Davor wird die aktuelle Playlist gespeichert und danach wieder geladen und die Variable auf AUS gesetzt. Kann man z.B. als Alarmsignal benutzen. Um dieses Makro verwenden zu können, müssen sie einmal das Makro "Squeezebox" eingebunden haben.$\\
+	$PlayerID(MAC-Adresse oder Name) der Squeezebox als String, z.B. §00:04:20:12:85:fc§ oder §Squeezebox§ (Anstatt § das Dollarzeichen verwenden) $\\
+	$Variable$\\
+	$Gibt die Zeit in s an, wie lange das Signal abgespielt werden soll, bis die alte Playlist wieder geladen wird.(z.B. "30" für 30s)$\\
+	$Relativer Pfad zum Signal, ausgehend vom Musik-Ordner.(z.B. "/Signale/Signal1.mp3")$
+:shortinfo $Die Squeezebox spielt über eine Variable ein Signal ab$
+if Var == EIN then connecttcp(ServerPort, ServerIP) endif
+if after(Var == EIN, TimeLag) and TCPConnected then {
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist save Temp$);
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist play ^Signal^$);
+	}endif		
+if after(Var == EIN, Zeit^000u64 + 3000u64 + TimeLag) and TCPConnected then {
+	sendtcp(ServerPort, ServerIP, PlayerID + $ playlist load Temp$);
+	sendtcp(ServerPort, ServerIP, PlayerID + $ stop$);
+	Var = AUS
+	}endif		
+	
+:end
+

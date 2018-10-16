@@ -1,0 +1,163 @@
+//----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Zweck                : Zeitglieder
+//
+//  Version		 : v3.100
+//
+//  Lizens               : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Thomas Horn (Enertex Bayern GmbH)
+//
+/// Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+/// Version              : $Revision: 1.10 $
+//----------------------------------------------------------------------
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Einschaltverzoegerung_1(Sensor, Aktor, Zeit)
+:info $Das Einschalten des Aktors durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Zeit in ms$
+:shortinfo $Einschaltverzoegerung mit einem Ausgang, Timer kann nicht neugestartet werden$
+if (after(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor, EIN) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Einschaltverzoegerung_mit_Neustart_1(Sensor, Aktor, Zeit)
+:info $Das Einschalten des Aktors durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Zeit in ms$
+:shortinfo $Einschaltverzoegerung mit einem Ausgang, Timer kann neugestartet werden$
+if (delay(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor, EIN) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Einschaltverzoegerung_2(Sensor, Aktor1, Aktor2, Zeit)
+:info $Das Einschalten zweier Aktoren durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des ersten Aktors$\\
+$Gruppenadresse des zweiten Aktors$\\
+$Zeit in ms$
+:shortinfo $Einschaltverzoegerung mit zwei Ausgaengen, Timer kann nicht neugestartet werden$
+if (after(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor1, EIN); write(Aktor2, EIN) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Einschaltverzoegerung_mit_Neustart_2(Sensor, Aktor1, Aktor2, Zeit)
+:info $Das Einschalten zweier Aktoren durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des ersten Aktors$\\
+$Gruppenadresse des zweiten Aktors$\\
+$Zeit in ms$
+:shortinfo $Einschaltverzoegerung mit zwei Ausgängen, Timer kann neugestartet werden$
+if (delay(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor1, EIN); write(Aktor2, EIN) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Ausschaltverzoegerung_1(Sensor, Aktor, Zeit)
+:info $Das Ausschalten des Aktors durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Zeit in ms$
+:shortinfo $Ausschaltverzoegerung mit einem Ausgang, Timer kann nicht neugestartet werden$
+if (after(event(Sensor) and !Sensor, Zeit^u64)) then write(Aktor, AUS) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Ausschaltverzoegerung_mit_Neustart_1(Sensor, Aktor, Zeit)
+:info $Das Ausschalten des Aktors durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Zeit in ms$
+:shortinfo $Ausschaltverzoegerung mit einem Ausgang, Timer kann neugestartet werden$
+if (delay(event(Sensor) and !Sensor, Zeit^u64)) then write(Aktor, AUS) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Ausschaltverzoegerung_2(Sensor, Aktor1, Aktor2, Zeit)
+:info $Das Ausschalten zweier Aktoren durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des ersten Aktors$\\
+$Gruppenadresse des zweiten Aktors$\\
+$Zeit in ms$
+:shortinfo $Ausschaltverzoegerung mit zwei Ausgaengen, Timer kann nicht neugestartet werden$
+if (after(event(Sensor) and !Sensor, Zeit^u64)) then write(Aktor1, AUS); write(Aktor2, AUS) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Ausschaltverzoegerung_mit_Neustart_2(Sensor, Aktor1, Aktor2, Zeit)
+:info $Das Ausschalten zweier Aktoren durch den Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des ersten Aktors$\\
+$Gruppenadresse des zweiten Aktors$\\
+$Zeit in ms$
+:shortinfo $Ausschaltverzoegerung mit zwei Ausgängen, Timer kann neugestartet werden$
+if (delay(event(Sensor) and !Sensor, Zeit^u64)) then write(Aktor1, AUS); write(Aktor2, AUS) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Schaltverzoegerung(Sensor, Aktor, Wert, Zeit)
+:info $Das Schalten eines Aktors durch einen Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Wert des Aktors(muss zum Datentyp passen)$\\
+$Zeit in ms$
+:shortinfo $Schalten eines Aktors mit einem beliebigen Wert, Timer kann nicht neugestartet werden$
+if (after(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor, Wert) endif
+
+:end
+
+// Zeitglieder
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Schaltverzoegerung_mit_Neustart(Sensor, Aktor, Wert, Zeit)
+:info $Das Schalten eines Aktors durch einen Sensor wird um die entsprechende Zeit in ms verzoegert, der Timer wird durch nochmaliges Aktivieren des Sensors nicht neustarten$\\
+$Gruppenadresse des Sensors$\\
+$Gruppenadresse des Aktors$\\
+$Wert des Aktors(muss zum Datentyp passen)$\\
+$Zeit in ms$
+:shortinfo $Schalten eines Aktors mit einem beliebigen Wert, Timer kann neugestartet werden$
+if (delay(event(Sensor) and Sensor, Zeit^u64)) then write(Aktor, Wert) endif
+
+:end

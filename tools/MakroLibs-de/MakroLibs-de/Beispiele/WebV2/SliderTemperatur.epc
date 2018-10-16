@@ -1,0 +1,30 @@
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1
+SliderID = 1
+Min=17.0
+Max=25.0
+Inkr=0.1
+[WebServer]
+//Seite erstellen
+page(WohnzimmerPageID) [$Erdgeschoss$,$Wohnzimmer$]
+//pslider erstellen ist Vorraussetzung für das Makro SliderTemperatur
+//peslider(SliderID)[TEMPERATURE](Min,Inkr,Max) $Sollwert$ $°C$
+peslider(SliderID)[TEMPERATURE](17,0.1,25.0) $Sollwert$ $°C$
+
+
+[Macros]
+//Hiermit verbindet man den peslider mit einer GA eines Sollwerts
+SliderTemperatur(SliderID, WohnzimmerPageID,Min,Inkr,Max,"RkEssen-3/1/6")
+
+
+

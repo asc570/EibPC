@@ -1,0 +1,20 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+//Bei kurzem Druck wird die Temperatur auf das Display geschrieben und bei langem die Luftfeuchtigkeit
+LangerTastendruck(Anzeige,"Taster-0/2/5", 800, write("Display-0/1/0", convert("Auﬂentemperatur-3/5/0", $$c14)), write("Display-0/1/0", convert("Luftfeuchtigkeit-3/5/3", $$c14)))
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+
+
+
+

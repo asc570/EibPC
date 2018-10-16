@@ -1,0 +1,624 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  HA7E
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Bernd Meiners
+// 
+//  Dat.Rev.             : $Date: 2016/09/01 08:40:23 $
+//  Version              : $Revision: 1.1 $
+//----------------------------------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////
+//  Makros to use a HA7E 1-Wire adapter via RS232 with an EibPC
+//  First macro made by enertex
+//  Copyright 2010 enertex, rewrite in 2012 by Bernd Meiners
+//
+//  The macro can handle a maximum of 20 sensors with this implementation,
+//  otherwise we need to extend the queue into several queues
+//
+//  After systemstart we will first enumerate all 1Wire devices,
+//  then we write the precision to the sensors
+//  and finally start reading out the sensors one by one.
+//
+//  Changelog:
+//  First Beta Release was Version 8
+//  In Version 9 I have changed the error reporting via UDP packets into different levels
+//
+//  todo: 
+//  cyclus time calculation, min and max time
+//  rewrite EEPROM when Precision changes
+//  ---------------------------------------------------------------------------
+//
+//  The commands implemented in the HA7E for communication to 1Wire:
+//
+//  'S' SEARCH ROM:*
+//  Allows the HA7E to use a process of elimination to identify the 64bit ROM 
+//  codes of all slave devices on the bus.
+//  's' NEXT SEARCH ROM:*
+//  Identify the 64bit ROM codes of the next device on the bus,
+//  must be preceded by S command.
+//  'F' FAMILY SEARCH:
+//  Search command, except that only the device with a matching family code 
+//  will participate in the search.
+//  'f' MORE FAMILY SEARCH:
+//  Search command, next matching family code,
+//  must be preceded by F or f command.
+//  'C' CONDITIONAL SEARCH (ALARM SEARCH):
+//  Search command, except that, only devices fulfilling a specific condition
+//  will participate in the search.
+//  'A' ADDRESS Select:*
+//  Selects a device on the 1-Wire bus with a matching 64-bit ROM code.
+//  'Z' WRITE ZERO BIT:
+//  This command allows a single zero bit to be written on the bus.
+//  'O' WRITE/READ ONE BIT:
+//  This command allows a single one bit to be read, or written on the bus, 
+//  or a zero bit to be read.
+//  'R' 1-WIRE RESET:*
+//  The Reset command generates a reset pulse on the 1-Wire bus.
+//  'G' READ PAGE:
+//  Allows one page of data to be read from an iButton or 1-Wire memory device.
+//  'g' READ NEXT PAGE:
+//  Read next page from an iButton or 1-Wire memory device,
+//  must be preceded by G or g command.
+//  'L' READ FILE RECORD:
+//  Allows one TMEX file record of data to be read from an iButton 
+//  or 1-Wire memory device.
+//  'l' READ NEXT FILE RECORD:
+//  Read next TMEX file record, must be preceded by L or l command.
+//  'U' WRITE File RECORD AT PAGE, WITH CRC16:
+//  Write to 1-Wire devices and iButtons in Touch Memory File 
+//  Structure records.
+//  'W' WRITE BLOCK:
+//  Similar to the write/read bit command on blocks of up to 32 bytes.
+//  'M' MATCH ROM COMMAND:
+//  Sends a Reset and a Match ROM command for the currently selected device.
+//  'P' POWER DOWN THE 1-Wire Bus:
+//  The 1-Wire bus and the HA7E will power down at the end of this command.
+//
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+// The HA7E_init needs to be included first and prior to all sensors
+//
+// we set up a Queue which will hold all the commands for the HA7E
+// The queue then will be scanned for commands to send to the HA7E
+// The sensors will be responsible to look which command was send most recent 
+// and which answers should arrive in the buffer
+// and handle the write commands
+// The main macro will handle the reset and adressing issues
+//
+:begin HA7E_Init( DebugLevel, DebugPort, DebugIP, RestartGA, ReportGA )
+:info $Sets basics to use the HA7E with the EibPC$ \\
+	$enable Debug messages$\\
+	$Port for debug messages$\\
+	$IP adress for debug messages$\\
+	$RestartGA groupaddress to force a restart of the HA7E Makros and issue a reset of the RS232$\\
+	$ReportGA groupaddress to request a sensor report to DebugOut$
+:shortinfo $include HA7E and prepare for eventual debugging$
+
+HA7E_Debug_Level = DebugLevel;					/* Turn this on if you want debug messages to be output to DebugGA */
+HA7E_Debug_Port = DebugPort
+HA7E_Debug_IP = DebugIP
+
+HA7E_CR = 13u08;							/* carriage return to finish a command */
+HA7E_Queue=$$;								/* command queue to hold several commands */
+HA7E_PreQueue=$$;							/* string to temporarily hold commadn in case of a sensor failure */
+HA7E_QueueMaxLength = 0u16;					/* make a note of the maximum length of the queue ever */
+HA7E_Command=$$;							/* a single command like "S", "R", "A"*/
+HA7E_Command_Line = $$;						/* the full command line like A65000120120028 */
+HA7E_DoNextCommand = AUS;					/* will just change and thus toggle processing */
+HA7E_Split=$;$;								/* the char between commands, here we have chosen ; because it's not part of any of the HA7E responses */
+HA7E_WaitTime = 1u64;						/* Wait time between two commands to ensure that power will not fail */
+HA7E_WaitTimeNormal = 5u64					/* normal wait time between commands */
+HA7E_WaitTimeConvertTemperature = 750u64;	/* time to convert a temperature with 12 Bits precision */
+HA7E_WaitTimeLeft = 0u64;					/* time we have to wait for the next operation to be completed */
+HA7E_CurrentSelectedDevice = $$;    		/* current selected device as feedback from an address command*/
+HA7E_PreSelectedDevice = $$;				/* the device which is to be selected */
+HA7E_RegisteredDevices = 0u08;				/* number of sensors as registered by the macros */
+HA7E_FoundDevices = 0u08;	        		/* number of devices actually found on the bus */
+HA7E_Max_Cyclus = 0u16;						/* Maximum time used to query a sensor */
+HA7E_Min_Cyclus = 0u16;						/* shortest query time of a single sensor */
+HA7E_Needed_Cyclus = 0u16;					/* we will estimate the time needed to query all sensors and hold that against the Min_Cyclus time */
+
+HA7E_DoInit = AUS;								/* will be set EIN for one cyclus when initializing of HA7E becomes necessary */
+HA7E_RawData = $$
+HA7E_RawLen = 0u16
+HA7E_Buffer = $$
+
+HA7E_Report_Event = AUS;					/* will be set to EIN for one cycle to signalize a request for information */
+
+if systemstart() then {
+	HA7E_DoInit = EIN;
+} endif
+
+if event( RestartGA ) then {
+	resetrs232();
+	HA7E_DoInit = EIN;
+} endif
+
+// 4 different resolution of the DS18B20, affection the precision and conversion time
+// 1F = 9 Bits, 3F = 10 Bits, 5F = 11 Bits, 7F = 12 Bits
+BITS09 = $1F$;	BITS10 = $3F$;	BITS11 = $5F$;	BITS12 = $7F$
+
+OWS_Unknown = 0x00
+OWS_DS18B20 = 0x28
+OWS_DS18S20 = 0x10
+
+// For debug purposes it is important to know the time and it is a good idea to define it just once a cycle
+// an reuse it where necessary
+Tick = AUS
+if systemstart() then Tick = EIN endif
+invticks = 0u64
+if delayc( Tick, 999u64, invticks) then Tick = EIN endif
+if after( Tick, 1u64) then Tick = AUS endif
+ticks = 999u64 - invticks
+
+HA7E_Currenttime = convert(hour(),$$)+$:$+convert(minute(),$$)+$:$+convert(second(),$$)+$.$+convert(convert(ticks,0u32),$$)
+
+HA7E_Command_ResetBus = $R$
+HA7E_Command_SelectDevice = $A$
+HA7E_Command_Write = $W$
+HA7E_Command_StartSearch = $S$
+HA7E_Command_ContinueSearch = $s$
+
+// several different debug levels are implemented
+HA7E_Debug_None = 0u08;				/* no debug infos at all */
+HA7E_Debug_Result = 1u08;			/* e.g. conversion results of a sensor */
+HA7E_Debug_Error = 2u08;			/* all error messages, e.g. conversion failed, sensor not found */
+HA7E_Debug_Command = 4u08;			/* all command related messages */
+HA7E_Debug_Queue = 8u08;			/* all queue changes */
+HA7E_Debug_Init = 16u08;			/* init commands */
+HA7E_Debug_Read = 32u08;			/* read commands */
+HA7E_Debug_Write = 64u08;			/* write commands */
+HA7E_Debug_Device = 128u08;			/* device selection */
+
+// compound objects
+HA7E_Debug_Important = HA7E_Debug_Result or HA7E_Debug_Error or HA7E_Debug_Init;	/* only error, result and init is displayed */
+HA7E_Debug_Verbose = 255u08;		/* every error is displayed */
+
+/////////////////////////////////////////////////
+//
+// functional code starts here
+//
+if HA7E_DoInit then {
+	HA7E_State = HA7E_State_Idle;
+	HA7E_Queue = $$;
+	HA7E_Command = $$;
+	HA7E_QueueMaxLength = 0u16;
+	HA7E_Buffer = $$;
+	HA7E_FoundDevices = 0u08;
+} endif
+
+if after(HA7E_DoInit,1u64) then HA7E_DoInit = AUS endif
+
+// generate a report for every Sensor
+if event(ReportGA) then {
+	HA7E_Report_Event = EIN;
+} endif
+if after( HA7E_Report_Event,1000u64 ) then HA7E_Report_Event = AUS endif
+
+
+if HA7E_Report_Event then sendudp(HA7E_Debug_Port,HA7E_Debug_IP,\\
+$Report for HA7E-Adapter @ $+HA7E_Currenttime+CRLF+\\
+$Registered Devices $+convert(HA7E_RegisteredDevices,$$)+CRLF+\\
+$Found Devices $+convert(HA7E_FoundDevices,$$)+CRLF+\\
+$MaxQueue Length $+convert(HA7E_QueueMaxLength,$$)+CRLF+\\
+$---------------------------------------$+CRLF\\
+) endif
+
+// record the maximum length of the queue
+if change( HA7E_Queue ) then {
+	HA7E_QueueMaxLength = max( HA7E_QueueMaxLength, size(HA7E_Queue));
+	HA7E_DebugOut_String(HA7E_Debug_Queue,$Queue: $+HA7E_Queue);
+} endif
+
+if change( HA7E_DoNextCommand ) and HA7E_DoNextCommand then HA7E_DoNextCommand = AUS endif
+
+// There is a master message queue. Instead of a state machine every command is written
+// to a Message queue. Whenever a command needs to be issued it will be appended to this queue.
+// There are two exceptions: 
+// 1) The Search command will always put first a 'S' and afterwards an 's' command in the beginning of the queue
+// 2) a sensor failure will cause the sensor to be reread immediately thus puttin the read commands again 
+//    in the beginning of the queue
+
+HA7E_State_Idle = 0u08
+HA7E_State_WaitForResponse = 1u08
+HA7E_State_Successful = 2u08
+HA7E_State = HA7E_State_Idle
+
+if HA7E_WaitTimeLeft == 0u64 and (change( HA7E_Queue ) or cycle(0,1)) and HA7E_State == HA7E_State_Idle then {
+	HA7E_DoNextCommand = EIN; 
+} endif
+
+HA7E_Temp_WaitTime = 0u64
+if afterc(HA7E_State == HA7E_State_Successful, HA7E_WaitTime, HA7E_WaitTimeLeft) then {
+	HA7E_State = HA7E_State_Idle;
+	HA7E_DoNextCommand = EIN;
+	HA7E_Temp_WaitTime = HA7E_WaitTime; /* respect the delayed sending of udp packets after the EibPC cyclus */;
+	HA7E_DebugOut_String( HA7E_Debug_Command, $WaitTime was $+convert(convert(HA7E_Temp_WaitTime,0u32),$$)+$ms$);
+} endif
+
+if HA7E_DoNextCommand then {
+	HA7E_DoNextCommand = AUS;
+	if HA7E_Queue == $$ then HA7E_Command_Line=$$ endif;
+	if HA7E_Queue!=$$ then {
+        /* whenever there is a command in the queue isolate it into the HA7E_Command and remove it from the queue, else, be sure HA7E_Command is empty */;
+		HA7E_Command_Line=split(HA7E_Queue,0u16,find(HA7E_Queue,HA7E_Split,0u16) - 1u16);
+		HA7E_Queue=split(HA7E_Queue,find(HA7E_Queue,HA7E_Split,0u16)+1u16,END);
+		HA7E_Command = split(HA7E_Command_Line,0u16,0u16);
+		HA7E_Buffer = $$; /* Be sure to have an empty input Buffer prior to start of the next command (it was watched to have sometimes ghost replies like 0) */;
+		HA7E_WaitTime = HA7E_WaitTimeNormal; /* be sure to set the minimum wait time, it might be corrected later on */
+		sendrs232(HA7E_Command_Line, HA7E_CR);
+		HA7E_State = HA7E_State_WaitForResponse;
+		HA7E_DebugOut_String( HA7E_Debug_Command, $Send Commandline: $+convert(HA7E_Command_Line, $$));
+	} endif;
+} endif
+
+// The current command will be in HA7E_Command now or it will be empty as well as the Queue
+// 
+// Check for the specific command types in the Command_Queue
+// 
+// check for an address command
+if HA7E_Command == HA7E_Command_SelectDevice then {
+    /* isolate the affected device from the command */;
+    HA7E_PreSelectedDevice = split(HA7E_Command_Line,1u16,END)
+} endif
+
+// check for Search commands
+// the search commands do not have specific devices selected, instead they get device ID as response
+if HA7E_Command == HA7E_Command_StartSearch then {
+    HA7E_FoundDevices = 0u08; /* just be sure we count from zero again */;
+	HA7E_CurrentSelectedDevice = $$;
+	HA7E_PreSelectedDevice = $$;
+} endif
+
+if HA7E_Command == HA7E_Command_ContinueSearch then {
+    HA7E_CurrentSelectedDevice = $$;
+	HA7E_PreSelectedDevice = $$;
+} endif
+
+if HA7E_Command == HA7E_Command_ResetBus then {
+    HA7E_CurrentSelectedDevice = $$;
+	HA7E_PreSelectedDevice = $$;
+} endif
+
+//if HA7E_Command == HA7E_Command_Write then {
+//	// simply do nothing, this is left over to the sensor handling
+//} endif
+
+//Search first device
+if HA7E_DoInit then {
+	HA7E_Queue = HA7E_Queue + HA7E_Command_StartSearch + HA7E_Split; 
+} endif
+
+if event(readrs232(HA7E_RawData,HA7E_RawLen)) then {
+	HA7E_Buffer=HA7E_Buffer+split(HA7E_RawData,0u16,HA7E_RawLen);
+	HA7E_RawLen = 0u16;
+	HA7E_RawData = $$;
+} endif
+
+if change( HA7E_Buffer) and HA7E_Command ==  HA7E_Command_ResetBus then {
+	if stringcast(HA7E_Buffer,0u08,0u16) == HA7E_CR and size(HA7E_Buffer) == 1u16 then {	
+		/* no further devices found */;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_Buffer = $$;
+		HA7E_DebugOut_String( HA7E_Debug_Command, $Command Reset answered with Carriage Return$);
+	} endif;
+} endif
+
+if change( HA7E_Buffer) and HA7E_Command ==  HA7E_Command_SelectDevice then {
+	if size(HA7E_Buffer) >=17u16 then {
+		HA7E_CurrentSelectedDevice = split( HA7E_Buffer, 0u16, 15u16 );
+		HA7E_Buffer = split( HA7E_Buffer, 16u16, EOS );
+		HA7E_State = HA7E_State_Successful;
+		HA7E_DebugOut_String( HA7E_Debug_Device, $Selected device is now $+HA7E_CurrentSelectedDevice);
+   } endif
+} endif
+
+// Search Commands $S$ and $s$
+HA7E_DetectedDevice = $$
+if change( HA7E_Buffer ) and ( HA7E_Command == HA7E_Command_StartSearch or HA7E_Command == HA7E_Command_ContinueSearch ) then {
+	/* HA7E_DebugOut_String( HA7E_Debug_Verbose,  HA7E_Debug_Verbose, $Command Search and incoming bytes in the HA7E_Buffer$) */;
+	if stringcast(HA7E_Buffer,0u08,0u16) == HA7E_CR and size(HA7E_Buffer) == 1u16 then {	
+		/* no further devices found */;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_Buffer = $$;
+		HA7E_DebugOut_String( HA7E_Debug_Init,  $no further devices found!$);
+	} endif;
+    /* the search commands do not have specific devices selected, instead they get device ID with 16 bytes and CR or CR only as response */;
+	if stringcast(HA7E_Buffer,0u08,0u16) != HA7E_CR and size(HA7E_Buffer) >= 17u16 then {	
+		HA7E_DetectedDevice = split( HA7E_Buffer, 0u16, 15u16 );
+		HA7E_Buffer = split( HA7E_Buffer, 16u16, EOS );
+		HA7E_Queue = HA7E_Command_ContinueSearch + HA7E_Split + HA7E_Queue;
+		HA7E_FoundDevices = HA7E_FoundDevices+1u08;		/* increase list of devices by one */;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_DebugOut_String( HA7E_Debug_Init,  $Found device with ID $+HA7E_DetectedDevice);
+	} endif;
+} endif
+
+// normally we would include these constants within the sensor definition but that would lead
+// to multiple definitions and be'd rejected by the compiler. Instead of writing an INIT_DS18B20
+// macro we place them here
+DS18B20_Command_WriteScratchpad = $4E$
+DS18B20_Command_ConvertTemperature = $44$
+DS18B20_Command_ReadScratchpad = $BE$
+DS18B20_Command_CopyScratchpad2EEPROM = $48$
+DS18B20_Command_RecallEEPROM = $B8$
+DS18B20_Command_ReadPowerSupply = $B4$
+
+
+:return AUS
+:end
+///////////////////////////////////////////////////////////////////////////////
+//
+// Include a Sensor
+//
+:begin HA7E_Sensor(SensorName, SensorROMID, SensorValue, SensorGA, SensorZyklus, SendbyTempChange, SensorCorrectionOffset, SensorResolution )
+:info $Includes a Sensor (e.g. DS18S20 oder DS18B20). The Macro HA7E_Init must be included already$\\
+	$SensorName - Name of sensor$\\
+	$SensorROMID - ID of sensor, defines the kind of sensor, too$\\
+	$SensorValue - variable, that will get the sensor value, must be of type f16 $\\
+	$SensorGA - groupadress to which the sensors value will be sent$\\
+	$SensorZyklus - minimum time for a request to send to groupaddress in seconds. e.g. every 5 min => value = 300$, zero means no sending will take place according to time cyclus\\
+	$SendbyTempChange - value will be sent, if this delta to the last sent value is is reached, 0 => value will not be sent$\\
+	$SensorCorrectionOffset - this value is added to any sensor measured value to correct misalignment to other sensors$
+:shortinfo $includes a sensor$
+
+SensorName_TemperatureRead=100.0f16
+SensorName_Message=$$
+SensorName_CP = 0f16
+SensorName_CR = 0f16
+SensorName_SensorType = 0u08;				/* type of sensor, is included in the SensorROMID */
+SensorName_Precision = SensorResolution;	/* we need to set the precision to the sensor and as well for conversion time calculation*/
+SensorName_ROMID = SensorROMID;				/* 64-Bit ID of the sensor */
+SensorName_LastSentTemperature = 100.0f16;	/* last temperature sent to the bus */
+SensorName_DeviceIndex = OWS_Unknown
+SensorName_ReadRequestPending = AUS;		/* if there is an eventread by the SensorGA this flag indicates we should answer as writeresponse() */
+SensorName_CyclusPending = AUS;				/* if there is an impuls for timeread then this will be EIN */
+SensorName_TempDeltaReached = AUS; 			/* if the difference between the last Sent Value and the new Sensor Value is bigger than the delta given this will be EIN */
+SensorName_BytesWritten = 0u16;				/* indicates how many bytes were written at the last write command */
+SensorName_SensorEnabled = AUS;				/* within the initial search command all bus devices are queried. If this sensor is one of the found devices, this variable will be set to EIN */
+SensorName_ReadAgain = 0u08;				/* when the temperature conversion detects a wrong value this variable will be set to EIN */
+SensorName_MaxReadAgain = 2u08;				/* only reread the sensor twice until giving up */
+SensorName_ValueRead = 0s16;				/* holds the raw value of sensor */
+SensorName_ValueHP = 0.0f32;				/* holds the value in high precision f32 */
+SensorName_ReadFailures = 0u32;				/* number of read failures with this sensor */
+SensorName_InitDone = AUS;					/* wait any normal read activities until the Sensor was inited */
+
+if systemstart() then {
+	/* Increase number of registered Devices */;
+	HA7E_RegisteredDevices = HA7E_RegisteredDevices + 1u08;
+	SensorName_DeviceIndex = HA7E_RegisteredDevices
+} endif
+
+if HA7E_DoInit then {
+	SensorName_SensorEnabled = AUS;
+	SensorName_InitDone = AUS;
+} endif
+
+
+if HA7E_Report_Event then sendudp(HA7E_Debug_Port,HA7E_Debug_IP,\\
+$Report for Sensor $+SensorName_ROMID+CRLF+\\
+$Sensor enabled $+convert(SensorName_SensorEnabled,$$)+CRLF+\\
+$Read failures $+convert(SensorName_ReadFailures,$$)+CRLF+\\
+$Current sensor value $+convert(SensorValue,$$)+CRLF+\\
+$---------------------------------------$+CRLF\\
+) endif
+
+///////////////////////////////////////
+//
+// DS18B20 FUNCTION COMMANDS
+//
+// After the bus master has used a ROM command to address the DS18B20 with which it wishes to
+// communicate, the master can issue one of the DS18B20 function commands. These commands allow the
+// master to write to and read from the DS18B20s scratchpad memory, initiate temperature conversions and
+// determine the power supply mode. The DS18B20 function commands, which are described below, are
+// summarized in Table 3 and illustrated by the flowchart in Figure 12.
+// 
+// Convert Temperature  = $44$
+// This command initiates a single temperature conversion. Following the conversion, the resulting thermal
+// data is stored in the 2-byte temperature register in the scratchpad memory and the DS18B20 returns to its
+// low-power idle state. If the device is being used in parasite power mode, within 10µs (max) after this
+// command is issued the master must enable a strong pullup on the 1-Wire bus for the duration of the
+// conversion (tCONV) as described in the Powering the DS18B20 section.
+// 
+// Write scratchpad = $4E$
+// This command allows the master to write 3 bytes of data to the DS18B20s scratchpad. The first data byte
+// is written into the TH register (byte 2 of the scratchpad), the second byte is written into the TL register
+// (byte 3), and the third byte is written into the configuration register (byte 4). Data must be transmitted
+// least significant bit first. All three bytes MUST be written before the master issues a reset, or the data
+// may be corrupted.
+
+// Read scratchpad = $BE$
+// This command allows the master to read the contents of the scratchpad. The data transfer starts with the
+// least significant bit of byte 0 and continues through the scratchpad until the 9th byte (byte 8  CRC) is
+// read. The master may issue a reset to terminate reading at any time if only part of the scratchpad data is
+// needed.
+//
+// Further commands not implemented here are:
+//   B4 = Read Power Supply
+//   48 = copy scratchpad to EEPROM
+//   B8 = recall EEPROM
+//   
+// sequence to read the scratchpad: $W0ABEFFFFFFFFFFFFFFFFFF$
+// means W = write, 0A = 10 Bytes followed with 
+//    BE as command to read the scratchpad and 9 times FF for a non destructive reading of the scratchpad
+// it schould be returned a line like
+//    BE90014B467FFF101092
+// means BE as the command repeated
+// and 9001 4B 46 7F FF 10 10 92 as 9 Bytes for the value of the scratchpad
+// here 
+//  0-1  Byte BE command
+//  2-3  Byte 0 Temperatur LSB (90h)
+//  4-5  Byte 1 Temperatur MSB (01h) EEPROM
+//  6-7  Byte 2 TH Register oder User Byte 1* TH Register oder User Byte 1  (4bh)
+//  8-9  Byte 3 TL Register oder User Byte 2* TL Register oder User Byte 2  (46h)
+// 10-11 Byte 4 Konfigurationsregister* Konfigurationsregister (containing precision) (7F) = 12 Bits
+//                  1F = 9 Bits, 3F = 10 Bits, 5F = 11 Bits, 7F = 12 Bits
+// 12-13 Byte 5 Reserviert (FFh)
+// 14-15 Byte 6 Reserviert (10h)
+// 16-17 Byte 7 Reserviert (10h)
+// 18-19 Byte 8 CRC*       (92h)
+
+// be sure to send a writeresponse after temperature conversion
+if eventread( SensorGA) then SensorName_ReadRequestPending = EIN endif
+
+SensorName_Impuls = cycle( convert( SensorZyklus / 60u16,0u08), convert(mod(SensorZyklus,60u16),0u08) )
+if SensorName_Impuls then SensorName_CyclusPending = EIN endif
+
+// SensorName_SensorEnabled will take care that only the devices really detected will be queried for values
+if (eventread( SensorGA ) or  SensorName_Impuls or change( SensorName_SensorEnabled) or change(SensorName_InitDone)) \\
+  and SensorName_SensorEnabled and SensorName_InitDone and find(HA7E_Queue, SensorName_ROMID, 0u16) == END then {
+	HA7E_Queue=HA7E_Queue + HA7E_Command_ResetBus + HA7E_Split;                  		/* reset the 1wire bus */;
+	HA7E_Queue=HA7E_Queue + HA7E_Command_SelectDevice + SensorName_ROMID + HA7E_Split;	/* select the right device */;
+	HA7E_Queue=HA7E_Queue + $W0144$ + HA7E_Split;             							/* issue the command to convert the temperature Write One Byte with command 44*/;
+	HA7E_Queue=HA7E_Queue + HA7E_Command_ResetBus + HA7E_Split;                  		/* again reset the 1wire bus */;
+	HA7E_Queue=HA7E_Queue + HA7E_Command_SelectDevice + SensorName_ROMID + HA7E_Split;
+	HA7E_Queue=HA7E_Queue + $W0ABEFFFFFFFFFFFFFFFFFF$ + HA7E_Split;
+	HA7E_DebugOut_String( HA7E_Debug_Read,  $Put read sensor $+SensorName_ROMID+$ request in the queue$ );
+} endif
+
+// whenever the OneWire bus needs to be initialized we have to reset the sensor
+if (change(SensorName_SensorEnabled) or change(SensorResolution)) and SensorName_SensorEnabled then {
+	HA7E_Queue=HA7E_Queue + HA7E_Command_ResetBus + HA7E_Split;                  		/* reset the 1wire bus */;
+	HA7E_Queue=HA7E_Queue + HA7E_Command_SelectDevice + SensorName_ROMID + HA7E_Split;	/* select the right device */;
+	HA7E_Queue=HA7E_Queue + $W044E4B46$ + SensorResolution + HA7E_Split;    			/* issue the command to write three bytes to the scratchpad */;
+	HA7E_Queue=HA7E_Queue + $W01$+DS18B20_Command_CopyScratchpad2EEPROM + HA7E_Split;	/* issue the command to write three bytes to the scratchpad */;
+	SensorName_InitDone = EIN;
+	HA7E_DebugOut_String( HA7E_Debug_Init,  $Init HA7E Sensor $+SensorName_ROMID );
+} endif
+
+// ----------------------------------------------------------------------------
+
+if HA7E_DetectedDevice == SensorName_ROMID then SensorName_SensorEnabled = EIN endif
+
+//DS18B20 or DS18S20?
+if split(SensorName_ROMID,14u16,15u16) == $10$ then SensorName_SensorType = OWS_DS18S20 endif
+if split(SensorName_ROMID,14u16,15u16) == $28$ then SensorName_SensorType = OWS_DS18B20 endif
+
+// check for write command and specifically the command to convert the temperature
+// the conversion time for the sensor needs to be adapted to the precision
+if (SensorName_ROMID == HA7E_CurrentSelectedDevice) and HA7E_Command == HA7E_Command_Write then {
+	SensorName_BytesWritten = convert( $0x$+split(HA7E_Command_Line,1u16,2u16),0u16);
+	HA7E_DebugOut_String( HA7E_Debug_Write,  $Write command issued with $+convert(SensorName_BytesWritten,$$)+$ Bytes$) 
+} endif
+
+// Here again the Functional commands for the sensor as a reminder:
+// DS18B20_Command_WriteScratchpad = $4E$
+// DS18B20_Command_ConvertTemperature = $44$
+// DS18B20_Command_ReadScratchpad = $BE$
+// DS18B20_Command_CopyScratchpad2EEPROM = $48$
+
+//News from this sensor
+if change(HA7E_Buffer) and (SensorName_ROMID == HA7E_CurrentSelectedDevice) and HA7E_Command == HA7E_Command_Write then {
+	/* HA7E_DebugOut_String( HA7E_Debug_Write,  $response to write command detected$); */;
+    /* Temperature conversion */;
+    if split(HA7E_Buffer,0u16,1u16) == DS18B20_Command_ConvertTemperature and size(HA7E_Buffer)>=3u16 then {
+		if SensorName_Precision == BITS12 then HA7E_WaitTime = HA7E_WaitTimeConvertTemperature      endif;
+		if SensorName_Precision == BITS11 then HA7E_WaitTime = HA7E_WaitTimeConvertTemperature/2u64 endif;
+		if SensorName_Precision == BITS10 then HA7E_WaitTime = HA7E_WaitTimeConvertTemperature/4u64 endif;
+		if SensorName_Precision == BITS09 then HA7E_WaitTime = HA7E_WaitTimeConvertTemperature/8u64 endif;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_DebugOut_String( HA7E_Debug_Write,$Temperature conversion started wait time $+convert(HA7E_WaitTime,$$));
+	} endif;
+
+    /* result of write scratchpad, it's always three bytes (6 hexchars) to write */;
+    if split(HA7E_Buffer,0u16,1u16) == DS18B20_Command_WriteScratchpad and size(HA7E_Buffer)>=9u16 then {
+		HA7E_WaitTime = HA7E_WaitTimeNormal;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_DebugOut_String( HA7E_Debug_Write,  $Written 3 Bytes to the scratchpad$);
+	} endif;
+
+    /* result of copy scratchpad to EEPROM */;
+	/* if split(HA7E_Buffer,0u16,1u16) == DS18B20_Command_CopyScratchpad2EEPROM then HA7E_DebugOut_String( HA7E_Debug_Write, $SP 2 EE response in Buffer: $+HA7E_Buffer) endif */;
+    if split(HA7E_Buffer,0u16,1u16) == DS18B20_Command_CopyScratchpad2EEPROM and size(HA7E_Buffer)>=3u16 then {
+		HA7E_WaitTime = HA7E_WaitTimeNormal;
+		HA7E_State = HA7E_State_Successful;
+		HA7E_DebugOut_String( HA7E_Debug_Write,  $Copied scratchpad to EEPROM$);
+	} endif;
+
+	/* Result of read scratchpad ?*/;
+	if split(HA7E_Buffer,0u16,1u16) == DS18B20_Command_ReadScratchpad then {
+		/* we try to catch invalid data here: We should have still 9 Bytes in hex meaning 20 hexchars including BE to process */;
+		if (size(HA7E_Buffer)>=21u16) then {
+			SensorName_Precision = split( HA7E_Buffer,10u16,11u16);
+			HA7E_DebugOut_String( HA7E_Debug_Read,  $Precision of sensor: $ + SensorName_Precision );
+			HA7E_DebugOut_String( HA7E_Debug_Read,  $Precision preset: $ + SensorResolution );
+			if SensorResolution != SensorName_Precision then HA7E_DebugOut_String( HA7E_Debug_Read,  $Warning Precision read from sensor and Precision preset do not match$) endif;
+			SensorName_TemperatureRead = convert(convert($0x$+split(HA7E_Buffer,4u16,5u16) + split(HA7E_Buffer,2u16,3u16),0s16),0f16) / 2.0;
+			SensorName_ValueRead = convert($0x$+split(HA7E_Buffer,4u16,5u16) + split(HA7E_Buffer,2u16,3u16),0s16);
+			HA7E_DebugOut_String( HA7E_Debug_Read,  $Temperature Read: $ + convert(SensorName_TemperatureRead,$$));
+			/*DS18S20?*/;
+			if SensorName_SensorType == OWS_DS18S20 and SensorName_TemperatureRead >= -55f16 and SensorName_TemperatureRead <= 125f16 then {
+				SensorName_CR = convert(convert($0x$ + split(HA7E_Buffer,14u16,15u16),0s16),0f16);
+				SensorName_CP = convert(convert($0x$ + split(HA7E_Buffer,16u16,17u16),0s16),0f16);
+				SensorValue = SensorName_TemperatureRead - 0.25 + (SensorName_CP - SensorName_CR) / SensorName_CP;
+			} endif;
+			/*DS18B20?*/;
+			if SensorName_SensorType == OWS_DS18B20 then {
+				/* first blind out the bits that are undefined due to reduced precision */
+				/* if SensorName_Precision == BITS12 then SensorName_ValueRead = SensorName_ValueRead endif */;
+				if SensorName_Precision == BITS11 then SensorName_ValueRead = SensorName_ValueRead and -2s16 endif;
+				if SensorName_Precision == BITS10 then SensorName_ValueRead = SensorName_ValueRead and -4s16 endif;
+				if SensorName_Precision == BITS09 then SensorName_ValueRead = SensorName_ValueRead and -8s16 endif;
+				SensorName_ValueHP = convert( SensorName_ValueRead, 0f32) / 16.0f32;
+				SensorValue = convert(SensorName_ValueHP, 0f16);
+			} endif;
+			HA7E_DebugOut_String( HA7E_Debug_Read,  $Read Buffer: $ + HA7E_Buffer );
+			HA7E_DebugOut_String( HA7E_Debug_Read,  $Temperature Read: $ + stringformat(SensorValue, 4, 6, 10,5));
+			HA7E_WaitTime = HA7E_WaitTimeNormal;
+			HA7E_State = HA7E_State_Successful;
+			
+			if SensorValue != 85.0f16 then {
+				SensorName_TempDeltaReached = (abs(SensorGA-SensorValue+SensorCorrectionOffset) >= SendbyTempChange) and (SendbyTempChange > 0.0f16);
+				if SensorName_ReadRequestPending then {
+					writeresponse( SensorGA, SensorValue+SensorCorrectionOffset );
+					SensorName_ReadRequestPending = AUS;
+					SensorName_CyclusPending = AUS;
+					HA7E_DebugOut_String( HA7E_Debug_Result,  $Sensor $+SensorName_ROMID+$ (^SensorName^) send Temperature $ + stringformat(SensorValue+SensorCorrectionOffset, 4, 6, 10,5) + $ to KNX by writeresponse()$ );
+				} endif;
+				if SensorName_CyclusPending or SensorName_TempDeltaReached then {
+					write( SensorGA, SensorValue+SensorCorrectionOffset );
+					SensorName_CyclusPending = AUS;
+					HA7E_DebugOut_String( HA7E_Debug_Result,  $Sensor $+SensorName_ROMID+$ (^SensorName^) send Temperature $ + stringformat(SensorValue+SensorCorrectionOffset, 4, 6, 10,5) + $ to KNX by write()$ );
+				} endif;
+				SensorName_ReadAgain = 0u08;
+			} endif;
+
+			if SensorValue == 85.0f16 and SensorName_ReadAgain <= SensorName_MaxReadAgain then {
+				SensorName_ReadFailures = SensorName_ReadFailures+1u32;								/* increase the failure count */;
+				HA7E_PreQueue = HA7E_Command_ResetBus + HA7E_Split + \\
+								HA7E_Command_SelectDevice + SensorName_ROMID + HA7E_Split + \\
+								$W0144$ + HA7E_Split + \\
+								HA7E_Command_ResetBus + HA7E_Split + \\
+								HA7E_Command_SelectDevice + SensorName_ROMID + HA7E_Split + \\
+								$W0ABEFFFFFFFFFFFFFFFFFF$ + HA7E_Split;
+				HA7E_Queue = HA7E_PreQueue + HA7E_Queue; /* put the new read information at the beginning of the queue */;
+				SensorName_ReadAgain = SensorName_ReadAgain +1u08;
+				HA7E_DebugOut_String( HA7E_Debug_Error,  $Read Sensor $+SensorName_ROMID+$ again!!!$ );
+				HA7E_DebugOut_String( HA7E_Debug_Error,  $Sensor $+SensorName_ROMID+$ read value gives error value 85.0 deg. Celsius$ );
+			} endif;
+		} endif
+	} endif
+} endif
+
+:return AUS
+:end
+
+:begin HA7E_DebugOut_String( DebugLevel, OutMessage )
+:info $Send a text string to a UDP receiver$
+:shortinfo $Send debug messages via UDP$
+:return if (HA7E_Debug_Level and DebugLevel) > 0u08 then sendudp(HA7E_Debug_Port,HA7E_Debug_IP, $@ $+HA7E_Currenttime+$, HA7E:$, OutMessage, 13, 10 ) endif
+:end
+
+// DS2438 ist ein A/D Wandler mit einer Genauigketi von 9 Bits, zu finden z.B. im Multifunktionssensor von Elaborated Networks
+// 
+

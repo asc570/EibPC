@@ -1,0 +1,124 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Status Makros
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/11/15 15:00:47 $
+//  Version              : $Revision: 1.1 $
+//----------------------------------------------------------------------
+
+:begin Status2(GA1,GA2)
+:info $Eine Statusvariable aus zwei Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse bestimmt den Wert des Status. z.B. MyStatus=Status2("GA1-1/1/0","GA1-1/1/1"). Alle GAs müssen vom gleichen Typ sein$ $Gruppenadresse 1$ $Gruppenadresse 2$
+:shortinfo $Statusvariable aus zwei Gruppenadressen erzeugen$
+:var status@
+status@=GA1 
+
+if event(GA1) then status@=GA1 endif
+if event(GA2) then status@=GA2 endif
+
+:return status@
+:end 
+
+
+:begin GAStatus2(StatusGA, GA1,GA2)
+:info $Eine Statusgruppenadresse aus zwei Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse wird auf die StatusGA ausgegeben. Alle GAs müssen vom gleichen Typ sein. Das Leseflag der Gruppenadresse ist gesetzt.$ $Gruppenadresse 1$ $Gruppenadresse 2$
+:shortinfo $Status von zwei Gruppenadressen auf den Bus schreiben$
+
+if event(GA1) then write(StatusGA,GA1) endif
+if event(GA2) then write(StatusGA,GA2) endif
+if eventread(StatusGA) then writeresponse(StatusGA,StatusGA) endif
+
+:end 
+
+
+
+:begin Status3(GA1,GA2,GA3)
+:info $Eine Statusvariable aus drei Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse bestimmt den Wert des Status. z.B. MyStatus=Status3("GA1-1/1/0","GA1-1/1/1","GA1-1/1/2"). Alle GAs müssen vom gleichen Typ sein$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Statusvariable aus drei Gruppenadressen erzeugen$
+:var status@
+status@=GA1 
+
+if event(GA1) then status@=GA1 endif
+if event(GA2) then status@=GA2 endif
+if event(GA3) then status@=GA3 endif
+
+:return status@
+:end 
+
+
+:begin GAStatus3(StatusGA, GA1,GA2,GA3)
+:info $Eine Statusgruppenadresse aus drei Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse wird auf die StatusGA ausgegeben. Alle GAs müssen vom gleichen Typ sein. Das Leseflag der Gruppenadresse ist gesetzt.$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Status von drei Gruppenadressen auf den Bus schreiben$
+
+if event(GA1) then write(StatusGA,GA1) endif
+if event(GA2) then write(StatusGA,GA2) endif
+if event(GA3) then write(StatusGA,GA3) endif
+if eventread(StatusGA) then writeresponse(StatusGA,StatusGA) endif
+
+:end 
+
+:begin Status4(GA1,GA2,GA3,GA4)
+:info $Eine Statusvariable aus vier Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse bestimmt den Wert des Status. z.B. MyStatus=Status4("GA1-1/1/0","GA1-1/1/1","GA1-1/1/2","GA1-1/1/3"). Alle GAs müssen vom gleichen Typ sein$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Statusvariable aus vier Gruppenadressen erzeugen$
+:var status@
+status@=GA1 
+
+if event(GA1) then status@=GA1 endif
+if event(GA2) then status@=GA2 endif
+if event(GA3) then status@=GA3 endif
+if event(GA4) then status@=GA4 endif
+
+:return status@
+:end 
+
+
+:begin GAStatus4(StatusGA, GA1,GA2,GA3,GA4)
+:info $Eine Statusgruppenadresse aus vier Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse wird auf die StatusGA ausgegeben. Alle GAs müssen vom gleichen Typ sein. Das Leseflag der Gruppenadresse ist gesetzt.$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Status von drei Gruppenadressen auf den Bus schreiben$
+
+if event(GA1) then write(StatusGA,GA1) endif
+if event(GA2) then write(StatusGA,GA2) endif
+if event(GA3) then write(StatusGA,GA3) endif
+if event(GA4) then write(StatusGA,GA4) endif
+if eventread(StatusGA) then writeresponse(StatusGA,StatusGA) endif
+
+:end 
+
+
+:begin Status5(GA1,GA2,GA3,GA4,GA5)
+:info $Eine Statusvariable aus fünf Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse bestimmt den Wert des Status. z.B. MyStatus=Status4("GA1-1/1/0","GA1-1/1/1","GA1-1/1/2","GA1-1/1/3","GA1-1/1/4"). Alle GAs müssen vom gleichen Typ sein$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Statusvariable aus fünf Gruppenadressen erzeugen$
+:var status@
+status@=GA1 
+
+if event(GA1) then status@=GA1 endif
+if event(GA2) then status@=GA2 endif
+if event(GA3) then status@=GA3 endif
+if event(GA4) then status@=GA4 endif
+if event(GA5) then status@=GA5 endif
+
+:return status@
+:end 
+
+
+:begin GAStatus5(StatusGA, GA1,GA2,GA3,GA4,GA5)
+:info $Eine Statusgruppenadresse aus fünf Gruppenadressen bilden, d.h. die zuletzt geschriebene Gruppenadresse wird auf die StatusGA ausgegeben. Alle GAs müssen vom gleichen Typ sein. Das Leseflag der Gruppenadresse ist gesetzt.$ $Gruppenadresse 1$ $Gruppenadresse 2$ $Gruppenadresse 3$
+:shortinfo $Status von drei Gruppenadressen auf den Bus schreiben$
+
+if event(GA1) then write(StatusGA,GA1) endif
+if event(GA2) then write(StatusGA,GA2) endif
+if event(GA3) then write(StatusGA,GA3) endif
+if event(GA4) then write(StatusGA,GA4) endif
+if event(GA5) then write(StatusGA,GA5) endif
+if eventread(StatusGA) then writeresponse(StatusGA,StatusGA) endif
+
+:end 

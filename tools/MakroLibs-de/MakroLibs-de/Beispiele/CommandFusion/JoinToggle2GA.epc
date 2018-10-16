@@ -1,0 +1,13 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Mit dem Join d1 kann man das Partykellerlicht an und ausschalten, es wird immer "getoggelt" und wenn sich der Status des Lichtes durch eine andere GA ändert, wird der Join angepasst
+JoinToggle2GA(IPod,d1,"PartyKeller-1/0/4","PartykellerLichStatus-1/0/19")
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

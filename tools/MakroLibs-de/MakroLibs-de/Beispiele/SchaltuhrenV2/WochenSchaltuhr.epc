@@ -1,0 +1,11 @@
+[Macros]
+//Jeden Dienstag um 10Uhr soll der Wintergarten bewässert werden
+WochenSchaltuhr(DIENSTAG,10,0,"WasserWiga-2/0/0",100%)
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+EnertexSchaltuhrenV2.lib
+
+[EibPC]

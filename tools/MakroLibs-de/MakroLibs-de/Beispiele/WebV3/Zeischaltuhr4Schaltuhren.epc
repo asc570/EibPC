@@ -1,0 +1,135 @@
+[EibPC]
+//Definition der globalen Variablen für den Visalisierungsassistenten
+Webschaltuhr_SlotID = 11u08
+Webschaltuhr_ValueID = 12u08
+Webschaltuhr_DayID = 13u08
+Webschaltuhr_StundenID = 14u08
+Webschaltuhr_MinutenID = 15u08
+Webschaltuhr_Slot1ID = 1u08
+Webschaltuhr_Slot2ID = 2u08
+Webschaltuhr_Slot3ID = 3u08
+Webschaltuhr_Slot4ID = 4u08
+uSelectedWebschaltuhr_SlotID = Webschaltuhr_Slot1ID
+uOldSelectedWebschaltuhr_SlotID = Webschaltuhr_Slot1ID
+Webschaltuhr_zSlotValueIndex = $$
+Webschaltuhr_zDayIndexToString = $$
+Webschaltuhr_zDayUntrimmed = $$
+Webschaltuhr_zTimeIndexToString = $$
+Webschaltuhr_zMTimeIndexToString = $$
+Webschaltuhr_zSlot1Text = convert(Webschaltuhr_zSlot1Day,$$)+$, $+convert(Webschaltuhr_zSlot1Hour,$$)+$:$+convert(Webschaltuhr_zSlot1Minute,$$)+$ Uhr$+$, $+convert(Webschaltuhr_zSlot1Value,$$)
+Webschaltuhr_zSlot2Text = convert(Webschaltuhr_zSlot2Day,$$)+$, $+convert(Webschaltuhr_zSlot2Hour,$$)+$:$+convert(Webschaltuhr_zSlot2Minute,$$)+$ Uhr$+$, $+convert(Webschaltuhr_zSlot2Value,$$)
+Webschaltuhr_zSlot3Text = convert(Webschaltuhr_zSlot3Day,$$)+$, $+convert(Webschaltuhr_zSlot3Hour,$$)+$:$+convert(Webschaltuhr_zSlot3Minute,$$)+$ Uhr$+$, $+convert(Webschaltuhr_zSlot3Value,$$)
+Webschaltuhr_zSlot4Text = convert(Webschaltuhr_zSlot4Day,$$)+$, $+convert(Webschaltuhr_zSlot4Hour,$$)+$:$+convert(Webschaltuhr_zSlot4Minute,$$)+$ Uhr$+$, $+convert(Webschaltuhr_zSlot4Value,$$)
+Webschaltuhr_zSlot1DayUntrimmed = convert(split(Webschaltuhr_zDayIndexToString, Webschaltuhr_Pos1 , 10u16 + Webschaltuhr_Pos1),$$c1400);
+Webschaltuhr_zSlot2DayUntrimmed = convert(split(Webschaltuhr_zDayIndexToString, Webschaltuhr_Pos4 , 10u16 + Webschaltuhr_Pos4),$$c1400)
+Webschaltuhr_zSlot3DayUntrimmed = convert(split(Webschaltuhr_zDayIndexToString, Webschaltuhr_Pos7 , 10u16 + Webschaltuhr_Pos7),$$c1400)
+Webschaltuhr_zSlot4DayUntrimmed = convert(split(Webschaltuhr_zDayIndexToString, Webschaltuhr_Pos10 , 10u16 + Webschaltuhr_Pos10),$$c1400)
+Webschaltuhr_zSlot1Day = convert(split(Webschaltuhr_zSlot1DayUntrimmed, 0u16, find(Webschaltuhr_zSlot1DayUntrimmed, $ $, 0u16) - 1u16),$$c14)
+Webschaltuhr_zSlot2Day = convert(split(Webschaltuhr_zSlot2DayUntrimmed, 0u16, find(Webschaltuhr_zSlot2DayUntrimmed, $ $, 0u16) - 1u16),$$c14)
+Webschaltuhr_zSlot3Day = convert(split(Webschaltuhr_zSlot3DayUntrimmed, 0u16, find(Webschaltuhr_zSlot3DayUntrimmed, $ $, 0u16) - 1u16),$$c14)
+Webschaltuhr_zSlot4Day = convert(split(Webschaltuhr_zSlot4DayUntrimmed, 0u16, find(Webschaltuhr_zSlot4DayUntrimmed, $ $, 0u16) - 1u16),$$c14)
+Webschaltuhr_zSlot1Hour = convert(split(Webschaltuhr_zTimeIndexToString, Webschaltuhr_Pos2 , 1u16 + Webschaltuhr_Pos2),$$c14)
+Webschaltuhr_zSlot2Hour = convert(split(Webschaltuhr_zTimeIndexToString, Webschaltuhr_Pos5 , 1u16 + Webschaltuhr_Pos5),$$c14)
+Webschaltuhr_zSlot3Hour = convert(split(Webschaltuhr_zTimeIndexToString, Webschaltuhr_Pos8 , 1u16 + Webschaltuhr_Pos8),$$c14)
+Webschaltuhr_zSlot4Hour = convert(split(Webschaltuhr_zTimeIndexToString, Webschaltuhr_Pos11 , 1u16 + Webschaltuhr_Pos11),$$c14)
+Webschaltuhr_zSlot1Minute = convert(split(Webschaltuhr_zMTimeIndexToString, Webschaltuhr_Pos3 , 1u16 + Webschaltuhr_Pos3),$$c14)
+Webschaltuhr_zSlot2Minute = convert(split(Webschaltuhr_zMTimeIndexToString, Webschaltuhr_Pos6 , 1u16 + Webschaltuhr_Pos6),$$c14)
+Webschaltuhr_zSlot3Minute = convert(split(Webschaltuhr_zMTimeIndexToString, Webschaltuhr_Pos9 , 1u16 + Webschaltuhr_Pos9),$$c14)
+Webschaltuhr_zSlot4Minute = convert(split(Webschaltuhr_zMTimeIndexToString, Webschaltuhr_Pos12 , 1u16 + Webschaltuhr_Pos12),$$c14)
+Webschaltuhr_zSlot1Value = convert(split(Webschaltuhr_zSlotValueIndex, Webschaltuhr_Pos13 , 2u16 + Webschaltuhr_Pos13),$$c14)
+Webschaltuhr_zSlot2Value = convert(split(Webschaltuhr_zSlotValueIndex, Webschaltuhr_Pos14 , 2u16 + Webschaltuhr_Pos14),$$c14)
+Webschaltuhr_zSlot3Value = convert(split(Webschaltuhr_zSlotValueIndex, Webschaltuhr_Pos15 , 2u16 + Webschaltuhr_Pos15),$$c14)
+Webschaltuhr_zSlot4Value = convert(split(Webschaltuhr_zSlotValueIndex, Webschaltuhr_Pos16 , 2u16 + Webschaltuhr_Pos16),$$c14)
+Webschaltuhr_vPos = 0u16
+Webschaltuhr_uPos = 0u16
+Webschaltuhr_tPos = 0u16
+Webschaltuhr_mPos = 0u16
+Webschaltuhr_Pos1 = 0u16
+Webschaltuhr_Pos2 = 0u16
+Webschaltuhr_Pos3 = 0u16
+Webschaltuhr_Pos4 = 0u16
+Webschaltuhr_Pos5 = 0u16
+Webschaltuhr_Pos6 = 0u16
+Webschaltuhr_Pos7 = 0u16
+Webschaltuhr_Pos8 = 0u16
+Webschaltuhr_Pos9 = 0u16
+Webschaltuhr_Pos10 = 0u16
+Webschaltuhr_Pos11 = 0u16
+Webschaltuhr_Pos12 = 0u16
+Webschaltuhr_Pos13 = 0u16
+Webschaltuhr_Pos14 = 0u16
+Webschaltuhr_Pos15 = 0u16
+Webschaltuhr_Pos16 = 0u16
+Webschaltuhr_bState = 0b01
+Webschaltuhr_zSlotSelShifterLabel = $$
+Webschaltuhr_zDay = $$c14
+Webschaltuhr_zTime = $$c14
+Webschaltuhr_zMTime = $$c14
+Webschaltuhr_zValue = $$c14
+uFlashAdresse_OG_Webschaltuhr_Nachtabschaltung = 900u16
+//Initialisierung der Webelement IDs für den Visalisierungsassistenten
+OnlineID = 1
+ClockID = 2
+DateID = 3
+WindID = 4
+LuxID = 5
+TempID = 6
+RegenID = 7
+VorhersageID = 8
+SatellitID = 9
+Licht1ID = 3
+Licht2ID = 4
+Licht3ID = 5
+Licht4ID = 6
+Dimmer1ID = 7
+Dimmer2ID = 8
+SteckdosenID = 9
+RolloID = 10
+JalousieID = 11
+LamellenID = 12
+FensterID = 13
+RkID = 14
+VisuHeizID = 15
+VisuTempID = 16
+SperreID = 2
+SliderSollwertID = 3
+SliderNachtAbsenkungID = 4
+SliderStandbyAbsenkungID = 5
+SliderKFaktorID = 6
+SliderTFaktorID = 7
+LadeID = 8
+SpeicherID = 9
+StoreButtonID = 1
+//Initialisierung der PageIDs für den Visalisierungsassistenten
+OGWebschaltuhr_NachtabschaltungID = 1
+WebZeit=convert(convert(hour(), 0f32)+convert(minute(),0f32)/60f32,0f16)
+
+//if htime(16,12,00) then write('1/2/3'b01,EIN) endif;
+[Macros]
+Zeitschaltuhr4Schaltuhren( OG_Webschaltuhr_Nachtabschaltung,1,'1/2/3'b01,uFlashAdresse_OG_Webschaltuhr_Nachtabschaltung)
+
+
+
+[WebServer]
+// Webelemente für den Raum Webschaltuhr_Nachtabschaltung in der Etage OG: 
+page(OGWebschaltuhr_NachtabschaltungID)[$OG$,$Webschaltuhr_Nachtabschaltung$] 
+design $blue$
+header(1)
+footer(1)
+line $Konfiguration einer Schaltuhr$ 
+mpbutton(Webschaltuhr_SlotID)[$Auswahl$,$Schaltuhr 1$,$Schaltuhr 2$,$Schaltuhr 3$,$Schaltuhr 4$][MONITOR]$Konfiguriere Schaltuhr$ mpbutton(Webschaltuhr_DayID)[$So$,$Mo$,$Di$,$Mi$,$Do$,$Fr$,$Sa$,$Werktags$,$Wochenende$,$Täglich$][DATE]$Tageswahl$ mpbutton(Webschaltuhr_StundenID)[$00$,$01$,$02$,$03$,$04$,$05$,$06$,$07$,$08$,$09$,$10$,$11$,$12$,$13$,$14$,$15$,$16$,$17$,$18$,$19$,$20$,$21$,$22$,$23$][CLOCK]$Stundenwahl$ mpbutton(Webschaltuhr_MinutenID)[$00$,$01$,$02$,$03$,$04$,$05$,$06$,$07$,$08$,$09$,$10$,$11$,$12$,$13$,$14$,$15$,$16$,$17$,$18$,$19$,$20$,$21$,$22$,$23$,$24$,$25$,$26$,$27$,$28$,$29$,$30$,$31$,$32$,$33$,$34$,$35$,$36$,$37$,$38$,$39$,$40$,$41$,$42$,$43$,$44$,$45$,$46$,$47$,$48$,$49$,$50$,$51$,$52$,$53$,$54$,$55$,$56$,$57$,$58$,$59$][CLOCK]$Minutenwahl$ 
+none none peslider(Webschaltuhr_ValueID)[STATESWITCH](0,1,1)$Wertwahl$$$ 
+line 
+line $Übersicht der Schaltuhren für Aktor$ 
+pshifter(Webschaltuhr_Slot1ID)[CLOCK]$Schaltuhr 1$ pshifter(Webschaltuhr_Slot2ID)[CLOCK]$Schaltuhr 2$ 
+pshifter(Webschaltuhr_Slot3ID)[CLOCK]$Schaltuhr 3$ pshifter(Webschaltuhr_Slot4ID)[CLOCK]$Schaltuhr 4$ 
+
+
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+
+[MacroLibs]
+//Makro-Bibliotheken
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/WebV3/EnertexWebV3.lib

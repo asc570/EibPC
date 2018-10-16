@@ -1,0 +1,2210 @@
+//----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Ziel                 : Visualisierung für den Smartmeter
+//
+//  Version	          	 : v3.100
+// 
+//  Lizens               : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+//  Mail                 : mail@enertex.de
+//
+//  Dat.Rev.             : $Date: 2016/11/22 10:42:19 $
+//  Version              : $Revision: 1.3 $
+//----------------------------------------------------------------------
+
+// Fließkommazahl schreiben
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin cmDisplayF32(f32Val,uStellen)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:return stringformat(f32Val,4,4,4,uStellen)
+:end
+
+// Ganzzahl schreiben
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin cmDisplayU8(uVal,uStellen)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:return stringformat(uVal,0,3,uStellen,uStellen)
+:end
+
+
+// Drei Werte auf einen Button schreiben
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmTriplePButton(wsID,wpPageID,gGA1,gGA2,gGA3,fScale,weIcon,weStyle)
+:info $Darstellung von drei Werten$\\
+	$ID des pshifters (u08)$\\
+	$Seiten-ID des pshifters (u08)$\\
+	$Wert oder GA $\\
+	$Wert oder GA $\\
+	$Wert oder GA $\\
+	$Skalierungsfaktor (f16)$\\
+	$ICON-Symbol (u08)$\\
+	$ICON-Symbol-Untergruppe (u08)$
+
+if change(gGA1) or change(gGA2) or change(gGA3) then {
+	pdisplay(wsID,$<font color=red>$+convert(gGA1/fScale,$$)+$ <font color=yellow>$+convert(gGA2/fScale,$$)+$ <font color=blue>$+convert(gGA3/fScale,$$),weIcon,weStyle,GREEN,wpPageID) 
+} endif
+:end 
+
+
+// Webelement
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmSliderInt(wrMin,wrMax,wsID,uMin,uInkr,uMax,uVar)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:end 
+
+
+// UI-Wert in Tabelle Schreiben
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmLineInt(cLine,cName,gfU,giTHDU,gfI,giTHDI,fScal,bUpdate,color)
+:info $Internes Makro der EnertexSmartmeter.lib$
+if change(gfU) or change(giTHDU) or change(gfI) or change(giTHDI) then {
+   cLine=$<tr align=center bgcolor=$c2200+color+$ > <th> $c2200+cName+$</th> <td > $c2200+convert(gfU/fScal,$$)+$ </td> <td> $c2200+ convert(convert(giTHDU,0.0)/100.0,$$) +$ </td> <td> $c2200+convert(gfI/fScal,$$)+$ </td> <td> $c2200+ convert(convert(giTHDI,0.0)/100.0,$$)+$ </td> </tr> $c2200;
+   bUpdate=!bUpdate;
+} endif
+:end
+
+
+// PQ-Werte in Tabelle Schreiben
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmLinePQInt(cLine,cName,gfP,gfQ,gfS,gfCos,bUpdate,color)
+:info $Internes Makro der EnertexSmartmeter.lib$
+if change(gfP) or change(gfQ) or change(gfS) or change(gfCos) then {
+   cLine=$<tr align=center bgcolor=$c2200+color+$ > <th> $c2200+cName+$</th> <td > $c2200+cmDisplayF32(gfP,2) +$ </td> <td> $c2200+ cmDisplayF32(gfQ,2) +$ </td> <td> $c2200+cmDisplayF32(gfS,2)+$ </td> <td> $c2200+ cmDisplayF32(gfCos,4)+$ </td> </tr> $c2200;
+   bUpdate=!bUpdate;
+} endif
+:end
+
+
+// MinMax-Werte in Tabelle Schreiben
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmLineMinMaxInt(cLine,cName,fP,fU,fI,iTHD,bUpdateMinMax)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if change(fP) or change(fU) or change(fI) or change(iTHD) then {
+   cLine=$<tr align=center > <th>$c2200+cName+$ </th> <td > $c2200+cmDisplayF32(fP,2) +$ </td> <td> $c2200+ convert(fU,$$) +$ </td> <td> $c2200+convert(fI,$$) +$ </td> <td> $c2200+ convert(convert(iTHD,0.0)/100.0,$$) +$ </td> </tr> $c2200;
+   bUpdateMinMax=!bUpdateMinMax;
+} endif
+:end
+
+
+// Verarbeiten der Werte 
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmVerarbeiteInt(gfV,fMax,fMin,uBuffer)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if gfV>fMax then fMax=gfV endif
+if gfV<fMin then fMin=gfV endif
+if mod(minute(),6)==0  then {
+   timebufferadd(uBuffer,(fMax+fMin)*convert(.5,fMax));
+   fMax=gfV;
+   fMin=gfV;
+} endif 
+:end
+
+
+// Verarbeiten der Werte 
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmVerarbeiteInts16(giV,iMax,iMin,uBuffer)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if giV>iMax then iMax=giV endif
+if giV<iMin then iMin=giV endif
+if mod(minute(),6)==0  then {
+   timebufferadd(uBuffer,convert(iMax,0.0)/200.0 + convert(iMin,0.0)/200.0);
+   iMax=giV;
+   iMin=giV;
+} endif 
+:end
+
+
+// Grafik zum Anzeigen Wechseln
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmChartWahlInt(wbButton,wsMbutton,wtChart,uChartBuffer,uAuswahl,cButtonText,wbB1,wbB2,wbB3,wbB4)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if pbutton(wbButton,wsMbutton)==1  then {
+   mtimechartpos(wtChart,0,uChartBuffer,0u16,239u16);
+   mtimechartpos(wtChart,1,uChartBuffer+1,0u16,239u16);
+   mtimechartpos(wtChart,2,uChartBuffer+2,0u16,239u16);
+   pdisplay(wbButton,cButtonText,OKCIRCLE,ACTIVE,GREEN,wsMbutton);
+   pdisplay(wbB1,$$,CROSSCIRCLE,INACTIVE,GREY,wsMbutton);
+   pdisplay(wbB2,$$,CROSSCIRCLE,INACTIVE,GREY,wsMbutton);
+   pdisplay(wbB3,$$,CROSSCIRCLE,INACTIVE,GREY,wsMbutton);
+   pdisplay(wbB4,$$,CROSSCIRCLE,INACTIVE,GREY,wsMbutton);
+} endif
+
+///if mpbutton(wbMbutton,uAuswahl,wsMbutton)==255  then {
+//   mtimechartpos(wtChart,0,uChartBuffer,0u16,239u16);
+//   mtimechartpos(wtChart,1,uChartBuffer+1,0u16,239u16);
+//   mtimechartpos(wtChart,2,uChartBuffer+2,0u16,239u16);
+//   pdisplay(wbMbutton,cButtonText,MONITOR,DISPLAY,GREY,wsMbutton,uAuswahl)
+//} endif
+
+:end
+
+
+// Spektrum in intern Speicher schreiben
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmSpektrumInt(cSpektrum,gcSP,bUpdate)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:var uPos@
+uPos@=0u16
+// Stringfunktion nur mit $$ Strings.
+:var cSpek@
+cSpek@=convert(gcSP,$$)
+
+// Direktes Umsetzen 
+if change(gcSP) then {
+   uPos@=convert(stringcast(cSpek@,0,0u16),0u16)-2u16;
+   stringset(cSpektrum,stringcast(cSpek@,0,1u16),uPos@+1u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,2u16),uPos@+2u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,3u16),uPos@+3u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,4u16),uPos@+4u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,5u16),uPos@+5u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,6u16),uPos@+6u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,7u16),uPos@+7u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,8u16),uPos@+8u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,9u16),uPos@+9u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,10u16),uPos@+10u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,11u16),uPos@+11u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,12u16),uPos@+12u16);
+   stringset(cSpektrum,stringcast(cSpek@,0,13u16),uPos@+13u16);
+   // Nur wenn das Spektrum vollständig ist, aufzeichnen
+   if uPos@>39u16 then bUpdate=!bUpdate endif
+} endif
+
+:end
+
+
+// Spektrum in intern Speicher schreiben
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmChartSpekWahlInt(wbMbutton,wsMbutton,wcChart,uAuswahl,cButtonText,uDarstellungIdx,cLetzterText)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if mpbutton(wbMbutton,uAuswahl,wsMbutton)==255  then {
+    cLetzterText=cButtonText;
+    pdisplay(wbMbutton,cButtonText,MONITOR,DISPLAY,GREY,wsMbutton,uAuswahl);
+    uDarstellungIdx=uAuswahl;
+} endif
+
+:end
+
+
+
+// Kategorie wählen
+// Datum:     	01.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmKatWahlInt(wbMbutton,wsMbutton,uAuswahl,cTextCol, cButtonText,uLetzterIdx,cLetzterText,uLetztesIcon,uIcon,uIconStil)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if mpbutton(wbMbutton,uAuswahl,wsMbutton)==255  then {
+    cLetzterText=cButtonText;
+    uLetzterIdx=uAuswahl;    
+    uLetztesIcon=uIcon;
+    pdisplay(wbMbutton,cTextCol+cButtonText,uIcon,uIconStil,GREY,wsMbutton,uAuswahl);
+} endif
+
+:end
+
+
+// Tabelle mit Fourierkoeffizienten in String schreiben
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmChartSpektrumTabInt(cTabLim,cTab,afLim,afSpek,uTabLimLen,uTabLen,bStart,uUmbruch,fAbs,bAbsolutWertGrenze)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+:var uIndex@
+uIndex@=51u16
+:var uIndexLim@
+uIndexLim@=51u16
+
+:var fY@
+fY@=0.0f32
+:var fScal@
+fScal@=0.0f32
+:var fLim@
+fLim@=0.0f32
+:var uSpalte@
+uSpalte@=0u16
+:var uSpalteLim@
+uSpalteLim@=0u16
+
+if bStart then {
+   uIndex@=1u16;  
+   cTab=$$c2200;
+   cTabLim=$$c2200;
+   uSpalte@=0u16;
+   uSpalteLim@=0u16;
+   uIndexLim@=0u16;
+} endif
+// Tabelle befüllen
+if after(change(uIndex@),300u64) and uIndex@=<49u16 then { 
+   // Messwert
+   fY@=stringcast(afSpek,fY@,uIndex@*4u16);
+   if bAbsolutWertGrenze then fY@=fY@*fAbs endif;
+   // Grenzwert
+   fLim@=stringcast(afLim,fLim@,uIndex@*4u16);
+    // Messwerttabelle
+   if (uIndex@=<uTabLen) then {
+       if uSpalte@==0u16 then {
+          cTab=cTab+$<tr align=center>$;
+       } endif;
+       cTab=cTab+$<td>$+convert(uIndex@+1u16,$$)+$</td>$;
+       if fY@<fLim@ then {
+              cTab=cTab+$<td>$+ cmDisplayF32(fY@,3)+$</td>$;
+       } else {
+              cTab=cTab+$<td bgcolor=red>$+cmDisplayF32(fY@,3)+$</td>$;
+       } endif;      
+       if uSpalte@==uUmbruch then {
+          cTab=cTab+$</tr>$;
+       } endif;
+       uSpalte@=uSpalte@+1u16;
+       if uSpalte@==uUmbruch+1u16 then { uSpalte@=0u16 } endif
+   } endif;
+   // Grenzwerttabelle
+   if (uIndexLim@<uTabLimLen) and fLim@<100f32 then {
+      if uSpalteLim@==0u16 then {
+          cTabLim=cTabLim+$<tr align=center>$;
+       } endif;
+       cTabLim=cTabLim+$<td>$+convert(uIndex@+1u16,$$)+$</td>$;
+       cTabLim=cTabLim+$<td>$+cmDisplayF32(fLim@,3)+$</td>$;
+       if uSpalteLim@==uUmbruch then {
+          cTabLim=cTabLim+$</tr>$;
+       } endif;
+       uSpalteLim@=uSpalteLim@+1u16;
+       if uSpalteLim@==uUmbruch+1u16 then { uSpalteLim@=0u16 } endif;
+       uIndexLim@=uIndexLim@+1u16;
+   } endif;
+   uIndex@=uIndex@+1u16;
+   if uIndex@==49u16 then bStart=AUS endif;
+} endif
+
+:end
+
+// Grafik plotten
+// Datum:     	11.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmChartSpektrumDarstellungInt(wsID,wcID,cSpektrum,afSpek,bStart,bSpektrumBerechnen,uMax,uMin)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:var uIndex@
+uIndex@=51u16
+:var uCIndex@
+uCIndex@=51u16
+
+
+:var fY@
+fY@=0.0f32
+:var fYC@
+fYC@=0.0f32
+:var fBasis@
+fBasis@=0.0f32
+if bStart then {
+   uIndex@=0u16;
+} endif
+
+if after(change(uIndex@),200u64) and uIndex@=<51u16 then { 
+   fBasis@=(convert(stringcast(cSpektrum,0,uIndex@),0f32)-253f32)/80f32;
+   fY@=100f32*pow(10f32,fBasis@);
+   // Messgrenze: 0.07%
+   if fY@=<0.07f32 then fY@=0.0f32 endif;
+   stringset(afSpek,fY@,uIndex@*4u16);
+   // Es dürfen in das Chart nur die Werte geschrieben werden, due 
+   // ausgewählt wurden
+   if (uIndex@+1u16>= uMin) and (uIndex@<= uMax) then {
+        uCIndex@=uIndex@;
+        fYC@=fY@;
+   } endif;
+   // Damit ein Zoom-Effekt auftreten kann, müssen für die anderen 
+   // Werte der X-Achse der Speicher mit Nullen bzw. dem alten Wert 
+   // übeschrieben werden
+   if (uIndex@<uMin) then  {
+        uCIndex@=uMin;
+        fYC@=0.0f32;
+   } endif;
+   if (uIndex@>=uMax) then  {
+        uCIndex@=uMax;
+   } endif;
+   mpchart(wcID,convert(uCIndex@+1u16,0.0),convert(fYC@,0f16),0,wsID);
+   uIndex@=uIndex@+1u16;
+   if uIndex@==51u16 then bSpektrumBerechnen=AUS endif;
+} endif
+:end
+
+// Cosinustabelle (lookup) generieren
+// Datum:     	3.01.2016
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmCosWerteTabelleLoopInt(aufCos)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:var uLoop@
+uLoop@=50u16
+
+if after(systemstart(),3000u64) then {
+   uLoop@=0u16;
+} endif
+
+if after(change(uLoop@),230u64) and uLoop@<49u16 then { 
+   stringset(aufCos,cos(0.13089996939f32*convert(uLoop@,0f32)),uLoop@*4u16);
+   if uLoop@<49u16 then uLoop@=uLoop@+1u16 endif;
+} endif
+:end
+
+
+// Verarbeiten der Werte 
+// Datum:     	3.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmPloteKurve(aufCos,aufFourier,fScal,wcPlot,wsID, bStart)
+:info $Internes Makro der EnertexSmartmeter.lib$
+:var uLoop@
+uLoop@=48u16
+:var fA@
+fA@=0f32
+:var fY@
+fY@=0f32
+:var fO@
+fO@=0f32
+if after(bStart,2500u64) then {
+   uLoop@=0u16;
+   uIndex@=36u16;
+ } endif
+:var uIndex@
+uIndex@=36u16
+if after(change(uLoop@),300u64) and uLoop@<49u16 then { 
+   // Zur besseren Lesbarkeit die Zeitkurve um 10ms nach rechts verschieben
+   fY@=   stringcast(aufCos,fY@,mod(uIndex@*4u16,192u16))+\\
+       0.01f32*(\\
+          stringcast(aufCos,fY@,mod(uIndex@* 8u16,192u16))*stringcast(aufFourier,0f32,4u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*12u16,192u16))*stringcast(aufFourier,0f32,8u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*16u16,192u16))*stringcast(aufFourier,0f32,12u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*20u16,192u16))*stringcast(aufFourier,0f32,16u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*24u16,192u16))*stringcast(aufFourier,0f32,20u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*28u16,192u16))*stringcast(aufFourier,0f32,24u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*32u16,192u16))*stringcast(aufFourier,0f32,28u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*36u16,192u16))*stringcast(aufFourier,0f32,32u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*40u16,192u16))*stringcast(aufFourier,0f32,36u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*44u16,192u16))*stringcast(aufFourier,0f32,40u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*48u16,192u16))*stringcast(aufFourier,0f32,44u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*52u16,192u16))*stringcast(aufFourier,0f32,48u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*56u16,192u16))*stringcast(aufFourier,0f32,52u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*60u16,192u16))*stringcast(aufFourier,0f32,56u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*64u16,192u16))*stringcast(aufFourier,0f32,60u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*68u16,192u16))*stringcast(aufFourier,0f32,64u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*72u16,192u16))*stringcast(aufFourier,0f32,68u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*76u16,192u16))*stringcast(aufFourier,0f32,72u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*80u16,192u16))*stringcast(aufFourier,0f32,76u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*84u16,192u16))*stringcast(aufFourier,0f32,80u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*88u16,192u16))*stringcast(aufFourier,0f32,84u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*92u16,192u16))*stringcast(aufFourier,0f32,88u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*96u16,192u16))*stringcast(aufFourier,0f32,92u16)+\\
+          stringcast(aufCos,fY@,mod(uIndex@*100u16,192u16))*stringcast(aufFourier,0f32,96u16)\\
+          );
+   mpchart(wcPlot,convert((uLoop@-1u16),0.0)*.416667,convert(fScal*fY@,0f16),0,wsID);
+   //mpchart(wcPlot,convert(uLoop@,0.0)*.416667,convert(fScal*stringcast(aufCos,fY@,mod((uIndex@-1u16)*4u16,192u16)),0f16),1,wsID);
+   if uLoop@<49u16 then uLoop@=uLoop@+1u16 else bStart=AUS endif;
+   uIndex@=uIndex@+1u16;
+   if uIndex@==49u16 then uIndex@=0u16 endif;
+} endif
+
+
+:end
+
+
+// Aus 15 Minuten - Werten die Tagessumme bilden und in den Timebuffer schreiben
+// ACHTUNG: Die Gruppenadresse darf nur alle 15 Minuten eintreffen - kein Schreiben in einen Buffer
+// Datum:     	19.01.2016          
+// Version:     	1 
+// Autor:       	Enertex Bayern GmbH
+:begin vmTagSummeKeinBuffer(gsW,sTagSumme)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if eventwrite(gsW) then {
+   sTagSumme = sTagSumme + gsW;
+} endif
+
+if chtime(0,00,40) then {
+   sTagSumme=0s32;
+} endif
+
+:end
+
+/ Aus Tagessumme die Monatssumme bilden und in den Timebuffer schreiben
+// Datum:     	18.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmMonatSummeKeinBuffer(sTagSumme,sMonatSumme)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// Tag vor dem Zurücksetzen dazuaddieren
+if chtime(0,00,39) then {
+   sMonatSumme= sMonatSumme+sTagSumme;
+} endif
+
+// Am Monatsende den Wert schreiben:
+// Am 28. geht day auf EIN. Erst wenn der nächste Monat beginnt, wechselt day(28) auf AUS und 
+// triggert damit die Zählung
+if after(!day(28),2000u64) then {
+   sMonatSumme=0s32;
+} endif
+
+:end
+
+
+// Aus Monatssumme die Jahressumme bilden und in den Timebuffer schreiben
+// Datum:     	18.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmJahrSummeKeinBuffer(sJahresSumme,sMonatSumme)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// Am 28. geht day auf EIN. Erst wenn der nächste Monat beginnt, wechselt day(28) auf AUS und 
+// triggert damit die Zählung
+if !day(28) then {
+   sJahresSumme= sMonatSumme+sJahresSumme;
+} endif
+
+// Am Jahresende den Wert schreiben:
+if month(31,12) and chtime(23,59,58) then {
+   sJahresSumme=0s32;
+} endif
+
+:end
+
+
+// Aus 15 Minuten - Werten die Tagessumme bilden und in den Timebuffer schreiben
+// ACHTUNG: Die Gruppenadresse darf nur alle 15 Minuten eintreffen
+// Datum:     	18.01.2016          
+// Version:   	1 
+// Author:      Dr.-Ing. M. Schuster (Enertex Bayern GmbH)
+:begin vmTagSumme(gsW,sTagSumme,uBf)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if eventwrite(gsW) then {
+   sTagSumme = sTagSumme + gsW;
+} endif
+
+if chtime(0,00,40) then {
+   timebufferadd(uBf, sTagSumme);
+   sTagSumme=0s32;
+} endif
+
+:end
+
+
+
+// Aus 15 Minuten - Werten die Tagessumme bilden und in den Timebuffer schreiben
+// ACHTUNG: Die Gruppenadresse darf nur alle 15 Minuten eintreffen
+// Makro für negative GA Werte (Zählrichtung Erzeugung)
+// Datum:     	19.01.2016          
+// Version:     	1 
+// Autor:       	Enertex Bayern GmbH
+:begin vmTagSummeNeg(gsW,sTagSumme,uBf)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+if eventwrite(gsW) then {
+   sTagSumme = sTagSumme - gsW;
+} endif
+
+if chtime(0,00,40) then {
+   timebufferadd(uBf, sTagSumme);
+   sTagSumme=0s32;
+} endif
+
+:end
+
+
+
+// Aus Tagessumme die Monatssumme bilden und in den Timebuffer schreiben
+// Datum:     	19.01.2016          
+// Version:   	1 
+// Autor:      	Enertex Bayern GmbH
+:begin vmMonatSumme(sTagSumme,sMonatSumme,uBf)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// Tag vor dem Zurücksetzen dazuaddieren
+if chtime(0,00,39) then {
+   sMonatSumme= sMonatSumme+sTagSumme;
+} endif
+
+// Am Monatsende den Wert schreiben:
+// Am 28. geht day auf EIN. Erst wenn der nächste Monat beginnt, wechselt day(28) auf AUS und 
+// triggert damit die Zählung
+if after(!day(28),2000u64) then {
+   timebufferadd(uBf, sMonatSumme);
+   sMonatSumme=0s32;
+} endif
+
+:end
+
+// Aus Monatssumme die Jahressumme bilden und in den Timebuffer schreiben
+// Datum:     	19.01.2016          
+// Version:    	1 
+// Autor:      	Enertex Bayern GmbH
+:begin vmJahrSumme(sJahresSumme,sMonatSumme,uBf)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// Am 28. geht day auf EIN. Erst wenn der nächste Monat beginnt, wechselt day(28) auf AUS und 
+// triggert damit die Zählung
+if !day(28) then {
+   sJahresSumme= sMonatSumme+sJahresSumme;
+} endif
+
+// Am Jahresende den Wert schreiben:
+if month(31,12) and chtime(23,59,58) then {
+   timebufferadd(uBf, sJahresSumme);
+   sJahresSumme=0s32;
+} endif
+
+:end
+
+
+
+// Aus Monatssumme die Jahressumme bilden und in den Timebuffer schreiben
+// Datum:     	19.01.2016          
+// Version:    	1 
+// Autor:      	Enertex Bayern GmbH
+:begin vmMinutenWert(gsW,uBf)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// 1 Minutenwert
+:var sW1Min@
+sW1Min@=0s32
+// 1 Minutenwertoffset (Startwert 2^31-1)
+:var sWOffset@
+sWOffset@=2147483647s32 
+// Erstellen der Initialsierung
+if eventwrite(gsW) then {
+   if sWOffset@!=2147483647s32 then {
+      sW1Min@=gsW-sWOffset@;
+      sWOffset@=gsW;
+      timebufferadd(uBf, sW1Min@);
+   } else {
+     sWOffset@=gsW;
+   } endif
+} endif 
+
+:end
+
+
+
+// Datum umsetzen für die Darstellung im Chart
+// Datum:     	19.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin rmTagZuDarstellung(uTag, uMonat,uJahr,uTyp, uDatum, uDiff,uJahrOffset)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+:return {
+   if (uTyp==0) then {
+         // Datum in utc wandeln: von 0:00 bis 23
+         uDatum=utc($20$+convert(uJahr+uJahrOffset,$$)+$-$+cmDisplayU8(uMonat,2)+$-$+cmDisplayU8(uTag,2)+$ 00:00:00$);
+         uDiff =86400000u64-1000u64;
+     } endif;    
+
+    // Datum nur Monatsgrenze 1.1 bis 31.1
+    if (uTyp==1) then {
+        // Differenz in utc-Tics ausrechnen, bis zum Monatsende
+        if uMonat==1 or uMonat==3 or uMonat==5 or uMonat==7 or \\
+        uMonat==8 or uMonat== 10 or uMonat==12 
+             then uDiff=convert(32-uTag,0u64)*86400000u64-1000u64 endif;
+        if uMonat==4 or uMonat==6 or uMonat==9 or uMonat==11  then {
+           uDiff=convert(31-uTag,0u64)*86400000u64 -1000u64
+        } endif;
+        if uMonat==2 then {
+           if uJahr+uJahrOffset==20 or uJahr+uJahrOffset==24 then {
+           if uTag>29 then uTag=29 endif;
+              uDiff=convert(30-uTag ,0u64)*86400000u64-1000u64;
+           } else {
+           if uTag>28 then uTag=28 endif;
+              uDiff=convert(29-uTag,0u64)*86400000u64-1000u64;
+          } endif;
+         } endif;
+         // Datum in utc wandeln: von 0:00 bis 23
+        uDatum=utc($20$+convert(uJahr+uJahrOffset,$$)+$-$+cmDisplayU8(uMonat,2)+$-$+cmDisplayU8(uTag,2)+$ 00:00:00$);
+    } endif;
+    if (uTyp==2) then {
+         // Datum in utc wandeln: von 0:00 bis 23
+         uDatum=utc($20$+convert(uJahr+uJahrOffset,$$)+$-$+cmDisplayU8(01,2)+$-$+cmDisplayU8(01,2)+$ 00:00:00$);
+         uDiff =31536000000u64-1000u64;
+     } endif;    
+  
+  }
+:end
+
+
+// Kalenderwahl auswerten 
+// Datum:     	19.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin vmKalender(wsID,wbTagWahl,wbMonatWahl,wbJahrWahl,uTag,uMonat,uJahr,bAenderung)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+// Zehn Jahre ab 2015
+if mpbutton(wbJahrWahl,1,wsID)==255 then uJahr = 1 endif
+if mpbutton(wbJahrWahl,2,wsID)==255 then uJahr = 2 endif
+if mpbutton(wbJahrWahl,3,wsID)==255 then uJahr = 3 endif
+if mpbutton(wbJahrWahl,4,wsID)==255 then uJahr = 4 endif
+if mpbutton(wbJahrWahl,5,wsID)==255 then uJahr = 5 endif
+if mpbutton(wbJahrWahl,6,wsID)==255 then uJahr = 6 endif
+if mpbutton(wbJahrWahl,7,wsID)==255 then uJahr = 7 endif
+if mpbutton(wbJahrWahl,8,wsID)==255 then uJahr = 8 endif
+if mpbutton(wbJahrWahl,9,wsID)==255 then uJahr = 9 endif
+if mpbutton(wbJahrWahl,10,wsID)==255 then uJahr = 10 endif
+
+if mpbutton(wbMonatWahl,1,wsID)==255 then uMonat = 1 endif
+if mpbutton(wbMonatWahl,2,wsID)==255 then uMonat = 2 endif
+if mpbutton(wbMonatWahl,3,wsID)==255 then uMonat = 3 endif
+if mpbutton(wbMonatWahl,4,wsID)==255 then uMonat = 4 endif
+if mpbutton(wbMonatWahl,5,wsID)==255 then uMonat = 5 endif
+if mpbutton(wbMonatWahl,6,wsID)==255 then uMonat = 6 endif
+if mpbutton(wbMonatWahl,7,wsID)==255 then uMonat = 7 endif
+if mpbutton(wbMonatWahl,8,wsID)==255 then uMonat = 8 endif
+if mpbutton(wbMonatWahl,9,wsID)==255 then uMonat = 9 endif
+if mpbutton(wbMonatWahl,10,wsID)==255 then uMonat = 10 endif
+if mpbutton(wbMonatWahl,11,wsID)==255 then uMonat = 11 endif
+if mpbutton(wbMonatWahl,12,wsID)==255 then uMonat = 12 endif
+
+if mpbutton(wbTagWahl,1,wsID)==255 then uTag = 1 endif
+if mpbutton(wbTagWahl,2,wsID)==255 then uTag = 2 endif
+if mpbutton(wbTagWahl,3,wsID)==255 then uTag = 3 endif
+if mpbutton(wbTagWahl,4,wsID)==255 then uTag = 4 endif
+if mpbutton(wbTagWahl,5,wsID)==255 then uTag = 5 endif
+if mpbutton(wbTagWahl,6,wsID)==255 then uTag = 6 endif
+if mpbutton(wbTagWahl,7,wsID)==255 then uTag = 7 endif
+if mpbutton(wbTagWahl,8,wsID)==255 then uTag = 8 endif
+if mpbutton(wbTagWahl,9,wsID)==255 then uTag = 9 endif
+if mpbutton(wbTagWahl,10,wsID)==255 then uTag = 10 endif
+if mpbutton(wbTagWahl,11,wsID)==255 then uTag = 11 endif
+if mpbutton(wbTagWahl,12,wsID)==255 then uTag = 12 endif
+if mpbutton(wbTagWahl,13,wsID)==255 then uTag = 13 endif
+if mpbutton(wbTagWahl,14,wsID)==255 then uTag = 14 endif
+if mpbutton(wbTagWahl,15,wsID)==255 then uTag = 15 endif
+if mpbutton(wbTagWahl,16,wsID)==255 then uTag = 16 endif
+if mpbutton(wbTagWahl,17,wsID)==255 then uTag = 17 endif
+if mpbutton(wbTagWahl,18,wsID)==255 then uTag = 18 endif
+if mpbutton(wbTagWahl,19,wsID)==255 then uTag = 19 endif
+if mpbutton(wbTagWahl,20,wsID)==255 then uTag = 20 endif
+if mpbutton(wbTagWahl,21,wsID)==255 then uTag = 21 endif
+if mpbutton(wbTagWahl,22,wsID)==255 then uTag = 22 endif
+if mpbutton(wbTagWahl,23,wsID)==255 then uTag = 23 endif
+if mpbutton(wbTagWahl,24,wsID)==255 then uTag = 24 endif
+if mpbutton(wbTagWahl,25,wsID)==255 then uTag = 25 endif
+if mpbutton(wbTagWahl,26,wsID)==255 then uTag = 26 endif
+if mpbutton(wbTagWahl,27,wsID)==255 then uTag = 27 endif
+if mpbutton(wbTagWahl,28,wsID)==255 then uTag = 28 endif
+if mpbutton(wbTagWahl,29,wsID)==255 then uTag = 29 endif
+if mpbutton(wbTagWahl,30,wsID)==255 then uTag = 30 endif
+if mpbutton(wbTagWahl,31,wsID)==255 then uTag = 31 endif
+
+:var cDate@
+cDate@=convert(setdate(),$$)
+if systemstart() then {
+   uTag=convert(split(cDate@,0u16,1u16),0);
+   uMonat=convert(split(cDate@,3u16,4u16),0);
+   uJahr=convert(convert(split(cDate@,6u16,EOS),0u16)-2015u16,0);
+} endif
+
+
+if change(uTag) or change(uMonat) or change(uJahr) then {
+    pdisplay(wbTagWahl,$$,DATE,DISPLAY,GREY,wsID,uTag );
+    pdisplay(wbMonatWahl,$$,DATE,DISPLAY,GREY,wsID,uMonat );
+    pdisplay(wbJahrWahl,$$,DATE,DISPLAY,GREY,wsID,uJahr );
+    bAenderung=!bAenderung;
+} endif 
+:end
+
+
+
+// Energiewerte in Tabelle eintragen
+// Datum:     	19.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin vmEnergieTab(cLine,cColor,cName,uTag, uMonat, uJahr)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+cLine=$<tr align=center bgcolor=$c2200+cColor+$ > <th> $c2200+cName+$</th> <td > $c2200+ cmDisplayF32(convert(uTag,0f32)*.001f32,2)+$  </td><td> $+ cmDisplayF32(convert(uMonat,0f32)*.001f32,1) +$ </td><td> $+cmDisplayF32(convert(uJahr,0f32)*.001f32,0)+$ </td> </tr> $c2200;
+
+:end
+
+// Kosten in Tabelle eintragen
+// Datum:     	20.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin vmKostenTab(cLine,cColor,cName,uTag, uMonat, uJahr)
+:info $Internes Makro der EnertexSmartmeter.lib$
+
+cLine=$<tr align=center bgcolor=$c2200+cColor+$ > <th> $c2200+cName+$</th> <td > $c2200+ cmDisplayF32(convert(uTag,0f32)*.01f32,2)+$  </td><td> $+ cmDisplayF32(convert(uMonat,0f32)*.01f32,1) +$ </td><td> $+cmDisplayF32(convert(uJahr,0f32)*.01f32,0)+$ </td> </tr> $c2200;
+
+:end
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+// Darstellung Zählerwerte des Enertex Smartmeter KNX
+// Datum:     	18.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin vmZaehler(wsID,wb24h, wbTag,wbMonat, wbJahr, wbGesamt, woZaehler,wcMessungZ,wbTagWahl,wbMonatWahl,wbJahrWahl,wcMessungZEinzel,wbK1,wbK2,wbK3,uBf,uFontScal,gsWV1,gsWE1,gsWV2,gsWE2,gsWV3,gsWE3,gsWV,gsWE,gsZV,gsZE)
+:info $Darstellung von der Oberschwingungen Werten$\\
+	$ID der Seite  (u08)$\\
+    $ID des Buttons für die 24 Stundenansicht (u08)$\\
+    $ID des Buttons für die Tagesansicht (u08)$\\
+    $ID des Buttons für die Monatsansicht (u08)$\\
+    $ID des Buttons für die Jahresansicht (u08)$\\
+    $ID des Buttons für die Gesamtansicht (u08)$\\
+    $ID des Outfeldes für die Tabellen (u08)$\\
+    $ID des Charts für die umschaltbaren Energiemesswerte (u08)$\\
+    $ID des Multi-Buttons für die Tageswahl des Datums (u08)$\\
+    $ID des Multi-Buttons für die Monatwahl des Datums (u08)$\\
+    $ID des Multi-Buttons für die Jahreswahl des Datums (u08)$\\
+    $ID des Charts für die Einzelkanal-Energiemesswerte (u08)$\\
+    $ID des Buttons für die Kanal 1 Ansicht (u08)$\\
+    $ID des Buttons für die Kanal 2 Ansicht (u08)$\\
+    $ID des Buttons für die Kanal 2 Ansicht (u08)$\\
+    $Puffer - Nummer des ersten timebuffers (21 weitere werden im Makro definiert) (u08)$\\
+    $Fontskalierung in den Tabellen in %$\\
+	$GA 1-Minuten Energieverbrauch L1 (s32)$\\
+	$GA 1-Minuten Energieerzeugung L1 (s32)$\\
+	$GA 1-Minuten Energieverbrauch L2 (s32)$\\
+	$GA 1-Minuten Energieerzeugung L2 (s32)$\\
+	$GA 1-Minuten Energieverbrauch L3 (s32)$\\
+	$GA 1-Minuten Energieerzeugung L3 (s32)$\\
+	$GA 15-Minuten Energieverbrauch-Zwischenzähler Drehstrom (s32)$\\
+	$GA 15-Minuten Energieerzeugung-Zwischenzähler Drehstrom (s32)$\\
+	$GA 15-Minuten Tarifzähler für Verbauchdrehstrom-Zwischenzähler (s32)$\\
+	$GA 15-Minuten Tarifzähler für Erzeugungdrehstrom-Zwischenzähler (s32)$
+:shortinfo  $Generierung einer Webseite zur Darstellung von Energieverbräuchen$
+:var uJahrOffset@
+uJahrOffset@=15
+// Das aktuelle Jahr bestimmen: Startjahr der Betrachtungen ist 2016
+:var uYear@
+uYear@=convert(split(convert(setdate(),$$), 8u16,EOS),0)-uJahrOffset@;
+
+// Die Anzahl der zu speichernden Jahre
+:var uMaxBf@
+uMaxBf@=5
+
+// Den aktuellen Buffer bestimmem
+:var uBfSpeicher@
+uBfSpeicher@=mod(uYear@,uMaxBf@)+uBf
+
+//1 Jahr alle 15 Minuten
+:var uLen@
+uLen@=35040u16
+
+
+
+//--------------------------------------------
+//
+// pro Jahr zwei Puffer: Einer für den Verbrauch, einen für die Einspeisung
+timebufferconfig(uBf+0, 0, uLen@, 0s32)
+timebufferconfig(uBf+1, 0, uLen@, 0s32)
+timebufferconfig(uBf+2, 0, uLen@, 0s32)
+timebufferconfig(uBf+3, 0, uLen@, 0s32)
+timebufferconfig(uBf+4, 0, uLen@, 0s32)
+timebufferconfig(uBf+5, 0, uLen@, 0s32)
+timebufferconfig(uBf+6, 0, uLen@, 0s32)
+timebufferconfig(uBf+7, 0, uLen@, 0s32)
+timebufferconfig(uBf+8, 0, uLen@, 0s32)
+timebufferconfig(uBf+9, 0, uLen@, 0s32)
+
+:var sWert@
+sWert@=0s32
+:var uZeit@
+uZeit@=0u64
+timebuffervalue(uBf+1,utctime(),sWert@,uZeit@)
+
+
+// 15 Minuten Werte: Die Zeitreihe wird hier wechselnd in 
+// 5 Buffern geschrieben. 
+if eventwrite(gsWV^s32) then {
+   timebufferadd(uBfSpeicher@+0,gsWV);
+} endif
+if eventwrite(gsWE^s32) then {
+   timebufferadd(uBfSpeicher@+1,-gsWE);
+} endif
+// Beim Jahreswechsel Buffer erst mal löschen... 
+// if change(uBfSpeicher@) then {
+//    timebufferclear(uBfSpeicher@+0);
+//    timebufferclear(uBfSpeicher@+1);
+// } endif 
+
+//--------------------------------------------
+//
+// Timebuffer für die Montatsübersicht, je 5 Jahre 
+timebufferconfig(uBf+10, 0, 1825u16, 0s32)
+timebufferconfig(uBf+11, 0, 1825u16, 0s32)
+:var sTagSummeV@
+sTagSummeV@=0s32
+:var sTagSummeE@
+sTagSummeE@=0s32
+vmTagSumme(gsWV,sTagSummeV@,uBf+10)
+vmTagSummeNeg(gsWE,sTagSummeE@,uBf+11)
+
+
+// Timebuffer für die Jahresübersicht für 5 Jahre
+timebufferconfig(uBf+12, 0, 60u16, 0s32)
+timebufferconfig(uBf+13, 0, 60u16, 0s32)
+:var sMonatSummeV@
+sMonatSummeV@=0s32
+:var sMonatSummeE@
+sMonatSummeE@=0s32
+vmMonatSumme(sTagSummeV@,sMonatSummeV@,uBf+12)
+vmMonatSumme(sTagSummeE@,sMonatSummeE@,uBf+13)
+
+// Timebuffer für die Gesamtübersicht für 5 Jahre
+timebufferconfig(uBf+14, 0, 5u16, 0s32)
+timebufferconfig(uBf+15, 0, 5u16, 0s32)
+:var sJahresSummeV@
+sJahresSummeV@=0s32
+:var sJahresSummeE@
+sJahresSummeE@=0s32
+vmJahrSumme(sJahresSummeV@,sJahresSummeV@,uBf+12)
+vmJahrSumme(sJahresSummeE@,sJahresSummeE@,uBf+13)
+
+
+// Timebuffer für die Wirkleistungszähler aktuelle Zeit Einzelphasen
+timebufferconfig(uBf+16, 0, 256u16, 0s32)
+timebufferconfig(uBf+17, 0, 256u16, 0s32)
+timebufferconfig(uBf+18, 0, 256u16, 0s32)
+timebufferconfig(uBf+19, 0, 256u16, 0s32)
+timebufferconfig(uBf+20, 0, 256u16, 0s32)
+timebufferconfig(uBf+21, 0, 256u16, 0s32)
+
+
+// Füllen der Timebuffer für die 1-Minutenwerte: 
+// Hier steht 1-Minuten Wert für die in der KNX Applikation eingestellte Zeit für 
+// das zyklische Senden. Da die Auflösung 1 Wh ist, bedeutet dies, die minimale 
+// Last muss  P [W]/60 sein. 
+vmMinutenWert(gsWV1^s32,uBf+16)
+vmMinutenWert(gsWE1^s32,uBf+17)
+vmMinutenWert(gsWV2^s32,uBf+18)
+vmMinutenWert(gsWE2^s32,uBf+19)
+vmMinutenWert(gsWV3^s32,uBf+20)
+vmMinutenWert(gsWE3^s32,uBf+21)
+
+//-------------------------------
+// Preise Berechnen
+:var sTagEuroV@
+sTagEuroV@=0s32
+vmTagSummeKeinBuffer(gsZV^s32,sTagEuroV@)
+:var sTagEuroE@
+sTagEuroE@=0s32
+vmTagSummeKeinBuffer(gsZE^s32,sTagEuroE@)
+:var sMonatEuroV@
+sMonatEuroV@=0s32
+vmMonatSummeKeinBuffer(sTagEuroV@,sMonatEuroV@)
+:var sMonatEuroE@
+sMonatEuroE@=0s32
+vmMonatSummeKeinBuffer(sTagEuroE@,sMonatEuroE@)
+:var sJahrEuroV@
+sJahrEuroV@=0s32
+vmJahrSummeKeinBuffer(sMonatEuroV@,sJahrEuroV@)
+:var sJahrEuroE@
+sJahrEuroE@=0s32
+vmJahrSummeKeinBuffer(sMonatEuroE@,sJahrEuroE@)
+
+
+
+// Kalender für die Tageswahl
+:var uTag@
+uTag@=0
+:var uMonat@
+uMonat@=0
+:var uJahr@
+uJahr@=0
+:var uDatum@
+uDatum@=0u64
+//utc($2015-01-01 00:00:00$)
+:var uDiff@
+uDiff@=0u64
+:var bAenderung@
+bAenderung@=AUS
+vmKalender(wsID,wbTagWahl,wbMonatWahl,wbJahrWahl,uTag@, uMonat@,uJahr@,bAenderung@)
+:var wbAnsicht@
+wbAnsicht@=0;
+// Umschalten der Grafen
+// Umschalten der Gesamtzählgrafik
+if after(systemstart(),7000u64) then {
+   mtimechartpos(wcMessungZEinzel,0,uBf+16,0u16,255u16);
+   mtimechartpos(wcMessungZEinzel,1,uBf+17,0u16,255u16);
+   pdisplay(wbK1,$$,OKCIRCLE,ACTIVE,GREY,wsID );
+   mtimechartpos(wcMessungZ,0,uBfSpeicher@+0,uLen@-192u16,uLen@-1u16);
+   mtimechartpos(wcMessungZ,1,uBfSpeicher@+1,uLen@-192u16,uLen@-1u16);
+   pdisplay(wb24h,$die letzten 24 h$,OKCIRCLE,ACTIVE,GREEN,wsID );
+   wbAnsicht@=0;
+} endif 
+
+// 24 Stundenrückblick
+if pbutton(wb24h,wsID)==1 then {
+   mtimechartpos(wcMessungZ,0,uBfSpeicher@+0,uLen@-192u16,uLen@-1u16);
+   mtimechartpos(wcMessungZ,1,uBfSpeicher@+1,uLen@-192u16,uLen@-1u16);
+   pdisplay(wb24h,$die letzten 48 h$,OKCIRCLE,ACTIVE,GREEN,wsID );
+   pdisplay(wbTag,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbMonat,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbJahr,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbGesamt,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   wbAnsicht@=0;
+} endif
+
+// Tagesansicht
+if pbutton(wbTag,wsID)==1  then {
+   wbAnsicht@=1;
+} endif 
+
+if wbAnsicht@==1 and (change(bAenderung@) or  change(wbAnsicht@))  then {
+   rmTagZuDarstellung(uTag@, uMonat@,uJahr@,0, uDatum@,uDiff@,uJahrOffset@);
+   mtimechart(wcMessungZ,0,uBfSpeicher@+0,uDatum@,uDatum@+ uDiff@);
+   mtimechart(wcMessungZ,1,uBfSpeicher@+1,uDatum@,uDatum@+ uDiff@);
+   pdisplay(wbTag,cmDisplayU8(uTag@,2)+$.$+cmDisplayU8(uMonat@,2)+$.$+cmDisplayU8(uJahr@+uJahrOffset@,2),OKCIRCLE,ACTIVE,GREEN,wsID );
+   pdisplay(wb24h,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbMonat,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbJahr,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbGesamt,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+
+// Monatsansicht
+if pbutton(wbMonat,wsID)==1  then {
+   wbAnsicht@=2;
+} endif 
+
+if wbAnsicht@==2 and (change(bAenderung@) or  change(wbAnsicht@))  then {
+   rmTagZuDarstellung(uTag@, uMonat@,uJahr@,1, uDatum@,uDiff@,uJahrOffset@);
+   mtimechart(wcMessungZ,0,uBf+10,uDatum@,uDatum@+uDiff@);
+   mtimechart(wcMessungZ,1,uBf+11,uDatum@,uDatum@+uDiff@);
+   pdisplay(wbTag,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wb24h,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbMonat,cmDisplayU8(uMonat@,2)+$.$+cmDisplayU8(uJahr@+uJahrOffset@,2),OKCIRCLE,ACTIVE,GREEN,wsID );
+   pdisplay(wbJahr,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbGesamt,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+
+// Jahresansicht
+if pbutton(wbJahr,wsID)==1   then {
+   wbAnsicht@=3;
+} endif 
+
+if wbAnsicht@==3 and (change(bAenderung@) or change( wbAnsicht@))  then {
+   rmTagZuDarstellung(uTag@, uMonat@,uJahr@,2, uDatum@,uDiff@,uJahrOffset@);
+   mtimechart(wcMessungZ,0,uBf+12,uDatum@,uDatum@+uDiff@);
+   mtimechart(wcMessungZ,1,uBf+13,uDatum@,uDatum@+uDiff@);
+   pdisplay(wbTag,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wb24h,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbMonat,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbJahr,$20$+cmDisplayU8(uJahr@+uJahrOffset@,2),OKCIRCLE,ACTIVE,GREEN,wsID );
+   pdisplay(wbGesamt,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+
+// Jahresansicht
+if pbutton(wbGesamt,wsID)==1 then {
+  wbAnsicht@=4;
+} endif 
+
+if wbAnsicht@==4 and (change(bAenderung@) or change( wbAnsicht@))  then {
+   mtimechartpos(wcMessungZ,0,uBf+14,0u16,11u16);
+   mtimechartpos(wcMessungZ,1,uBf+15,0u16,11u16);
+   pdisplay(wbTag,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wb24h,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbMonat,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbJahr,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbGesamt,$$,OKCIRCLE,ACTIVE,GREY,wsID );
+} endif
+
+//-----------------------------------------------------------------
+// Umschalten der Einzelzählgrafik
+if pbutton(wbK1,wsID)==1 then {
+   mtimechartpos(wcMessungZEinzel,0,uBf+16,0u16,255u16);
+   mtimechartpos(wcMessungZEinzel,1,uBf+17,0u16,255u16);
+   pdisplay(wbK1,$$,OKCIRCLE,ACTIVE,GREY,wsID );
+   pdisplay(wbK2,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbK3,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+if pbutton(wbK2,wsID)==1 then {
+   mtimechartpos(wcMessungZEinzel,0,uBf+18,0u16,255u16);
+   mtimechartpos(wcMessungZEinzel,1,uBf+19,0u16,255u16);
+   pdisplay(wbK2,$$,OKCIRCLE,ACTIVE,GREY,wsID );
+   pdisplay(wbK1,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbK3,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+if pbutton(wbK3,wsID)==1 then {
+   mtimechartpos(wcMessungZEinzel,0,uBf+20,0u16,255u16);
+   mtimechartpos(wcMessungZEinzel,1,uBf+21,0u16,255u16);
+   pdisplay(wbK3,$$,OKCIRCLE,ACTIVE,GREY,wsID );
+   pdisplay(wbK2,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+   pdisplay(wbK1,$$,CROSSCIRCLE,INACTIVE,GREY,wsID );
+} endif
+
+
+//-----------------------------------------------------------------
+// Tabellen
+:var cTabFont@
+cTabFont@=$"font-size:$+convert(convert(uFontScal,0u16)*100u16/255u16,$$)+$%;font-family:helvetica"$
+
+:var cLine1@
+cLine1@=$<table border="1" align=center width=98% bgcolor=#E0E0E0  style=$c2200+cTabFont@+$><colgroup> \\
+<col width=40%> <col width=20%><col width=20%><col width=20%></colgroup> \\
+   <thead><tr>  \\
+   <th>  </th> <th> Tag [kWh]</th> <th>  Monat [kWh] </th>\\
+   <th> Jahr [kWh]</th>\\
+   </tr></thead>$c2200;
+:var cLine2@
+//cLine2@=$$ => Deklaration im Makro vmEnergieTab
+:var cLine3@
+//cLine3@=$$ => Deklaration im Makro vmEnergieTab
+:var cLine4@
+//cLine4@=$$ => Deklaration im Makro vmEnergieTab
+vmEnergieTab(cLine2@,$#e5a000$,$Gesamtverbauch$, sTagSummeV@+sTagSummeE@, sMonatSummeV@+sMonatSummeE@, sJahresSummeV@+sJahresSummeE@)
+vmEnergieTab(cLine3@,$#e5a000$,$Netzbezug$, sTagSummeV@, sMonatSummeV@, sJahresSummeV@)
+vmEnergieTab(cLine4@,$#e5a000$,$Netzeinspeisung$, sTagSummeE@, sMonatSummeE@, sJahresSummeE@)
+
+:var cLine5@
+cLine5@=$<table border="1" align=center width=98% bgcolor=#E0E0E0  style=$c2200+cTabFont@+$><colgroup> \\
+<col width=40%> <col width=20%><col width=20%><col width=20%></colgroup> \\
+   <thead><tr>  \\
+   <th>  </th> <th> Tag [€]</th> <th>  Monat [€] </th>\\
+   <th> Jahr [€] </th>\\
+   </tr></thead>$c2200;
+:var cLine6@
+vmKostenTab(cLine6@,$#e5a000$,$Gesamtkosten$, sTagEuroV@-sTagSummeE@, sMonatEuroV@-sMonatSummeE@, sJahrEuroV@-sJahrEuroE@)
+:var cLine7@
+vmKostenTab(cLine7@,$#e5a000$,$Bezugskosten$, sTagEuroV@, sMonatEuroV@, sJahrEuroV@)
+:var cLine8@
+vmKostenTab(cLine8@,$#e5a000$,$Vergütung$, sTagEuroE@, sMonatEuroE@, sJahrEuroE@)
+
+
+:var cLineMOut@
+cLineMOut@=$$c65000
+
+if change(cLine2@) then {
+   cLineMOut@=$<p style="color:black;margin-top: 0em;"> <b> Aktuelles Messintervall </b></p>$+cLine1@+cLine2@+cLine3@+cLine4@+$</tbody></table>$c2200+$<p style="font-size:25%;font-family:helvetica"> &#160 </p>$+cLine5@+cLine6@+cLine7@+cLine8@+$</tbody></table>$c2200;
+   weboutput(woZaehler,cLineMOut@);
+} endif 
+
+
+
+// Abspeichern im Flash 
+if SHUTDOWN or htime(3,49,34) then {
+   timebufferstore(uBf);
+   timebufferstore(uBf+1);
+   timebufferstore(uBf+2);
+   timebufferstore(uBf+3);
+   timebufferstore(uBf+4);
+   timebufferstore(uBf+5);
+   timebufferstore(uBf+6);
+   timebufferstore(uBf+7);
+   timebufferstore(uBf+8);
+   timebufferstore(uBf+9);
+   timebufferstore(uBf+10);
+   timebufferstore(uBf+12);
+   timebufferstore(uBf+13);
+   timebufferstore(uBf+14);
+   timebufferstore(uBf+15);
+   timebufferstore(uBf+16);
+   timebufferstore(uBf+17);
+   timebufferstore(uBf+18);
+   timebufferstore(uBf+19);
+   timebufferstore(uBf+20);
+   timebufferstore(uBf+21);
+   writeflashvar(sTagEuroV@);
+   writeflashvar(sTagEuroE@);
+   writeflashvar(sMonatEuroV@);
+   writeflashvar(sMonatEuroE@);
+   writeflashvar(sJahrEuroV@);
+   writeflashvar(sJahrEuroE@);
+
+} endif
+if systemstart() then {
+   timebufferread(uBf);
+   timebufferread(uBf+1);
+   timebufferread(uBf+2);
+   timebufferread(uBf+3);
+   timebufferread(uBf+4);
+   timebufferread(uBf+5);
+   timebufferread(uBf+6);
+   timebufferread(uBf+7);
+   timebufferread(uBf+8);
+   timebufferread(uBf+9);
+   timebufferread(uBf+10);
+   timebufferread(uBf+12);
+   timebufferread(uBf+13);
+   timebufferread(uBf+14);
+   timebufferread(uBf+15);
+   timebufferread(uBf+16);
+   timebufferread(uBf+17);
+   timebufferread(uBf+18);
+   timebufferread(uBf+19);
+   timebufferread(uBf+20);
+   timebufferread(uBf+21);
+   readflashvar(sTagEuroV@);
+   readflashvar(sTagEuroE@);
+   readflashvar(sMonatEuroV@);
+   readflashvar(sMonatEuroE@);
+   readflashvar(sJahrEuroV@);
+   readflashvar(sJahrEuroE@);
+} endif
+
+:end 
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+// Darstellung von Strom und Spannungswerten des Enertex Smartmeter KNX
+// Datum:     	11.01.2016          
+// Version:     1 
+// Autor:       Enertex Bayern GmbH
+:begin vmTHD(wsID,wbLadeWerte,wrMin,wrMax,woID,wcSp,wbWahlSp,woErklaerung,woErklaerungG,wbWahlKat,wcMessungZeit,uFontScal,gbAnford1,gbAnford2,gcSpU1,gcSpI1,gcSpU2,gcSpI2,gcSpU3,gcSpI3,gfU1,gfP1,gfU2,gfP2,gfU3,gfP3)
+:info $Darstellung von der Oberschwingungen Werten$\\
+	$ID der Seite  (u08)$\\
+    $ID für den Button zum Abfragen der neuen Messwerte (u08)$\\
+    $ID des Sliders für die Oberschwingungen-Min (u08)$\\
+    $ID des Sliders für die Oberschwingungen-Max (u08)$\\
+    $ID des Weboutputs für die Messwerte (u08)$\\
+    $ID des mpcharts für die Spannungsoberschwingungen (u08)$\\
+    $ID des Auswahlbuttons der Oberschwingungen (u08)$\\
+    $ID des Outputs für die Grenzwerte(u08)$\\
+    $ID des Outputs für Erklärung von Oberschwingungen (u08)$\\
+    $ID des Auswahlbuttons der Kategorie der Oberschwingungen (u08)$\\
+    $ID des Charts für den Zeitverlauf (u08)$\\
+    $Prozentwert für die Font-Skalierung der Tabellen (u08)$\\
+    $GA Messwerte anfordern (b01) $\\
+    $GA Leistungswerte anfordern (b01) $\\
+    $GA Spannungsspektrum U1 (c14)$\\
+    $GA Stromspektrum I1 (c14)$\\
+    $GA Spannungsspektrum U2 (c14)$\\
+    $GA Stromspektrum I2 (c14)$\\
+    $GA Spannungsspektrum U3 (c14)$\\
+    $GA Stromspektrum I3 (c14)$\\
+	$GA Spannung Eff. L1 (f16) $\\
+	$GA Wirkleistung L1 (f32) $\\
+	$GA Spannung Eff. L2 (f16) $\\
+	$GA Wirkleistung L2 (f32) $\\
+	$GA Spannung Eff. L3 (f16) $\\
+	$GA Wirkleistung L3 (f32) $
+:shortinfo  $Generierung einer Webseite zur Darstellung der Netzoberschwingungen$
+
+// Messwerte Laden : Anforderungen rausschuicken (globaler Button
+if pbutton(wbLadeWerte,wsID)==1 then {
+   write(gbAnford1,EIN);             
+   write(gbAnford2,EIN); 
+   pdisplay(wbLadeWerte,$Werte laden $+convert(settime(),$$),UPDATE,ACTIVE,GREEN,wsID);
+}endif
+
+if after(pbutton(wbLadeWerte,wsID)==1,3000u64) then {
+    pdisplay(wbLadeWerte,$Werte vom $+convert(settime(),$$),UPDATE,DISPLAY,GREY,wsID);
+} endif
+
+//-----------------------------------------------------
+// Grenzwertetabellen
+//-----------------------------------------------------
+:var uSpLimit@
+uSpLimit@=$$
+:var uSpLimU@
+uSpLimU@=$$
+:var uSpLimKlA@
+uSpLimKlA@=$$
+:var uSpLimKlB@
+uSpLimKlB@=$$
+:var uSpLimKlC@
+uSpLimKlC@=$$
+:var uSpLimKlD@
+uSpLimKlD@=$$
+
+
+if after(systemstart(),4579u64) then {
+   // Grenzwerte für die Spannungsharmonischen ab der 1. Oberschwingung (n=2) 
+   // Diese können abweichend eingetragen werden, z.B. wenn andere Regelungen gelten
+   stringset(uSpLimU@,2.0f32,4u16);    /*2*/     
+   stringset(uSpLimU@,5.0f32,8u16);    /*3*/     
+   stringset(uSpLimU@,1.0f32,12u16);   /*4*/     
+   stringset(uSpLimU@,6.0f32,16u16);   /*5*/     
+   stringset(uSpLimU@,0.5f32,20u16);   /*6*/     
+   stringset(uSpLimU@,5.0f32,24u16);   /*7*/     
+   stringset(uSpLimU@,0.5f32,28u16);   /*8*/     
+   stringset(uSpLimU@,1.5f32,32u16);   /*9*/     
+   stringset(uSpLimU@,0.5f32,36u16);   /*10*/    
+   stringset(uSpLimU@,3.5f32,40u16);   /*11*/    
+   stringset(uSpLimU@,0.5f32,44u16);   /*12*/    
+   stringset(uSpLimU@,3.0f32,48u16);   /*13*/    
+   stringset(uSpLimU@,0.5f32,52u16);   /*14*/    
+   stringset(uSpLimU@,0.5f32,56u16);   /*15*/    
+   stringset(uSpLimU@,0.5f32,60u16);   /*16*/    
+   stringset(uSpLimU@,2.0f32,64u16);   /*17*/    
+   stringset(uSpLimU@,0.5f32,68u16);   /*18*/    
+   stringset(uSpLimU@,1.5f32,72u16);   /*19*/    
+   stringset(uSpLimU@,0.5f32,76u16);   /*20*/    
+   stringset(uSpLimU@,0.5f32,80u16);   /*21*/    
+   stringset(uSpLimU@,0.5f32,84u16);   /*22*/    
+   stringset(uSpLimU@,1.5f32,88u16);   /*23*/    
+   stringset(uSpLimU@,0.5f32,92u16);   /*24*/    
+   stringset(uSpLimU@,1.5f32,96u16);   /*25*/    
+   stringset(uSpLimU@,0.5f32,100u16);  /*26*/    
+   stringset(uSpLimU@,0.5f32,104u16);  /*27*/      
+   stringset(uSpLimU@,0.5f32,108u16);  /*28*/    
+   stringset(uSpLimU@,0.5f32,112u16);  /*29*/    
+   stringset(uSpLimU@,0.5f32,116u16);  /*30*/    
+   stringset(uSpLimU@,0.5f32,120u16);  /*31*/    
+   stringset(uSpLimU@,0.5f32,124u16);  /*32*/    
+   stringset(uSpLimU@,0.5f32,128u16);  /*33*/      
+   stringset(uSpLimU@,0.5f32,132u16);  /*34*/    
+   stringset(uSpLimU@,0.5f32,136u16);  /*35*/      
+   stringset(uSpLimU@,0.5f32,140u16);  /*36*/    
+   stringset(uSpLimU@,0.5f32,144u16);  /*37*/    
+   stringset(uSpLimU@,0.5f32,148u16);  /*38*/      
+   stringset(uSpLimU@,0.5f32,152u16);  /*39*/    
+   stringset(uSpLimU@,0.5f32,156u16);  /*40*/     
+   stringset(uSpLimU@,0.5f32,160u16);  /*41*/    
+   stringset(uSpLimU@,0.5f32,164u16);  /*42*/    
+   stringset(uSpLimU@,0.5f32,168u16);  /*43*/    
+   stringset(uSpLimU@,0.5f32,172u16);  /*44*/      
+   stringset(uSpLimU@,0.5f32,176u16);  /*45*/    
+   stringset(uSpLimU@,0.5f32,180u16);  /*46*/    
+   stringset(uSpLimU@,0.5f32,184u16);  /*47*/    
+   stringset(uSpLimU@,0.5f32,188u16);  /*48*/    
+   stringset(uSpLimU@,0.5f32,192u16);  /*49*/    
+   stringset(uSpLimU@,0.5f32,196u16);  /*50*/      
+
+   //Strom Klasse A
+   stringset(uSpLimKlA@,1.08f32  ,4u16);    /*2*/     
+   stringset(uSpLimKlA@,2.30f32  ,8u16);    /*3*/     
+   stringset(uSpLimKlA@,0.43f32  ,12u16);   /*4*/     
+   stringset(uSpLimKlA@,1.14f32  ,16u16);   /*5*/     
+   stringset(uSpLimKlA@,0.3f32   ,20u16);   /*6*/     
+   stringset(uSpLimKlA@,0.77f32  ,24u16);   /*7*/     
+   stringset(uSpLimKlA@,0.23f32  ,28u16);   /*8*/     
+   stringset(uSpLimKlA@,0.4f32   ,32u16);   /*9*/     
+   stringset(uSpLimKlA@,0.184f32 ,36u16);   /*10*/    
+   stringset(uSpLimKlA@,0.33f32  ,40u16);   /*11*/    
+   stringset(uSpLimKlA@,0.153f32 ,44u16);   /*12*/    
+   stringset(uSpLimKlA@,0.21f32  ,48u16);   /*13*/    
+   stringset(uSpLimKlA@,0.131f32 ,52u16);   /*14*/    
+   stringset(uSpLimKlA@,0.15f32  ,56u16);   /*15*/    
+   stringset(uSpLimKlA@,0.115f32 ,60u16);   /*16*/    
+   stringset(uSpLimKlA@,0.132f32 ,64u16);   /*17*/    
+   stringset(uSpLimKlA@,0.102f32 ,68u16);   /*18*/    
+   stringset(uSpLimKlA@,0.118f32 ,72u16);   /*19*/    
+   stringset(uSpLimKlA@,0.092f32 ,76u16);   /*20*/    
+   stringset(uSpLimKlA@,0.107f32 ,80u16);   /*21*/    
+   stringset(uSpLimKlA@,0.083f32 ,84u16);   /*22*/    
+   stringset(uSpLimKlA@,0.0978f32,88u16);   /*23*/    
+   stringset(uSpLimKlA@,0.0767f32,92u16);   /*24*/    
+   stringset(uSpLimKlA@,0.09f32  ,96u16);   /*25*/    
+   stringset(uSpLimKlA@,0.0708f32,100u16);  /*26*/    
+   stringset(uSpLimKlA@,0.0833f32,104u16);  /*27*/    
+   stringset(uSpLimKlA@,0.0657f32,108u16);  /*28*/    
+   stringset(uSpLimKlA@,0.0776f32,112u16);  /*29*/    
+   stringset(uSpLimKlA@,0.0613f32,116u16);  /*30*/    
+   stringset(uSpLimKlA@,0.0726f32,120u16);  /*31*/    
+   stringset(uSpLimKlA@,0.0575f32,124u16);  /*32*/    
+   stringset(uSpLimKlA@,0.0681f32,128u16);  /*33*/    
+   stringset(uSpLimKlA@,0.0541f32,132u16);  /*34*/    
+   stringset(uSpLimKlA@,0.0643f32,136u16);  /*35*/    
+   stringset(uSpLimKlA@,0.0511f32,140u16);  /*36*/    
+   stringset(uSpLimKlA@,0.0608f32,144u16);  /*37*/    
+   stringset(uSpLimKlA@,0.0484f32,148u16);  /*38*/    
+   stringset(uSpLimKlA@,0.0577f32,152u16);  /*39*/    
+   stringset(uSpLimKlA@,0.046f32 ,156u16);  /*40*/    
+   stringset(uSpLimKlA@,0.055f32 ,160u16);  /*41*/    
+   stringset(uSpLimKlA@,0.0438f32,164u16);  /*42*/    
+   stringset(uSpLimKlA@,0.0524f32,168u16);  /*43*/    
+   stringset(uSpLimKlA@,0.0418f32,172u16);  /*44*/    
+   stringset(uSpLimKlA@,0.05f32  ,176u16);  /*45*/    
+   stringset(uSpLimKlA@,0.04f32  ,180u16);  /*46*/    
+   stringset(uSpLimKlA@,0.0479f32,184u16);  /*47*/    
+   stringset(uSpLimKlA@,0.0383f32,188u16);  /*48*/    
+   stringset(uSpLimKlA@,0.0459f32,192u16);  /*49*/    
+   stringset(uSpLimKlA@,0.0368f32,196u16);  /*50*/    
+   //Strom Klasse B
+   stringset(uSpLimKlB@,1.62f32   ,4u16);    /*2*/     
+   stringset(uSpLimKlB@,3.45f32   ,8u16);    /*3*/     
+   stringset(uSpLimKlB@,0.65f32   ,12u16);   /*4*/     
+   stringset(uSpLimKlB@,1.71f32   ,16u16);   /*5*/     
+   stringset(uSpLimKlB@,0.45f32   ,20u16);   /*6*/     
+   stringset(uSpLimKlB@,1.16f32   ,24u16);   /*7*/     
+   stringset(uSpLimKlB@,0.35f32   ,28u16);   /*8*/     
+   stringset(uSpLimKlB@,0.6f32    ,32u16);   /*9*/     
+   stringset(uSpLimKlB@,0.28f32   ,36u16);   /*10*/    
+   stringset(uSpLimKlB@,0.50f32   ,40u16);   /*11*/    
+   stringset(uSpLimKlB@,0.233f32  ,44u16);   /*12*/    
+   stringset(uSpLimKlB@,0.32f32   ,48u16);   /*13*/    
+   stringset(uSpLimKlB@,0.200f32  ,52u16);   /*14*/    
+   stringset(uSpLimKlB@,0.23f32   ,56u16);   /*15*/    
+   stringset(uSpLimKlB@,0.175f32  ,60u16);   /*16*/    
+   stringset(uSpLimKlB@,0.203f32  ,64u16);   /*17*/    
+   stringset(uSpLimKlB@,0.155f32  ,68u16);   /*18*/    
+   stringset(uSpLimKlB@,0.182f32  ,72u16);   /*19*/    
+   stringset(uSpLimKlB@,0.140f32  ,76u16);   /*20*/    
+   stringset(uSpLimKlB@,0.164f32  ,80u16);   /*21*/    
+   stringset(uSpLimKlB@,0.127f32  ,84u16);   /*22*/    
+   stringset(uSpLimKlB@,0.150f32  ,88u16);   /*23*/    
+   stringset(uSpLimKlB@,0.117f32  ,92u16);   /*24*/    
+   stringset(uSpLimKlB@,0.138f32  ,96u16);   /*25*/    
+   stringset(uSpLimKlB@,0.108f32  ,100u16);  /*26*/    
+   stringset(uSpLimKlB@,0.128f32  ,104u16);  /*27*/    
+   stringset(uSpLimKlB@,0.100f32  ,108u16);  /*28*/    
+   stringset(uSpLimKlB@,0.119f32  ,112u16);  /*29*/    
+   stringset(uSpLimKlB@,0.0933f32 ,116u16);  /*30*/    
+   stringset(uSpLimKlB@,0.1113f32 ,120u16);  /*31*/    
+   stringset(uSpLimKlB@,0.0875f32 ,124u16);  /*32*/    
+   stringset(uSpLimKlB@,0.1045f32 ,128u16);  /*33*/    
+   stringset(uSpLimKlB@,0.0824f32 ,132u16);  /*34*/    
+   stringset(uSpLimKlB@,0.0986f32 ,136u16);  /*35*/    
+   stringset(uSpLimKlB@,0.0778f32 ,140u16);  /*36*/    
+   stringset(uSpLimKlB@,0.0932f32 ,144u16);  /*37*/    
+   stringset(uSpLimKlB@,0.0737f32 ,148u16);  /*38*/    
+   stringset(uSpLimKlB@,0.0885f32 ,152u16);  /*39*/    
+   stringset(uSpLimKlB@,0.07f32   ,156u16);  /*40*/    
+   stringset(uSpLimKlB@,0.0841f32 ,160u16);  /*41*/    
+   stringset(uSpLimKlB@,0.0667f32 ,164u16);  /*42*/    
+   stringset(uSpLimKlB@,0.0802f32 ,168u16);  /*43*/    
+   stringset(uSpLimKlB@,0.0636f32 ,172u16);  /*44*/    
+   stringset(uSpLimKlB@,0.0767f32 ,176u16);  /*45*/    
+   stringset(uSpLimKlB@,0.0609f32 ,180u16);  /*46*/    
+   stringset(uSpLimKlB@,0.0734f32 ,184u16);  /*47*/    
+   stringset(uSpLimKlB@,0.0583f32 ,188u16);  /*48*/    
+   stringset(uSpLimKlB@,0.0704f32 ,192u16);  /*49*/    
+   stringset(uSpLimKlB@,0.0560f32 ,196u16);  /*50*/    
+  //Strom Klasse C
+   stringset(uSpLimKlC@,2.0f32    ,4u16);    /*2*/      
+   stringset(uSpLimKlC@,30.0f32   ,8u16);    /*3*/     
+   stringset(uSpLimKlC@,100.0f32  ,12u16);   /*4*/     
+   stringset(uSpLimKlC@,10.0f32   ,16u16);   /*5*/     
+   stringset(uSpLimKlC@,100f32    ,20u16);   /*6*/     
+   stringset(uSpLimKlC@,7.0f32    ,24u16);   /*7*/     
+   stringset(uSpLimKlC@,100.0f32  ,28u16);   /*8*/     
+   stringset(uSpLimKlC@,5.0f32    ,32u16);   /*9*/     
+   stringset(uSpLimKlC@,100.0f32  ,36u16);   /*10*/    
+   stringset(uSpLimKlC@,3.0000f32 ,40u16);   /*11*/    
+   stringset(uSpLimKlC@,100.0f32  ,44u16);   /*12*/    
+   stringset(uSpLimKlC@,3.0000f32 ,48u16);   /*13*/    
+   stringset(uSpLimKlC@,100.0f32  ,52u16);   /*14*/    
+   stringset(uSpLimKlC@,3.0000f32 ,56u16);   /*15*/    
+   stringset(uSpLimKlC@,100.0f32  ,60u16);   /*16*/    
+   stringset(uSpLimKlC@,3.0000f32 ,64u16);   /*17*/    
+   stringset(uSpLimKlC@,100.00f32 ,68u16);   /*18*/    
+   stringset(uSpLimKlC@,3.0000f32 ,72u16);   /*19*/    
+   stringset(uSpLimKlC@,100.00f32 ,76u16);   /*20*/    
+   stringset(uSpLimKlC@,3.0000f32 ,80u16);   /*21*/    
+   stringset(uSpLimKlC@,100.00f32 ,84u16);   /*22*/    
+   stringset(uSpLimKlC@,3.0000f32 ,88u16);   /*23*/    
+   stringset(uSpLimKlC@,100.00f32 ,92u16);   /*24*/    
+   stringset(uSpLimKlC@,3.0000f32 ,96u16);   /*25*/    
+   stringset(uSpLimKlC@,100.00f32 ,100u16);  /*26*/    
+   stringset(uSpLimKlC@,3.0000f32 ,104u16);  /*27*/    
+   stringset(uSpLimKlC@,100.00f32 ,108u16);  /*28*/    
+   stringset(uSpLimKlC@,3.0000f32 ,112u16);  /*29*/    
+   stringset(uSpLimKlC@,100.00f32 ,116u16);  /*30*/    
+   stringset(uSpLimKlC@,3.0000f32 ,120u16);  /*31*/    
+   stringset(uSpLimKlC@,100.00f32 ,124u16);  /*32*/    
+   stringset(uSpLimKlC@,3.0000f32 ,128u16);  /*33*/    
+   stringset(uSpLimKlC@,100.00f32 ,132u16);  /*34*/    
+   stringset(uSpLimKlC@,3.0000f32 ,136u16);  /*35*/    
+   stringset(uSpLimKlC@,100.00f32 ,140u16);  /*36*/    
+   stringset(uSpLimKlC@,3.0000f32 ,144u16);  /*37*/    
+   stringset(uSpLimKlC@,100.00f32 ,148u16);  /*38*/    
+   stringset(uSpLimKlC@,3.0000f32 ,152u16);  /*39*/    
+   stringset(uSpLimKlC@,100.00f32 ,156u16);  /*40*/    
+   stringset(uSpLimKlC@,3.0000f32 ,160u16);  /*41*/    
+   stringset(uSpLimKlC@,100.00f32 ,164u16);  /*42*/    
+   stringset(uSpLimKlC@,3.0000f32 ,168u16);  /*43*/    
+   stringset(uSpLimKlC@,100.00f32 ,172u16);  /*44*/    
+   stringset(uSpLimKlC@,3.0000f32 ,176u16);  /*45*/    
+   stringset(uSpLimKlC@,100.00f32 ,180u16);  /*46*/    
+   stringset(uSpLimKlC@,3.0000f32 ,184u16);  /*47*/    
+   stringset(uSpLimKlC@,100.00f32 ,188u16);  /*48*/    
+   stringset(uSpLimKlC@,3.0000f32 ,192u16);  /*49*/    
+   stringset(uSpLimKlC@,100.00f32 ,196u16);  /*50*/    
+
+  //Strom Klasse D
+   stringset(uSpLimKlD@,100.00f32 ,4u16);    /*2*/     
+   stringset(uSpLimKlD@,2.3f32    ,8u16);    /*3*/     
+   stringset(uSpLimKlD@,100.00f32 ,12u16);   /*4*/     
+   stringset(uSpLimKlD@,1.14f32   ,16u16);   /*5*/     
+   stringset(uSpLimKlD@,100.00f32 ,20u16);   /*6*/     
+   stringset(uSpLimKlD@,0.77f32   ,24u16);   /*7*/     
+   stringset(uSpLimKlD@,100.00f32 ,28u16);   /*8*/     
+   stringset(uSpLimKlD@,0.40f32   ,32u16);   /*9*/     
+   stringset(uSpLimKlD@,100.00f32 ,36u16);   /*10*/    
+   stringset(uSpLimKlD@,.33f32    ,40u16);   /*11*/    
+   stringset(uSpLimKlD@,100.00f32 ,44u16);   /*12*/    
+   stringset(uSpLimKlD@,.21f32    ,48u16);   /*13*/    
+   stringset(uSpLimKlD@,100.00f32 ,52u16);   /*14*/    
+   stringset(uSpLimKlD@,.15f32    ,56u16);   /*15*/    
+   stringset(uSpLimKlD@,100.00f32 ,60u16);   /*16*/    
+   stringset(uSpLimKlD@,0.132f32  ,64u16);   /*17*/    
+   stringset(uSpLimKlD@,100.00f32 ,68u16);   /*18*/    
+   stringset(uSpLimKlD@,0.118f32  ,72u16);   /*19*/    
+   stringset(uSpLimKlD@,100.00f32 ,76u16);   /*20*/    
+   stringset(uSpLimKlD@,0.107f32  ,80u16);   /*21*/    
+   stringset(uSpLimKlD@,100.00f32 ,84u16);   /*22*/    
+   stringset(uSpLimKlD@,0.0978f32 ,88u16);   /*23*/    
+   stringset(uSpLimKlD@,100.00f32 ,92u16);   /*24*/    
+   stringset(uSpLimKlD@,0.09f32   ,96u16);   /*25*/    
+   stringset(uSpLimKlD@,100.00f32 ,100u16);  /*26*/    
+   stringset(uSpLimKlD@,0.0833f32 ,104u16);  /*27*/    
+   stringset(uSpLimKlD@,100.00f32 ,108u16);  /*28*/    
+   stringset(uSpLimKlD@,0.0776f32 ,112u16);  /*29*/    
+   stringset(uSpLimKlD@,100.00f32 ,116u16);  /*30*/    
+   stringset(uSpLimKlD@,0.0725f32 ,120u16);  /*31*/    
+   stringset(uSpLimKlD@,100.00f32 ,124u16);  /*32*/    
+   stringset(uSpLimKlD@,0.0628f32 ,128u16);  /*33*/    
+   stringset(uSpLimKlD@,100.00f32 ,132u16);  /*34*/    
+   stringset(uSpLimKlD@,0.0643f32 ,136u16);  /*35*/    
+   stringset(uSpLimKlD@,100.00f32 ,140u16);  /*36*/    
+   stringset(uSpLimKlD@,0.0608f32 ,144u16);  /*37*/    
+   stringset(uSpLimKlD@,100.00f32 ,148u16);  /*38*/    
+   stringset(uSpLimKlD@,0.0549f32 ,152u16);  /*39*/    
+   stringset(uSpLimKlD@,3.0000f32 ,156u16);  /*40*/    
+   stringset(uSpLimKlD@,0.0534f32 ,160u16);  /*41*/    
+   stringset(uSpLimKlD@,100.00f32 ,164u16);  /*42*/    
+   stringset(uSpLimKlD@,0.0523f32 ,168u16);  /*43*/    
+   stringset(uSpLimKlD@,100.00f32 ,172u16);  /*44*/    
+   stringset(uSpLimKlD@,0.05f32   ,176u16);  /*45*/    
+   stringset(uSpLimKlD@,100.00f32 ,180u16);  /*46*/    
+   stringset(uSpLimKlD@,0.04787f32,184u16);  /*47*/    
+   stringset(uSpLimKlD@,100.00f32 ,188u16);  /*48*/    
+   stringset(uSpLimKlD@,0.0459f32 ,192u16);  /*49*/    
+   stringset(uSpLimKlD@,100.00f32 ,196u16);  /*50*/    
+                                     //color:#006699;background-color:#e0e0e0
+   weboutput(woErklaerungG,$<p style="margin-top: 0em"> Der <b>"Verschmutzungsgrad"</b> der Stromversorgung wird mit dem Enertex Smartmeter gemessen. Im Idealfall ist Strom und Spannung sinusförmig, Abweichungen davon werden mit sog. Oberschwingungen (ganzahligen Vielfachen von 50 Hz, n=2 bedeute 100 Hz) angegeben - man kann sich den Zeitverlauf als Überlagerung der einzelnen Frequenzanteile vorstellen (Fouriertransformation). <br>Je mehr Oberschwingungsanteile vorhanden sind, desto verzerrter sind Strom und Spannung und desto "verschmutzer" ist die Stromversorgung.<br> <b>Rechts sehen</b> sie den gemessenen <b>Zeitverlauf</b> der ausgewählten Größe (Knopf Auswahl), wobei die Ströme in mA angezeigt werden. Unten rechts ist das Spektrum dieser Größe (in %). <b> Unten Links</b> werden die Grenzwerte, in der Tabelle daneben die <b>gemessenen Spektren</b> angezeigt. Stromgrenzwerte sind äbhängig von der gewählten Klasse. Überschreitungen werden rot markiert$)
+} endif
+
+//--------------------------------------------------------
+// Kategorie und Leistung
+:var cLetzterTextKat@
+cLetzterTextKat@=$3-phasige Geräte, Haushaltsgeräte P>600W$
+:var uLetzterIdxKat@
+uLetzterIdxKat@=1
+:var uLetztesIconKat@
+uLetztesIconKat@=STOVE
+vmKatWahlInt(wbWahlKat,wsID,1,$$, $3-phasige Geräte, Haushaltsgeräte P>600W$,uLetzterIdxKat@,cLetzterTextKat@,uLetztesIconKat@,STOVE,INACTIVE)
+vmKatWahlInt(wbWahlKat,wsID,2,$$, $Tragbare Elektrowerkzeuge P>600W$,uLetzterIdxKat@,cLetzterTextKat@,uLetztesIconKat@,METER,INACTIVE)
+vmKatWahlInt(wbWahlKat,wsID,3,$$, $Beleuchtungseinrichtungen P>25W $,uLetzterIdxKat@,cLetzterTextKat@,uLetztesIconKat@,LIGHT,INACTIVE)
+vmKatWahlInt(wbWahlKat,wsID,4,$$, $Sonstige 75W > P < 600W, PCs, Multimedia, Montore... $,uLetzterIdxKat@,cLetzterTextKat@,uLetztesIconKat@,MEDIA,INACTIVE)
+
+
+
+//-----------------------------------------------------
+
+// Spektren in Temp. Strings laden und anzeigen
+:var uDarstellungIdx@
+uDarstellungIdx@=0
+
+:var bUpdateSp@
+bUpdateSp@=AUS
+:var cSpekButton@
+cSpekButton@=$$
+:var auSpekU1@
+auSpekU1@=$$
+// Spektrum in String speichern
+vmSpektrumInt(auSpekU1@,gcSpU1,bUpdateSp@)
+// Auswahl des Grafen
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekU1@,1,$<font color=teal>Spannungsspektrum L1</font>$,uDarstellungIdx@, cSpekButton@)
+// Darstellung
+:var auSpekI1@
+auSpekI1@=$$
+vmSpektrumInt(auSpekI1@,gcSpI1,bUpdateSp@)
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekI1@,4,$<font color=teal>Stromspektrum L1</font>$,uDarstellungIdx@, cSpekButton@)
+
+:var auSpekU2@
+auSpekU2@=$$
+vmSpektrumInt(auSpekU2@,gcSpU2,bUpdateSp@)
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekU2@,2,$<font color=teal>Spannungsspektrum L2</font>$,uDarstellungIdx@, cSpekButton@)
+
+:var auSpekI2@
+auSpekI2@=$$
+vmSpektrumInt(auSpekI2@,gcSpI2,bUpdateSp@)
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekI2@,5,$<font color=teal>Stromspektrum L2</font>$,uDarstellungIdx@, cSpekButton@)
+
+:var auSpekU3@
+auSpekU3@=$$
+vmSpektrumInt(auSpekU3@,gcSpU3,bUpdateSp@)
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekU3@,3,$<font color=teal>Spannungsspektrum L3</font>$,uDarstellungIdx@, cSpekButton@)
+:var auSpekI3@
+auSpekI3@=$$
+vmSpektrumInt(auSpekI3@,gcSpI3,bUpdateSp@)
+vmChartSpekWahlInt(wbWahlSp,wsID,auSpekI3@,6,$<font color=teal>Stromspektrum L3</font>$,uDarstellungIdx@, cSpekButton@)
+
+// Slider 
+:var uMin@
+uMin@=convert(getpeslider(wrMin,wsID),0u16)
+:var uMax@
+uMax@=convert(getpeslider(wrMax,wsID),0u16)
+
+if after(systemstart(),5000u64) then {
+         setpeslider(wrMax,50f32,MONITOR,DISPLAY,wsID);
+         uMax@=50u16;
+         setpeslider(wrMin,2f32,MONITOR,DISPLAY,wsID);
+         uMin@=2u16;
+} endif
+
+if uMin@>=uMax@ then {
+         setpeslider(wrMax,convert(uMin@,0f32)+1f32,MONITOR,DISPLAY,wsID)
+} endif;
+
+// Darstellungsspektrum
+:var auSpektrum@
+auSpektrum@=$$
+:var bSpektrumBerechnen@
+bSpektrumBerechnen@=AUS
+:var uBerechnungAnzeigen@
+uBerechnungAnzeigen@=255
+:var bAenderung@
+bAenderung@=change(bUpdateSp@) or change(uDarstellungIdx@) or change(uMax@) or change(uMin@) or change(uLetzterIdxKat@)
+
+if bAenderung@ and !(bSpektrumBerechnen@ or bStartTab@ or bPlotZeit@) then {
+   // Anzeigen, dass etwas berechnet wird.
+   pdisplay(wbWahlSp,$Berechnung läuft$,MONITOR,ACTIVE,GREEN,wsID,uDarstellungIdx@);
+} endif 
+
+if bAenderung@ and (bSpektrumBerechnen@ or bStartTab@ or bPlotZeit@) then {
+   // Anzeigen, dass etwas berechnet wird.
+   pdisplay(wbWahlSp,$Berechnung nicht fertig$,MONITOR,ACTIVE,GREEN,wsID,uDarstellungIdx@);
+} endif 
+
+// Die Usereingaben sollten noch etwas abgewartet werden, bzw. wenn neuen Spektren eintreffen 
+// noch 5 Sekunden warten bis zur Anzeige. Wenn bereits ein Vorgang läuft, so soll der nicht unterbrochen werden.
+if delay(bAenderung@,5000u64) and !bSpektrumBerechnen@ and !bStartTab@ and !bPlotZeit@ then {
+   // Berechnungen antriggern
+   bSpektrumBerechnen@=EIN;
+   // Initialiersierung nach dem Programmstart
+   if (uDarstellungIdx@==0) then {
+      uDarstellungIdx@=1;
+      cSpekButton@=$<font color=teal>Spannungsspektrum L1$;
+   } endif;
+}endif
+
+
+if uDarstellungIdx@==1 and bSpektrumBerechnen@ then auSpektrum@=auSpekU1@ endif 
+if uDarstellungIdx@==2 and bSpektrumBerechnen@ then auSpektrum@=auSpekU2@ endif 
+if uDarstellungIdx@==3 and bSpektrumBerechnen@ then auSpektrum@=auSpekU3@ endif 
+if uDarstellungIdx@==4 and bSpektrumBerechnen@ then auSpektrum@=auSpekI1@ endif 
+if uDarstellungIdx@==5 and bSpektrumBerechnen@ then auSpektrum@=auSpekI2@ endif 
+if uDarstellungIdx@==6 and bSpektrumBerechnen@ then auSpektrum@=auSpekI3@ endif 
+
+// Das aktuelle Spektrum im Floatformat als Array
+:var afSpek@
+afSpek@=$$
+
+vmChartSpektrumDarstellungInt(wsID,wcSp,auSpektrum@,afSpek@,after(bSpektrumBerechnen@,1000u64),bSpektrumBerechnen@,uMax@,uMin@)
+
+if !bSpektrumBerechnen@ then {
+   // Anzeigen, dass etwas berechnet wird.
+   pdisplay(wbWahlSp,cSpekButton@,MONITOR,ACTIVE,GREY,wsID,uDarstellungIdx@);
+   // Aufbauen der Tabellen starten, beim Programmstart
+   // Tabellenaufbau unterdrücken.
+   if size(cSpekButton@)>0u16 then bStartTab@=EIN; endif;
+} endif
+
+
+//-----------------------------------------------------
+// Tabellenaufbau 
+:var cTabFont@
+cTabFont@=$"font-size:$+convert(convert(uFontScal,0u16)*100u16/255u16,$$)+$%;font-family:helvetica"$
+:var cLine1@
+cLine1@=$$c2200 
+
+:var cLine2@
+cLine2@=$$c2200
+
+:var cLineSpek1@
+cLineSpek1@=$$c2200
+:var cLineSpek2@
+cLineSpek2@=$$c2200
+
+// Grundschwingungsstrom
+:var fScal@
+fScal@=0f32
+
+// Bei Stromüberwachung sind u.U. die Grenzwerte absolutwerte
+:var bAbsolutWertGrenze@
+bAbsolutWertGrenze@=AUS
+
+// Erläuterung zum Spannungsspektrum
+if uDarstellungIdx@<4 and bSpektrumBerechnen@ then {
+   cLine1@=$<p style="color:black;margin-top: 0em;"> <b> Spannungsoberschwingungen</b> verursachen Verluste und Sch&aumlden, Probleme beim Motoranlauf und Nulldurchgangsst&oumlrungen (Schaltnetzteile...) Gemäß <b>DIN EN 50160 </b> gelten in Deutschland folgende Grenzwerte in % der Nennspannung, rechts: gemessen [in %].</p>\\
+            <table border="1" align=center width=98% bgcolor=#E0E0E0 style=$c2200+cTabFont@+$><colgroup> <col width=8%> <col width=17%> \\
+            <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> </colgroup> \\
+            <thead><tr>  \\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th> \\
+            </tr></thead>$c2200;
+  // Spektrum ausgeben
+  cLineSpek1@=$<table border="1" align=center width=98% bgcolor=#E0E0E0 style=$c2200+cTabFont@+$><colgroup> <col width=8%> <col width=17%> \\
+              <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> </colgroup> \\
+             <thead><tr>  \\
+             <th> n </th>  <th> <u> |U|</u><sub>n</sub> </th>\\
+             <th> n </th>  <th> <u> |U|</u><sub>n</sub> </th>\\
+             <th> n </th>  <th> <u> |U|</u><sub>n</sub> </th>\\
+             <th> n </th>  <th> <u> |U|</u><sub>n</sub> </th> \\
+             </tr></thead><tbody>$c2200;
+  uSpLimit@=uSpLimU@;
+  bAbsolutWertGrenze@=AUS;
+  fScal@=1f32;
+  fScalPlot@=convert(gfU3,0f32)*1.414213562e-3f32;
+  pdisplay(wbWahlKat,cLetzterTextKat@,uLetztesIconKat@,INACTIVE,GREY,wsID,uLetzterIdxKat@);
+} endif
+
+
+
+
+
+// Erläuterung zum Stromspektrum
+if uDarstellungIdx@>3 and bSpektrumBerechnen@ then {
+   cLine1@=$<table border="1" align=center width=98% bgcolor=#E0E0E0  style=$c2200+cTabFont@+$><colgroup> <col width=8%> <col width=17%> \\
+            <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> </colgroup> \\
+            <thead><tr>  \\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th>\\
+            <th> n </th>  <th> Grenze </th> \\
+            </tr></thead>$c2200;
+  // Spektrum ausgeben
+   cLineSpek1@=$<table border="1" align=center width=98% bgcolor=#E0E0E0  style=$c2200+cTabFont@+$><colgroup> <col width=8%> <col width=17%> \\
+            <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> <col width=8%> <col width=17%> </colgroup> \\
+            <thead><tr>  \\
+            <th> n </th>  <th> <u> |I|</u><sub>n</sub> </th>\\
+            <th> n </th>  <th> <u> |I|</u><sub>n</sub> </th>\\
+            <th> n </th>  <th> <u> |I|</u><sub>n</sub> </th>\\
+            <th> n </th>  <th> <u> |I|</u><sub>n</sub> </th> \\
+            </tr></thead><tbody>$c2200;
+   // Kategrie laden 
+   if uLetzterIdxKat@==1 then {
+      uSpLimit@=uSpLimKlA@;
+        bAbsolutWertGrenze@=EIN;
+        cLine1@=$<p style="color:black;margin-top: 0em;"> <b> Stromoberschwingungen</b> verursachen Überhitzung von Transformatoren, Schaden an Kondensatoren (Schaltnetzteile, Fernseher...), Fehlauslösung FI oder Leitungsschutz. Gemäß <b>DIN EN 50160 </b> gelten in Deutschland folgende Grenzwerte in A, rechts: gemessen </p>$c2200+cLine1@;
+   } endif;
+   if uLetzterIdxKat@==2 then {
+        cLine1@=$<p style="color:black;margin-top: 0em;"> <b> Stromoberschwingungen</b> verursachen Überhitzung von Transformatoren, Schaden an Kondensatoren (Schaltnetzteile, Fernseher...), Fehlauslösung FI oder Leitungsschutz. Gemäß <b>DIN EN 50160 </b> gelten in Deutschland folgende Grenzwerte in A, rechts: gemessen</p>$c2200+cLine1@;
+      uSpLimit@=uSpLimKlB@;
+        bAbsolutWertGrenze@=EIN;
+   } endif;
+   if uLetzterIdxKat@==3 then {
+        cLine1@=$<p style="color:black;margin-top: 0em;"> <b> Stromoberschwingungen</b> verursachen Überhitzung von Transformatoren, Schaden an Kondensatoren (Schaltnetzteile, Fernseher...), Fehlauslösung FI oder Leitungsschutz. Gemäß <b>DIN EN 50160 </b> gelten in Deutschland folgende Grenzwerte in % der Grundschwingung,  rechts: gemessen</p>$c2200+cLine1@;
+      uSpLimit@=uSpLimKlC@;
+      bAbsolutWertGrenze@=AUS;
+   } endif;
+   if uLetzterIdxKat@==4 then {
+        cLine1@=$<p style="color:black;margin-top: 0em;"> <b> Stromoberschwingungen</b> verursachen Überhitzung von Transformatoren, Schaden an Kondensatoren (Schaltnetzteile, Fernseher...), Fehlauslösung FI oder Leitungsschutz. Gemäß <b>DIN EN 50160 </b> gelten in Deutschland folgende Grenzwerte in A,  rechts: gemessen </p>$c2200+cLine1@;
+      uSpLimit@=uSpLimKlD@;        
+      bAbsolutWertGrenze@=EIN;
+   } endif;
+   // Grundschwingungsstrom (Näherung über P=U*I)
+   if uDarstellungIdx@==4 then {
+      fScal@=gfP1/convert(gfU1,0f32);
+   } endif;
+   if uDarstellungIdx@==5 then {
+      fScal@=gfP2/convert(gfU2,0f32);
+   } endif;
+   if uDarstellungIdx@==6 then {
+      fScal@=gfP3/convert(gfU3,0f32);
+   } endif;
+  // Strom in mA 
+  fScalPlot@=fScal@*1.414213562e3f32;
+  pdisplay(wbWahlKat,$<font color = teal>$+cLetzterTextKat@,uLetztesIconKat@,ACTIVE,GREY,wsID,uLetzterIdxKat@);
+
+} endif
+
+// Tabellen dynamisch generieren
+:var bStartTab@
+bStartTab@=AUS
+:var fScalPlot@
+fScalPlot@= 325.2691193e-3f32
+vmChartSpektrumTabInt(cLine2@,cLineSpek2@,uSpLimit@,afSpek@,24u16,45u16,bStartTab@,3u16,fScal@,bAbsolutWertGrenze@)
+
+
+
+
+//-----------------------------------------------------
+// Tabellen Anzeigen
+:var  cLineMOut@
+cLineMOut@=$$c65000
+:var  cLineSpekOut@
+cLineSpekOut@=$$c65000
+:var bPlotZeit@
+bPlotZeit@=AUS;
+
+
+if bStartTab@==EIN then {
+   cLineMOut@=cLine1@+$ <p ><b> Werte werden berechnet, bitte kurz Geduld... </b></p>$+$</tbody></table>$c2200;
+   weboutput(woErklaerung,cLineMOut@);
+   cLineSpekOut@=cLineSpek1@+$ <p ><b> Werte werden berechnet, bitte kurz Geduld... </b></p>$+$</tbody></table>$c2200;
+   weboutput(woID,cLineSpekOut@);
+} endif 
+
+if bStartTab@==AUS then {
+   cLineMOut@=cLine1@+cLine2@+$</tbody></table>$c2200;
+   weboutput(woErklaerung,cLineMOut@);
+   cLineSpekOut@=cLineSpek1@+cLineSpek2@+$</tbody></table>$c2200;
+   weboutput(woID,cLineSpekOut@);
+   bPlotZeit@=EIN;
+} endif 
+
+//-----------------------------------------------------
+// Zeitverlauf anzeigen 
+//-----------------------------------------------------
+
+// Cosinuslookuptable
+:var aufCos@
+aufCos@=$$
+vmCosWerteTabelleLoopInt(aufCos@)
+vmPloteKurve(aufCos@,afSpek@,fScalPlot@,wcMessungZeit,wsID, bPlotZeit@);
+
+:end 
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+// Darstellung von Strom und Spannungswerten des Enertex Smartmeter KNX
+// Datum:     11.01.2016          
+// Version:   1 
+// Autor:     Enertex Bayern GmbH
+:begin vmMessung(wsID,woID,wcMessung,wbStrom,wbSpannung,wbLeistung, wbTHDU, wbTHDI,woMinMax,wbLadeWerte,wcMessungP, uBf,uFontScal,gbAnford1, gbAnford2,gfU1,giTHDUL1,gfU2,giTHDUL2,gfU3,giTHDUL3,gfI1,giTHDIL1,gfI2,giTHDIL2,gfI3,giTHDIL3,gfFreq,gfP1,gfQ1,gfS1,gfCos1,gfP2,gfQ2,gfS2,gfCos2,gfP3,gfQ3,gfS3,gfCos3,gfP,gfQ,gfS,gfSchiefLast,gfIO)
+:info $Darstellung von Strom und Spannungswerten des Enertex Smartmeter KNX$\\
+	$ID der Seite  (u08)$\\
+    $ID des Weboutputs für die Messwerte (u08)$\\
+    $ID des Timecharts für die Messwerte (u08)$\\
+    $ID Umschalten des Verlaufs auf die Stromansicht (u08)$\\
+    $ID Umschalten des Verlaufs auf die Spannungansicht (u08)$\\
+    $ID Umschalten des Verlaufs auf die Leistungsansicht (u08)$\\
+    $ID Umschalten des Verlaufs auf die THDUansicht (u08)$\\
+    $ID Umschalten des Verlaufs auf die THDIansicht (u08)$\\
+    $ID das Min/Max Weboutputfenster (u08)$\\
+    $ID für den Button zum Abfragen der neuen Messwerte (u08)$\\
+    $ID des Timecharts für die Leistungswerte (u08)$\\
+    $ID des Timecharts Buffers für die Messwerte - intern werden 17 weitere definiert, hochgezählt ab den Startbuffer (u08)$\\
+    $Prozentwert für die Font-Skalierung der Tabellen (u08)$\\
+    $GA Messwerte anfordern (b01) $\\
+	$GA Leistungswerte anfordern (b01) $\\
+	$GA Spannung Eff. L1 (f16) $\\
+	$GA THD Spannung L1 (s16) $\\
+	$GA Spannung Eff. L2 (f16) $\\
+   	$GA THD Spannung L2 (s16) $\\
+	$GA Spannung Eff. L3 (f16) $\\
+   	$GA THD Spannung L3 (s16) $\\
+	$GA Strom Eff. L1 (f16) $\\
+	$GA THD Strom L1 (s16) $\\
+	$GA Strom Eff. L2 (f16) $\\
+   	$GA THD Strom L2 (s16) $\\
+	$GA Strom Eff. L3 (f16) $\\
+   	$GA THD Strom L3 (s16) $\\
+   	$GA Frequenz (f32) $\\
+   	$GA Wirkleistung L1 (f32) $\\
+    $GA Blindleistung L1 (f32) $\\
+    $GA Scheinleistung L1 (f32) $\\
+    $GA Cos-Phi L1 (f32) $\\
+   	$GA Wirkleistung L2 (f32) $\\
+    $GA Blindleistung L2 (f32) $\\
+    $GA Scheinleistung L2 (f32) $\\
+    $GA Cos-Phi L2 (f32) $\\
+   	$GA Wirkleistung L3 (f32) $\\
+    $GA Blindleistung L3 (f32) $\\
+    $GA Scheinleistung L3 (f32) $\\
+    $GA Cos-Phi L3 (f32) $\\
+   	$GA Wirkleistung Summe (f32) $\\
+    $GA Blindleistung Summe (f32) $\\
+    $GA Scheinleistung Summe (f32) $\\
+    $GA SchiefLast (s16) $\\
+    $GA Nullstrom (f16) $
+:shortinfo  $Generierung einer Webseite zur Darstellung der Netzqualität$
+
+// Messwerte Laden : Anforderungen rausschuicken (globaler Button
+if pbutton(wbLadeWerte,wsID)==1 then {
+   write(gbAnford1,EIN);             
+   write(gbAnford2,EIN); 
+   pdisplay(wbLadeWerte,$Werte laden $+convert(settime(),$$),UPDATE,ACTIVE,GREEN,wsID);
+}endif
+
+if after(pbutton(wbLadeWerte,wsID)==1,3000u64) then {
+    pdisplay(wbLadeWerte,$Werte vom $+convert(settime(),$$),UPDATE,DISPLAY,GREY,wsID);
+} endif
+
+
+// ----------------------------------------------------------------------------------------------
+//
+//     Obere Tabelle links 
+//
+// ----------------------------------------------------------------------------------------------
+
+// Fonts für die Tabellen
+:var cTabFont@
+cTabFont@=$"font-size:$+convert(convert(uFontScal,0u16)*100u16/255u16,$$)+$%;font-family:helvetica"$
+// Tabelle mit den Strom und Spannungswerten
+:var cLine1@
+cLine1@=$<table border="1" align=center width=98% style=$c2200+cTabFont@+$> <colgroup> <col width=8%> <col width=23%> <col width=23%>  <col width=23%> <col width=23%> </colgroup> <thead>\\
+<tr>\\
+  <th> </th>\\
+  <th>U [V]</th>\\
+  <th>THD<sub>U</sub> [%]</th>\\
+  <th>I [A]</th>\\
+  <th>THD<sub>I</sub> [%]</th>\\
+</tr>\\
+</thead><tbody>$c2200
+:var cLine2@
+cLine2@=$$c2200
+:var cLine3@
+cLine3@=$$c2200
+:var cLine4@
+cLine4@=$$c2200
+:var cLine5@
+cLine5@=$<p style="font-size:25%;font-family:helvetica"> &#160 </p>$c2200
+
+// Tabelle mit den Leistungswerten
+:var cLine6@
+cLine6@=$<table border="1" align=center width=98% style=$c2200+cTabFont@+$> <colgroup> <col width=8%> <col width=23%> <col width=23%>  <col width=23%> <col width=23%> </colgroup> <thead>\\
+<tr>\\
+  <th> </th>\\
+  <th>P [W]</th>\\
+  <th>Q [Var]</th>\\
+  <th>S [VA]</th>\\
+  <th>cos &#966</th>\\
+</tr>\\
+</thead><tbody>$c2200
+
+:var cLine7@
+cLine7@=$$c2200
+:var cLine8@
+cLine8@=$$c2200
+:var cLine9@
+cLine9@=$$c2200
+:var cLine10@
+cLine10@=$$c2200
+
+
+:var fScal@
+fScal@=1e3
+:var cOut@
+cOut@=$$c65000
+:var bUpdate@
+bUpdate@=AUS
+
+// Füllen der Tabellenwerte: Makros für die Anzeige 
+vmLineInt(cLine2@,$L1$c2200,gfU1,giTHDUL1,gfI1,giTHDIL1,fScal@,bUpdate@,$#D74242$c2200)
+vmLineInt(cLine3@,$L2$c2200,gfU2,giTHDUL2,gfI2,giTHDIL2,fScal@,bUpdate@,$#FFF450$c2200)
+vmLineInt(cLine4@,$L3$c2200,gfU3,giTHDUL3,gfI3,giTHDIL3,fScal@,bUpdate@,$#666DFF$c2200)
+vmLinePQInt(cLine7@,$L1$c2200,gfP1^f32,gfQ1^f32,gfS1^f32,gfCos1^f32,bUpdate@,$#D74242$c2200)
+vmLinePQInt(cLine8@,$L2$c2200,gfP2^f32,gfQ2^f32,gfS2^f32,gfCos2^f32,bUpdate@,$#FFF450$c2200)
+vmLinePQInt(cLine9@,$L3$c2200,gfP3^f32,gfQ3^f32,gfS3^f32,gfCos3^f32,bUpdate@,$#666DFF$c2200)
+vmLinePQInt(cLine10@,$&#931$c2200,gfP^f32,gfQ^f32,gfS^f32,gfP/gfS,bUpdate@,$#F2F5EF$c2200)
+
+// Wenn der Smartmeter sehr viel Werteänderungen auf einmal schickt, ist es
+// besser die Daten erst nach dem Eintreffen aller Daten einmal auf den Webserver
+// zu schreiben
+if after(change(bUpdate@),2000u64) then {
+   cOut@=cLine1@+cLine2@+cLine3@+cLine4@+$</tbody></table>$c2200+cLine5@+cLine6@+cLine7@+cLine8@+cLine9@+cLine10@+$</tbody></table>$c2200;
+   weboutput(woID,cOut@);
+} endif
+
+// ----------------------------------------------------------------------------------------------
+//
+//     Graf oben rechts
+//
+// ----------------------------------------------------------------------------------------------
+
+vmChartWahlInt(wbSpannung,wsID,wcMessung,uBf,1,$<font color=teal>Spannungen$,wbStrom,wbLeistung,wbTHDU,wbTHDI)
+vmChartWahlInt(wbStrom,wsID,wcMessung,(uBf+3),2,$<font color=teal>Ströme$,wbSpannung,wbLeistung,wbTHDU,wbTHDI)
+vmChartWahlInt(wbLeistung,wsID,wcMessung,(uBf+6),3,$<font color=teal>Leistungen$,wbSpannung,wbStrom,wbTHDU,wbTHDI)
+vmChartWahlInt(wbTHDU,wsID,wcMessung,(uBf+9),4,$<font color=teal>THDU$,wbSpannung,wbStrom,wbLeistung,wbTHDI)
+vmChartWahlInt(wbTHDI,wsID,wcMessung,(uBf+12),5,$<font color=teal>THDI$,wbSpannung,wbStrom,wbLeistung,wbTHDU)
+
+:var uLen@
+uLen@=240u16
+// Spannungen
+timebufferconfig(uBf, 0, uLen@, 0.0)
+timebufferconfig(uBf+1, 0, uLen@, 0.0)
+timebufferconfig(uBf+2, 0, uLen@, 0.0)
+// Ströme
+timebufferconfig(uBf+3, 0, uLen@, 0.0)
+timebufferconfig(uBf+4, 0, uLen@, 0.0)
+timebufferconfig(uBf+5, 0, uLen@, 0.0)
+// Leistungen
+timebufferconfig(uBf+6, 0, uLen@, 0.0f32)
+timebufferconfig(uBf+7, 0, uLen@, 0.0f32)
+timebufferconfig(uBf+8, 0, uLen@, 0.0f32)
+// THD_U
+timebufferconfig(uBf+9, 0, uLen@, 0.0)
+timebufferconfig(uBf+10, 0, uLen@, 0.0)
+timebufferconfig(uBf+11, 0, uLen@, 0.0)
+// THD_I
+timebufferconfig(uBf+12, 0, uLen@, 0.0)
+timebufferconfig(uBf+13, 0, uLen@, 0.0)
+timebufferconfig(uBf+14, 0, uLen@, 0.0)
+
+// Gesamtleistung : P, Q 
+timebufferconfig(uBf+15, 0, uLen@, 0.0f32)
+timebufferconfig(uBf+16, 0, uLen@, 0.0f32)
+// Frequenz
+timebufferconfig(uBf+17, 0, uLen@, 0.0f32)
+if after(systemstart(),convert(random(20000u32),0u64)) then {
+   write(gbAnford1,EIN);             
+   write(gbAnford2,EIN);
+   mtimechartpos(wcMessung,0,uBf+6,0u16,uLen@-1u16);
+   mtimechartpos(wcMessung,1,uBf+7,0u16,uLen@-1u16);
+   mtimechartpos(wcMessung,2,uBf+8,0u16,uLen@-1u16);
+   pdisplay(wbLeistung,$<font color=teal>Leistungen$,OKCIRCLE,ACTIVE,GREEN,wsID);
+   pdisplay(wbStrom,$$,CROSSCIRCLE,INACTIVE,GREY,wsID);
+   pdisplay(wbSpannung,$$,CROSSCIRCLE,INACTIVE,GREY,wsID);
+   pdisplay(wbTHDU,$$,CROSSCIRCLE,INACTIVE,GREY,wsID);
+   pdisplay(wbTHDI,$$,CROSSCIRCLE,INACTIVE,GREY,wsID);
+  
+   mtimechartpos(wcMessungP,0,uBf+15,0u16,uLen@-1u16);
+   mtimechartpos(wcMessungP,1,uBf+16,0u16,uLen@-1u16);
+   mtimechartpos(wcMessungP,2,uBf+17,0u16,uLen@-1u16);
+   
+}endif 
+
+
+// Spannungen
+:var fUmaxL1@
+fUmaxL1@=0.0
+:var fUmaxL2@
+fUmaxL2@=0.0
+:var fUmaxL3@
+fUmaxL3@=0.0
+:var fUminL1@
+fUminL1@=0.0
+:var fUminL2@
+fUminL2@=0.0
+:var fUminL3@
+fUminL3@=0.0
+
+vmVerarbeiteInt(gfU1/fScal@,fUmaxL1@,fUminL1@,uBf)
+vmVerarbeiteInt(gfU2/fScal@,fUmaxL2@,fUminL2@,uBf+1)
+vmVerarbeiteInt(gfU3/fScal@,fUmaxL3@,fUminL3@,uBf+2)
+
+// Ströme
+:var fImaxL1@
+fImaxL1@=0.0
+:var fImaxL2@
+fImaxL2@=0.0
+:var fImaxL3@
+fImaxL3@=0.0
+:var fIminL1@
+fIminL1@=0.0
+:var fIminL2@
+fIminL2@=0.0
+:var fIminL3@
+fIminL3@=0.0
+
+vmVerarbeiteInt(gfI1/fScal@,fImaxL1@,fIminL1@,uBf+3)
+vmVerarbeiteInt(gfI2/fScal@,fImaxL2@,fIminL2@,uBf+4)
+vmVerarbeiteInt(gfI3/fScal@,fImaxL3@,fIminL3@,uBf+5)
+
+// Leistungen
+:var fPmaxL1@
+fPmaxL1@=0.0f32
+:var fPmaxL2@
+fPmaxL2@=0.0f32
+:var fPmaxL3@
+fPmaxL3@=0.0f32
+:var fPminL1@
+fPminL1@=0.0f32
+:var fPminL2@
+fPminL2@=0.0f32
+:var fPminL3@
+fPminL3@=0.0f32
+
+
+
+vmVerarbeiteInt(gfP1,fPmaxL1@,fPminL1@,uBf+6)
+vmVerarbeiteInt(gfP2,fPmaxL2@,fPminL2@,uBf+7)
+vmVerarbeiteInt(gfP3,fPmaxL3@,fPminL3@,uBf+8)
+
+:var fPmax@
+fPmax@=0.0f32
+:var fPmin@
+fPmin@=0.0f32
+
+vmVerarbeiteInt(gfP,fPmax@,fPmin@,uBf+15)
+
+
+:var fQmax@
+fQmax@=0.0f32
+:var fQmin@
+fQmin@=0.0f32
+vmVerarbeiteInt(gfQ,fQmax@,fQmin@,uBf+16)
+
+:var ffmax@
+ffmax@=0.0f32
+:var ffmin@
+ffmin@=0.0f32
+
+vmVerarbeiteInt(gfFreq,ffmax@,ffmin@,uBf+17)
+
+
+// THDU
+:var iTHDUmaxL1@
+iTHDUmaxL1@=0s16
+:var iTHDUmaxL2@
+iTHDUmaxL2@=0s16
+:var iTHDUmaxL3@
+iTHDUmaxL3@=0s16
+:var iTHDUminL1@
+iTHDUminL1@=0s16
+:var iTHDUminL2@
+iTHDUminL2@=0s16
+:var iTHDUminL3@
+iTHDUminL3@=0s16
+
+
+vmVerarbeiteInts16(giTHDUL1,iTHDUmaxL1@,iTHDUminL1@,uBf+9)
+vmVerarbeiteInts16(giTHDUL2,iTHDUmaxL2@,iTHDUminL2@,uBf+10)
+vmVerarbeiteInts16(giTHDUL3,iTHDUmaxL3@,iTHDUminL3@,uBf+11)
+
+// THDI
+:var iTHDImaxL1@
+iTHDImaxL1@=0s16
+:var iTHDImaxL2@
+iTHDImaxL2@=0s16
+:var iTHDImaxL3@
+iTHDImaxL3@=0s16
+:var iTHDIminL1@
+iTHDIminL1@=0s16
+:var iTHDIminL2@
+iTHDIminL2@=0s16
+:var iTHDIminL3@
+iTHDIminL3@=0s16
+
+vmVerarbeiteInts16(giTHDIL1,iTHDImaxL1@,iTHDIminL1@,uBf+12)
+vmVerarbeiteInts16(giTHDIL2,iTHDImaxL2@,iTHDIminL2@,uBf+13)
+vmVerarbeiteInts16(giTHDIL3,iTHDImaxL3@,iTHDIminL3@,uBf+14)
+
+// ----------------------------------------------------------------------------------------------
+//
+//     MaxAnzeige
+//
+// ----------------------------------------------------------------------------------------------
+// Tabelle mit den Leistungswerten
+:var cLineM1@
+cLineM1@=$<table border="0" align=center width=98% bgcolor=#E0E0E0  style="font-size:88%;font-family:helvetica"> <colgroup> <col width=8%> <col width=23%> <col width=23%>  <col width=23%> <col width=23%> </colgroup> <thead>\\
+<tr>\\
+  <th> </th>\\
+  <th>P <sub> &#931 </sub> [W] </th>\\
+  <th>U [V]</th>\\
+  <th>I [A]</th>\\
+  <th>THD<sub>U</sub> [%]</th>\\
+</tr>\\
+</thead><tbody>$c2200
+
+:var bUpdateMinMax@
+bUpdateMinMax@=AUS
+
+:var cLineMOut@
+cLineMOut@=$$c2200
+:var cLineM2@
+cLineM2@=$$c2200
+// Tabelle aufbauen
+vmLineMinMaxInt(cLineM2@,$Max$,fPmax@,max(fUmaxL1@,fUmaxL2@,fUmaxL3@),max(fImaxL1@,fImaxL2@,fImaxL3@),max(iTHDUmaxL1@,iTHDUmaxL2@,iTHDUmaxL3@),bUpdateMinMax@)
+:var cLineM3@
+cLineM3@=$$c2200
+vmLineMinMaxInt(cLineM3@,$Min$,fPmin@,min(fUminL1@,fUminL2@,fUminL3@),min(fIminL1@,fIminL2@,fIminL3@),min(iTHDUminL1@,iTHDUminL2@,iTHDUminL3@),bUpdateMinMax@)
+
+:var cLineM4@
+cLineM4@=$<p style="font-size:25%;font-family:helvetica"> &#160 </p> <table border="0" align=center  bgcolor=#E0E0E0  width=98% style=$c2200+cTabFont@+$>  <colgroup> <col width=33%> <col width=33%>  <col width=33%> </colgroup> <tbody><tr align=center> <th>f [Hz] </th><th> f<sub> max</sub> [Hz] </th><th> f<sub> min</sub> [Hz] </th></tr>   <tr align=center> <td> $c2200+cmDisplayF32(gfFreq^f32,3) +$ </td> <td>$c2200+cmDisplayF32(ffmax@,3)+$ </td><td>$c2200+cmDisplayF32(ffmin@,3)+$</td></tr></tbody></table>$c2200
+
+:var cLineM5@
+cLineM5@=$<p style="font-size:25%;font-family:helvetica"> &#160 </p> <table border="0" align=left  bgcolor=#E0E0E0  width=58% style=$c2200+cTabFont@+$>  <colgroup> <col width=33%> <col width=67%>  </colgroup> <tbody> <tr align=center> <td> k<sub> Schieflast</sub> </td> <td>$c2200+convert(convert(gfSchiefLast,0f16)/255.0,$$)+$ [%]</td></tr></tbody></table>$c2200
+
+:var cLineM6@
+cLineM6@=$<p style="font-size:25%;font-family:helvetica"> &#160 </p> <table border="0" align=left  bgcolor=#E0E0E0  width=58% style=$c2200+cTabFont@+$>  <colgroup> <col width=33%> <col width=67%>  </colgroup> <tbody> <tr align=center> <td> I<sub>0</sub></td> <td>$c2200+convert(gfIO/1000.0,$$)+$ [A] </td></tr></tbody></table>$c2200
+if change(gfSchiefLast) or change(gfFreq) or change(gfIO) then bUpdateMinMax@=!bUpdateMinMax@ endif
+
+:var cStartZeit@
+cStartZeit@=$$
+
+if mod(minute(),6)==0  then {
+   cStartZeit@=split(convert(settime(),$$), 3u16,EOS);
+} endif
+
+// Wenn der Smartmeter sehr viel Werteänderungen auf einmal schickt, ist es
+// besser die Daten erst nach dem Eintreffen aller Daten einmal auf den Webserver
+// zu schreiben
+if after(change(bUpdateMinMax@),2000u64) then {
+   cLineMOut@=$<p style="color:black;margin-top: 0em;"> <b> Aktuelles Messintervall </b>$+cStartZeit@ +$ - $+split(convert(settime(),$$), 3u16,EOS)+$</p>$\\
+   +cLineM1@+cLineM2@+cLineM3@+$</tbody></table>$c2200+cLineM4@+cLineM5@+cLineM6@;
+   weboutput(woMinMax,cLineMOut@);
+} endif 
+
+
+// Abspeichern im Flash 
+if SHUTDOWN or htime(03,45,00) then {
+   timebufferstore(uBf);
+   timebufferstore(uBf+1);
+   timebufferstore(uBf+2);
+   timebufferstore(uBf+3);
+   timebufferstore(uBf+4);
+   timebufferstore(uBf+5);
+   timebufferstore(uBf+6);
+   timebufferstore(uBf+7);
+   timebufferstore(uBf+8);
+   timebufferstore(uBf+9);
+   timebufferstore(uBf+10);
+   timebufferstore(uBf+12);
+   timebufferstore(uBf+13);
+   timebufferstore(uBf+14);
+   timebufferstore(uBf+15);
+   timebufferstore(uBf+16);
+   timebufferstore(uBf+17);
+   timebufferstore(uBf+18);
+} endif
+if systemstart() then {
+   cStartZeit@=split(convert(settime(),$$), 2u16,EOS);
+   timebufferread(uBf);
+   timebufferread(uBf+1);
+   timebufferread(uBf+2);
+   timebufferread(uBf+3);
+   timebufferread(uBf+4);
+   timebufferread(uBf+5);
+   timebufferread(uBf+6);
+   timebufferread(uBf+7);
+   timebufferread(uBf+8);
+   timebufferread(uBf+9);
+   timebufferread(uBf+10);
+   timebufferread(uBf+12);
+   timebufferread(uBf+13);
+   timebufferread(uBf+14);
+   timebufferread(uBf+15);
+   timebufferread(uBf+16);
+   timebufferread(uBf+17);
+   timebufferread(uBf+18);
+} endif
+
+
+:end 

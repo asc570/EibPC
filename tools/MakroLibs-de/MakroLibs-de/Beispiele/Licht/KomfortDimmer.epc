@@ -1,0 +1,11 @@
+[Macros]
+//Dimmer, der über einen Bewegungsmelder und einen Schalter gesteuert wird. Durch den Schalter geht der Dimmer auf 100%(bei EIN) bzw. 0%(bei AUS). Wenn der Schalter AUS ist und der Bewegungsmelder EIN meldet, geht der Dimmer zwischen 6 und 20Uhr auf 50% und nach 20Uhr auf 90%
+KomfortDimmer("WigaDimmerAn-1/1/23","WigaDimmerWert-1/1/11","EGFlurBewegung-1/2/7","WigaDimmerSchalter-1/1/24",20,0,50,6,0,90)
+
+[MacroLibs]
+EnertexLicht.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

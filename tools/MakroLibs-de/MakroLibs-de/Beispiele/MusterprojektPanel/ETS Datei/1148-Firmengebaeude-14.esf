@@ -1,0 +1,1362 @@
+1148-Firmengebäude
+Beleuchtung.Keller.0/0/4	Büro_3	EIS 1 'Switching' (1 Bit)	Low	0/0/7 0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/5	Büro_4	EIS 1 'Switching' (1 Bit)	Low	0/0/7 0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/6	Büro_5	EIS 1 'Switching' (1 Bit)	Low	0/0/7 0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/7	BüroAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/3	LagerAlleLichter	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/16	Bad10	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/14	Technik	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/8	Flur	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7
+Beleuchtung.Keller.0/0/17	LagerAlleLichter_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/18	Büro_3_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/19	Büro_4_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/20	Büro_5_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/21	Flur_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/22	Technik_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Keller.0/0/23	Bad10_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/0	Labor_1	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/1	Büro_2	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/2	Konstruktion_3	EIS 1 'Switching' (1 Bit)	Low	0/1/4 0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/3	Konstruktion_4	EIS 1 'Switching' (1 Bit)	Low	0/1/4 0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/4	KonstruktionAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/6	Küche_6	EIS 1 'Switching' (1 Bit)	Low	0/1/8 0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/7	Küche_7	EIS 1 'Switching' (1 Bit)	Low	0/1/8 0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/8	KücheAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/9	Abstellraum 8	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/10	WCDamen_9	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/5	Flur_5	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/11	EingangSchalten	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.EG.0/1/12	EingangDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung.EG.0/1/15	TreppeKGEG_led	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7 0/5/9
+Beleuchtung.EG.0/1/13	EingangDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung.EG.0/1/17	TreppeKGEGDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung.EG.0/1/16	TreppeKGEG	EIS 1 'Switching' (1 Bit)	Low	0/0/8 0/1/11 0/5/0 0/5/1 0/5/5 0/5/7 0/5/8
+Beleuchtung.EG.0/1/14	TreppeKGEGDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung.EG.0/1/19	Büro_2_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/18	Labor_1_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/20	Konstruktion_3_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/21	Konstruktion_4_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/22	Flur_5_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/23	Küche_6_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/24	Küche_7_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/25	Abstellraum 8_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/26	WCDamen_9_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/27	TreppeKGEG_led_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.EG.0/1/28	TreppeKGEG_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/0	Besprechung_1	EIS 1 'Switching' (1 Bit)	Low	0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/1	Büro1_2	EIS 1 'Switching' (1 Bit)	Low	0/2/3 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/2	Büro1_3	EIS 1 'Switching' (1 Bit)	Low	0/2/3 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/3	Büro1AlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/4	Büro2_4	EIS 1 'Switching' (1 Bit)	Low	0/2/8 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/5	Büro2_5	EIS 1 'Switching' (1 Bit)	Low	0/2/8 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/6	Büro2_6	EIS 1 'Switching' (1 Bit)	Low	0/2/8 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/7	Büro2_7	EIS 1 'Switching' (1 Bit)	Low	0/2/8 0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/8	Büro2AlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/12	Ankleide 12	EIS 1 'Switching' (1 Bit)	Low	0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/14	WCHerren 10	EIS 1 'Switching' (1 Bit)	Low	0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/17	TreppeEGOGled	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7 0/5/9
+Beleuchtung.OG.0/2/18	Lounge 13Schalten	EIS 1 'Switching' (1 Bit)	Low	0/5/1 0/5/5 0/5/7
+Beleuchtung.OG.0/2/19	Lounge 13DimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung.OG.0/2/15	Lounge 13Dimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung.OG.0/2/9	Flur	EIS 1 'Switching' (1 Bit)	Low	0/5/2 0/5/5 0/5/7
+Beleuchtung.OG.0/2/16	TreppeEGOG	EIS 1 'Switching' (1 Bit)	Low	0/1/11 0/2/18 0/5/1 0/5/5 0/5/7 0/5/8
+Beleuchtung.OG.0/2/13	WCDamen 11	EIS 1 'Switching' (1 Bit)	Low	0/5/2 0/5/6 0/5/7
+Beleuchtung.OG.0/2/11	TreppeEGOGDimmerWert	Uncertain (1 Byte)	Low	
+Beleuchtung.OG.0/2/10	TreppeEGOGDimmer	EIS 2 'Dimming - control' (4 Bit)	Low	
+Beleuchtung.OG.0/2/20	Besprechung_1_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/21	Büro1_2_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/22	Büro1_3_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/23	Büro2_4_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/24	Büro2_5_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/25	Büro2_6_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/26	Büro2_7_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/27	Flur_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/28	Ankleide 12_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/29	WCDamen 11_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/30	WCHerren 10_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/31	TreppeEGOG_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/32	TreppeEGOGled_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.OG.0/2/33	Lounge 13Schalten_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/0	Büro1_1	EIS 1 'Switching' (1 Bit)	Low	0/3/2 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/1	Büro1_2	EIS 1 'Switching' (1 Bit)	Low	0/3/2 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/2	Büro1AlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/4	Büro2_3	EIS 1 'Switching' (1 Bit)	Low	0/3/7 0/3/8 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/5	Büro2_4	EIS 1 'Switching' (1 Bit)	Low	0/3/8 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/3	Büro2_5	EIS 1 'Switching' (1 Bit)	Low	0/3/7 0/3/8 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/6	Büro2_6	EIS 1 'Switching' (1 Bit)	Low	0/3/8 0/5/3 0/5/6 0/5/7
+Beleuchtung.AnbauEG.0/3/8	Büro2AlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/7	ProduktionSilvia_Elisabeth	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/11	Büro2_3Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/10	Büro2_4Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/12	Büro2_5Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/9	Büro2_6Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/13	Büro1_1_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauEG.0/3/14	Büro1_2_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/0	Büro1_1	EIS 1 'Switching' (1 Bit)	Low	0/4/11 0/5/4 0/5/6 0/5/7
+Beleuchtung.AnbauOG.0/4/1	Büro2_2	EIS 1 'Switching' (1 Bit)	Low	0/4/11 0/5/4 0/5/6 0/5/7
+Beleuchtung.AnbauOG.0/4/2	Büro3_3	EIS 1 'Switching' (1 Bit)	Low	0/4/10 0/5/4 0/5/6 0/5/7
+Beleuchtung.AnbauOG.0/4/3	Büro4_4	EIS 1 'Switching' (1 Bit)	Low	0/4/10 0/5/4 0/5/6 0/5/7
+Beleuchtung.AnbauOG.0/4/11	Büro1+2	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/10	Büro3+4	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/4	Büro1_1_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/5	Büro2_2_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/6	Büro3_3_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.AnbauOG.0/4/7	Büro4_4_Status	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/0	KGalleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/7	AlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/1	EGalleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/2	OGalleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/5	HaupthausAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/6	AnbauAlleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/3	AnbauEGalleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/4	AnbauOGalleLichter	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/9	TreppeLEDs	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Zentralfunktion.0/5/8	Treppe	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Außenanlage.0/6/0	KellerlichtAußen	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7 0/6/4
+Beleuchtung.Außenanlage.0/6/1	KellerBüroAußen	EIS 1 'Switching' (1 Bit)	Low	0/5/0 0/5/5 0/5/7 0/6/4
+Beleuchtung.Außenanlage.0/6/2	HaupteingangAußen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Außenanlage.0/6/3	Reklamenbeleuchtung	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Außenanlage.0/6/4	KellerAußen	EIS 1 'Switching' (1 Bit)	Low	
+Beleuchtung.Außenanlage.0/6/5	AussenbeleuchtungAnbau	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Keller.1/0/2	Büro	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.Keller.1/0/0	Lager	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.Keller.1/0/4	Flur	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.Keller.1/0/1	StatusLager	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/3	StatusBüro	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/5	StatusFlur	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/7	StatusBad	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/6	Bad	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.Keller.1/0/11	BüroIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/14	BüroSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/19	BüroRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/13	BadIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/16	BadSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/18	BadRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/9	LagerSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/8	LagerIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/10	LagerRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/21	LagerRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/22	BadRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Keller.1/0/23	BüroRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/0	Labor	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/1	StatusLabor	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/2	Büro	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/3	StatusBüro	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/4	Konstruktion	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/5	StatusKonstruktion	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/8	Küche	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/9	StatusKüche	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/10	WC	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/11	StatusWC	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/6	Flur+Eingang	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.EG.1/1/7	StatusFlur+Eingang	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/16	KonstruktionIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/23	KonstruktionSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/30	KonstruktionRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/25	KücheSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/18	KücheIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/32	KücheRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/22	BüroSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/15	BüroIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/29	BüroRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/26	WCSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/19	WCIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/33	WCRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/21	LaborSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/14	LaborIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/28	LaborRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/20	EingangIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/34	EingangRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/27	EingangSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.EG.1/1/12	LaborRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/13	BüroRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/17	KonstruktionRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/24	KücheRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/31	WCRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.EG.1/1/35	EingangRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/0	Büro1	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/1	StatusBüro1	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/2	Büro2	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/3	StatusBüro2	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/4	Besprechung	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/6	WCDamen	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/8	WCHerren	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/9	StatusWCHerren	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/5	StatusBesprechung	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/7	StatusWCDamen	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/10	Flur+Lounge	Uncertain (1 Byte)	Low	1/5/0
+Heizen/Temperatur.OG.1/2/11	StatusFlur+Lounge	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/14	Büro1IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/15	Büro2IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/22	Büro2SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/29	Büro2RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/23	BesprechungSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/16	BesprechungIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/30	BesprechungRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/21	Büro1SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/28	Büro1RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/18	WCHerrenIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/25	WCHerrenSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/32	WCHerrenRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/31	WCDamenRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/24	WCDamenSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/17	WCDamenIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/19	FlurLoungeIstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/33	FlurLoungeRkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/26	FlurLoungeSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.OG.1/2/35	BesprechungRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/12	Büro1RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/13	Büro2RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/36	WCDamenRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.OG.1/2/38	WCHerrenRkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/0	Büro1	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauEG.1/3/2	Büro2	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauEG.1/3/7	Büro2SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/9	Büro2RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/10	Büro2AktuelleSollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/6	Büor1SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/8	Büro1RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/12	Büro1RKBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/1	StatusBüro1	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/3	StatusBüro2	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/4	Büro1IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/5	Büro2IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauEG.1/3/11	Büro2RKBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/0	Büro1	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauOG.1/4/2	Büro2	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauOG.1/4/4	Büro3	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauOG.1/4/6	Büro4	Uncertain (1 Byte)	Low	1/5/1
+Heizen/Temperatur.AnbauOG.1/4/12	Büro1SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/16	Büro1RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/19	Büro4RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/15	Büro4SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/18	Büro3RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/14	Büro3SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/17	Büro2RkBetriebsart	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/13	Büro2SollTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/1	StatusBüro1	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/3	StatusBüro2	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/5	StatusBüro3	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/7	StatusBüro4	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/8	Büro1IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/9	Büro2IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/10	Büro3IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/11	Büro4IstTemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/20	Büro1RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/23	Büro4RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/22	Büro3RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.AnbauOG.1/4/21	Büro2RkBetriebsartStatus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Zentralfunktion.1/5/0	HeizungHaupthaus	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Zentralfunktion.1/5/1	HeizungAnbau	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/1	Rücklauftemperatur	Uncertain (2 Byte)	Low	1/6/2 1/6/3 1/6/4 1/6/6 1/6/7 1/6/30 1/6/100
+Heizen/Temperatur.Dimplex.1/6/2	Vorlauftemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/100	Aussentemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/3	Displayanzeige Störmeldungen	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/4	Displayanzeige Statusanzeige	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/6	Solltemperatur 2 Heizkreis	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/7	Solltemperatur Warmwasser	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/8	EVU Sperre	EIS 1 'Switching' (1 Bit)	Low	1/6/18 1/6/19 1/6/20 1/6/21 1/6/23 1/6/24
+Heizen/Temperatur.Dimplex.1/6/9	Betriebstunden Verdichter 1	Uncertain (2 Byte)	Low	1/6/10 1/6/12 1/6/13 1/6/31 1/6/32 1/6/33 1/6/34 1/6/35
+Heizen/Temperatur.Dimplex.1/6/10	Betriebstunden Verdichter 2	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/13	Betriebstunden Ventilator	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/12	Betriebstunden Wärmepumpe	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/15	DimplexModus Verstellen	Uncertain (1 Byte)	Low	1/6/16
+Heizen/Temperatur.Dimplex.1/6/16	DimplexModus Anzeigen	Uncertain (1 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/19	Verdichter 1 	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/18	Verdichter 2	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/20	Primärpumpe Ventilator	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/21	Heizungspumpe M13	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/23	Zusatzumwälzpumpe	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/24	Flanschheizung ein/aus	EIS 1 'Switching' (1 Bit)	Low	
+Heizen/Temperatur.Dimplex.1/6/30	WärmeMenge (100M)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/31	Wärmemenge (10k)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/32	Wärmemenge	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/33	Heizung Parallelverschiebung (offset -19)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/34	Raumtemperatur (IN)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/35	Raumtemperatur (OUT)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/36	Heizkurvenendpunkt (IN)	Uncertain (2 Byte)	Low	1/6/37 1/6/38 1/6/39 1/6/40 1/6/41
+Heizen/Temperatur.Dimplex.1/6/37	Festwerttemperatur	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/38	Hysterese (IN)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/39	Hysterese (OUT)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/40	Betriebsmodus Schreiben(0-5)	Uncertain (2 Byte)	Low	
+Heizen/Temperatur.Dimplex.1/6/41	Betriebsmodus Anzeigen(0-5)	Uncertain (2 Byte)	Low	
+Beschattung.Keller.3/0/0	Lager1RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/2	Lager1LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/1	Lager1RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/0 3/5/7
+Beschattung.Keller.3/0/3	Lager1LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Keller.3/0/4	Büro2RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/5	Büro2RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/0/16 3/5/0 3/5/7
+Beschattung.Keller.3/0/6	Büro2LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/7	Büro2LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/0/17
+Beschattung.Keller.3/0/8	Büro3RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/9	Büro3RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/0/16 3/5/0 3/5/7
+Beschattung.Keller.3/0/10	Büro3LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/11	Büro3LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/0/17
+Beschattung.Keller.3/0/12	Büro4RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/13	Büro4RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/0/16 3/5/0 3/5/7
+Beschattung.Keller.3/0/15	Büro4LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/0/17
+Beschattung.Keller.3/0/14	Büro4LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.Keller.3/0/16	BüroAlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Keller.3/0/17	BüroStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/0	Büro2RolloWert	Uncertain (1 Byte)	Low	3/1/52
+Beschattung.EG.3/1/1	Büro3RolloWert	Uncertain (1 Byte)	Low	3/1/52
+Beschattung.EG.3/1/2	Konstruktion4RolloWert	Uncertain (1 Byte)	Low	3/1/53
+Beschattung.EG.3/1/3	Konstruktion5RolloWert	Uncertain (1 Byte)	Low	3/1/53
+Beschattung.EG.3/1/4	Küche7RolloWert	Uncertain (1 Byte)	Low	3/1/54
+Beschattung.EG.3/1/5	Küche8RolloWert	Uncertain (1 Byte)	Low	3/1/54
+Beschattung.EG.3/1/6	WCHerren10RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/7	Labor1RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/10	Büro2RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/40 3/5/1 3/5/7
+Beschattung.EG.3/1/11	Büro3RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/40 3/5/1 3/5/7
+Beschattung.EG.3/1/12	Konstruktion4RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/41 3/5/1 3/5/7
+Beschattung.EG.3/1/13	Konstruktion5RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/41 3/5/1 3/5/7
+Beschattung.EG.3/1/15	Küche8RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/42 3/5/1 3/5/7
+Beschattung.EG.3/1/20	Büro2LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/21	Büro3LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/22	Konstruktion4LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/23	Konstruktion5LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/30	Büro2LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/48
+Beschattung.EG.3/1/41	KonstruktionAlloRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/8	Flur6RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/18	Flur6RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/43 3/5/1 3/5/7
+Beschattung.EG.3/1/19	Flur9RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/43 3/5/1 3/5/7
+Beschattung.EG.3/1/28	Flur6LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/29	Flur9LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/38	Flur6LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/51
+Beschattung.EG.3/1/39	Flur9LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/51
+Beschattung.EG.3/1/43	FlurAlloRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/9	Flur9RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/14	Küche7RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/1/42 3/5/1 3/5/7
+Beschattung.EG.3/1/42	KücheAlloRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/16	WCDamen10RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/1 3/5/7
+Beschattung.EG.3/1/17	Labor1RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/1 3/5/7
+Beschattung.EG.3/1/24	Küche7LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/25	Küche8LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/26	WCDamen10LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/27	Labor1LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/31	Büro3LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/48
+Beschattung.EG.3/1/32	Konstruktion4LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/49
+Beschattung.EG.3/1/33	Konstruktion5LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/49
+Beschattung.EG.3/1/34	Küche7LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/50
+Beschattung.EG.3/1/35	Küche8LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/1/50
+Beschattung.EG.3/1/36	WCDamen10LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/37	Labor1LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/40	BüroAlloRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/51	FlurStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/48	BüroStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/49	KonstruktionStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/50	KücheStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/45	EGTreppenhausRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/1 3/5/7
+Beschattung.EG.3/1/44	EGTreppenhausRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/46	EGTreppenhausLamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/47	EGTreppenhausLamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.EG.3/1/52	BüroFloRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/53	BüroKonstruktionRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.EG.3/1/54	KücheRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/0	Büro1_2RolloWert	Uncertain (1 Byte)	Low	3/2/54
+Beschattung.OG.3/2/1	Büro1_3RolloWert	Uncertain (1 Byte)	Low	3/2/54
+Beschattung.OG.3/2/2	Büro2_4RolloWert	Uncertain (1 Byte)	Low	3/2/55
+Beschattung.OG.3/2/3	Büro2_5RolloWert	Uncertain (1 Byte)	Low	3/2/55
+Beschattung.OG.3/2/4	Büro2_6RolloWert	Uncertain (1 Byte)	Low	3/2/55
+Beschattung.OG.3/2/5	WCDamen9RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/7	Besprechung1RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/12	Büro1_2RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/48 3/5/2 3/5/7
+Beschattung.OG.3/2/13	Büro1_3RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/48 3/5/2 3/5/7
+Beschattung.OG.3/2/14	Büro2_4RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/49 3/5/2 3/5/7
+Beschattung.OG.3/2/16	Büro2_6RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/49 3/5/2 3/5/7
+Beschattung.OG.3/2/17	WCDamen9RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/2 3/5/7
+Beschattung.OG.3/2/18	WCHerren10RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/2 3/5/7
+Beschattung.OG.3/2/19	Besprechung1RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/2 3/5/7
+Beschattung.OG.3/2/24	Büro1_2LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/25	Büro1_3LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/26	Büro2_4LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/27	Büro2_5LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/28	Büro2_6LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/29	WCDamen9LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/30	WCHerren10LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/31	Besprechung1LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/36	Büro1_2LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/51
+Beschattung.OG.3/2/37	Büro1_3LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/51
+Beschattung.OG.3/2/38	Büro2_4LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/52
+Beschattung.OG.3/2/39	Büro2_5LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/52
+Beschattung.OG.3/2/40	Büro2_6LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/52
+Beschattung.OG.3/2/15	Büro2_5RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/49 3/5/2 3/5/7
+Beschattung.OG.3/2/41	WCDamen9LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/42	WCHerren10LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/43	Besprechung1LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/48	Büro1AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/49	Büro2AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/8	Flur7RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/9	Flur8RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/10	Lounge1112RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/11	TreppenhausRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/20	Flur7RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/50 3/5/2 3/5/7
+Beschattung.OG.3/2/21	Flur8RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/2/50 3/5/2 3/5/7
+Beschattung.OG.3/2/22	Lounge1112RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/2 3/5/7
+Beschattung.OG.3/2/23	TreppenhausRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/2 3/5/7
+Beschattung.OG.3/2/32	Flur7LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/33	Flur8LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/34	Lounge1112LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/35	TreppenhausLamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/44	Flur7LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/53
+Beschattung.OG.3/2/45	Flur8LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/2/53
+Beschattung.OG.3/2/46	Lounge1112LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/47	TreppenhausLamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/50	FlurAlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/6	WCHerren10RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/53	FlurStopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/52	Büro2Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/51	Büro1Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.OG.3/2/54	Büro1alleRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.OG.3/2/55	Büro2alleRolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/0	Büro1_1RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/1	Büro2_2RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/2	Büro2_3RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/3	Büro2_4RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/4	Büro2_5RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/6	Büro1_7RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/7	Büro1_7RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/28 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/8	Büro1_1RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/28 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/9	Büro2_2RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/29 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/10	Büro2_3RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/29 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/11	Büro2_4RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/29 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/12	Büro2_5RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/29 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/14	Büro1_1LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/15	Büro2_2LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/16	Büro2_3LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/17	Büro2_4LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/18	Büro2_5LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/19	Büro1_6LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/20	Büro1_7LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/21	Büro1_1LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/30
+Beschattung.AnbauEG.3/3/22	Büro2_2LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/31
+Beschattung.AnbauEG.3/3/23	Büro2_3LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/31
+Beschattung.AnbauEG.3/3/24	Büro2_4LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/31
+Beschattung.AnbauEG.3/3/25	Büro2_5LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/31
+Beschattung.AnbauEG.3/3/26	Büro1_6LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/30
+Beschattung.AnbauEG.3/3/27	Büro1_7LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/3/30
+Beschattung.AnbauEG.3/3/28	Büro1AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/29	Büro2AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/13	Büro1_6RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/3/28 3/5/3 3/5/5
+Beschattung.AnbauEG.3/3/31	Büro2Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/30	Büro1Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/5	Büro1_6RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/32	Büro1Lager_5StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/33	Büro1Lager_5StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/34	Büro1Lager_5StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/35	Büro1Lager_6StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/36	Büro1Lager_6StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/37	Büro1Lager_6StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/38	Büro1Lager_7StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/39	Büro1Lager_7StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/40	Büro1Lager_7StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/41	Büro2Produktion_1StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/42	Büro2Produktion_1StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/43	Büro2Produktion_1StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/44	Büro2Produktion_2StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/45	Büro2Produktion_2StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/46	Büro2Produktion_2StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/47	Büro2Produktion_3StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/48	Büro2Produktion_3StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/49	Büro2Produktion_3StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/50	Büro2Produktion_4StatusGütigkeit	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauEG.3/3/51	Büro2Produktion_4StatusLamellen	Uncertain (1 Byte)	Low	
+Beschattung.AnbauEG.3/3/52	Büro2Produktion_4StatusRollo	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/4	Büro3_5LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/32
+Beschattung.AnbauOG.3/4/11	Büro3_5LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/17	Büro3_5RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/1 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/25	Büro3_5RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/26	Büro3_4RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/18	Büro3_4RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/1 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/12	Büro3_4LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/5	Büro3_4LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/32
+Beschattung.AnbauOG.3/4/6	Büro2_3LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/31
+Beschattung.AnbauOG.3/4/13	Büro2_3LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/19	Büro2_3RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/0 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/27	Büro2_3RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/28	Büro2_2RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/20	Büro2_2RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/0 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/14	Büro2_2LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/7	Büro2_2LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/31
+Beschattung.AnbauOG.3/4/8	Büro1_1LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/15	Büro1_1LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/21	Büro1_1RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/29	Büro1_1RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/23	Büro4_7RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/22	Büro4_7RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/30 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/9	Büro4_7LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/2	Büro4_7LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/33
+Beschattung.AnbauOG.3/4/3	Büro4_6LamelleAufZu	EIS 1 'Switching' (1 Bit)	Low	3/4/33
+Beschattung.AnbauOG.3/4/10	Büro4_6LamelleWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/16	Büro4_6RolloAufAb	EIS 1 'Switching' (1 Bit)	Low	3/4/30 3/5/4 3/5/5
+Beschattung.AnbauOG.3/4/24	Büro4_6RolloWert	Uncertain (1 Byte)	Low	
+Beschattung.AnbauOG.3/4/30	Büro4AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/1	Büro3AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/0	Büro2AlleRolloAufAb	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/31	Büro2Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/32	Büro3Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.AnbauOG.3/4/33	Büro4Stopp	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/6	AlloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/0	KGalloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/7	HaupthausAlloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/1	EGalloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/2	OGalloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/3	AnbauEGalloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/5	AnbauAlloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Beschattung.Zentralfunktion.3/5/4	AnbauOGalloRolloAufZu	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Keller.4/0/5	TerrasseSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/0 4/5/5 4/5/6
+Fenster/Tür/Steckdose.Keller.4/0/6	TerrasseSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Keller.4/0/7	LagerFensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Keller.4/0/9	BüroFensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Keller.4/0/3	Bad5Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Keller.4/0/10	TreppeKGEGFensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/13	LaborSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/1 4/5/5 4/5/6 7/0/7
+Fenster/Tür/Steckdose.EG.4/1/17	LaborSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/15	KonstruktionSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/14	BüroSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/11	KonstruktionSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/1 4/5/5 4/5/6
+Fenster/Tür/Steckdose.EG.4/1/10	BüroSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/1 4/5/5 4/5/6
+Fenster/Tür/Steckdose.EG.4/1/7	Labor1Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/6	WCDamen10Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/2	Konstruktion4+5Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/0	Büro2+3Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/8	Flur6+9Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/4	Küche7+8Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/24	KücheKaffeemaschinenSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/22	KücheMikrowelleSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/1	EingangWeihnachtsbaumSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/12	KücheWasserkocherSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/1 4/5/5 4/5/6
+Fenster/Tür/Steckdose.EG.4/1/27	KücheWasserkocherSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/25	KücheKaffeemaschinenSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/3	KücheMikrowelleSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.EG.4/1/26	EingangWeihnachtsbaumSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/20	BesprechungSteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/19	BesprechungSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/2 4/5/5 4/5/6
+Fenster/Tür/Steckdose.OG.4/2/15	Büro2SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/13	Büro1SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/12	Büro1Steckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/2 4/5/5 4/5/6
+Fenster/Tür/Steckdose.OG.4/2/7	Besprechung1Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/16	Büro1Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/17	Büro2Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/18	FlurFensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/6	WCHerren10Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.OG.4/2/5	WCDamen9Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/10	Büro2SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/4	Büro2_1+2ensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/1	Büro2_3+4Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/11	Büro1_6+7Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/12	Büro1_5Fensterkontakt	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/0	ZwangsstellungFensterBüro2	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/2	ZwangsstellungFensterBüro1	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/9	ProduktionSteckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/3 4/5/5 4/5/7
+Fenster/Tür/Steckdose.AnbauEG.4/3/3	SteckdoseProduktionTuer	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauEG.4/3/5	SteckdoseProduktionTuerStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/7	Büro1Steckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/4 4/5/5 4/5/7
+Fenster/Tür/Steckdose.AnbauOG.4/4/9	Büro3Steckdose	EIS 1 'Switching' (1 Bit)	Low	4/4/8 4/5/4 4/5/5 4/5/7
+Fenster/Tür/Steckdose.AnbauOG.4/4/10	Büro2Steckdose	EIS 1 'Switching' (1 Bit)	Low	4/5/4 4/5/5 4/5/7
+Fenster/Tür/Steckdose.AnbauOG.4/4/11	Büro2SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/12	Büro3SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/13	Büro4SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/14	Büro1SteckdoseStatus	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/16	Büro3Fensterkontakt8+9	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/15	Büro2Fensterkontakt10+11	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/17	Büro4Fensterkontakt13+14	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/0	Büro1Fensterkontakt12	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/8	Büro4Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/1	ZwangsstellungStrasse3	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.AnbauOG.4/4/2	ZwangsstellungHof2	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/0	KGalleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/6	HaupthausAlleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/5	AlleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/1	EGalleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/2	OGalleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/3	AnbauEGalleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/7	AnbauAlleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Fenster/Tür/Steckdose.Zentralfunktion.4/5/4	AnbauOGalleSteckdosen	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Heizung.5/6/0	AlarmHeizungKG	Uncertain (1 Byte)	Low	
+Sicherheit.Heizung.5/6/1	AlarmHeizungEG	Uncertain (1 Byte)	Low	
+Sicherheit.Heizung.5/6/4	AlarmHeizungAnbau	Uncertain (1 Byte)	Low	
+Sicherheit.Rauchmelder.5/2/7	OgRauchmelderVerteilerschrank	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/6	OgRauchmelderBüro2	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/5	OgRauchmelderChef	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/2	OgRauchmelderBesprechung	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/1	EgRauchmelderLabor	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/8	EgRauchmelderBüro1	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/9	EgRauchmelderKonstruktion	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/10	EgRauchmelderTechnik	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/0	KgRauchmelderLager	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/11	KgRauchmelderBüro	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/12	KgRauchmelderTechnik	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/3	AnbauEgRauchmelder	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Rauchmelder.5/2/4	AnbauOgRauchmelder	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Wasser.5/0/0	SensorTechnik	EIS 1 'Switching' (1 Bit)	Low	
+Sicherheit.Wasser.5/0/1	SensorKanal	EIS 1 'Switching' (1 Bit)	Low	
+Zentralfunktionen.Putzschalter.6/0/0	GesamtGebäude	EIS 1 'Switching' (1 Bit)	Low	7/1/8
+EibPC.Werte.7/0/2	PutzfunktionJalousie	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/0	Datum	Uncertain (3 Byte)	Low	
+EibPC.Werte.7/0/1	Uhr	Uncertain (3 Byte)	Low	
+EibPC.Werte.7/0/3	BeschattungFreigabe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/4	BeschattungHaupthausFreigabe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/5	BeschattungAnbauFreigabe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/7	KlingelEGHaupthaus	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/8	KlingelOGHaupthaus	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/6	LoungeLicht	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Werte.7/0/9	KlingelEGAnbau	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Bewegungsmelder.7/1/0	KG,Flur, hinten	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/1	KG,Flur, vorne	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/5	EG,Abstellraum	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/2	EG,Flur, hinten	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/3	EG,Eingang, Tür	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/4	EG,Eingang, Treppe	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/6	OG,Flur, hinten	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/7	OG,Treppenhaus	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/10	EGHaupteingangAußen	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Bewegungsmelder.7/1/13	OG,WC Herren	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/12	OG,WC Damen	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/11	EG,WC	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/14	KG,Technik	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/16	KG, WC	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/15	EG, Lager	EIS 1 'Switching' (1 Bit)	Low	6/0/0
+EibPC.Bewegungsmelder.7/1/8	OG,Ankleide	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Bewegungsmelder.7/1/17	SchaltenEGAbstellraum	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/0	BeschattungAnbauProduktionAlle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/1	BeschattungAnbauProduktionFenster1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/2	BeschattungAnbauProduktionFenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/3	BeschattungAnbauProduktionFenster3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/4	BeschattungAnbauProduktionFenster4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/5	BeschattungAnbauLagerAlle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/6	BeschattungAnbauLagerFenster1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/7	BeschattungAnbauLagerFenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/8	BeschattungAnbauLagerFenster3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/9	BeschattungAnbauOG3_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/10	BeschattungAnbauOG3_Fenster1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/11	BeschattungAnbauOG3_Fenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/12	BeschattungAnbauOG2_Fenster3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/13	BeschattungAnbauOG2_Fenster4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/14	BeschattungAnbauOG_Bib_Fenster5	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/15	BeschattungAnbauOG_EMV_Fenster6	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/16	BeschattungAnbauOG_EMV_Fenster7	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/17	BeschattungAnbauOG_EMV_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/18	BeschattungAnbauOG2_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/42	BeschattunhHaupthausOG_Besprechung	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/19	BeschattungHaupthausKG_LagerAlle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/20	BeschattunhHaupthausKG_BüroAlle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/21	BeschattunhHaupthausKG_BüroFenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/22	BeschattunhHaupthausKG_BüroFenster3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/23	BeschattunhHaupthausKG_BüroFenster4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/24	BeschattunhHaupthausEG_Büro1_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/25	BeschattunhHaupthausEG_Büro1_Fenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/26	BeschattunhHaupthausEG_Büro1_Fenster3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/27	BeschattunhHaupthausEG_Büro2_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/28	BeschattunhHaupthausEG_Büro2_Fenster4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/29	BeschattunhHaupthausEG_Büro2_Fenster5	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/30	BeschattunhHaupthausEG_Küche_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/31	BeschattunhHaupthausEG_Küche_Fenster1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/32	BeschattunhHaupthausEG_Küche_Fenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/33	BeschattunhHaupthausEGOGFlure	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/34	BeschattunhHaupthausEG_Labor	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/35	BeschattunhHaupthausOG_Chef_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/36	BeschattunhHaupthausOG_Chef_Fenster2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/37	BeschattunhHaupthausOG_Chef_Fenste3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/38	BeschattunhHaupthausOG_Simulation_Alle	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/39	BeschattunhHaupthausOG_Simulation_Fenster4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/40	BeschattunhHaupthausOG_Simulation_Fenster5	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Beschattung.7/3/41	BeschattunhHaupthausOG_Simulation_Fenster6	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/1	StromLager_1	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/4	StromBüro_3	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/5	StromBüro_4	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/6	StromBüro_5	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/16	StromBad10	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/23	BetriebsstundenBad10	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/26	NeustartBSZBad10	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/15	BetriebsstundenBüro_5	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/12	BetriebsstundenBüro_4	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/27	NeustartBSZBüro_3	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/28	NeustartBSZBüro_4	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/29	NeustartBSZBüro_5	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/34	NeustartBSZLager_1	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/0	BetriebsstundenLager_1	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/14	StromTechnik	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/22	BetriebsstundenTechnik	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/36	NeustartBSZTechnik	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/8	StromFlur	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/17	BetriebsstundenFlur	Uncertain (2 Byte)	Low	
+Überwachen.Keller.8/0/30	NeustartBSZFlur	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Keller.8/0/7	BetriebsstundenBüro_3	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/0	StromLabor_1	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/1	StromBüro_2	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/2	StromKonstruktion_3	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/3	StromKonstruktion_4	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/6	StromKüche_6	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/7	StromKüche_7	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/9	StromAbstellraum 8	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/4	StromWC_9	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/10	BetriebsstundenWC_9	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/21	BetriebsstundenAbstellraum 8	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/20	BetriebsstundenKüche_7	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/19	BetriebsstundenKüche_6	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/17	BetriebsstundenKonstruktion_4	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/16	BetriebsstundenKonstruktion_3	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/14	BetriebsstundenBüro_2	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/8	BetriebsstundenLabor_1	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/23	NeustartBSZLabor_1	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/24	NeustartBSZBüro_2	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/25	NeustartBSZKonstruktion_3	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/26	NeustartBSZKonstruktion_4	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/28	NeustartBSZKüche_6	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/29	NeustartBSZKüche_7	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/30	NeustartBSZAbstellraum 8	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/22	NeustartBSZWC_9	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/27	NeustartBSZFlur_5	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/5	StromFlur_5	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/18	BetriebsstundenFlur_5	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/33	StromBüroSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/34	StromKonstruktionSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/35	StromKücheSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/36	StromLaborSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/37	BetriebsstundenBüroSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/38	BetriebsstundenKonstruktionSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/39	BetriebsstundenKücheSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/40	BetriebsstundenLaborSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/41	NeustartBSZBüroSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/42	NeustartBSZKonstruktionSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/43	NeustartBSZKücheSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/44	NeustartBSZLaborSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/13	StromTreppeKGEG_led	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/11	NeustartBSZTreppeKGEG_led	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.EG.8/1/12	BetriebsstundenTreppeKGEG_led	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/15	StromTreppeKGEG	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/31	BetriebsstundenTreppeKGEG	Uncertain (2 Byte)	Low	
+Überwachen.EG.8/1/32	NeustartBSZTreppeKGEG	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/0	StromBesprechung_1	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/1	StromBüro1_2	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/2	StromBüro1_3	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/4	StromBüro2_4	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/5	StromBüro2_5	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/6	StromBüro2_6	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/7	StromBüro2_7	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/12	StromAnkleide 12	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/23	BetriebsstundenAnkleide 12	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/3	BetriebsstundenBesprechung_1	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/17	BetriebsstundenBüro2_4	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/18	BetriebsstundenBüro2_5	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/19	BetriebsstundenBüro2_6	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/37	NeustartBSZAnkleide 12	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/34	NeustartBSZBüro2_7	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/33	NeustartBSZBüro2_6	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/32	NeustartBSZBüro2_5	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/31	NeustartBSZBüro2_4	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/30	NeustartBSZBüro1_3	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/29	NeustartBSZBüro1_2	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/28	NeustartBSZBesprechung_1	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/38	NeustartBSZWCDamen 11	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/39	NeustartBSZWCHerren 10	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/24	BetriebsstundenWCDamen 11	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/25	BetriebsstundenWCHerren 10	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/13	StromWCDamen 11	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/14	StromWCHerren 10	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/44	BetriebsstundenTreppeEGOGleds	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/43	StromBSZTreppeEGOGleds	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/42	NeustartBSZTreppeEGOGleds	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/9	StromFlur	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/21	BetriebsstundenFlur	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/35	NeustartBSZFlur	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/45	StromBesprechungSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/47	StromBüro1Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/46	StromBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/48	BetriebsstundenBesprechungSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/49	BetriebsstundenBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/50	BetriebsstundenBüro1Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/36	NeustartBSZBüro1Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/22	NeustartBSZBüro2Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/10	NeustartBSZBesprechungSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/27	BetriebsstundenTreppeEGOG	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/41	NeustartBSZTreppeEGOG	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.OG.8/2/16	StromTreppeEGOG	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/8	BetriebsstundenBüro1_2	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/11	BetriebsstundenBüro1_3	Uncertain (2 Byte)	Low	
+Überwachen.OG.8/2/20	BetriebsstundenBüro2_7	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/0	StromBüro1_1	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/2	StromBüro1_2	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/5	StromBüro2_3	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/6	StromBüro2_4	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/4	StromBüro2_5	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/7	StromBüro2_6	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/1	BetriebsstundenBüro1_1	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/3	BetriebsstundenBüro1_2	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/8	BetriebsstundenBüro2_3	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/9	BetriebsstundenBüro2_4	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/10	BetriebsstundenBüro2_5	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/11	BetriebsstundenBüro2_6	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/12	NeustartBSZBüro1_1	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/13	NeustartBSZBüro1_2	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/14	NeustartBSZBüro2_3	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/15	NeustartBSZBüro2_4	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/16	NeustartBSZBüro2_5	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/17	NeustartBSZBüro2_6	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauEG.8/3/18	StromBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/20	BetriebsstundenBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauEG.8/3/22	NeustartBSZBüro2Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/0	StromBüro1_1	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/1	StromBüro2_2	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/2	StromBüro3_3	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/3	StromBüro4_4	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/4	BetriebsstundenBüro1_1	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/5	BetriebsstundenBüro2_2	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/6	BetriebsstundenBüro3_3	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/8	NeustartBSZBüro1_1	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/9	NeustartBSZBüro2_2	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/10	NeustartBSZBüro3_3	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/11	NeustartBSZBüro4_4	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/7	BetriebsstundenBüro4_4	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/12	StromBüro1Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/13	StromBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/14	StromBüro3Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/16	BetriebsstundenBüro1Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/17	BetriebsstundenBüro2Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/18	BetriebsstundenBüro3Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/19	BetriebsstundenBüro4Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.AnbauOG.8/4/20	NeustartBSZBüro1Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/21	NeustartBSZBüro2Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/22	NeustartBSZBüro3Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/23	NeustartBSZBüro4Steckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.AnbauOG.8/4/15	StromBüro4Steckdose	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/2	NeustartBSZKellerlichtAußen	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Außenanlage.8/5/1	BetriebsstundenKellerlichtAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/0	StromKellerlichtAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/5	NeustartBSZTerrasseSteckdose	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Außenanlage.8/5/4	BetriebsstundenTerrasseSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/3	StromTerrasseSteckdose	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/6	StromKellerBüroAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/7	BetriebsstundenKellerBüroAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/8	NeustartBSZKellerBüroAußen	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Außenanlage.8/5/9	BetriebsstundenHaupteingangAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/10	NeustartBSZHaupteingangAußen	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Außenanlage.8/5/11	StromHaupteingangAußen	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/14	NeustartBSZLeuchtreklame	EIS 1 'Switching' (1 Bit)	Low	
+Überwachen.Außenanlage.8/5/13	BetriebsstundenLeuchtreklame	Uncertain (2 Byte)	Low	
+Überwachen.Außenanlage.8/5/12	StromLeuchtreklame	Uncertain (2 Byte)	Low	
+ZentralBeideGebäude.Daten.14/0/6	Klingel	EIS 1 'Switching' (1 Bit)	Low	
+ZentralBeideGebäude.Wetterstation.14/6/2	AlarmWind	EIS 1 'Switching' (1 Bit)	Low	
+ZentralBeideGebäude.Wetterstation.14/6/0	Wind	Uncertain (2 Byte)	Low	
+ZentralBeideGebäude.Wetterstation.14/6/3	Außentemperatur	Uncertain (2 Byte)	Low	
+ZentralBeideGebäude.Wetterstation.14/6/4	Licht	Uncertain (2 Byte)	Low	
+ZentralBeideGebäude.Wetterstation.14/6/1	Regenmeldung	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/1	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.AnbauProduktion.9/0/0	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.AnbauProduktion.9/0/3	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.AnbauProduktion.9/0/4	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.AnbauProduktion.9/0/5	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.AnbauProduktion.9/0/6	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.AnbauProduktion.9/0/7	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.AnbauProduktion.9/0/9	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/8	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.AnbauProduktion.9/0/10	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/12	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.AnbauProduktion.9/0/11	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.AnbauProduktion.9/0/13	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/14	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/15	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/16	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/34	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/23	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/24	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/31	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/33	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/32	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.AnbauProduktion.9/0/30	RGB	Uncertain (3 Byte)	Low	
+Synohr.AnbauProduktion.9/0/27	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/28	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.AnbauProduktion.9/0/26	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/6	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.Simulation.9/1/7	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.Simulation.9/1/8	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.Simulation.9/1/9	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.Simulation.9/1/10	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.Simulation.9/1/33	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Simulation.9/1/19	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/30	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/32	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/15	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Simulation.9/1/14	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Simulation.9/1/29	RGB	Uncertain (3 Byte)	Low	
+Synohr.Simulation.9/1/16	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/17	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/13	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/12	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/18	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/31	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Simulation.9/1/11	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.Simulation.9/1/20	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/21	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/5	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.Simulation.9/1/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Simulation.9/1/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungII.9/3/6	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungII.9/3/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungII.9/3/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungII.9/3/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungII.9/3/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungII.9/3/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungII.9/3/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/11	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungII.9/3/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungII.9/3/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.EntwicklungII.9/3/19	RGB	Uncertain (3 Byte)	Low	
+Synohr.EntwicklungII.9/3/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungII.9/3/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungII.9/3/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungI.9/2/6	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungI.9/2/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungI.9/2/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungI.9/2/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.EntwicklungI.9/2/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungI.9/2/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungI.9/2/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/11	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungI.9/2/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.EntwicklungI.9/2/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.EntwicklungI.9/2/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.EntwicklungI.9/2/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.EntwicklungI.9/2/19	RGB	Uncertain (3 Byte)	Low	
+Synohr.Küche.9/4/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.Küche.9/4/6	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.Küche.9/4/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.Küche.9/4/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.Küche.9/4/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.Küche.9/4/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Küche.9/4/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Küche.9/4/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/11	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Küche.9/4/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Küche.9/4/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Küche.9/4/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.Küche.9/4/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.Küche.9/4/19	RGB	Uncertain (3 Byte)	Low	
+Synohr.Besprechung.9/5/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.Besprechung.9/5/6	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.Besprechung.9/5/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.Besprechung.9/5/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.Besprechung.9/5/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.Besprechung.9/5/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Besprechung.9/5/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Besprechung.9/5/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/11	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Besprechung.9/5/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Besprechung.9/5/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Besprechung.9/5/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.Besprechung.9/5/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.Besprechung.9/5/19	RGB	Uncertain (3 Byte)	Low	
+Synohr.Chef.9/6/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+Synohr.Chef.9/6/6	Beleuchtung	Uncertain (2 Byte)	Low	
+Synohr.Chef.9/6/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+Synohr.Chef.9/6/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+Synohr.Chef.9/6/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+Synohr.Chef.9/6/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/11	AudioPegel	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+Synohr.Chef.9/6/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+Synohr.Chef.9/6/19	RGB	Uncertain (3 Byte)	Low	
+Synohr.Chef.9/6/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+Synohr.Chef.9/6/27	Dot1	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/28	Dot2	EIS 15 'Character String' (14 Byte)	Low	
+Synohr.Chef.9/6/29	Dot3	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcHerren.11/0/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcHerren.11/0/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.EgWcDamen.11/1/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.EgWcDamen.11/1/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.OgWcDamen.11/2/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.OgWcDamen.11/2/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KgProduktion.11/3/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KgProduktion.11/3/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.KgProduktion.11/3/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.KgProduktion.11/3/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.KgProduktion.11/3/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.KgProduktion.11/3/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KgProduktion.11/3/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KgProduktion.11/3/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.KgProduktion.11/3/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.KgProduktion.11/3/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.KgProduktion.11/3/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KgProduktion.11/3/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.KgProduktion.11/3/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.AnbauLager.11/4/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.AnbauLager.11/4/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.AnbauLager.11/4/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.AnbauLager.11/4/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.AnbauLager.11/4/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.AnbauLager.11/4/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.AnbauLager.11/4/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.AnbauLager.11/4/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.AnbauLager.11/4/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.AnbauLager.11/4/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.AnbauLager.11/4/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.AnbauLager.11/4/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.AnbauLager.11/4/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.KG WC.11/5/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.KG WC.11/5/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.KG WC.11/5/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.KG WC.11/5/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.KG WC.11/5/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.KG WC.11/5/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG WC.11/5/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG WC.11/5/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG WC.11/5/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG WC.11/5/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.KG WC.11/5/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.KG WC.11/5/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.KG WC.11/5/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/0	TasteLinks	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG WC.11/5/1	TasteRechts	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.KG Lager.11/6/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrII.KG Lager.11/6/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG Lager.11/6/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG Lager.11/6/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG Lager.11/6/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.KG Lager.11/6/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.KG Lager.11/6/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.KG Lager.11/6/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.KG Lager.11/6/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.KG Lager.11/6/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.KG Lager.11/6/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.KG Lager.11/6/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrII.EG Labor.11/7/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EG Labor.11/7/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EG Labor.11/7/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EG Labor.11/7/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrII.EG Labor.11/7/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrII.EG Labor.11/7/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrII.EG Labor.11/7/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrII.EG Labor.11/7/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.OG EMV.12/0/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.OG EMV.12/0/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.OG EMV.12/0/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.OG EMV.12/0/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.OG EMV.12/0/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.OG EMV.12/0/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG EMV.12/0/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG EMV.12/0/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG EMV.12/0/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG EMV.12/0/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG EMV.12/0/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.OG EMV.12/0/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.OG EMV.12/0/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.OG Bibliothek.12/1/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Bibliothek.12/1/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Stasse.12/2/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.OG Stasse.12/2/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.OG Hof.12/3/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Hof.12/3/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Hof.12/3/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Hof.12/3/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Hof.12/3/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.OG Hof.12/3/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Hof.12/3/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Hof.12/3/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Hof.12/3/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.OG Hof.12/3/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.OG Hof.12/3/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.OG Hof.12/3/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.OG Hof.12/3/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.Eingang.12/4/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.Eingang.12/4/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.Eingang.12/4/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.Eingang.12/4/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.Eingang.12/4/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.Eingang.12/4/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Eingang.12/4/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Eingang.12/4/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Eingang.12/4/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Eingang.12/4/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Eingang.12/4/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Eingang.12/4/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Eingang.12/4/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Eingang.12/4/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Eingang.12/4/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.Eingang.12/4/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+SynOhrIII.Eingang.12/4/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.Eingang.12/4/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/5	Feuchtigkeit	Uncertain (2 Byte)	Low	
+SynOhrIII.Lounge.12/5/6	Beleuchtung	Uncertain (2 Byte)	Low	
+SynOhrIII.Lounge.12/5/7	BeleuchtungRot	Uncertain (2 Byte)	Low	
+SynOhrIII.Lounge.12/5/8	BeleuchtungGrün	Uncertain (2 Byte)	Low	
+SynOhrIII.Lounge.12/5/9	BeleuchtungBlau	Uncertain (2 Byte)	Low	
+SynOhrIII.Lounge.12/5/23	DisplaySymbol	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/4	TextfeldSynohr	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Lounge.12/5/18	SpracherkennerAktiv	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/3	AudioDateiOut	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Lounge.12/5/20	BestätigungSchlüsselwort	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/24	HelligkeitLCD	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/11	AudioPegel	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/22	Energiesparmodus	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/13	DisplayText2	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Lounge.12/5/14	DisplayText1	EIS 15 'Character String' (14 Byte)	Low	
+SynOhrIII.Lounge.12/5/21	BestätigungKommando	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/16	AudioPegelSchwelle	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/12	AudioPegelAktivieren	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/15	AudioStopp	EIS 1 'Switching' (1 Bit)	Low	
+SynOhrIII.Lounge.12/5/17	LautsprecherLautstärke	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/25	HelligkeitAmbiente	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/26	HelligkeitRing	Uncertain (1 Byte)	Low	
+SynOhrIII.Lounge.12/5/19	RGB	Uncertain (3 Byte)	Low	
+SynOhrIII.Lounge.12/5/10	WarbLeuchtring	EIS 8 'Scaling - control' (2 Bit)	Low	
+

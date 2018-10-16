@@ -1,0 +1,21 @@
+[Macros]
+Statusanzeige(ButtonID,PageID,"KellerWC-1/0/0",INFO,$aktiv$,$inaktiv$)
+Statusanzeige(ShifterID,PageID,"KellerWC-1/0/0",LIGHT,$aktiv$,$inaktiv$)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+page (PageID) [$Allgemein$,$Status$] 
+pbutton(ButtonID)[INFO]$Status Garage$
+pshifter(ShifterID)[LIGHT]$Status Licht$
+
+[EibPC]
+PageID=1
+ButtonID=1
+ShifterID=2

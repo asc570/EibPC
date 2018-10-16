@@ -1,0 +1,196 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+page(ZentraleID)[$Allgemein$,$Zentrale$]
+//Schalter um alle Lichter auszuschalten;			Schalter um alle Steckdosen auszuschalten
+pshifter(LichterID)[LIGHT]$Alle Lichter AUS: Zuletzt $  pshifter(SteckdosenID)[SWITCH]$Alle Steckdosen AUS: Zuletzt $ 
+
+//Schalter um den EibPC in Ferienbetrieb zu setzen; Schalter um den EibPC in den Abwesendbetrieb zu setzen
+pshifter(FerienID)[DATE]$Ferien$ pshifter(AbwesendID)[ABSENT]$Therme komplett aus$ 
+line $Automatiken$
+
+//Schalter zur Automatischen Beschattung;	    Schalter um die Bewässerung zu regulieren
+pshifter(RolloID)[WEATHER]$Auto-Rollo-Beschattung$ pshifter(BewaessernID)[PLUS,WEATHER,MINUS]$Bewässern$ 
+
+//Schalter um alle Heizungen auszuschalten
+pshifter(HeizenID)[NIGHT]$Alle Heizungen ausschalten$
+
+//Visualisierung der Heizung;						Visualisierung der Temperaturen
+mpchart(VisuHeizID)[DOUBLE,XY]($Anforderung$,LINE,$Vorgabe$,LINEDOTS) mpchart(TempVisuID)[DOUBLE,XY]($AußenWest$,LINE,$AussenNord$,LINEDOTS,$Warmwasser$,LINE)
+
+[EibPC]
+//Definitionen der IDs für den Webserver
+ZentraleID = 1
+LichterID = 1
+SteckdosenID = 2
+FerienID = 3
+AbwesendID = 4
+RolloID = 5
+BewaessernID = 6
+HeizenID = 7
+VisuHeizID = 8
+TempVisuID = 9
+
+//Sind gerade Ferien?
+Ferien = AUS
+
+//Soll der EibPC im Anwesendbetrieb sein?
+Anwesend = AUS
+
+//Wieviel Tage noch bis bewässert werden soll?
+TageBisZurBewaesserung = 2
+BewaesserungTage = TageBisZurBewaesserung - TrockenTage
+TrockenTage = 0
+
+//Systemstart, wie immer etwas verzögert um die Buslast zu verringern
+Init = after(systemstart(),convert(random(10000u32),0u64))
+
+//Soll automatisch beschattet werden?
+Schattenautomatik = EIN
+
+
+// ----------------------------
+//
+// Webserver
+//
+// ----------------------------
+
+//Alle Lichter ausschalten mit dem entsprechenden Button
+if pbutton(LichterID,ZentraleID)==1 then {
+	 write("KellerAlleLichter-1/3/0",AUS);
+	 write("EGAlleLichter-1/3/3",AUS);
+	 write("OGAlleLichter-1/3/4",AUS);
+	 /*zeigt an, wann zum letzten Mal, alles ausgeschalten wurde*/;
+	 pdisplay(LichterID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),LIGHT,DISPLAY,GREY,ZentraleID) 
+} endif
+
+//Alle Steckdosen ausschalten mit dem entsprechenden Button
+if pbutton(SteckdosenID,ZentraleID)==1 then {
+	 write("KellerSteckdosen-1/3/1",AUS);
+	 write("EG-Steckdosen-1/3/13",AUS);
+	 write("OG-Steckdosen-1/3/5",AUS);
+	 write("AußenAlles-1/3/2",AUS);
+	 /*zeigt an, wann zum letzten Mal, alles ausgeschalten wurde*/;
+	 pdisplay(SteckdosenID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),SWITCH,ACTIVE,GREY,ZentraleID) 
+} endif
+
+//Den EibPC in den Ferienbetrieb setzen oder wieder zurück in den normalen
+if pbutton(FerienID,ZentraleID)==1 then {
+	 Ferien=!Ferien
+} endif
+
+//Den EibPC in den Abwesend- bzw. Anwesendbetrieb setzen
+if pbutton(AbwesendID,ZentraleID)==1 then {
+	 Anwesend=!Anwesend
+} endif
+
+//Anzeigen, wann zuletzt der Betrieb des EibPC verändert wurde
+if  Anwesend then pdisplay(AbwesendID,$Sperre EIN-$+convert(settime(),$$)+ $ am $ + convert(setdate(),$$),ABSENT,DISPLAY,GREY,ZentraleID) endif 
+if !Anwesend then pdisplay(AbwesendID,$Sperre AUS-$+convert(settime(),$$)+ $ am $ + convert(setdate(),$$),ABSENT,BRIGHTRED,BLINKRED,ZentraleID) endif 
+if  Ferien then	 pdisplay(FerienID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),DATE,INACTIVE,GREY,ZentraleID) endif 
+if !Ferien then	 pdisplay(FerienID,convert(settime(),$$)+ $ am $ + convert(setdate(),$$),DATE,ACTIVE,BLINKBLUE,ZentraleID) endif 
+
+//Die Bewässerung steuern mit den Buttons
+if pbutton(BewaessernID,ZentraleID)==1 and TrockenTage>0 then TrockenTage=TrockenTage-1 endif
+if pbutton(BewaessernID,ZentraleID)==3 and BewaesserungTage > 0 then TrockenTage=TrockenTage+1 endif
+if pbutton(BewaessernID,ZentraleID)==2 then {
+	write("WasserTür-2/0/2"u08,80%);      
+	write("WasserSüd-2/0/3"u08,100%);    
+	write("WasserWiga-2/0/0"u08,100%);
+	pdisplay(BewaessernID,$Es wird gesprengt$,WEATHER,STATE6,BLINKRED,ZentraleID)     
+} endif
+
+
+
+// Wenn sich die Bewaesserungstage ändern oder bei der Initialisierung, soll die Anzeige angepasst werden
+if change(BewaesserungTage) or Init then {
+	if BewaesserungTage>0 then {
+	 	pdisplay(BewaessernID,$Nächstes Mal in $+ convert(BewaesserungTage,$$)+ $ Tage(n)$,WEATHER,INACTIVE,GREEN,ZentraleID)
+		 
+	} endif;
+	if BewaesserungTage==0 then {
+	 	pdisplay(BewaessernID,$Heute Nacht 1:00 Uhr$,WEATHER,INACTIVE,BLINKBLUE,ZentraleID) 
+	} endif
+} endif 
+
+// Automatische Beschattung mit dem entsprechenden Button steuern
+if pbutton(RolloID,ZentraleID)==1 then {
+	Schattenautomatik=!Schattenautomatik;
+	if Schattenautomatik then {
+		/* Die eigentliche Beschattung wird per Wärme, Uhrzeit und KNX Freigabe gesteuert*/;
+		pdisplay(RolloID,$Aktive Beschattung $,WEATHER,ACTIVE,BLINKRED,ZentraleID)   
+	} endif;
+	if Schattenautomatik==AUS then {
+		pdisplay(RolloID,$Automatischer Betrieb$,WEATHER,DISPLAY,GREY,ZentraleID)    
+	} endif;
+
+} endif
+
+
+// Alle Heizungen ausschalten mit dem entsprechenden Button und anzeigen lassen, wann dies zuletzt gemacht wurde.
+if pbutton(HeizenID,ZentraleID)==1 then pdisplay(HeizenID,$Heizungen aus $ +convert(settime(),$$),NIGHT,ACTIVE,GREEN,ZentraleID) endif
+
+// Anzeigen lassen, ob geheizt wird
+if "Heizvorlauf-0/0/1">0 then pdisplay(HeizenID,$Es wird geheizt$,NIGHT,INACTIVE,BLINKBLUE,ZentraleID) endif
+
+//Die Charts jede Viertelstunde mit dem aktuellen Wert "füttern"
+//WebZeit=convert(convert(hour(),0f32)+convert(minute(),0f32)/60f32,0f16)
+//if (mtime(00,00) or mtime(15,00) or mtime(30,00) or mtime(45,00)) then {
+//	mpchart(VisuHeizID,WebZeit,convert(HeizungMax,0f16)/2.549f16,0,ZentraleID);
+//	mpchart(VisuHeizID,WebZeit,convert("Heizvorlauf-0/0/1",0f16)/2.549f16,1,ZentraleID);
+//	mpchart(TempVisuID,WebZeit,"Außentemperatur-3/5/0",0,ZentraleID);
+//	mpchart(TempVisuID,WebZeit,"ThermeAußentemperatur-3/3/13",1,ZentraleID);
+//	mpchart(TempVisuID,WebZeit,"WarmwasserIstWert-3/3/10",2,ZentraleID);
+//} endif
+
+
+//Definitionen der Heizungen
+HeizungSauna      ="Sauna-3/0/1"
+HeizungKellerflur ="Flur-3/0/2"
+HeizungParty      ="Party-3/0/3"
+HeizungLager      ="Lager-3/0/4"
+HeizungWaescheschacht="WäscheSchacht-3/0/5"
+HeizungFlur       ="Flur-3/1/0"
+HeizungGaesteWC   ="GästeWC-3/1/1"
+HeizungKueche     ="Küche-3/1/3"
+HeizungEssen      ="Esszimmer-3/1/4"
+HeizungWohnen     ="Wohnzimmer-3/1/5"
+HeizungArbeiten   ="Arbeitszimmer-3/1/7"
+HeizungWiga       ="Wiga-3/1/13"
+HeizungBadwand    ="BadWandkörper-3/2/0"
+HeizungBib        ="Bib-3/2/1"
+HeizungJohanna    ="Johanna-3/2/2"
+HeizungSchorschi  ="Schorschi-3/2/3"
+HeizungHans       ="Hans-3/2/4"
+HeizungEltern     ="Eltern-3/2/5"
+HeizungKinderbad  ="KinderBad-3/2/6"
+HeizungBadBoden   ="Bad-3/2/8"
+HeizungHausbedarf ="Heizvorlauf-0/0/1"
+
+//  Es wird der Maximale Heizbedarf (in%) ermittlet. 
+// -- Der Maximale Bedarf: 
+
+HeizungMax = max(HeizungSauna,HeizungKellerflur,HeizungParty,HeizungLager,HeizungWaescheschacht,HeizungFlur,\\
+                 HeizungGaesteWC,HeizungKueche,HeizungEssen,HeizungWohnen,HeizungArbeiten,HeizungBadwand,\\
+                 HeizungBib,HeizungJohanna,HeizungSchorschi,HeizungHans,HeizungEltern,HeizungKinderbad,HeizungWiga)
+
+
+//Chart zur Show füllen(kann gelöscht werden),damit man einen Verlauf sieht
+Zeit = 0f16
+Temperature = 15f16
+Therme = 21f16
+Warmwasser = 60f16
+if cycle(0,1) and Zeit < 15f16 then {
+	Temperature = Temperature + convert(random(4u32),0f16) - convert(random(4u32),0f16);
+	Therme = Therme + convert(random(4u32),0f16) - convert(random(4u32),0f16);
+	Warmwasser = Warmwasser + convert(random(4u32),0f16) - convert(random(4u32),0f16);
+	mpchart(VisuHeizID,Zeit,convert(75%,0f16)/2.549f16,0,ZentraleID);
+	mpchart(VisuHeizID,Zeit,convert(random(5u32),0f16)+ (5f16 * Zeit),1,ZentraleID);
+	mpchart(TempVisuID,Zeit,Temperature,0,ZentraleID);
+	mpchart(TempVisuID,Zeit,Therme,1,ZentraleID);
+	mpchart(TempVisuID,Zeit,Warmwasser,2,ZentraleID);
+	Zeit = Zeit + 1f16
+} endif

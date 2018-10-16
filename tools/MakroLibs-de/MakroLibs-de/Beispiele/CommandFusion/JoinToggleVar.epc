@@ -1,0 +1,15 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Man kann den Abwesendbetrieb des EibPCs über den Join d25 regulieren
+JoinToggleVar(IPod,d25,Abwesend)
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+Abwesend = AUS

@@ -1,0 +1,9 @@
+[Macros]
+//5s nachdem der Bewegungsmelder ein AUS sendet, geht das Licht im PartyKeller aus
+Schaltverzoegerung_mit_Neustart("KellerFlurBewegung-1/2/1","PartyKeller-1/0/4",AUS,5000)
+[MacroLibs]
+EnertexZeitglieder.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+[EibPC]

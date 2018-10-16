@@ -1,0 +1,16 @@
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[Macros]
+// Mit diesem Makro wird der Sensor im Bad alle 60 Minuten ausgelesen 
+// und in der Variable BadTemp_Value gespeichert und an die 
+// Gruppenadresse "RkWohnzimmerTemp-3/1/28" geschickt
+OWextenderGA(BadTemp,192.168.22.174,28.AF6A0E020000,temperature,"RkWohnzimmerTemp-3/1/28",cycle(60,0))
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWire.lib
+
+[EibPC]
+

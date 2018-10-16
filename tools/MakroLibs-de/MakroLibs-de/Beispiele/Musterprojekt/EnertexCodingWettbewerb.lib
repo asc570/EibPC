@@ -1,0 +1,1356 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+// 
+//  Bewässerungen
+//
+//  Version              : v0.1
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  Author               : Tobias Trus
+// 
+//  Dat.Rev.             : 2011/03/31
+//----------------------------------------------------------------------
+
+
+// Bewässerung über Wetterstationsdaten
+// @date	31.03.2011
+// @version	1 
+// @author	Tobias Trus
+:begin Bewaesserung_ueber_Wetterstation (Bewaesserungsdauer, Freigabe, Regen, Temperatur, Helligkeit, Wind, GABewaesserung)
+:info $Bewässerung von z.B. Garten oder Rasen. Anhand der Helligkeit/Sonneneinstrahlung, Temperatur, Windgeschwindigkeiten und des gefallenen Regens wird berechnet ob eine Bewässerung notwendig ist. Ist die Bewässerung notwendig so erfolgt diese 3 Stunden nach Sonnenaufgang sobald sie durch die Freigabeadresse bzw. Variable freigegeben wird, jedoch nicht mehr nach 12Uhr.$ \\
+	$Bewässerungsdauer (in Minuten) Hier sinnvollen Wert für eigene Bewässerung eintragen (typisch 30-60 min)$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable (1=Bewässerung erlaubt, 0=Bewässerung verboten)$\\
+	$Gruppenadresse oder Variable die Regen anzeigt (1=Regen, 0=kein Regen)$ \\
+	$Gruppenadresse oder Variable mit der aktuellen Temperatur (Grad C als f16)$ \\
+	$Gruppenadresse oder Variable mit dem aktuellen Helligkeitswert (Lux als f16)$ \\
+	$Gruppenadresse oder Variable mit der aktuellen Windgeschwindigkeit (m/s als f16)$ \\
+	$Gruppenadresse (b01) zur Ansteuerung der Bewässerung$
+:shortinfo $Bewässerungssteuerung mit Hilfe einer Wetterstation und dem EibPC$
+
+Bewaesserungsscore = 0u32
+Regenbeginn = 0u08
+Regendauer = 0u08
+Bewaesserung_durchfuehren = AUS
+
+if systemstart() then Bewaesserungsscore = 0u32 endif
+
+// Bewaesserungsscore ermitteln
+if Regen==EIN then Regenbeginn=hour()*60u08+minute() endif 
+if Regen==AUS then Regendauer=(hour()*60u08+minute())-Regenbeginn; Bewaesserungsscore=Bewaesserungsscore-convert((Regendauer*50),Bewaesserungsscore) endif
+
+if cycle(15,0) then if Temperatur>15.0f16 then Bewaesserungsscore=Bewaesserungsscore+convert(Temperatur-15.0f16,Bewaesserungsscore) endif endif
+if cycle(15,0) then if Helligkeit>2000.0f16 then Bewaesserungsscore=Bewaesserungsscore+convert((Helligkeit-2000.0f16)/100.0f16,Bewaesserungsscore) endif endif
+if cycle(15,0) then if Wind>10.0f16then Bewaesserungsscore=Bewaesserungsscore+convert((Wind-10.0f16)*2.0f16,Bewaesserungsscore) endif endif
+
+  
+// Bewässerung starten und stoppen
+
+// 3 Stunden nach Sonnenaufgang bewässern
+if after(sun()==1b01,10800000u64) then Bewaesserung_durchfuehren=EIN endif 
+
+// nicht mehr nach Mittag bewässern
+if hour()>12u08 then Bewaesserung_durchfuehren=AUS endif                   
+
+// Bewässerung eingschalten
+if (Freigabe==EIN and Bewaesserung_durchfuehren==EIN and Bewaesserungsscore>1000u32) then write(GABewaesserung,EIN); Bewaesserungsscore=0u32; Bewaesserung_durchfuehren=AUS endif 
+
+// Bewässerung ausschalten
+if after(GABewaesserung==EIN, Bewaesserungsdauer * 60000u64) then write(GABewaesserung,AUS) endif 
+:end
+
+
+
+// Bewässerung über Feuchtesensor im Boden
+// @date	31.03.2011
+// @version	1 
+// @author	Tobias Trus
+:begin Bewaesserung_ueber_Feuchtesensor (Freigabe, minFeuchte, maxFeuchte, Feuchtesensor, GABewaesserung)
+:info $Bewässerung von z.B. Garten oder Rasen. Abhängig von einem Feuchtesonsor, der in dem Boden die Erdfeuchte misst wird jeden morgen 3 Stunden nach Sonnenaufgang eine Bewässerung durchgeführt. Eine Bewässerung erfolgt erst dann wenn diese durch die Freigabeadresse bzw. Variable freigegeben wird, jedoch nicht mehr nach 12Uhr. Die Bewässerung endet wenn der Feuchtesensor einen Schwellwert wieder überschritten hat$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable (1=Bewässerung erlaubt, 0=Bewässerung verboten)$\\
+	$Wert unter dem eine Bewässerung durchgeführt werden soll (u16)$ \\
+	$Wert ab dem die Bewässerung wieder abgeschaltet wird (u16)$ \\
+	$Gruppenadresse des Feuchtesensors$ \\
+	$Gruppenadresse (b01) zur Ansteuerung der Bewässerung$
+:shortinfo $Bewässerungssteuerung mit Hilfe eines Feuchtesensors im Erdreich und dem EibPC$
+  
+Bewaesserung_durchfuehren_FS=EIN
+
+// Bewässerung starten und stoppen
+
+// 3 Stunden nach Sonnenaufgang bewässern
+if after(sun()==1b01,10800000u64) then Bewaesserung_durchfuehren_FS=EIN endif 
+
+// nicht mehr nach Mittag bewässern
+if hour()>12u08 then Bewaesserung_durchfuehren_FS=AUS endif                   
+
+// Bewässerung eingschalten
+if Freigabe==EIN and Bewaesserung_durchfuehren_FS==EIN and Feuchtesensor<convert(minFeuchte,Feuchtesensor) then write(GABewaesserung,EIN); Bewaesserung_durchfuehren_FS=AUS endif 
+
+// Bewässerung ausschalten
+if Feuchtesensor>convert(maxFeuchte,Feuchtesensor) then write(GABewaesserung,AUS) endif 
+:end
+
+
+/----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Ziel                 : AlarmMelder
+// 
+//  Version              : v1.012
+//
+//  Lizens               : Verwendung nur für die Nutzung with dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Ir. S. Martens
+//  KNX forum id         : martenss
+//
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.6 $
+//----------------------------------------------------------------------
+
+// Alarmmelder
+// @date	12.08.2011
+// @version	1 
+// @author	Ir. S. Martens
+// Requirements: shifter(ID)[ABSENT,HALT,HALT]$Alarm$
+:begin AlarmMelder(ID, PageID, MelderStatus, MovementStatus, SaboStatus, ArmingReqGA, ArmingDelay, ReadyGA, PreAlarmGA, AlarmGA, ArmedGA, FaultGA)
+:info $Short description\\
+	- This makro implements the functionality of an alarm system.\\
+	- It monitors Melder (eg door contacts), Movement and Sabotage inputs - defaulting to OFF makes the respective input obsolete.\\
+	- Alarm system readiness for arming (MelderStatus==OFF) is signalled via Ready GA.\\
+	- Alarm activation is done via an ArmingReq GA with configurable arming delay (in msec).\\
+	- At expiration of the arming delay the alarm system will be armed if no Melder is active.\\
+	- The armed status is signalled via Armed GA, which can be used as ArmingReq status feedback towards the requesting actor.\\
+	- MovementStatus can be active during arming, and will only alarm after initial movement time-out (to allow leaving the room/house during arming).\\
+	- The actual alarming escalates from PreAlarm to Alarm if the alarm condition has not been removed after a configurable delay (for simplicity equal to arming delay).\\
+	- The Alarm GA is cleared after 3 minutes or immediately at unarming.\\
+	- In unarmed status sabotage is signalled by Fault GA and prevents arming.\\
+	- During armed status sabotage is considered as a regular alarm input.\\
+	- Melders requiring cyclic monitoring are not supported yet.\\
+	- Inputs are typically a result of "OR" functions, eg multiple window/door contacts.\\
+	- After EibPC restart (eg due to power-cut) the AlarmMelder restores its previous state (if kept & replied by another actor at systemstart).$\\
+	:$ID of the element$\\
+  :$PageID$\\
+  :$MelderStatus (window or door contacts)$\\
+  :$MovementStatus (movement detector)$\\
+	:$SaboStatus (sabocontact)$\\
+	:$ArmingReqGA (GA to arm the melder)$\\
+	:$ArmingDelay (in msec)$\\
+	:$ReadyGA (readiness to be armed)$\\
+	:$PreAlarmGA (first alarm level)$\\
+	:$AlarmGA (second alarm level)$\\
+	:$ArmedGA (GA to notify the arming status)$\\
+	:$FaultGA (GA to notify failure status)$
+:shortinfo $Alarm system monitoring contacts, movements and sabotage inputs$
+//----------------------------------
+// Implementierung von Name
+//Possible internal states: Unarmed (0), Armed (1), Alarm (2), Unarmed after alarm (3), Fault (4)
+Am_^ID_^PageID=ArmingReqGA
+AmSymbol_^ID_^PageID=HALT
+Am_^ID_AlarmMelderState=0
+Am_^ID_AlarmMelderArming=OFF
+Am_^ID_AlarmMelderPreAlarming=OFF
+Am_^ID_AlarmMelderAlarming=OFF
+Am_^ID_MovementDetectedDuringArming=OFF
+Am_^ID_IntrusionDetectedDuringArming=OFF
+Am_^ID_MovementActiveDuringArming=OFF
+Am_^ID_IntrusionActiveDuringArming=OFF
+
+/////////////////////
+// System start-up //
+/////////////////////
+if after(systemstart(),3000u64+convert(random(40000u32),0u64)) then { 
+	read(ArmingReqGA);
+	read(PreAlarmGA);
+	read(AlarmGA);
+	read(FaultGA);
+  	/*martenss - 110524: align ReadyGA with melderStatus after start-up (fixes open door problem during restart)*/;
+	write(ReadyGA,!MelderStatus and !SaboStatus)
+} endif
+
+//////////////////////////////
+// Melder input persistency //
+//////////////////////////////
+// AmMovementDetected/Active can only go high for newly detected movements after arming
+// Note: even after arming existing presence or movement can still time-out without triggering ...
+// ... an alarm to facilitate people leaving the area being armed.
+if ArmedGA and change(MovementStatus) and MovementStatus==ON then Am_^ID_MovementDetectedDuringArming=ON; Am_^ID_MovementActiveDuringArming=ON endif
+// AmMovementActive is reset if all detectors cleared the presence or movement signal, even during arming.
+if ArmedGA and MovementStatus==OFF then Am_^ID_MovementActiveDuringArming=OFF endif
+
+// AmIntrusionDetected can only go high for newly detected intrusions after arming
+if ArmedGA and MelderStatus==ON then Am_^ID_IntrusionDetectedDuringArming=ON;Am_^ID_IntrusionActiveDuringArming==ON endif
+// AmIntrusionActive is reset if all doors are closed, even during arming.
+if ArmedGA and MelderStatus==OFF then Am_^ID_IntrusionActiveDuringArming=OFF endif
+
+// Update signalling system status flags of SecurityPage
+if  Am_^ID_MovementActiveDuringArming and  Am_^ID_IntrusionActiveDuringArming then pdisplay(ID,$Mov&Int - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID) endif
+if  Am_^ID_MovementActiveDuringArming and !Am_^ID_IntrusionActiveDuringArming then pdisplay(ID,$Movement - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID) endif
+if !Am_^ID_MovementActiveDuringArming and  Am_^ID_IntrusionActiveDuringArming then pdisplay(ID,$Intrusion - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID) endif
+if !Am_^ID_MovementActiveDuringArming and !Am_^ID_IntrusionActiveDuringArming then pdisplay(ID,$Mov&Int cleared - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID) endif
+
+/////////////////////////////////////////////		
+// Web-page button handling & icon updates //
+/////////////////////////////////////////////
+if pbutton(ID,PageID)==1 then Am_^ID_^PageID=ON endif
+if pbutton(ID,PageID)==3 then Am_^ID_^PageID=OFF endif
+
+if change(Am_^ID_^PageID) then {	
+	write(ArmingReqGA,Am_^ID_^PageID);
+	if Am_^ID_^PageID==ON then AmSymbol_^ID_^PageID=PRESENT endif;
+	if Am_^ID_^PageID==OFF then AmSymbol_^ID_^PageID=HALT endif
+} endif 
+
+if (change(AmSymbol_^ID_^PageID) or event(ArmingReqGA)) and ArmingReqGA and !ArmedGA and (Am_^ID_AlarmMelderState!=4) then {
+ 	pdisplay(ID,$Arming - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID)
+} endif
+if (change(AmSymbol_^ID_^PageID) or event(ArmedGA)) and ArmedGA then {
+ 	pdisplay(ID,$Armed - $+convert(settime(),$$),AmSymbol_^ID_^PageID,BRIGHTRED,BLINKBLUE,PageID)
+} endif
+if (change(AmSymbol_^ID_^PageID) or event(ArmedGA)) and ArmedGA==OFF and !ArmingReqGA then {
+	pdisplay(ID,$Unarmed - $+convert(settime(),$$),AmSymbol_^ID_^PageID,ACTIVE,GREY,PageID)
+} endif
+
+////////////////////////////////////////
+// Internal state machine transitions //
+////////////////////////////////////////
+
+// Unarmed status
+if Am_^ID_AlarmMelderState==0 and change(MelderStatus) then write(ReadyGA,!MelderStatus and !SaboStatus) endif
+if Am_^ID_AlarmMelderState==0 and change(SaboStatus) then {
+		write(ReadyGA,!MelderStatus and !SaboStatus);
+		write(FaultGA, SaboStatus);
+		if SaboStatus then Am_^ID_AlarmMelderState=4 endif
+} endif
+if Am_^ID_AlarmMelderState==0 and event(ArmingReqGA) and ArmingReqGA==ON and Am_^ID_AlarmMelderArming==OFF and SaboStatus==OFF then {
+	Am_^ID_AlarmMelderArming=ON
+} endif
+if after(Am_^ID_AlarmMelderArming==ON,1000u64+ArmingDelay^u64) then {
+  if Am_^ID_AlarmMelderArming==ON and !MelderStatus and !SaboStatus then {
+	  Am_^ID_AlarmMelderState=1;
+ 		write(ArmedGA,ON);
+ 		write(ReadyGA,OFF)
+  } else {
+  	write(ArmingReqGA,OFF);
+  	/*Was ArmedGA before, but caused display issue during arming when not Ready*/;
+  } endif;
+  Am_^ID_AlarmMelderArming=OFF
+} endif
+
+// Armed status
+if Am_^ID_AlarmMelderState==1 and Am_^ID_AlarmMelderPreAlarming==OFF and \\
+   ((change(MelderStatus) and MelderStatus==ON) or \\
+    (change(MovementStatus) and MovementStatus==ON) or \\
+    (change(SaboStatus) and SaboStatus==ON)) then {
+		Am_^ID_AlarmMelderPreAlarming=ON;
+		write(PreAlarmGA,ON)
+} endif
+if after(Am_^ID_AlarmMelderPreAlarming==ON,1000u64+ArmingDelay^u64) then {
+	if Am_^ID_AlarmMelderPreAlarming==ON and (Am_^ID_IntrusionDetectedDuringArming or MovementStatus or SaboStatus) then {
+		Am_^ID_AlarmMelderState=2;
+		Am_^ID_AlarmMelderAlarming=ON;
+		write(AlarmGA,ON)
+	} endif;
+	Am_^ID_AlarmMelderPreAlarming=OFF;
+	write(PreAlarmGA,OFF)
+} endif
+
+// Alarm status
+if Am_^ID_AlarmMelderState==2 and Am_^ID_AlarmMelderAlarming==OFF and \\
+   ((change(MelderStatus) and MelderStatus==ON) or \\
+    (change(MovementStatus) and MovementStatus==ON) or \\
+    (change(SaboStatus) and SaboStatus==ON)) then {
+   Am_^ID_AlarmMelderAlarming=ON;
+   write(AlarmGA,ON)
+} endif
+if after(change(Am_^ID_AlarmMelderAlarming) and Am_^ID_AlarmMelderAlarming==ON,180000^u64) then {
+	Am_^ID_AlarmMelderAlarming=OFF;
+	write(AlarmGA,OFF)
+} endif
+if (Am_^ID_AlarmMelderState==0 or Am_^ID_AlarmMelderState==1 or Am_^ID_AlarmMelderState==2) and \\
+    change(ArmingReqGA) and ArmingReqGA==OFF then {
+  Am_^ID_AlarmMelderArming=OFF;
+  Am_^ID_AlarmMelderPreAlarming=OFF;
+  Am_^ID_AlarmMelderAlarming=OFF;
+	Am_^ID_AlarmMelderState=0;
+	Am_^ID_IntrusionDetectedDuringArming=OFF;
+	Am_^ID_IntrusionActiveDuringArming=OFF;
+	Am_^ID_MovementDetectedDuringArming=OFF;
+	Am_^ID_MovementActiveDuringArming=OFF;
+	write(ArmedGA,OFF);
+	if AlarmGA then write(AlarmGA,OFF) endif;
+	write(ReadyGA,!MelderStatus and !SaboStatus)
+} endif
+
+// Fault status
+if Am_^ID_AlarmMelderState==4 and MelderStatus==OFF and SaboStatus==OFF then {
+  Am_^ID_AlarmMelderArming=OFF;
+  Am_^ID_AlarmMelderPreAlarming=OFF;
+  Am_^ID_AlarmMelderAlarming=OFF;
+	Am_^ID_AlarmMelderState=0;
+	write(ArmedGA,OFF);
+	write(AlarmGA,OFF);
+	write(PreAlarmGA,OFF);
+	write(FaultGA,OFF);
+	write(ReadyGA,!(MelderStatus and SaboStatus))
+} endif
+:end
+
+
+// Alarmmelder
+// @date	12.08.2011
+// @version	1 
+// @author	Ir. S. Martens
+:begin PB_Triggered_ArmingReq(InputGA, OutputGA, Time)
+:info $Short description\\
+	- This makro generates the ArmingReq GA required to arm/unarm the alarm melder.\\
+	- It has encoded (secret) logic that allows using a simple push-button.\\
+	- Only users knowing the exact number of short or long push-button actions will be able to operate the melder.\\
+	- Default logic: Exactly 4 short pb triggers in given time interval unarm the system.\\
+	                 Exactly 1 long pb trigger in same time interval arm the system.\\
+	                 Any mistake leads to alarm escalation as only 30sec later there is a next unarm attempt possible.\\
+	- ArmingReq GAs will only be sent after matching activation/deactivation checks.$\\
+  :$InputGA (PB trigger GA)$\\
+  :$OutputGA (ArmingReq GA)$\\
+  :$Time (persistency check window in msec)$
+:shortinfo $Alarm system arming request generation via push-button triggers$
+m_pbTriggersToOff=0
+m_pbTriggersToOn=0
+//Process events to generate ArmingReq OFF
+if (event(InputGA) and !InputGA) then {
+	m_pbTriggersToOff=m_pbTriggersToOff+1
+} endif
+if (after(event(InputGA) and !InputGA, Time^u64)) then {
+	if m_pbTriggersToOff==4 then write(OutputGA, OFF); m_pbTriggersToOff=0 endif
+} endif
+if (after(event(InputGA) and !InputGA, 30000u64)) then m_pbTriggersToOff=0 endif
+//Process events to generate ArmingReq ON
+if (event(InputGA) and InputGA) then {
+	m_pbTriggersToOn=m_pbTriggersToOn+1
+} endif
+if (after(event(InputGA) and InputGA, Time^u64)) then {
+	if m_pbTriggersToOn==1 then write(OutputGA, ON); m_pbTriggersToOn=0 endif
+} endif
+if (after(event(InputGA) and InputGA, 30000u64)) then m_pbTriggersToOn=0 endif
+:end
+
+
+// Alarmmelder
+// @date	12.08.2011
+// @version	1 
+// @author	Ir. S. Martens
+:begin SendSMSViaClickatell(SMSRelease, SMSTo, SMSMessage)
+:info $Short description\\
+	- This makro sends an e-mail towards the Clickatell SMS service.\\
+	- The e-mail aligns with Clickatell expected format for user authentication.\\
+	- A Release paramater allows blocking submission temporarily.\\
+	- Note that minimum firmware v2.004 is required (need for <CR>).\\
+  :$SMSRelease (Flag to activate/deactivate the SMS submission)$\\
+  :$SMSTo (Destination GSM nbr - with international code but without +-sign)$\\
+  :$SMSMessage (SMS body text).$
+:shortinfo $SendSMSViaClickatel$
+//Clickatell expects following message format... :
+//user:Userid
+//password:Password
+//api_id:Apiid
+//text:Message
+//to:MobileNbr
+//... to be sent to sms@messaging.clickatell.com
+SendSMS_^User=$user:ClickatellUserID$
+SendSMS_^Password=$password:ClickatellPassword$
+SendSMS_^API_ID=$api_id:ClickatellApiID$
+SendSMS_^Text=$text:$+SMSMessage
+SendSMS_^To=$to:$+SMSTo
+SendSMS_^OutputMessage=SendSMS_^User+$\n$+SendSMS_^Password+$\n$+SendSMS_^API_ID+$\n$+SendSMS_^Text+$\n$+SendSMS_^To+$\n$
+
+a='1/7/7'c14
+if (change(SMSTo) or change(SMSMessage)) and (size(SMSTo) > 0u16) and (size(SMSMessage) > 0u16) and SMSRelease then {
+	write('1/7/7'c14,$drin$c14);
+	sendmail($meier@enertex.de$, $EibPC$, SendSMS_^OutputMessage)
+} endif
+:end
+
+//----------------------------------------------------------------------
+//  Makro für den Enertex EibPC
+//
+//  Wecker
+//
+//  Version              : v1.7
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Christian Götzl
+//
+//  Author               : Christian Götzl
+// 
+//  Dat.Rev.             : Date: 2011/03/31
+//
+//----------------------------------------------------------------------
+//
+// Beschreibung
+// ############
+// 
+// Dieses EibPC-Makro wurde in Anlehnung an den HS-Weckerbaustein (http://knx-user-forum.de/downloads.php?do=file&id=64) von MathiasS erstellt.  
+// 
+// Ziel war mittels eines KNX-Tastsensors mit Display (Bsp. Jung RCD oder dem InfoDisplay2 von Berker, Gira und Jung) eine intelligente 
+// Weckerfunktion zu realisieren. So ist es möglich gekoppelt an die Weckzeit die Jalousie zu öffnen, das Lieblings-Radioprogramm abzuspielen 
+// und die Kaffeemaschiene einzuschalten. Einige Zeit zuvor wird die Heizung im Bad auf Komfort geschalten und das Handtuch ist beim Aufstehen 
+// bereits vorgewärmt. 
+// 
+// Das Stellen der Weckzeit ist flexibel. Zum Einen ist es möglich mit jeweils einer GA (1bit) für Stunde bzw. Minute die Weckzeit zu ändern. 
+// Mit jedem Tastendruck wird die Zahl größer (EIN) bzw. kleiner (AUS) gezählt. So kann man mit einem einfachen KNX-Tastsensor die Weckzeit 
+// verändern bzw. den Wecker aktivieren oder deaktiveren. Über eine GA (14byte) wird der aktuelle Status des Weckers mit der Weckzeit an einem 
+// KNX-Display ausgegeben. Zum Anderen kann die Weckzeit auch direkt mittels einer GA (1byte) für Stunde und einer GA (1byte) für Minute an das 
+// Makro übergeben werden (z.B. mit einer Visu wie dem Infoterminal Touch oder einer Universalzeitschaltuhr). 
+// 
+// Über einen Offset-Wert kann man relativ zur Weckzeit einen Voralarm generieren. Dieser kann dann z.B. die Heizung auf Komfort schalten oder 
+// ein Aufwachlicht aktivieren (Aufwachlicht-Makro von Enertex).
+// 
+// Der Wecker-Alarm bzw. Voralarm wird mittels GA (1bit) signalisiert. Diese GAs bleiben für die Dauer von einer Minute auf EIN. Es ist möglich 
+// mit dieser GA direkt eine Signalisierung zu aktivieren (z.B. Alarmsignal am InfoDisplay oder Infoterminal) oder diese GAs im EibPC-Anwendungs-
+// Programm auszuwerten und nach eigenem Wunsch beliebige Aktionen zu programmieren (z.B. Lieblings-Radioprogramm einschalten usw.).
+// 
+// Über DefaultWerte-GAs kann man die Standard-Weckzeit getrennt für Werktage und Wochenende im EibPC speichern. Mittels Variable ist es möglich
+// aus dem EibPC-Anwendungsprogramm die Übernahme der Standardzeit zu veranlassen. Je nach Wochentag setzt das Makro die Standardzeit für 
+// Werktage bzw. Wochenende.
+// 
+// Alle Parameter müssen mit Werten bzw. GA´s belegt werden. Sollte man eine Funktion bzw. den Parameter nicht benötigen - Bitte eine Dummy-GA verwenden.
+// 
+// In Planung ist aktuell eine Erweiterung, die die Wetterlage berücksichtigen soll. Damit wird bei Schnee oder Eis die Weckzeit automatisch 
+// auf x Minuten vorverlegt. Morgendlicher Zeitdruck durch überraschendes Schneeräumen oder Eiskratzern gehört dann der Vergangenheit an.
+//  
+// 
+// Parameterbeschreibung des Makros
+// ################################
+// 
+// Name                            : Name des Makros (Prefix der Variablen)
+// GAWeckerStatus                  : GA (1bit) zu EIN/AUS-Schalten des Weckers, falls der Wecker durch andere Parameter/Variablen den Status wechselt, wird diese GA auf den Bus geschrieben. 
+// GAWeckerTaktH                   : GA (1bit) zum Ändern der Weckzeit Stunde (EIN = +, AUS = -)
+// GAWeckerTaktM                   : GA (1bit) zum Ändern der Weckzeit Minute (EIN = +, AUS = -)
+// GAWeckerWertH                   : GA (1byte) zum direkten Setzen der Weckzeit (Stunde / 0 - 23)
+// GAWeckerWertM                   : GA (1byte) zum direkten Setzen der Weckzeit (Minute / 0 - 59)
+// GAOffsetH                       : Wert (u08), Variable (u08) oder GA (1byte) zum Setzen des Voralarm-Offset (Stunde / 0 - 23)
+// GAWeckerDefaultWerktagsWertH    : GA (1byte) zum direkten Setzen der Standard Werktag Weckzeit (Stunde / 0 - 23)
+// GAWeckerDefaultWerktagsWertM    : GA (1byte) zum direkten Setzen der Standard Werktag Weckzeit (Minute / 0 - 59)
+// GAWeckerDefaultWochenendeWertH  : GA (1byte) zum direkten Setzen der Standard Wochenend Weckzeit (Stunde / 0 - 23)
+// GAWeckerDefaultWochenendeWertM  : GA (1byte) zum direkten Setzen der Standard Wochenend Weckzeit (Minute / 0 - 59)
+// GAWeckerAlarm                   : GA (1bit) diese GA geht bei WeckerAlarm für die Dauer von 1 Minute auf EIN
+// GAWeckerVoralarm                : GA (1bit) diese GA geht bei WeckerVoralarm für die Dauer von 1 Minute auf EIN
+// GAWeckerAlarmText               : GA (14byte) zur Visualisierung des Wecker-Alarm-Status. Bei EIN mit WeckerAlarm-Zeit
+// GAWeckerVoralarmText            : GA (14byte) zur Visualisierung des Wecker-Voralarm-Status. Bei EIN mit WeckerVoralarm-Zeit 
+// Remanentspeicher0               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerStatus)
+// Remanentspeicher1               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerWertH)
+// Remanentspeicher2               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerWertM)
+// Remanentspeicher3               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerDefaultWerktagsWertH)
+// Remanentspeicher4               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerDefaultWerktagsWertM)
+// Remanentspeicher5               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerDefaultWochenendeWertH)
+// Remanentspeicher6               : Wert (u16) oder Variable (u16) mit EibPC-Remanentspeicher-Adresse für (WeckerDefaultWochenendeWertM)
+// 
+// 
+// 
+// Bsp. für Makro-Aufruf im Berreich [Macros]
+// ########################################## 
+//
+// Wecker(Wecker,"WeckerStatus-8/3/200",                          \\
+//               "WeckerTaktH-8/3/201",                           \\
+//               "WeckerTaktM-8/3/202",                           \\
+//               "WeckerWertH-8/3/203",                           \\
+//               "WeckerWertM-8/3/204",                           \\
+//               1u08,                                            \\
+//               "WeckerDefaultWerktagsWertH-8/3/211",            \\
+//               "WeckerDefaultWerktagsWertM-8/3/212",            \\
+//               "WeckerDefaultWochenendeWertH-8/3/213",          \\
+//               "WeckerDefaultWochenendeWertM-8/3/214",          \\
+//               "WeckerAlarm-8/3/206",                           \\
+//               "WeckerVoralarm-8/3/207",                        \\
+//               "WeckerAlarmText-8/3/208",                       \\
+//               "WeckerVoralarmText-8/3/209",                    \\
+//               100u16,101u16,102u16,103u16,104u16,105u16,106u16)
+//
+//----------------------------------------------------------------------
+
+
+// ####################################
+// Wecker
+// ####################################
+
+:begin Wecker(Name,GAWeckerStatus,GAWeckerTaktH,GAWeckerTaktM,GAWeckerWertH,GAWeckerWertM,GAOffsetH,GAWeckerDefaultWerktagsWertH,GAWeckerDefaultWerktagsWertM,GAWeckerDefaultWochenendeWertH,GAWeckerDefaultWochenendeWertM,GAWeckerAlarm,GAWeckerVoralarm,GAWeckerAlarmText,GAWeckerVoralarmText,Remanentspeicher0,Remanentspeicher1,Remanentspeicher2,Remanentspeicher3,Remanentspeicher4,Remanentspeicher5,Remanentspeicher6)
+:info $Wecker-Makro - Bitte Beschreibung in der Makro-Datei lesen.$ \\
+      $Name des Weckers$ \\
+      $GA für Status des Weckers (EIN/AUS) - Typ b01$ \\
+      $GA zum Ändern der Weckzeit (Stunde) über normalen Taster - Typ b01$ \\
+      $GA zum Ändern der Weckzeit (Minute) über normalen Taster - Typ b01$ \\
+      $GA zum Ändern der Weckzeit (Stunde / 0 - 23) über Werteingabe z.b. von einer Visu - Typ u08$ \\
+      $GA zum Ändern der Weckzeit (Minute / 0 - 59) über Werteingabe z.b. von einer Visu - Typ u08$ \\
+      $Wert, Variable oder GA zum Setzen des Offsets (Stunden) für den Voralarm - Typ u08$ \\
+      $GA zum Ändern der Vordefinierten-Werktags-Weckzeit (Stunde / 0 - 23) über Werteingabe z.B. von einer Visu - Typ u08$ \\
+      $GA zum Ändern der Vordefinierten-Werktags-Weckzeit (Minute / 0 - 59) über Werteingabe z.B. von einer Visu - Typ u08$ \\
+      $GA zum Ändern der Vordefinierten-Wochenend-Weckzeit (Stunde / 0 - 23) über Werteingabe z.B. von einer Visu - Typ u08$ \\
+      $GA zum Ändern der Vordefinierten-Wochenend-Weckzeit (Minute / 0 - 59) über Werteingabe z.B. von einer Visu - Typ u08$ \\
+      $GA für Signalisierung des Wecker-Alarms (GA bleibt bei Alarm für die Dauer von 1 Minute auf EIN) - Typ b01$ \\
+      $GA für Signalisierung des Wecker-VorAlarms (GA bleibt bei Alarm für die Dauer von 1 Minute auf EIN) - Typ b01$ \\
+      $GA für Text-Visualisierung des Wecker-Alarm-Status - Typ c14$ \\
+      $GA für Text-Visualisierung des Wecker-VorAlarm-Status - Typ c14$ \\
+      $Remanentspeicher-Adresse 1 (WeckerStatus) - Typ u16$ \\
+      $Remanentspeicher-Adresse 2 (WeckerWertH) - Typ u16$ \\
+      $Remanentspeicher-Adresse 3 (WeckerWertM) - Typ u16$ \\
+      $Remanentspeicher-Adresse 4 (WeckerDefaultWerktagsWertH) - Typ u16$ \\
+      $Remanentspeicher-Adresse 5 (WeckerDefaultWerktagsWertM) - Typ u16$ \\
+      $Remanentspeicher-Adresse 6 (WeckerDefaultWochenendeWertH) - Typ u16$ \\
+      $Remanentspeicher-Adresse 7 (WeckerDefaultWochenendeWertM) - Typ u16$ \\
+:shortinfo $Wecker-Makro - Bitte Beschreibung in der Makro-Datei lesen.$
+
+// Initialisierung
+Name^Status                  = GAWeckerStatus
+Name^TaktH                   = GAWeckerTaktH
+Name^TaktHEvent              = event(GAWeckerTaktH)
+Name^TaktM                   = GAWeckerTaktM
+Name^TaktMEvent              = event(GAWeckerTaktM)
+Name^WertH                   = GAWeckerWertH
+Name^WertM                   = GAWeckerWertM
+Name^OffsetH                 = GAOffsetH
+Name^OffsetHWert             = 0u08
+Name^DefaultSetzen           = AUS
+Name^DefaultWerktagsWertH    = GAWeckerDefaultWerktagsWertH
+Name^DefaultWerktagsWertM    = GAWeckerDefaultWerktagsWertM
+Name^DefaultWochenendeWertH  = GAWeckerDefaultWochenendeWertH
+Name^DefaultWochenendeWertM  = GAWeckerDefaultWochenendeWertM
+Name^Alarm                   = AUS
+Name^Voralarm                = AUS
+Name^AlarmText               = $Wecker     Aus$c14
+Name^VoralarmText            = $Voralarm   Aus$c14
+Name^InConfig                = AUS
+Name^SnoozeCount             = 0u08
+
+
+// Wecker-Daten im Remanentspeicher sichern
+Name^StatusCheckFlash                 = AUS
+Name^WertHCheckFlash                  = 0u08
+Name^WertMCheckFlash                  = 0u08
+Name^DefaultWerktagsWertHCheckFlash   = 0u08
+Name^DefaultWerktagsWertMCheckFlash   = 0u08
+Name^DefaultWochenendeWertHCheckFlash = 0u08
+Name^DefaultWochenendeWertMCheckFlash = 0u08
+
+if delay(change(Name^Status),Min1) then {
+   readflash(Name^StatusCheckFlash, Remanentspeicher0);
+   if (Name^Status != Name^StatusCheckFlash) then { writeflash(Name^Status, Remanentspeicher0) } endif;
+   Name^StatusCheckFlash = AUS;
+} endif
+if delay(change(Name^WertH),Min1) then {
+   readflash(Name^WertHCheckFlash,  Remanentspeicher1);
+   if (Name^WertH  != Name^WertHCheckFlash ) then { writeflash(Name^WertH,  Remanentspeicher1) } endif;
+   Name^WertHCheckFlash  = 0u08;
+} endif
+if delay(change(Name^WertM),Min1) then {
+   readflash(Name^WertMCheckFlash,  Remanentspeicher2);
+   if (Name^WertM  != Name^WertMCheckFlash ) then { writeflash(Name^WertM,  Remanentspeicher2) } endif;
+   Name^WertMCheckFlash  = 0u08;
+} endif
+if delay(change(Name^DefaultWerktagsWertH),Min1) then {
+   readflash(Name^DefaultWerktagsWertHCheckFlash,  Remanentspeicher3);
+   if (Name^DefaultWerktagsWertH  != Name^DefaultWerktagsWertHCheckFlash ) then { writeflash(Name^DefaultWerktagsWertH,  Remanentspeicher3) } endif;
+   Name^DefaultWerktagsWertHCheckFlash  = 0u08;
+} endif
+if delay(change(Name^DefaultWerktagsWertM),Min1) then {
+   readflash(Name^DefaultWerktagsWertMCheckFlash,  Remanentspeicher4);
+   if (Name^DefaultWerktagsWertM  != Name^DefaultWerktagsWertMCheckFlash ) then { writeflash(Name^DefaultWerktagsWertM,  Remanentspeicher4) } endif;
+   Name^DefaultWerktagsWertMCheckFlash  = 0u08;
+} endif
+if delay(change(Name^DefaultWochenendeWertH),Min1) then {
+   readflash(Name^DefaultWochenendeWertHCheckFlash,  Remanentspeicher5);
+   if (Name^DefaultWochenendeWertH  != Name^DefaultWochenendeWertHCheckFlash ) then { writeflash(Name^DefaultWochenendeWertH,  Remanentspeicher5) } endif;
+   Name^DefaultWochenendeWertHCheckFlash  = 0u08;
+} endif
+if delay(change(Name^DefaultWochenendeWertM),Min1) then {
+   readflash(Name^DefaultWochenendeWertMCheckFlash,  Remanentspeicher6);
+   if (Name^DefaultWochenendeWertM  != Name^DefaultWochenendeWertMCheckFlash ) then { writeflash(Name^DefaultWochenendeWertM,  Remanentspeicher6) } endif;
+   Name^DefaultWochenendeWertMCheckFlash  = 0u08;
+} endif
+
+// Wecker-Daten aus Remanentspeicher wiederherstellen
+Name^StatusReadFlashOK                 = AUS
+Name^WertHReadFlashOK                  = AUS
+Name^WertMReadFlashOK                  = AUS
+Name^DefaultWerktagsWertHReadFlashOK   = AUS
+Name^DefaultWerktagsWertMReadFlashOK   = AUS
+Name^DefaultWochenendeWertHReadFlashOK = AUS
+Name^DefaultWochenendeWertMReadFlashOK = AUS
+if systemstart() then {
+   Name^StatusReadFlashOK                 = readflash(Name^Status,                 Remanentspeicher0);
+   Name^WertHReadFlashOK                  = readflash(Name^WertH,                  Remanentspeicher1);
+   Name^WertMReadFlashOK                  = readflash(Name^WertM,                  Remanentspeicher2);
+   Name^DefaultWerktagsWertHReadFlashOK   = readflash(Name^DefaultWerktagsWertH,   Remanentspeicher3);
+   Name^DefaultWerktagsWertMReadFlashOK   = readflash(Name^DefaultWerktagsWertM,   Remanentspeicher4);
+   Name^DefaultWochenendeWertHReadFlashOK = readflash(Name^DefaultWochenendeWertH, Remanentspeicher5);
+   Name^DefaultWochenendeWertMReadFlashOK = readflash(Name^DefaultWochenendeWertM, Remanentspeicher6);
+   if (Name^StatusReadFlashOK                 == AUS) then { write(GAWeckerStatus,                 Name^Status)                 } endif;
+   if (Name^WertHReadFlashOK                  == AUS) then { write(GAWeckerWertH,                  Name^WertH)                  } endif;
+   if (Name^WertMReadFlashOK                  == AUS) then { write(GAWeckerWertM,                  Name^WertM)                  } endif;
+   if (Name^DefaultWerktagsWertHReadFlashOK   == AUS) then { write(GAWeckerDefaultWerktagsWertH,   Name^DefaultWerktagsWertH)   } endif;
+   if (Name^DefaultWerktagsWertMReadFlashOK   == AUS) then { write(GAWeckerDefaultWerktagsWertM,   Name^DefaultWerktagsWertM)   } endif;
+   if (Name^DefaultWochenendeWertHReadFlashOK == AUS) then { write(GAWeckerDefaultWochenendeWertH, Name^DefaultWochenendeWertH) } endif;
+   if (Name^DefaultWochenendeWertMReadFlashOK == AUS) then { write(GAWeckerDefaultWochenendeWertM, Name^DefaultWochenendeWertM) } endif;
+} endif
+
+// Wecker Default-Zeiten setzen
+if (Name^DefaultSetzen==EIN) then {
+   Name^DefaultSetzen = AUS;
+   write(GAWeckerStatus,AUS);
+   /* Werktags */;
+   if (dayofweek()==SONNTAG or dayofweek()==MONTAG or dayofweek()==DIENSTAG or dayofweek()==MITTWOCH or dayofweek()==DONNERSTAG) then {
+      write(GAWeckerWertH, Name^DefaultWerktagsWertH);
+      write(GAWeckerWertM, Name^DefaultWerktagsWertM);
+   } endif;
+   /* Wochenende */;
+   if (dayofweek()==FREITAG or dayofweek()==SAMSTAG) then {
+      write(GAWeckerWertH, Name^DefaultWochenendeWertH);
+      write(GAWeckerWertM, Name^DefaultWochenendeWertM);
+   } endif;
+} endif
+
+// WeckerInConfig setzen um das Auslösen des Alarms beim Weckerstellen zu vermeiden
+if        Name^TaktHEvent or Name^TaktMEvent         then Name^InConfig = EIN endif 
+if delay((Name^TaktHEvent or Name^TaktMEvent), Sek3) then Name^InConfig = AUS endif 
+
+// Takte umsetzen in Werte
+if Name^TaktH == EIN and Name^TaktHEvent then Name^WertH = Name^WertH + 1u08 endif
+if Name^TaktH == AUS and Name^TaktHEvent then Name^WertH = Name^WertH - 1u08 endif
+if Name^TaktM == EIN and Name^TaktMEvent then Name^WertM = Name^WertM + 1u08 endif
+if Name^TaktM == AUS and Name^TaktMEvent then Name^WertM = Name^WertM - 1u08 endif
+
+if Name^WertH > 23u08 and Name^WertH  < 255u08 then Name^WertH =  0u08 endif
+if Name^WertH > 23u08 and Name^WertH == 255u08 then Name^WertH = 23u08 endif
+if Name^WertM > 59u08 and Name^WertM  < 255u08 then Name^WertM =  0u08 endif
+if Name^WertM > 59u08 and Name^WertM == 255u08 then Name^WertM = 59u08 endif
+
+// Offset berechnen
+if change(Name^OffsetH) or after(change(Name^WertH), Sek1) or change(Name^Status) then {
+   Name^OffsetHWert = Name^WertH - Name^OffsetH
+} endif
+if change(Name^OffsetHWert) and Name^OffsetHWert > 23 then {
+   Name^OffsetHWert = 24 - Name^OffsetH
+} endif
+
+// Text-Visualisierung
+if after(change(Name^WertH) or change(Name^WertM) or change(Name^Status), 10u64) then {
+   if Name^Status==EIN then {
+   Name^AlarmText = $Wecken   $c14 + convert(stringformat(Name^WertH, 0, 3, 2, 2),$$c14) + $:$c14 + convert(stringformat(Name^WertM, 0, 3, 2, 2),$$c14)
+   } endif;
+   if Name^Status==AUS then {
+   Name^AlarmText = $Wecken     Aus$c14
+   } endif;
+   if (Name^SnoozeCount==0u08) then write(GAWeckerAlarmText,Name^AlarmText) endif;
+} endif
+
+if after(change(Name^OffsetHWert) or change(Name^WertM) or change(Name^Status), 10u64) then {
+   if Name^Status==EIN then {
+   Name^VoralarmText = $Voralarm $c14 + convert(stringformat(Name^OffsetHWert, 0, 3, 2, 2),$$c14) + $:$c14 + convert(stringformat(Name^WertM, 0, 3, 2, 2),$$c14)
+   } endif;
+   if Name^Status==AUS then {
+   Name^VoralarmText = $Voralarm   Aus$c14
+   } endif;
+   write(GAWeckerVoralarmText,Name^VoralarmText);
+} endif
+
+// Alarm generieren
+if Name^WertH == hour() and Name^WertM == minute() and Name^Status == EIN and Name^InConfig == AUS then Name^Alarm = EIN endif
+if Name^WertH != hour() or  Name^WertM != minute()                                                 then Name^Alarm = AUS endif
+
+if change(Name^Alarm) then write(GAWeckerAlarm,Name^Alarm) endif
+
+// Voralarm generieren
+if Name^OffsetHWert == hour() and Name^WertM == minute() and Name^Status == EIN and Name^InConfig == AUS then Name^Voralarm = EIN endif
+if Name^OffsetHWert != hour() or  Name^WertM != minute()                                                 then Name^Voralarm = AUS endif
+
+if change(Name^Voralarm) then write(GAWeckerVoralarm,Name^Voralarm) endif
+
+
+:end
+
+
+//----------------------------------------------------------------------
+//  Makro für den Enertex EibPC
+//
+//  JalousieLueftungsLogik
+//
+//  Version              : v1.5
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Christian Götzl
+//
+//  Author               : Christian Götzl
+// 
+//  Dat.Rev.             : Date: 2011/03/31
+//
+//----------------------------------------------------------------------
+//
+// Beschreibung
+// ############
+// 
+// Dieses EibPC-Makro wurde erstellt um eine komfortable Lüftungslogik bei geschlossener Jalousie/Rollade zu ermöglichen. 
+// 
+// Wenn bei geschlossener Jalousie/Rollade das Fenster geöffnet wird, fährt die Jalosuie/Rollade auf den Wert LueftungsPos (%-Pos.). 
+// Nach Schließen des Fensters wird die Jalousie wieder geschlossen. Wurde während dieser Zeit die Jalousie-Position manuell 
+// verändert, wird die Jalousie-Lüftungs-Logik inaktiv und verändert die Jalousie-Position nach dem Fensterschließen nicht.
+// 
+// Über eine Trigger-Variable kann die Jalousie-Lüftungs-Logik über einen anderen Programmteil im EibPC-Anwendungsprogramm aktiviert 
+// werden. So ist es z.B. möglich, dass nach dem Schließen der Jalousie/Rollade über die Zeitschaltuhr am Abend und offenem Fenster, 
+// die Jalosusie/Rollade nur auf die LueftungsPos fährt und die Jalousie-Lüftungs-Logik aktiviert. So wird die Jalousie/Rollade 
+// automatisch geschlossen, wenn das Fenster geschlossen wird. 
+//  
+// 
+// Parameterbeschreibung des Makros
+// ################################
+// 
+// Name                           : Name des Makros (Prefix der Variablen)
+// LueftungsPos                   : Wert (u08 bzw. %), Variable (u08 bzw. %) oder GA (1byte) zum Setzen der Lüftungs-Position (0-254 bzw. 0-99%) 
+// GAFensterStatus1               : GA (1bit) Status 1 (z.b. Fenster-Flügel auf/zu) des Fensters (EIN = Fenster offen, AUS = Fenster geschlossen)
+// GAFensterStatus2               : GA (1bit) Status 2 (z.b. Fenster gekippt) des Fensters (EIN = Fenster offen, AUS = Fenster geschlossen). Falls 
+//                                  kein Status 2 vorhanden/notwendig einfach gleiche GA wie bei Status 1 eintragen
+// GAJalousiePosition             : GA (1byte) zum Fahren der Jalousie/Rollade auf eine Position
+// GAJalousiePositionRueckmeldung : GA (1byte) Rückmeldung der Jalousie/Rollade welche Position aktuell angefahren ist.
+// 
+// 
+// 
+// Bsp. für Makro-Aufruf im Berreich [Macros]
+// ########################################## 
+//
+// JalousieLueftungsLogik(Bad, 80%,                              \\
+// "Bad Fenster gekippt (Auf/Zu)-5/3/32",                        \\
+// "Bad Fenster (Auf/Zu)-5/3/31",                                \\
+// "Bad Jal. Fenster (Position)-2/3/213",                        \\
+// "Bad Jal. Fenster (Rückmeldung Position)-2/3/214")
+//
+//----------------------------------------------------------------------
+
+
+// ####################################
+// JalousieLueftungsLogik
+// ####################################
+
+:begin JalousieLueftungsLogik(Name,LueftungsPos,GAFensterStatus1,GAFensterStatus2,GAJalousiePosition,GAJalousiePositionRueckmeldung)
+
+:info $Dieses Makro stellt eine einfache Jalousie-Lüftungs-Logik zu Verfügung. Wenn bei geschlossener \\
+Jalousie das Fenster geöffnet wird, fährt die Jalosuie auf den Wert LueftungsPos (%-Pos.). Nach dem Schließen des Fenster wird \\
+die Jalousie wieder geschlossen. Wurde während dieser Zeit die Jalousie-Position manuell verändert, wird \\
+die Jalousie-Lüftungs-Logik inaktiv und verändert die Jalousie-Position nach dem Fensterschließen nicht.$ \\
+$Makro-Name$ $Fensterkontakt1 Info Bei EIN ist Fenster offen$ $Fensterkontakt2 Info Bei EIN ist Fenster offen (Falls kein Status 2 vorhanden/notwendig einfach gleiche GA wie bei Status 1 eintragen)$ $Positionierungs-Objekt des Jalousie-Aktors$ $Position-Rückmeldungs-Objekt des Jalousie-Aktors$
+:shortinfo $Jalousie-Lüftungs-Logik$
+
+// Initalisierung
+initGA(GAFensterStatus1)
+initGA(GAFensterStatus2)
+initGA(GAJalousiePositionRueckmeldung)
+JalousieLueftungsPos^Name              = LueftungsPos
+JalousieLueftungsLogik^Name            = AUS
+JalousieLueftungsTrigger^Name          = AUS
+FensterStatus^Name                     = (GAFensterStatus1 or GAFensterStatus2)
+
+// Wenn bei geschlossener Jalousie das Fenster geöffnet (gekippt oder geöffnet) wird, soll die Jalousie zum Lüften auf JalousieLueftungsPos^Name fahren
+// Eine Trigger-Variable (JalousieLueftungsLogik^Name) ermöglicht die aktivierung der JalousieLueftungsLogik ohne das zusammentreffen dieser Ereignisse! 
+if ((JalousieLueftungsLogik^Name==AUS and GAJalousiePositionRueckmeldung==100% and delay(FensterStatus^Name==EIN,2000u64)) or JalousieLueftungsTrigger^Name==EIN) then {
+   write(GAJalousiePosition,JalousieLueftungsPos^Name);
+   JalousieLueftungsLogik^Name   = EIN;
+   JalousieLueftungsTrigger^Name = AUS;
+} endif
+
+// Wenn das Fenster wieder komplett geschlossen wird, soll die Jalousie wieder auf 100% fahren, jedoch nur wenn zwischenzeitlich die Jalousie nicht verstellt wurde.
+if (JalousieLueftungsLogik^Name==EIN and FensterStatus^Name==AUS and delay(FensterStatus^Name==AUS,3000u64)) then {
+   write(GAJalousiePosition,100%);
+   JalousieLueftungsLogik^Name   = AUS;
+} endif
+
+// Wenn die Jalousie bei aktiver Logik verstellt wird, soll die Logik inaktiv werden. 20000u64 = 20 s
+if (JalousieLueftungsLogik^Name==EIN and GAJalousiePositionRueckmeldung!=JalousieLueftungsPos^Name and delay(GAJalousiePositionRueckmeldung!=JalousieLueftungsPos^Name,20000u64)) then {
+   JalousieLueftungsLogik^Name   = AUS
+} endif
+
+:end
+
+
+//----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Zweck                : Makros für Zeit- und Datumsfunktionen
+//
+//  Version              : v1.1
+//
+//  Autor + Copyright    : Bernd Meiners
+//
+//----------------------------------------------------------------------
+
+// Es gibt in dieser Library folgende Funktionen:
+// UnixTimeToVar( Name, TheUnixTime) - Eine Unixzeit aufsplitten in einzelne Bestandteile
+// ToUnixTime( utY, utMo, utD, utH, utMi, utS) - Einzelne Informationen zu einer Unixzeit zusammensetzen
+//
+// Warum Unixzeit?
+// Man kann recht elegant zu einem bestimmten Zeitpunkt einen Tag, ein paar Stunden o.ä. dazuaddieren
+// Beispielsweise bei Wissen um einen bestimmten Vollmond läßt sich der nächste Vollmond berechnen 
+// Es lassen sich Ebbe und Flut berechnen durch einfache Addition und Subtraktion
+// Aufgaben wie "Weck mich in 3 Tagen, 2 Stunden, 13 Minuten und 7 Sekunden" lassen sich codieren
+//
+// Achtung: 
+// * Bei vergleichen zwischen der aktuellen und einer in der Zukunft liegenden Zeit immer mit >= arbeiten
+// * Der Einfachheit halber wird derzeit keine Rücksicht auf Sommerzeit oder Zeitverschiebung gegenüber UTC genommen
+// 
+// Todo:
+// Evtl. Implementation von Zeitzonen
+// Evtl. Berücksichtigung von Sommer und Winterzeit bei der Umwandlung obwohl Unixzeit hier keinen Unterscheid macht
+
+:begin UnixTimeToVar( Name, TheUnixTime)
+:info $Wandelt eine UnixZeit um in 6 Variablen$ \\
+    $Name der Variablen (wird ergänzt um Month, Day, Second, Minute, Hour, Year$ \\
+    $Die aufzusplittende Unixzeit$
+:shortinfo $Wandelt eine UnixZeit um in 6 Variablen$
+:var remainder@
+:var unixtime@
+
+unixtime@ = convert( TheUnixTime, 0s32)
+Name^Month = 0s32
+Name^Day = 0s32
+
+Name^Second = mod( unixtime@, 60s32 )
+Name^Minute = mod( unixtime@ - Name^Second, 3600s32) / 60s32
+Name^Hour = mod( unixtime@ - Name^Minute * 60s32 - Name^Second, 86400s32 ) / 3600s32
+
+remainder@ = unixtime@ - (Name^Hour * 3600s32 + Name^Minute * 60s32 + Name^Second)
+//Name^Year = (remainder@ - mod( remainder@, 365s32 * 24s32 * 60s32 * 60s32 ) / 365s32 * 24s32 * 60s32 * 60s32 ) + 1970s32
+Name^Year = remainder@ / (365s32 * 24s32 * 60s32 * 60s32 ) + 1970s32
+
+Name^DaysFromLeapYears =((Name^Year-1s32) - 1968s32 ) / 4s32 - ((Name^Year - 1s32) - 1900s32 ) / 100s32 + ((Name^Year - 1s32) - 1600s32 ) / 400s32
+
+Name^LeapYear  = (mod(Name^Year,4s32) == 0s32 AND ( mod( Name^Year,100s32) != 0s32 or mod(Name^Year,400s32)==0s32))
+Name^DaysInYear = (remainder@ - (Name^Year -1970s32) * 365s32 * 24s32 * 60s32 * 60s32 ) / 86400s32 - Name^DaysFromLeapYears + 1s32
+
+if !Name^LeapYear then {
+    if Name^DaysInYear > 0s32 and Name^DaysInYear <= 31s32 then Name^Month = 1s32; Name^Day = Name^DaysInYear endif;
+    if Name^DaysInYear > 31s32 and Name^DaysInYear <= 59s32 then Name^Month = 2s32; Name^Day = Name^DaysInYear - 31s32 endif;
+    if Name^DaysInYear > 59s32 and Name^DaysInYear <= 90s32 then Name^Month = 3s32; Name^Day = Name^DaysInYear - 59s32 endif;
+    if Name^DaysInYear > 90s32 and Name^DaysInYear <= 120s32 then Name^Month = 4s32; Name^Day = Name^DaysInYear - 90s32 endif;
+    if Name^DaysInYear > 120s32 and Name^DaysInYear <= 151s32 then Name^Month = 5s32; Name^Day = Name^DaysInYear - 120s32 endif;
+    if Name^DaysInYear > 151s32 and Name^DaysInYear <= 181s32 then Name^Month = 6s32; Name^Day = Name^DaysInYear - 151s32 endif;
+    if Name^DaysInYear > 181s32 and Name^DaysInYear <= 212s32 then Name^Month = 7s32; Name^Day = Name^DaysInYear - 181s32 endif;
+    if Name^DaysInYear > 212s32 and Name^DaysInYear <= 243s32 then Name^Month = 8s32; Name^Day = Name^DaysInYear - 212s32 endif;
+    if Name^DaysInYear > 243s32 and Name^DaysInYear <= 273s32 then Name^Month = 9s32; Name^Day = Name^DaysInYear - 243s32 endif;
+    if Name^DaysInYear > 273s32 and Name^DaysInYear <= 304s32 then Name^Month = 10s32; Name^Day = Name^DaysInYear - 273s32 endif;
+    if Name^DaysInYear > 304s32 and Name^DaysInYear <= 334s32 then Name^Month = 11s32; Name^Day = Name^DaysInYear - 304s32 endif;
+    if Name^DaysInYear > 334s32 and Name^DaysInYear <= 365s32 then Name^Month = 12s32; Name^Day = Name^DaysInYear - 334s32 endif
+} endif
+
+if Name^LeapYear then {
+    if Name^DaysInYear > 0s32 and Name^DaysInYear <= 31s32 then Name^Month = 1s32; Name^Day = Name^DaysInYear endif;
+    if Name^DaysInYear > 31s32 and Name^DaysInYear <= 60s32 then Name^Month = 2s32; Name^Day = Name^DaysInYear - 31s32 endif;
+    if Name^DaysInYear > 60s32 and Name^DaysInYear <= 91s32 then Name^Month = 3s32; Name^Day = Name^DaysInYear - 60s32 endif;
+    if Name^DaysInYear > 91s32 and Name^DaysInYear <= 121s32 then Name^Month = 4s32; Name^Day = Name^DaysInYear - 91s32 endif;
+    if Name^DaysInYear > 121s32 and Name^DaysInYear <= 152s32 then Name^Month = 5s32; Name^Day = Name^DaysInYear - 121s32 endif;
+    if Name^DaysInYear > 152s32 and Name^DaysInYear <= 182s32 then Name^Month = 6s32; Name^Day = Name^DaysInYear - 152s32 endif;
+    if Name^DaysInYear > 182s32 and Name^DaysInYear <= 213s32 then Name^Month = 7s32; Name^Day = Name^DaysInYear - 182s32 endif;
+    if Name^DaysInYear > 213s32 and Name^DaysInYear <= 244s32 then Name^Month = 8s32; Name^Day = Name^DaysInYear - 213s32 endif;
+    if Name^DaysInYear > 244s32 and Name^DaysInYear <= 274s32 then Name^Month = 9s32; Name^Day = Name^DaysInYear - 244s32 endif;
+    if Name^DaysInYear > 274s32 and Name^DaysInYear <= 305s32 then Name^Month = 10s32; Name^Day = Name^DaysInYear - 274s32 endif;
+    if Name^DaysInYear > 305s32 and Name^DaysInYear <= 335s32 then Name^Month = 11s32; Name^Day = Name^DaysInYear - 305s32 endif;
+    if Name^DaysInYear > 335s32 and Name^DaysInYear <= 366s32 then Name^Month = 12s32; Name^Day = Name^DaysInYear - 335s32 endif
+} endif
+
+:end
+
+
+:begin ToUnixTime( utY, utMo, utD, utH, utMi, utS)
+:info $Gegebenen Zeitpunkt mit Einzelangabe von Jahr, Monat, Tag, Stunde, Minute und Sekunde in UnixTime umwandeln$ \\
+    $Jahr$ \\
+    $Monat$ \\
+    $Tag$ \\
+    $Stunde$ \\
+    $Minute$ \\
+    $Sekunde$
+:shortinfo $Gegebenen Zeitpunkt in UnixTime umwandeln$
+
+:var tage_bis_monatsanfang@
+:var unix_zeit@
+:var Jahr@
+:var Monat@
+:var Tag@
+:var Stunde@
+:var Minute@
+:var Sekunde@
+:var Jahre@
+:var Schaltjahre@
+
+tage_bis_monatsanfang@ = 0s32
+//unix_zeit@ = 0s32
+
+Jahr@ = convert( utY, 0s32)
+Monat@ = convert( utMo, 0s32)
+Tag@ = convert( utD, 0s32)
+Stunde@ = convert( utH, 0s32)
+Minute@ = convert( utMi, 0s32)
+Sekunde@ = convert( utS, 0s32)
+
+
+if Monat@ == 1s32 then tage_bis_monatsanfang@ = 0s32 endif
+if Monat@ == 2s32 then tage_bis_monatsanfang@ = 31s32 endif
+if Monat@ == 3s32 then tage_bis_monatsanfang@ = 59s32 endif
+if Monat@ == 4s32 then tage_bis_monatsanfang@ = 90s32 endif
+if Monat@ == 5s32 then tage_bis_monatsanfang@ = 120s32 endif
+if Monat@ == 6s32 then tage_bis_monatsanfang@ = 151s32 endif
+if Monat@ == 7s32 then tage_bis_monatsanfang@ = 181s32 endif
+if Monat@ == 8s32 then tage_bis_monatsanfang@ = 212s32 endif
+if Monat@ == 9s32 then tage_bis_monatsanfang@ = 243s32 endif
+if Monat@ == 10s32 then tage_bis_monatsanfang@ = 273s32 endif
+if Monat@ == 11s32 then tage_bis_monatsanfang@ = 304s32 endif
+if Monat@ == 12s32 then tage_bis_monatsanfang@ = 334s32 endif
+
+Jahre@ = Jahr@ - 1970s32
+
+Schaltjahre@ =((Jahr@-1s32) - 1968s32 ) / 4s32 - ((Jahr@ - 1s32) - 1900s32 ) / 100s32 + ((Jahr@ - 1s32) - 1600s32 ) / 400s32
+
+unix_zeit@ = Sekunde@ + 60s32*Minute@ + 60s32*60s32*Stunde@ + (tage_bis_monatsanfang@ + Tag@ - 1s32)*60s32*60s32*24s32 + (Jahre@ * 365s32 + Schaltjahre@) * 60s32 * 60s32 * 24s32
+ 
+if ( (Monat@ > 2s32) AND (mod(Jahr@,4s32) == 0s32 AND ( mod( Jahr@,100s32) != 0s32 or mod(Jahr@,400s32)==0s32)) ) then {
+    unix_zeit@ = unix_zeit@ + 60s32 *60s32 *24s32; /* +Schalttag wenn jahr Schaltjahr ist */
+} endif    
+:return unix_zeit@
+:end
+
+
+:begin UnixTime()
+:info $Aktuelle Werte für Zeit und Datum ermitteln und als UnixTime zurückgeben$
+:shortinfo $Aktuelle Werte für Zeit und Datum ermitteln und als UnixTime zurückgeben$
+:var date@
+date@ = convert(setdate(),$$)
+
+utYear = convert( split( date@, 6u16, 10u16), 0s32)
+utMonth = convert( split( date@, 3u16, 4u16), 0s32)
+utDay = convert( split( date@, 0u16, 1u16), 0s32)
+utHour = convert( hour(), 0s32 )
+utMinute = convert( minute(), 0s32)
+utSecond = convert( second(), 0s32)
+
+utNow = ToUnixTime( utYear, utMonth, utDay, utHour, utMinute, utSecond )
+
+:end
+
+//----------------------------------------------------------------------
+//                         Makros für den Enertex EiBPC
+//
+//  Zweck                : Makros für Flash Handling
+//
+//  Version              : v3.100
+//
+//  Autor + Copyright    : Bernd Meiners
+//
+//----------------------------------------------------------------------
+
+// Es muß grundsätzlich zunächst einmal 
+// PrepareFlashSystem( AUS/EIN ) genutzt werden
+//
+// Weiterhin für jeden Datentyp den man nutzen möchte muß einmalig
+// initialisiert werden:
+// z.B. PrepareFlashF16(FlashSlot, Delaytime ) bereitet einen Eintrag im Flash des EibPC vor [FlashSlot 1 ... 999]
+//
+// und weiterhin für den zu speichernden Wert
+// z.B. FlashSetAndSaveF16(FlashIndex, Variable, MinValue, MaxValue, Preset )
+// Dabei ist der Flashindex sozusagen die Speicherzelle innerhalb eines FlashSlots. 
+// Der maximal nutzbare Index hängt dabei von der Größe der zu speichernden Variablen ab.
+// Die Variable ist eine im EibPC Programm nutzbare Variable die bei Änderung ins Flash geschrieben werden soll
+// Min und Maxvalue begrenzen die maximal möglichen Werte
+// Preset ist die Voreinstellung die dann verwendet wird, wenn sich der Wert nicht zwischen Min und Maxvalue bewegt.
+
+:begin PrepareFlashSystem( DebugState, DebugGroupAddress )
+:info $Flash System vorbelegen$ \\
+    $DebugState sollen Debugmeldungen mit ausgegeben werden$ \\
+	$DebugGroupAddress auf diese Gruppenadresse ($$c14) werden Meldungen ausgegeben$
+:shortinfo $Flash System vorbelegen$
+Flash_Debug = DebugState
+Flash_DebugGA = getaddress(DebugGroupAddress)
+:end
+
+
+:begin PrepareFlashF16(FlashSlot, Delaytime )
+:info $Ein Float 16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashSlot Nummer des Speicherplatzes im Flash u16 [1...999]$ \\
+	$Delaytime ist der Wert, der bestimmt, wie lange (in Mikrosekunden = 0u64) gewartet wird bevor der veränderte Wert in den Flash zurückgeschrieben wird$
+:shortinfo $Float16 remanent speichern$
+:var ReadResult@
+:var WriteResult@
+
+FlashString_F16_IsDirty = AUS;	/* Wenn eine Änderung am String vorgenommen worden ist, so wird hier das Flag auf Dirty gesetzt um Abspeichern zu ermöglichen */
+FlashString_F16_IsValid = AUS;	/* Ist ein gültiger String aus dem Flash gelesen worden ? */
+FlashString_F16 = $$;				/* String, der die Einträge der F16 übernimmt */
+
+FlashF16WriteResult = AUS
+
+ // Nach dem Systemstart die Variable einlesen
+ // Sollte das Schiefgehen oder ist der Wert ungültig bzw. leer, nehmen wir den Vorgabewert
+ 
+if systemstart() then {
+	FlashString_F16_IsValid = !readflash( FlashString_F16, FlashSlot );
+	if !FlashString_F16_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrRead:$c14) } endif;
+	if FlashString_F16_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkRead:$c14) } endif
+} endif
+ 
+if change( FlashString_F16 ) then {
+	FlashString_F16_IsDirty = EIN
+} endif
+
+if delay( FlashString_F16_IsDirty == EIN, Delaytime) then {
+    FlashF16WriteResult = writeflash( FlashString_F16, FlashSlot );
+	if FlashF16WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrWrite:$c14) } endif;
+	if !FlashF16WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkWrite:$c14) } endif
+} endif
+
+// Dafür sorgen, das eine erneute Triggerung möglich ist
+if FlashString_F16_IsDirty then FlashString_F16_IsDirty = AUS endif
+:return FlashString_F16_IsDirty
+:end
+
+:begin FlashSetAndSaveF16(FlashIndex, Variable, MinValue, MaxValue, Preset )
+:info $Ein Float16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashIndex Speicherplatz im Flash$ \\
+    $Variable, die beim systemstart gelesen wird und zur Laufzeit den richtigen Wert enthält, der bei Änderung ins Flash geschrieben wird$ \\
+	$MinValue kleinster erlaubter Wert$ \\
+	$MaxValue größter erlaubter Wert$ \\
+	$Preset Vorgabewert, wenn der Flash einen Wert außerhalb des Min/MaxValue liefert$ 
+:shortinfo $Float16 remanent speichern$
+
+if systemstart() then {
+	Variable = stringcast( FlashString_F16, Variable, FlashIndex*2u16 );
+	if Variable < MinValue or Variable > MaxValue then Variable = Preset endif;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringread$c15); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14)) 
+	} endif
+} endif
+
+if change( Variable ) then {
+	if Variable < MinValue then Variable = MinValue endif ;
+	if Variable > MaxValue then Variable = MaxValue endif ;
+	if Variable != stringcast( FlashString_F16, Variable, FlashIndex*2u16 ) then {
+		stringset( FlashString_F16, Variable, FlashIndex*2u16 );
+		FlashString_F16_IsDirty = EIN
+	} endif ;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringSet$c14); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14))
+	} endif
+} endif
+
+:end
+
+
+
+:begin PrepareFlashF32(FlashSlot, Delaytime )
+:info $Ein Float 32 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashSlot Nummer des Speicherplatzes im Flash u16 [1...999]$ \\
+	$Delaytime ist der Wert, der bestimmt, wie lange (in Mikrosekunden = 0u64) gewartet wird bevor der veränderte Wert in den Flash zurückgeschrieben wird$
+:shortinfo $Float32 remanent speichern$
+:var ReadResult@
+:var WriteResult@
+
+FlashString_F32_IsDirty = AUS;	/* Wenn eine Änderung am String vorgenommen worden ist, so wird hier das Flag auf Dirty gesetzt um Abspeichern zu ermöglichen */
+FlashString_F32_IsValid = AUS;	/* Ist ein gültiger String aus dem Flash gelesen worden ? */
+FlashString_F32 = $$;				/* String, der die Einträge der F32 übernimmt */
+
+FlashF32WriteResult = AUS
+
+ // Nach dem Systemstart die Variable einlesen
+ // Sollte das Schiefgehen oder ist der Wert ungültig bzw. leer, nehmen wir den Vorgabewert
+ 
+if systemstart() then {
+	FlashString_F32_IsValid = !readflash( FlashString_F32, FlashSlot );
+	if !FlashString_F32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrRead:$c14) } endif;
+	if FlashString_F32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkRead:$c14) } endif
+} endif
+ 
+if change( FlashString_F32 ) then {
+	FlashString_F32_IsDirty = EIN
+} endif
+
+if delay( FlashString_F32_IsDirty == EIN, Delaytime) then {
+    FlashF32WriteResult = writeflash( FlashString_F32, FlashSlot );
+	if FlashF32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrWrite:$c14) } endif;
+	if !FlashF32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkWrite:$c14) } endif
+} endif
+
+// Dafür sorgen, das eine erneute Triggerung möglich ist
+if FlashString_F32_IsDirty then FlashString_F32_IsDirty = AUS endif
+:return FlashString_F32_IsDirty
+:end
+
+
+
+
+:begin FlashSetAndSaveF32(FlashIndex, Variable, MinValue, MaxValue, Preset )
+:info $Ein Float16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashIndex Speicherplatz im Flash$ \\
+    $Variable, die beim systemstart gelesen wird und zur Laufzeit den richtigen Wert enthält, der bei Änderung ins Flash geschrieben wird$ \\
+	$MinValue kleinster erlaubter Wert$ \\
+	$MaxValue größter erlaubter Wert$ \\
+	$Preset Vorgabewert, wenn der Flash einen Wert außerhalb des Min/MaxValue liefert$ 
+:shortinfo $Float32 remanent speichern$
+
+if systemstart() then {
+	Variable = stringcast( FlashString_F32, Variable, FlashIndex*4u16 );
+	if Variable < MinValue or Variable > MaxValue then Variable = Preset endif;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringread$c15); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14)) 
+	} endif
+} endif
+
+if change( Variable ) then {
+	if Variable < MinValue then Variable = MinValue endif ;
+	if Variable > MaxValue then Variable = MaxValue endif ;
+	if Variable != stringcast( FlashString_F32, Variable, FlashIndex*4u16 ) then {
+		stringset( FlashString_F32, Variable, FlashIndex*4u16 );
+		FlashString_F32_IsDirty = EIN
+	} endif ;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringSet$c14); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14))
+	} endif
+} endif
+
+:end
+
+
+
+:begin PrepareFlashU32(FlashSlot, Delaytime )
+:info $Ein Unsigned 32 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashSlot Nummer des Speicherplatzes im Flash u16 [1...999]$ \\
+	$Delaytime ist der Wert, der bestimmt, wie lange (in Mikrosekunden = 0u64) gewartet wird bevor der veränderte Wert in den Flash zurückgeschrieben wird$
+:shortinfo $Unsigned32 remanent speichern$
+:var ReadResult@
+:var WriteResult@
+
+FlashString_U32_IsDirty = AUS;	/* Wenn eine Änderung am String vorgenommen worden ist, so wird hier das Flag auf Dirty gesetzt um Abspeichern zu ermöglichen */
+FlashString_U32_IsValid = AUS;	/* Ist ein gültiger String aus dem Flash gelesen worden ? */
+FlashString_U32 = $$;				/* String, der die Einträge der F32 übernimmt */
+
+FlashU32WriteResult = AUS
+
+ // Nach dem Systemstart die Variable einlesen
+ // Sollte das Schiefgehen oder ist der Wert ungültig bzw. leer, nehmen wir den Vorgabewert
+ 
+if systemstart() then {
+	FlashString_U32_IsValid = !readflash( FlashString_U32, FlashSlot );
+	if !FlashString_U32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrRead:$c14) } endif;
+	if FlashString_U32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkRead:$c14) } endif
+} endif
+ 
+if change( FlashString_U32 ) then {
+	FlashString_U32_IsDirty = EIN
+} endif
+
+if delay( FlashString_U32_IsDirty == EIN, Delaytime) then {
+    FlashU32WriteResult = writeflash( FlashString_U32, FlashSlot );
+	if FlashU32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrWrite:$c14) } endif;
+	if !FlashU32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkWrite:$c14) } endif
+} endif
+
+// Dafür sorgen, das eine erneute Triggerung möglich ist
+if FlashString_U32_IsDirty then FlashString_U32_IsDirty = AUS endif
+:return FlashString_U32_IsDirty
+:end
+
+
+
+
+:begin FlashSetAndSaveU32(FlashIndex, Variable, MinValue, MaxValue, Preset )
+:info $Ein Float16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashIndex Speicherplatz im Flash$ \\
+    $Variable, die beim systemstart gelesen wird und zur Laufzeit den richtigen Wert enthält, der bei Änderung ins Flash geschrieben wird$ \\
+	$MinValue kleinster erlaubter Wert$ \\
+	$MaxValue größter erlaubter Wert$ \\
+	$Preset Vorgabewert, wenn der Flash einen Wert außerhalb des Min/MaxValue liefert$ 
+:shortinfo $Float32 remanent speichern$
+
+if systemstart() then {
+	Variable = stringcast( FlashString_U32, Variable, FlashIndex*4u16 );
+	if Variable < MinValue or Variable > MaxValue then Variable = Preset endif;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringread$c15); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14)) 
+	} endif
+} endif
+
+if change( Variable ) then {
+	if Variable < MinValue then Variable = MinValue endif ;
+	if Variable > MaxValue then Variable = MaxValue endif ;
+	if Variable != stringcast( FlashString_U32, Variable, FlashIndex*4u16 ) then {
+		stringset( FlashString_U32, Variable, FlashIndex*4u16 );
+		FlashString_U32_IsDirty = EIN
+	} endif ;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringSet$c14); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14))
+	} endif
+} endif
+
+:end
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Signed 16 Bit
+//
+:begin PrepareFlashS16(FlashSlot, Delaytime )
+:info $Ein Signed16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashSlot Nummer des Speicherplatzes im Flash u16 [1...999]$ \\
+	$Delaytime ist der Wert, der bestimmt, wie lange (in Mikrosekunden = 0u64) gewartet wird bevor der veränderte Wert in den Flash zurückgeschrieben wird$
+:shortinfo $Signed16 remanent speichern$
+:var ReadResult@
+:var WriteResult@
+
+FlashString_S16_IsDirty = AUS;	/* Wenn eine Änderung am String vorgenommen worden ist, so wird hier das Flag auf Dirty gesetzt um Abspeichern zu ermöglichen */
+FlashString_S16_IsValid = AUS;	/* Ist ein gültiger String aus dem Flash gelesen worden ? */
+FlashString_S16 = $$;			/* String, der die Einträge der S16 übernimmt */
+
+FlashS16WriteResult = AUS
+
+ // Nach dem Systemstart die Variable einlesen
+ // Sollte das Schiefgehen oder ist der Wert ungültig bzw. leer, nehmen wir den Vorgabewert
+ 
+if systemstart() then {
+	FlashString_S16_IsValid = !readflash( FlashString_S16, FlashSlot );
+	if !FlashString_S16_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrRead:$c14) } endif;
+	if FlashString_S16_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkRead:$c14) } endif
+} endif
+ 
+if change( FlashString_S16 ) then {
+	FlashString_S16_IsDirty = EIN
+} endif
+
+if delay( FlashString_S16_IsDirty == EIN, Delaytime) then {
+    FlashS16WriteResult = writeflash( FlashString_S16, FlashSlot );
+	if FlashS16WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrWrite:$c14) } endif;
+	if !FlashS16WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkWrite:$c14) } endif
+} endif
+
+// Dafür sorgen, das eine erneute Triggerung möglich ist
+if FlashString_S16_IsDirty then FlashString_S16_IsDirty = AUS endif
+:return FlashString_S16_IsDirty
+:end
+
+
+
+
+:begin FlashSetAndSaveS16(FlashIndex, Variable, MinValue, MaxValue, Preset )
+:info $Ein Signed16 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashIndex Speicherplatz im Flash$ \\
+    $Variable, die beim systemstart gelesen wird und zur Laufzeit den richtigen Wert enthält, der bei Änderung ins Flash geschrieben wird$ \\
+	$MinValue kleinster erlaubter Wert$ \\
+	$MaxValue größter erlaubter Wert$ \\
+	$Preset Vorgabewert, wenn der Flash einen Wert außerhalb des Min/MaxValue liefert$ 
+:shortinfo $Signed16 remanent speichern$
+
+if systemstart() then {
+	Variable = stringcast( FlashString_S16, Variable, FlashIndex*2u16 );
+	if Variable < MinValue or Variable > MaxValue then Variable = Preset endif;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringread$c15); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14)) 
+	} endif
+} endif
+
+if change( Variable ) then {
+	if Variable < MinValue then Variable = MinValue endif ;
+	if Variable > MaxValue then Variable = MaxValue endif ;
+	if Variable != stringcast( FlashString_S16, Variable, FlashIndex*2u16 ) then {
+		stringset( FlashString_S16, Variable, FlashIndex*2u16 );
+		FlashString_S16_IsDirty = EIN
+	} endif ;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringSet$c14); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14))
+	} endif
+} endif
+
+:end
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Signed 32 Bit
+//
+:begin PrepareFlashS32(FlashSlot, Delaytime )
+:info $Ein Signed 32 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashSlot Nummer des Speicherplatzes im Flash u16 [1...999]$ \\
+	$Delaytime ist der Wert, der bestimmt, wie lange (in Mikrosekunden = 0u64) gewartet wird bevor der veränderte Wert in den Flash zurückgeschrieben wird$
+:shortinfo $Signed32 remanent speichern$
+:var ReadResult@
+:var WriteResult@
+
+FlashString_S32_IsDirty = AUS;	/* Wenn eine Änderung am String vorgenommen worden ist, so wird hier das Flag auf Dirty gesetzt um Abspeichern zu ermöglichen */
+FlashString_S32_IsValid = AUS;	/* Ist ein gültiger String aus dem Flash gelesen worden ? */
+FlashString_S32 = $$;				/* String, der die Einträge der F32 übernimmt */
+
+FlashS32WriteResult = AUS
+
+ // Nach dem Systemstart die Variable einlesen
+ // Sollte das Schiefgehen oder ist der Wert ungültig bzw. leer, nehmen wir den Vorgabewert
+ 
+if systemstart() then {
+	FlashString_S32_IsValid = !readflash( FlashString_S32, FlashSlot );
+	if !FlashString_S32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrRead:$c14) } endif;
+	if FlashString_S32_IsValid and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkRead:$c14) } endif
+} endif
+ 
+if change( FlashString_S32 ) then {
+	FlashString_S32_IsDirty = EIN
+} endif
+
+if delay( FlashString_S32_IsDirty == EIN, Delaytime) then {
+    FlashS32WriteResult = writeflash( FlashString_S32, FlashSlot );
+	if FlashS32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashErrWrite:$c14) } endif;
+	if !FlashS32WriteResult and Flash_Debug then { write(address(Flash_DebugGA), $FlashOkWrite:$c14) } endif
+} endif
+
+// Dafür sorgen, das eine erneute Triggerung möglich ist
+if FlashString_S32_IsDirty then FlashString_S32_IsDirty = AUS endif
+:return FlashString_S32_IsDirty
+:end
+
+
+
+
+:begin FlashSetAndSaveS32(FlashIndex, Variable, MinValue, MaxValue, Preset )
+:info $Ein Signed32 Wert in einen Speicherplatz schreiben und bei systemstart lesen$ \\
+	$FlashIndex Speicherplatz im Flash$ \\
+    $Variable, die beim systemstart gelesen wird und zur Laufzeit den richtigen Wert enthält, der bei Änderung ins Flash geschrieben wird$ \\
+	$MinValue kleinster erlaubter Wert$ \\
+	$MaxValue größter erlaubter Wert$ \\
+	$Preset Vorgabewert, wenn der Flash einen Wert außerhalb des Min/MaxValue liefert$ 
+:shortinfo $Signed32 remanent speichern$
+
+if systemstart() then {
+	Variable = stringcast( FlashString_S32, Variable, FlashIndex*4u16 );
+	if Variable < MinValue or Variable > MaxValue then Variable = Preset endif;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringread$c15); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14)) 
+	} endif
+} endif
+
+if change( Variable ) then {
+	if Variable < MinValue then Variable = MinValue endif ;
+	if Variable > MaxValue then Variable = MaxValue endif ;
+	if Variable != stringcast( FlashString_S32, Variable, FlashIndex*4u16 ) then {
+		stringset( FlashString_S32, Variable, FlashIndex*4u16 );
+		FlashString_U32_IsDirty = EIN
+	} endif ;
+	if Flash_Debug then { 
+		write(address(Flash_DebugGA), $FlashStringSet$c14); 
+		write(address(Flash_DebugGA), $IDX $c14+convert(FlashIndex, $$c14)+$,$c14+convert(Variable,$$c14))
+	} endif
+} endif
+
+:end
+
+

@@ -1,0 +1,70 @@
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+//Hier werden die Schaltuhren visualisiert
+page(SchaltUhrBadID)[$Schaltuhren$,$BadSchaltuhr$]
+line $EIN und AUS -- 1. Schaltzeit$
+mpshifter(DateID)[$Montag$,$Dienstag$,$Mittwoch$,$Donnerstag$,$Freitag$,$Samstag$,$Sonntag$,$----------$,$Werktags$,$Wochenende$,$----------$,$Nie$,$Täglich$][DATE]$Tageswahl$
+pshifter(SchaltUhrID)[PLUS,MINUS,UP,DOWN]$ Einschaltzeit$ pshifter(AusschaltID)[PLUS,MINUS,UP,DOWN]$ Ausschaltzeit$
+line $EIN und AUS -- 2. Schaltzeit$
+mpshifter(DateID2)[$Montag$,$Dienstag$,$Mittwoch$,$Donnerstag$,$Freitag$,$Samstag$,$Sonntag$,$----------$,$Werktags$,$Wochenende$,$----------$,$Nie$,$Täglich$][DATE]$Tageswahl$
+pshifter(SchaltUhrID2)[PLUS,MINUS,UP,DOWN]$ Einschaltzeit$ pshifter(AusschaltID2)[PLUS,MINUS,UP,DOWN]$ Ausschaltzeit$
+line $EIN und AUS -- 3. Schaltzeit$
+mpshifter(DateID3)[$Montag$,$Dienstag$,$Mittwoch$,$Donnerstag$,$Freitag$,$Samstag$,$Sonntag$,$----------$,$Werktags$,$Wochenende$,$----------$,$Nie$,$Täglich$][DATE]$Tageswahl$
+pshifter(SchaltUhrID3)[PLUS,MINUS,UP,DOWN]$ Einschaltzeit$ pshifter(AusschaltID3)[PLUS,MINUS,UP,DOWN]$ Ausschaltzeit$
+line $EIN und AUS --  4. Schaltzeit$
+mpshifter(DateID4)[$Montag$,$Dienstag$,$Mittwoch$,$Donnerstag$,$Freitag$,$Samstag$,$Sonntag$,$----------$,$Werktags$,$Wochenende$,$----------$,$Nie$,$Täglich$][DATE]$Tageswahl$
+pshifter(SchaltUhrID4)[PLUS,MINUS,UP,DOWN]$ Einschaltzeit$ pshifter(AusschaltID4)[PLUS,MINUS,UP,DOWN]$ Ausschaltzeit$
+
+
+[EibPC]
+
+//Definitionen der IDs für den Webserver
+SchaltUhrBadID = 1
+DateID = 1
+SchaltUhrID = 2
+AusschaltID = 3
+DateID2 = 4
+SchaltUhrID2 = 5
+AusschaltID2 = 6
+DateID3 = 7
+SchaltUhrID3 = 8
+AusschaltID3 = 9
+DateID4 = 10
+SchaltUhrID4 = 11
+AusschaltID4 = 12
+
+[Macros]
+//Hier wird die TagesWahl realisiert, d.h. verknüpft mit einer Freigabevariable
+WebSchaltuhrTagesWahl(BadSchaltuhrTag1,DateID,SchaltUhrBadID,EIN,EIN,EIN,EIN,EIN,AUS,AUS)
+WebSchaltuhrTagesWahl(BadSchaltuhrTag2,DateID2,SchaltUhrBadID,AUS,AUS,AUS,AUS,AUS,EIN,EIN)
+WebSchaltuhrTagesWahl(BadSchaltuhrTag3,DateID3,SchaltUhrBadID,AUS,AUS,AUS,AUS,AUS,AUS,AUS)
+WebSchaltuhrTagesWahl(BadSchaltuhrTag4,DateID4,SchaltUhrBadID,AUS,AUS,AUS,AUS,AUS,AUS,AUS)
+
+//Hier werden die Uhrzeiten der Schaltuhren realisiert, d.h. verknüpft mit einer Freigabevariable
+WebSchaltuhr(SchaltUhrID,SchaltUhrBadID,BadSchaltuhrEinZeit1,16,00)
+WebSchaltuhr(AusschaltID,SchaltUhrBadID,BadSchaltuhrAusZeit1,21,30)
+WebSchaltuhr(SchaltUhrID2,SchaltUhrBadID,BadSchaltuhrEinZeit2,4,20)
+WebSchaltuhr(AusschaltID2,SchaltUhrBadID,BadSchaltuhrAusZeit2,7,10)
+WebSchaltuhr(SchaltUhrID3,SchaltUhrBadID,BadSchaltuhrEinZeit3,5,00)
+WebSchaltuhr(AusschaltID3,SchaltUhrBadID,BadSchaltuhrAusZeit3,9,00)
+WebSchaltuhr(SchaltUhrID4,SchaltUhrBadID,BadSchaltuhrEinZeit4,6,20)
+WebSchaltuhr(AusschaltID4,SchaltUhrBadID,BadSchaltuhrAusZeit4,9,20)
+
+//Hier werden die Schaltuhren realisiert, d.h. verknüpft mit Gruppenadressen
+WebSchaltuhrAusfuehren(BadSchaltuhrTag1,BadSchaltuhrEinZeit1,"RkBadPräsens-3/2/10",EIN)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag1,BadSchaltuhrAusZeit1,"RkBadPräsens-3/2/10",AUS)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag2,BadSchaltuhrEinZeit2,"RkBadPräsens-3/2/10",EIN)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag2,BadSchaltuhrAusZeit2,"RkBadPräsens-3/2/10",AUS)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag3,BadSchaltuhrEinZeit3,"RkBadPräsens-3/2/10",EIN)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag3,BadSchaltuhrAusZeit3,"RkBadPräsens-3/2/10",AUS)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag4,BadSchaltuhrEinZeit4,"RkBadPräsens-3/2/10",EIN)
+WebSchaltuhrAusfuehren(BadSchaltuhrTag4,BadSchaltuhrAusZeit4,"RkBadPräsens-3/2/10",AUS)

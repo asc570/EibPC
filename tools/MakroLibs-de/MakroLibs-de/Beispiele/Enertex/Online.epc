@@ -1,0 +1,25 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+//Damit wird in die Variable AnzeigeOnline geschrieben, wie lange der EibPC schon läuft, seit dem letzten Start
+Online()
+
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+
+
+//Alle 30 Minuten wird auf dem Display angezeigt wie lange der EibPC schon läuft
+if cycle(30,0) then write("Display-0/1/0", AnzeigeOnline) endif
+
+
+

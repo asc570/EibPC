@@ -1,0 +1,12 @@
+[Macros]
+//Wenn der Lichtsensor weniger als 20 Lux meldet, geht das linke Gartenlicht an
+Daemmerungsschalter("Licht-3/5/2",20,"GartenLinks-2/1/0")
+//Hier ist der Lichtsensor noch zusätzlich von 23:30Uhr - 6:00Uhr aus, unabhängig vom Lichtwert, der gemeldet wird
+DaemmerungsschalterZeituhr("Licht-3/5/2",20,"GartenLinks-2/1/0",23,30,6,0)
+[MacroLibs]
+EnertexLicht.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

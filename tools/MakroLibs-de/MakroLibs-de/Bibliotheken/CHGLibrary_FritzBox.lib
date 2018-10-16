@@ -1,0 +1,152 @@
+//----------------------------------------------------------------------
+//  Macro for the Enertex EibPC
+//
+//  FritzBox Call Monitor (Tested with FRITZ!Box Fon WLAN 7170 Firmware-Version 29.04.80)
+//
+//  Version              : v3.100
+//
+//  Dat.Rev.             : Date: 2011/05/20
+//
+//  License              : GPL (v2)                    
+//
+//  History and Author   : 2011/05/04 v1.0 - Christian Götzl (www.goetzl.com) - Initial macro with the connection handling
+//                         2011/05/06 v1.2 - Christian Götzl (www.goetzl.com) - Connection Watchdog
+//                         2011/05/07 v1.3 - Jens Hammerl	-	Parsing all Messages
+//                         2011/05/09 v1.4 - Jens Hammerl - Add all Messages as variable
+//                         2011/05/20 v3.100 - Christian Götzl (www.goetzl.com) - Cyclic reconnect as watchdog in the function connecttcp() is not yet implemented.                                                                                
+//                         ...
+//
+//                         Todo:
+//                         
+//
+//----------------------------------------------------------------------
+//
+// Beschreibung
+// ############
+// 
+// Telnet für den Port 1012 muss man vorher mit #96*5* vom Telefon aus aktivieren.
+// Dann mit telnet nach fritz.box auf den Port 1012 verbinden.
+// 
+// Parameterbeschreibung des Makros
+// ################################
+// 
+// Name                            : Name der Fritz Box (Prefix der Variablen) 
+// FritzBoxPort                    : TCP Port des FritzBox Call Monitor (Normalerweise Port 1012) 
+// FritzBoxIP                      : IP-Adresse der FritzBox
+//                 
+// 
+// Bsp. für Makro-Aufruf im Bereich [Macros]
+// #########################################
+//
+// FritzBoxCallMonitor(7170,1012u16,10.0.0.10)
+//
+//----------------------------------------------------------------------
+
+
+// ####################################
+// FritzBox Call Monitor
+// ####################################
+
+:begin FritzBoxCallMonitor(Name,FritzBoxPort,FritzBoxIP)
+
+:info $FritzBoxCallMonitor-Makro - Bitte Infos in der Makro-Datei lesen.$ \\
+      $Name der Fritz Box$ \\
+      $TCP-Port des FritzBox Call Monitor (Normalerweise Port 1012) $ \\
+      $IP-Adresse der FritzBox$ \\
+
+:shortinfo $FritzBoxCallMonitor-Makro - Bitte Infos in der Makro-Datei lesen.$
+
+// Initialisierung general
+FritzBoxCallMonitor^Name^Connect                = after(systemstart(),5000u64)
+FritzBoxCallMonitor^Name^TCPConnectResponse     = 99
+FritzBoxCallMonitor^Name^TCPCloseResponse       = 99
+FritzBoxCallMonitor^Name^RetIP                  = 0u32
+FritzBoxCallMonitor^Name^RetPort                = 0u16
+FritzBoxCallMonitor^Name^RetResponse            = $$
+FritzBoxCallMonitor^Name^Message                = $$
+FritzBoxCallMonitor^Name^AnrufArt               = $$
+
+// Initialisierung RING
+FritzBoxCallMonitor^Name^RINGtime               = $$
+FritzBoxCallMonitor^Name^RINGconnectionID       = $$
+FritzBoxCallMonitor^Name^RINGcallernumber       = $$
+FritzBoxCallMonitor^Name^RINGcallednumber       = $$
+
+// Initialisierung CALL
+FritzBoxCallMonitor^Name^CALLtime               = $$
+FritzBoxCallMonitor^Name^CALLconnectionID       = $$
+FritzBoxCallMonitor^Name^CALLextension          = $$
+FritzBoxCallMonitor^Name^CALLusednummber        = $$
+FritzBoxCallMonitor^Name^CALLnumber             = $$
+
+// Initialisierung CONNECT
+FritzBoxCallMonitor^Name^CONNECTtime            = $$
+FritzBoxCallMonitor^Name^CONNECTconnectionID    = $$
+FritzBoxCallMonitor^Name^CONNECTextension       = $$
+FritzBoxCallMonitor^Name^CONNECTnumber          = $$
+
+// Initialisierung DISCONNECT
+FritzBoxCallMonitor^Name^DISCONNECTtime         = $$
+FritzBoxCallMonitor^Name^DISCONNECTconnectionID = $$
+FritzBoxCallMonitor^Name^DISCONNECTduration     = $$
+
+
+
+// TCP Connect
+if FritzBoxCallMonitor^Name^Connect then {
+   FritzBoxCallMonitor^Name^TCPCloseResponse   = closetcp(FritzBoxPort, FritzBoxIP);
+   FritzBoxCallMonitor^Name^TCPConnectResponse = connecttcp(FritzBoxPort, FritzBoxIP);
+   FritzBoxCallMonitor^Name^Connect            = AUS;
+} endif
+
+// TCP Connection Watchdog
+if (after(FritzBoxCallMonitor^Name^TCPConnectResponse > 1,1000u64) and FritzBoxCallMonitor^Name^TCPConnectResponse > 1) or (cycle(00,15) and FritzBoxCallMonitor^Name^TCPConnectResponse > 1) or htime(04,00,00) then {
+   FritzBoxCallMonitor^Name^Connect = EIN
+} endif
+
+// TCP Connection Keep alive
+if cycle(00,10) then {
+   sendtcp(FritzBoxPort,FritzBoxIP, 0x0d, 0x0a)
+} endif
+
+// Catch TCP Message
+if event(readtcp(FritzBoxCallMonitor^Name^RetPort,FritzBoxCallMonitor^Name^RetIP,FritzBoxCallMonitor^Name^RetResponse)) and ( FritzBoxCallMonitor^Name^RetPort == FritzBoxPort and FritzBoxCallMonitor^Name^RetIP == FritzBoxIP ) then {
+   FritzBoxCallMonitor^Name^Message = FritzBoxCallMonitor^Name^RetResponse
+} endif
+
+// Message parsing
+FritzBoxCallMonitor^Name^CallType =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,0u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,1u16)-1u16)
+
+if FritzBoxCallMonitor^Name^CallType == $RING$ then { 
+   FritzBoxCallMonitor^Name^RINGtime =split(FritzBoxCallMonitor^Name^Message,0u16,find(FritzBoxCallMonitor^Name^Message,$;$,0u16)-1u16);
+   FritzBoxCallMonitor^Name^RINGconnectionID=split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,1u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)-1u16);
+   FritzBoxCallMonitor^Name^RINGcallernumber =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)-1u16);
+   FritzBoxCallMonitor^Name^RINGcallednumber =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,4u16)-1u16);
+	FritzBoxCallMonitor^Name^AnrufArt  = $RING$
+} endif
+
+if FritzBoxCallMonitor^Name^CallType == $CALL$ then { 
+   FritzBoxCallMonitor^Name^CALLtime =split(FritzBoxCallMonitor^Name^Message,0u16,find(FritzBoxCallMonitor^Name^Message,$;$,0u16)-1u16);
+   FritzBoxCallMonitor^Name^CALLconnectionID=split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,1u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)-1u16);
+   FritzBoxCallMonitor^Name^CALLextension =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)-1u16);
+   FritzBoxCallMonitor^Name^CALLusednummber =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,4u16)-1u16);
+   FritzBoxCallMonitor^Name^CALLnumber =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,4u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,5u16)-1u16);
+   FritzBoxCallMonitor^Name^AnrufArt  = $CALL$
+} endif
+
+if FritzBoxCallMonitor^Name^CallType == $CONNECT$ then { 
+   FritzBoxCallMonitor^Name^CONNECTtime =split(FritzBoxCallMonitor^Name^Message,0u16,find(FritzBoxCallMonitor^Name^Message,$;$,0u16)-1u16);
+   FritzBoxCallMonitor^Name^CONNECTconnectionID=split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,1u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)-1u16);
+   FritzBoxCallMonitor^Name^CONNECTextension =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)-1u16);
+   FritzBoxCallMonitor^Name^CONNECTnumber =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,4u16)-1u16);
+   FritzBoxCallMonitor^Name^AnrufArt  = $CONNECT$
+} endif
+
+if FritzBoxCallMonitor^Name^CallType == $DISCONNECT$ then { 
+   FritzBoxCallMonitor^Name^DISCONNECTtime =split(FritzBoxCallMonitor^Name^Message,0u16,find(FritzBoxCallMonitor^Name^Message,$;$,0u16)-1u16);
+   FritzBoxCallMonitor^Name^DISCONNECTconnectionID=split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,1u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)-1u16);
+   FritzBoxCallMonitor^Name^DISCONNECTduration =split(FritzBoxCallMonitor^Name^Message,find(FritzBoxCallMonitor^Name^Message,$;$,2u16)+1u16,find(FritzBoxCallMonitor^Name^Message,$;$,3u16)-1u16);
+   FritzBoxCallMonitor^Name^AnrufArt  = $DISCONNECT$
+} endif
+
+:end
