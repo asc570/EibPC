@@ -1,0 +1,13 @@
+[Macros]
+//Die Squeezebox wird eingebunden über den Standard Port 9090 und die IP-Adresse des Servers mit der Standardverzögerung von 100ms
+Squeezebox(9090,192.168.22.18,100)
+//Wenn es klingelt wird für 30 Sekunden Klingel.mp3 gespielt
+SignalGA(SQ1,"Klingel-0/1/3",EIN,30,Klingel.mp3)
+[MacroLibs]
+EnertexSqueezebox.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+SQ1 = $Squeezebox$

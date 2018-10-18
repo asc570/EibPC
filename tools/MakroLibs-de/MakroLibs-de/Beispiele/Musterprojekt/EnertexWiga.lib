@@ -1,0 +1,80 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Wintergartensteuerungen
+// 
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.10 $
+//----------------------------------------------------------------------
+
+:begin Markise_Aussen(Freigabe, Regensensor, Windsensor, Windschwelle, Aussentemperatur, Aussentemperaturschwelle, GAMarkise)
+:info $Steuert eine Aussenmarkise abhängig vom der Aussentemperatur$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse Regensensor$ \\
+	$Gruppenadresse Windsensor$ \\
+	$Wert Windschwelle$ \\
+	$Gruppenadresse Aussentemperatursensor$ \\
+	$Wert Aussentemperaturschwelle$ \\
+	$Gruppenadresse Markise$
+:shortinfo $Wintergartensteuerung für Markise abhänging von der Aussentemperatur$
+
+if Freigabe and (Aussentemperatur > Aussentemperaturschwelle^f16) and !(Regensensor) and !(Windsensor>Windschwelle^f16) then write (GAMarkise,EIN) endif
+if Freigabe and Regensensor then write(GAMarkise, AUS) endif
+if Freigabe and (Windsensor>Windschwelle^f16) then write(GAMarkise, AUS) endif
+
+:end
+
+
+:begin Markise_Aussen_und_Innen(Freigabe, Regensensor, Windsensor, Windschwelle, Aussentemperatur, Aussentemperaturschwelle, Innentemperatur, GAMarkise)
+:info $Steuert eine Aussenmarkise abhängig von der Außen- und Innentemperatur$\\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse Regensensor$ \\
+	$Gruppenadresse Windsensor$ \\
+	$Wert Windschwelle$ \\
+	$Gruppenadresse Aussentemperatursensor$ \\
+	$Wert Aussentemperaturschwelle$ \\
+	$Gruppenadresse Innentemperatursensor$ \\
+	$Gruppenadresse Markise$
+:shortinfo $Wintergartensteuerung für Markise abhänging von der Außen- und Innentemperatur$
+
+if Freigabe and !(Aussentemperatur<Aussentemperaturschwelle^f16) and !(Regensensor) and !(Windsensor>Windschwelle^f16) and !(Aussentemperatur<Innentemperatur) then write (GAMarkise,EIN) endif
+if Freigabe and (Aussentemperatur<Innentemperatur) then write(GAMarkise, AUS) endif
+if Freigabe and Regensensor then write(GAMarkise, AUS) endif
+if Freigabe and (Windsensor>Windschwelle^f16) then write(GAMarkise, AUS) endif
+
+:end
+
+
+:begin Belüftung_Taupunkt(Freigabe, Luftfeuchtesensor, Temperatursensor, Regensensor, Taupunktschwelle, GAFenster)
+:info $Wintergartenbelüftung abhänging vom Taupunkt$ \\
+	$Gruppenadresse eines FreigabeObjektes oder Variable$ \\
+	$Gruppenadresse Luftfeuchtesensor$ \\
+	$Gruppenadresse Temperatursensor$ \\
+	$Gruppenadresse Regensensor$ \\
+	$Wert Taupunktschwelle$ \\
+	$Gruppenadresse Fenster$
+:shortinfo $Wintergartenbelüftung abhänging vom Taupunkt$
+
+r=convert(Luftfeuchtesensor,a)
+T=convert(Temperatursensor,a)
+a=7.5f32
+b= 237.3f32
+SDDT=6.1078f32 * pow(10f32,(a*T)/(b+T))
+DDrT= r/100f32*SDDT
+v=log(10f32,(DDrT/6.1078f32))
+TaupunktTemperatur=b*v/(a-v)
+
+if Freigabe and (TaupunktTemperatur>Taupunktschwelle^f32) and !(Regensensor) then write(GAFenster, EIN) endif
+if Freigabe and !(TaupunktTemperatur>Taupunktschwelle^f32) then write(GAFenster, AUS) endif
+if Freigabe and (Regensensor) then write(GAFenster, AUS) endif
+
+:end

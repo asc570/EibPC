@@ -1,0 +1,10 @@
+[Macros]
+//Das Einschalten des Lichts im PartyKeller durch den Bewegungsmelder im Flur wird um 5s verzögert
+Einschaltverzoegerung_1("KellerFlurBewegung-1/2/1","PartyKeller-1/0/4",5000)
+[MacroLibs]
+EnertexZeitglieder.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

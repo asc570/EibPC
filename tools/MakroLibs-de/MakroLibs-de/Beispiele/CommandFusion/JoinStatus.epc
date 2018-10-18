@@ -1,0 +1,15 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Zeigt an, ob das Licht im Garten an oder aus ist. Man kann es damit aber nicht steuern
+JoinStatus(IPod,d33,"GartenLinks-2/1/0")
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+

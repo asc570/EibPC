@@ -1,0 +1,650 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Sonos einbinden
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Klaus T. / Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.4 $
+//----------------------------------------------------------------------
+
+// Sonos Initalisierung
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin Sonos(IpAdresse,Name)
+:info $Sonos-Dienst$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$
+:shortinfo $Sonos-Dienst$
+
+// if you want to observe the actions please comment #undef DEBUG like this //#undef DEBUG
+#define DEBUG
+#undef DEBUG
+
+text^_Name='10/10/10'c14
+debug^_Name=EIN
+
+Name^Volume=10u08
+Name^Bass=0s08
+Name^Balance=10u08
+Name^Treble=0s08
+
+CRLF^_Name = $  $
+ 
+if systemstart() then {
+   stringset(CRLF^_Name, 0x0d, 0u16);
+   stringset(CRLF^_Name, 0x0a, 1u16)
+} endif
+
+sonos_host^_Name = IpAdresse
+sonos_ip^_Name = resolve(sonos_host^_Name)
+sonos_port^_Name = 1400u16
+sonos_command^_Name = $$
+sonos_param^_Name = $$
+sonos_service^_Name = $AVTransport$
+sonos_radio^_Name = $$
+sonos_sender^_Name = $$
+sonos_playlistNr^_Name = $$
+
+if sonos_command^_Name == $SetVolume$ or sonos_command^_Name == $SetMute$ or sonos_command^_Name == $SetBass$ or sonos_command^_Name == $SetTreble$ or sonos_command^_Name == $SetBalance$  or sonos_command^_Name == $GetVolume$   or sonos_command^_Name == $GetBass$ or sonos_command^_Name == $GetBalance$ or sonos_command^_Name == $GetTreble$ then {
+   sonos_service^_Name = $RenderingControl$
+} else {
+   sonos_service^_Name = $AVTransport$
+} endif 
+
+
+sonos_soap^_Name = $<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:$ + sonos_command^_Name + $ xmlns:u="urn:schemas-upnp-org:service:$ + sonos_service^_Name + $:1"><InstanceID>0</InstanceID>$ + sonos_param^_Name + $</u:$ + sonos_command^_Name + $></s:Body></s:Envelope>$;
+sonos_len^_Name = size(sonos_soap^_Name);
+sonos_string^_Name = $POST /MediaRenderer/$ + sonos_service^_Name + $/Control HTTP/1.1$ + CRLF^_Name + $CONNECTION: close$ + CRLF^_Name + $HOST: $ + sonos_host^_Name + $:$ + convert(sonos_port^_Name, $$) + CRLF^_Name + $CONTENT-LENGTH: $ + convert(sonos_len^_Name, $$) + CRLF^_Name + $CONTENT-TYPE: text^_Name/xml; charset="utf-8"$ + CRLF^_Name + $SOAPACTION: "urn:schemas-upnp-org:service:$ + sonos_service^_Name + $:1#$ + sonos_command^_Name + $"$ + CRLF^_Name + CRLF^_Name + sonos_soap^_Name + CRLF^_Name
+
+
+sonos_send^_Name = AUS
+sonos_connect^_Name = AUS
+sonos_connect^_Name_status = 1
+sonos_close^_Name = AUS
+sonos_success^_Name = AUS
+sonos_reply^_Name = $$
+sonos_count^_Name = 0u32
+ 
+sonos_read_port^_Name = 0u16
+sonos_read_ip^_Name = 0u32
+sonos_read_text^_Name = $$
+if sonos_connect^_Name == AUS and after(sonos_send^_Name == EIN, 100u64) and size(sonos_string^_Name) > 0u16 then {
+   sonos_count^_Name = sonos_count^_Name + 1u32;
+   sonos_connect^_Name = EIN;
+   sonos_close^_Name = AUS;
+   sonos_success^_Name = AUS;
+   sonos_reply^_Name = $$;
+   sonos_connect^_Name_status = connecttcp(sonos_port^_Name, sonos_ip^_Name)
+} endif
+ 
+if (delay(sonos_connect^_Name == EIN, 2000u64) or sonos_connect^_Name_status == 0) and sonos_connect^_Name == EIN then {
+   sendtcp(sonos_port^_Name, sonos_ip^_Name, sonos_string^_Name);
+} endif
+ 
+if event(readtcp(sonos_read_port^_Name, sonos_read_ip^_Name, sonos_read_text^_Name)) and sonos_read_ip^_Name == sonos_ip^_Name and sonos_connect^_Name == EIN then {
+   sonos_reply^_Name = sonos_read_text^_Name;
+   sonos_close^_Name = EIN;
+   sonos_success^_Name = EIN
+} endif
+ 
+if delay(sonos_connect^_Name == EIN, 3000u64) and sonos_connect^_Name == EIN then {
+   sonos_close^_Name = EIN
+} endif
+ 
+if sonos_close^_Name == EIN and sonos_connect^_Name == EIN then {
+   sonos_send^_Name = AUS;
+   sonos_connect^_Name = AUS;
+   sonos_connect^_Name_status = 1;
+   sonos_close^_Name = AUS;
+   closetcp(sonos_port^_Name, sonos_ip^_Name)
+} endif
+
+
+
+
+:var Message@
+:var Volume@
+:var Bass@
+:var Balance@
+:var Treble@
+:var GotServerPort@
+:var GotServerIP@
+:var StartPosBas@
+:var StartPosVol@
+:var StartPosBal@
+:var StartPosTreb@
+Message@=$$
+Volume@=$$
+Bass@=$$
+Balance@=$$
+Treble@=$$
+GotServerPort@=0u16
+GotServerIP@=0u32
+StartPosBas@=0u16
+StartPosVol@=0u16
+StartPosBal@=0u16
+StartPosTreb@=0u16
+
+if event(readtcp(GotServerPort@,GotServerIP@,Message@)) and GotServerPort@==sonos_port^_Name and GotServerIP@==resolve(IpAdresse) then {
+	StartPosBas@=find(Message@,$<CurrentBass>$,0u16)+13u16;
+	StartPosVol@=find(Message@,$<CurrentVolume>$,0u16)+15u16;
+	StartPosBal@=find(Message@,$<CurrentBalance>$,0u16)+16u16;
+	StartPosTreb@=find(Message@,$<CurrentTreble>$,0u16)+15u16;
+	if (StartPosBas@!=1412u16) then {
+		Bass@=split(Message@,StartPosBas@,StartPosBas@+1u16);
+		if (find(Bass@,$<$,0u16))!=1399u16 then {
+			Bass@=split(Message@,StartPosBas@,StartPosBas@)
+		} endif;
+		Name^Bass=convert(Bass@,0s08)
+		#ifdef DEBUG
+		;if debug^_Name then write('10/10/10'c14,$GetBas: $c14+convert(Bass@,$$c14)) endif
+		#endif
+	} endif;
+	if (StartPosVol@!=1414u16) then {
+		Volume@=split(Message@,StartPosVol@,StartPosVol@+1u16);
+		if (find(Volume@,$<$,0u16))!=1399u16 then {
+			Volume@=split(Message@,StartPosVol@,StartPosVol@)	
+		} endif;
+		Name^Volume=convert(Volume@,0u08)
+		#ifdef DEBUG
+		;if debug^_Name then write('10/10/10'c14,$GetVol: $c14+convert(Volume@,$$c14)) endif
+		#endif
+	} endif;
+	if (StartPosBal@!=1415u16) then {
+		Balance@=split(Message@,StartPosBal@,StartPosBal@+1u16);
+		if (find(Balance@,$<$,0u16))!=1399u16 then {
+			Balance@=split(Message@,StartPosBal@,StartPosBal@)	
+		} endif;
+		Name^Balance=convert(Balance@,0u08)
+		#ifdef DEBUG
+		;if debug^_Name then write('10/10/10'c14,$GetBal: $c14+convert(Balance@,$$c14)) endif
+		#endif
+	} endif;
+	if (StartPosTreb@!=1414u16) then {
+		Treble@=split(Message@,StartPosTreb@,StartPosTreb@+1u16);
+		if (find(Treble@,$<$,0u16))!=1399u16 then {
+			Treble@=split(Message@,StartPosTreb@,StartPosTreb@)	
+		} endif;
+		Name^Treble=convert(Treble@,0s08)
+		#ifdef DEBUG
+		;if debug^_Name then write('10/10/10'c14,$GetTreb: $c14+convert(Treble@,$$c14)) endif
+		#endif
+	} endif
+} endif
+:end
+
+
+// Sonos Change State
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetStateSonosToggle(IpAdresse,Name, SchalterGA)
+:info $Togglet zwische Pause und Play. Bei einem EIN Signal auf die Gruppenadresse wird PLAY aktiviert, bei einem AUS Signal wird PAUSE aktivert.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse $
+:shortinfo $Toggelt zwichen PLAY und PAUSE$
+
+//if after(SchalterGA, 5u64) then GetBassSonos(IpAdresse,Name,SchalterGA) endif
+//if after(SchalterGA, 7u64) then GetVolumeSonos(IpAdresse,Name,SchalterGA) endif
+//if after(SchalterGA, 9u64) then GetTrebleSonos(IpAdresse,Name,SchalterGA) endif
+
+if SchalterGA then {
+   sonos_command^_Name = $Play$;
+   sonos_param^_Name = $<Speed>1</Speed>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+if !SchalterGA then {
+   sonos_command^_Name = $Pause$;
+   sonos_param^_Name = $$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+
+// Sonos set Mute
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetMuteSonosToggle(IpAdresse,Name, SchalterGA)
+:info $Togglet zwische mute on and off. Bei einem EIN Signal auf die Gruppenadresse wird mute aktiviert, bei einem AUS Signal wird mute deaktivert.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse $
+:shortinfo $Toggelt zwichen mute ON und OFF$
+
+if SchalterGA then {
+   sonos_command^_Name = $SetMute$;
+   sonos_param^_Name = $<Channel>Master</Channel><DesiredMute>0</DesiredMute>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+if !SchalterGA then {
+   sonos_command^_Name = $SetMute$;
+   sonos_param^_Name = $<Channel>Master</Channel><DesiredMute>1</DesiredMute>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+// Sonos Change Volume
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetVolumeSonos(IpAdresse,Name, SchalterUpGA,SchalterDownGA)
+:info $Verändert die Lautstärke schrittweise.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse  um die Lautstärke zu erhöhen$\\
+	$Gruppenadresse  um die Lautstärke zu verringern$
+:shortinfo $Verändert die Lautstärke schrittweise$
+
+// aktuelle Lautstärke erfragen
+if event(SchalterUpGA) then {
+	GetVolumeSonos(IpAdresse,Name,SchalterUpGA)
+}endif
+
+:var Volume@
+Volume@ = Name^Volume
+
+if after(event(SchalterUpGA),100u64) then {
+	Volume@=Volume@+2;
+	if Volume@>100u08 then Volume@=100u08 endif
+} endif
+
+if after(event(SchalterDownGA),100u64) then {
+	Volume@=Volume@-2;
+	if Volume@<1u08 or Volume@>250u08 then Volume@=0u08 endif
+} endif
+
+
+if after(change(Volume@),1000u64) then {
+	sonos_host^_Name = IpAdresse;
+   	sonos_command^_Name = $SetVolume$;
+   	sonos_param^_Name = $<Channel>Master</Channel><DesiredVolume>$ + convert(Volume@, $$) + $</DesiredVolume>$;
+	sonos_send^_Name = EIN
+	#ifdef DEBUG
+	;if debug^_Name then write('10/10/10'c14,$Volume: $c14+convert(Volume@,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Sonos next, previous
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetChangeSongSonos(IpAdresse,Name, SchalterNextGA, SchalterPreviousGA)
+:info $Schaltet einen Song vor oder zurück.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse um das nächste Lied anzuwählen$\\
+	$Gruppenadresse um das vorherige Lied anzuwählen$
+:shortinfo $Springt zum vorherigen oder nächsten Lied$
+
+if event(SchalterNextGA) then {
+   sonos_command^_Name = $Next$;
+   sonos_param^_Name = $<Speed>1</Speed>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+if event(SchalterPreviousGA) then {
+   sonos_command^_Name = $Previous$;
+   sonos_param^_Name = $$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$command: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+// Sonos Change Bass
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetBassSonos(IpAdresse,Name,SchalterUpGA,SchalterDownGA)
+:info $Verändert den Bass schrittweise.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse  um die Lautstärke zu erhöhen$\\
+	$Gruppenadresse  um die Lautstärke zu verringern$
+:shortinfo $Verändert den Bass schrittweise$
+
+:var Bass@
+Bass@ = Name^Bass
+
+if event(SchalterUpGA) then {
+	Bass@=Bass@+1s08;
+	if Bass@>10s08 then Bass@=10s08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Bass@=Bass@-1s08;
+	if Bass@<-10s08 or Bass@>127s08 then Bass@=-10s08 endif
+} endif
+
+
+if change(Bass@) then {
+	sonos_host^_Name = IpAdresse;
+   	sonos_command^_Name = $SetBass$;
+   	sonos_param^_Name = $<Channel>Master</Channel><DesiredBass>$ + convert(Bass@, $$) + $</DesiredBass>$;
+	sonos_send^_Name = EIN
+	#ifdef DEBUG
+	;if debug^_Name then write('10/10/10'c14,$Bass: $c14+convert(Bass@,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Sonos Change Treble
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetTrebleSonos(IpAdresse,Name, SchalterUpGA,SchalterDownGA)
+:info $Verändert die Höhen schrittweise.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse  um die Lautstärke zu erhöhen$\\
+	$Gruppenadresse  um die Lautstärke zu verringern$
+:shortinfo $Verändert die Höhen schrittweise$
+
+:var Treble@
+Treble@ = Name^Treble
+
+if event(SchalterUpGA) then {
+	Treble@=Treble@+1s08;
+	if Treble@>10s08 then Treble@=10s08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Treble@=Treble@-1s08;
+	if Treble@<-10s08 or Treble@>127s08 then Treble@=-10s08 endif
+} endif
+
+
+if change(Treble@) then {
+	sonos_host^_Name = IpAdresse;
+   	sonos_command^_Name = $SetTreble$;
+   	sonos_param^_Name = $<Channel>Master</Channel><DesiredTreble>$ + convert(Treble@, $$) + $</DesiredTreble>$;
+	sonos_send^_Name = EIN
+	#ifdef DEBUG
+	;if debug^_Name then write('10/10/10'c14,$Trebles: $c14+convert(Treble@,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Sonos Change Balance
+// @date	03.05.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetBalanceSonos(IpAdresse,Name, SchalterUpGA,SchalterDownGA)
+:info $Verändert die Balance schrittweise.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse Balance links$\\
+	$Gruppenadresse Balance rechts$
+:shortinfo $Verändert die Balance schrittweise$
+
+:var Balance@
+Balance@ = Name^Balance
+
+if event(SchalterUpGA) then {
+	Balance@=Balance@+1;
+	if Balance@>10u08 then Balance@=10u08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Balance@=Balance@-1;
+	if Balance@<1u08 or Balance@>250u08 then Balance@=0u08 endif
+} endif
+
+
+if change(Balance@) then {
+	sonos_host^_Name = IpAdresse;
+   	sonos_command^_Name = $SetBalance$;
+   	sonos_param^_Name = $<Channel>Master</Channel><DesiredBalance>$ + convert(Balance@, $$) + $</DesiredBalance>$;
+	sonos_send^_Name = EIN
+	#ifdef DEBUG
+	;if debug^_Name then write('10/10/10'c14,$Balance: $c14+convert(Balance@,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin GetVolumeSonos(IpAdresse,Name,SchalterGA)
+:info $Gibt die aktuelle Lautstärke zurück.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$
+:shortinfo $Gibt die aktuelle Lautstärke zurück$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $GetVolume$;
+   sonos_param^_Name = $<Channel>Master</Channel><GetVolume>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin GetBassSonos(IpAdresse,Name,SchalterGA)
+:info $Gibt den aktuelle Bass zurück.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$
+:shortinfo $Gibt den aktuellen Bass zurück$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $GetBass$;
+   sonos_param^_Name = $<Channel>Master</Channel><GetBass>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin GetBalanceSonos(IpAdresse,Name,SchalterGA)
+:info $Gibt die aktuelle Balance zurück.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$
+:shortinfo $Gibt die aktuelle Balance zurück$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $GetBalance$;
+   sonos_param^_Name = $<Channel>Master</Channel><GetBalance>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin GetTrebleSonos(IpAdresse,Name,SchalterGA)
+:info $Gibt die aktuelle Höhe zurück.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$
+:shortinfo $Gibt die aktuelle Höhe zurück$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $GetTreble$;
+   sonos_param^_Name = $<Channel>Master</Channel><GetTreble>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin SetRadioSonos(IpAdresse,Name,SchalterGA,ApiStream)
+:info $Schaltet auf den angegebenen Radiosender um.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$\\
+	$API-Stream (z.B. s116726?sid=254)$
+:shortinfo $Schaltet auf den angegebenen Radiosender um$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $SetAVTransportURI$;
+   sonos_param^_Name=$<CurrentURI>x-sonosapi-stream:$ + ApiStream + $&amp;flags=32</CurrentURI><CurrentURIMetaData>&lt;DIDL-Lite xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot; xmlns:r=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot; xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot;&gt;&lt;item id=&quot;R:0/0/5&quot; parentID=&quot;R:0/0&quot; restricted=&quot;true&quot;&gt;&lt;dc:title&gt;Cou ntry Legends 97.1&lt;/dc:title&gt;&lt;upnp:class&gt;object.item.audioIte m.audioBroadcast&lt;/upnp:class&gt;&lt;desc id=&quot;cdudn&quot; nameSpace=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot;&gt;SA_RINCON65031_&lt;/desc&gt;&lt;/item&gt;&lt;/DIDL-Lite&gt;</CurrentURIMetaData>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+if after(event(SchalterGA),8000u64) then {
+   sonos_command^_Name = $Play$;
+   sonos_param^_Name = $<Speed>1</Speed>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$2: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+
+:end
+
+
+// Sonos
+// @date	23.05.2012
+// @version	1 
+// @author	Stefanie Meier, Enertex Bayern GmbH
+:begin SetPlaylistSonos(IpAdresse,Name,SchalterGA,PlaylistNr, MAC)
+:info $Schaltet auf den angegebenen Playlist um.$\\
+	$IP-Adresse der Sonos$\\
+	$Name, muss eindeutig sein (z.B. Wohnen)$\\
+	$Gruppenadresse zum Abfragen$\\
+	$Playlist Nummer$\\
+	$MAC-Adresse der Sonos (schreibweise: 000E585CE0F8)$
+:shortinfo $Schaltet auf den angegebenen Playlist um$
+
+if event(SchalterGA) then {
+   sonos_command^_Name = $RemoveAllTracksFromQueue$;
+   sonos_param^_Name = $RemoveAllTracksFromQueue xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+
+if after(event(SchalterGA),1000u64) then {
+   sonos_playlistNr^_Name = convert(PlaylistNr,$$);
+   sonos_command^_Name = $AddURIToQueue$;
+   sonos_param^_Name = $AddURIToQueue xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><EnqueuedURI>file:///jffs/settings/savedqueues.rsq#$+ sonos_playlistNr^_Name + $</EnqueuedURI><EnqueuedURIMetaData></EnqueuedURIMetaData><DesiredFirstTrackNumberEnqueued>0</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+
+if after(event(SchalterGA),2000u64) then {
+   sonos_command^_Name = $SetAVTransportURI$;
+   sonos_param^_Name = $SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>x-rincon-queue:RINCON_$ + MAC +$01400#0</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+
+
+if after(event(SchalterGA),3500u64) then {
+   sonos_command^_Name = $Play$;
+   sonos_param^_Name = $Play xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><Speed>1</Speed>$;
+   sonos_host^_Name = IpAdresse;
+   sonos_success^_Name = AUS;
+   sonos_send^_Name = EIN
+   #ifdef DEBUG
+   ;if debug^_Name then write('10/10/10'c14,$com: $c14+convert(sonos_command^_Name,$$c14)) endif
+   #endif 
+} endif
+:end

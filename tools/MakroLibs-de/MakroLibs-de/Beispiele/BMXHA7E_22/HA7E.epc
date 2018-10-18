@@ -1,0 +1,38 @@
+[Macros]
+HA7E_Init(HA7E_Debug_Verbose, 5050u16, 192.168.20.70, '9/6/0'b01, '9/6/2'b01, '9/6/3'b01 )
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+//Makro-Bibliotheken
+BMXHA7E_22.lib
+
+[RS232]
+// RS232-Konfiguration: Baudrate, Datenbits, Stoppbits, Parität, Flusssteuerung
+9600
+8
+1
+0
+0
+
+
+[EibPC]
+CRLF = $  $
+if systemstart() then {
+stringset(CRLF, 0x0d, 0u16);
+stringset(CRLF, 0x0a, 1u16);
+} endif
+
+HA7E_Init(HA7E_Debug_Verbose, 5050u16, 192.168.20.70, '9/6/0'b01, '9/6/2'b01, '9/6/3'b01 )
+
+HA7E_iButton(BerndBlau,$3C00001461696501$,'9/6/9'b01)
+
+Temp_Vorlauf_FBH = 0.0f16
+Temp_Ruecklauf_FBH = 0.0f16
+
+//HA7E_Sensor_DS18x20(SensorName, SensorROMID, SensorValue, SensorGA, SensorZyklus, SendbyTempChange, SensorCorrectionOffset, SensorResolution )
+
+HA7E_Sensor_DS18x20(Vorlauf_FBH_Kessel, $9D000002C6213F28$, Temp_Vorlauf_FBH_Kessel, SollwertVorlauf-3/3/1", 300u16, 0.2f16, 0.0f16, BITS09 )
+HA7E_Sensor_DS18x20(Ruecklauf_FBH_Kessel, $FB000002C6217128$, Temp_Ruecklauf_FBH_Kessel, '4/2/14'f16, 300u16, 0.2f16, 0.0f16, BITS09 )

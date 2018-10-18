@@ -1,0 +1,19 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(iPad,0.0.0.0,EibPC)
+// durch einen kurzen Tastendruck wird der Dimmer angeschaltet
+// durch einen langen Tastendruck wird in 6% Stufen heller gedimmt
+Join2DimmerAlternierend(iPad,d102,"WigaDimmerAn-1/1/23",EIN,"WigaDimmer-1/1/22",13b04)
+// durch einen kurzen Tastendruck wird der Dimmer ausgeschaltet
+// durch einen langen Tastendruck wird in 6% Stufen dunkler gedimmt
+Join2DimmerAlternierend(iPad,d103,"WigaDimmerAn-1/1/23",AUS,"WigaDimmer-1/1/22",5b04)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexCommandFusion.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+CommandFusion/Haus.esf
+
+[EibPC]

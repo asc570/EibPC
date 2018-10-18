@@ -1,0 +1,73 @@
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV2.lib
+Enertex.lib
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+// Raumkontroller über WebServer parametrieren und steuern
+//Definitionen
+WohnzimmerPageID = 1
+HeizenID=0
+SliderSollwertID=1 
+SliderNachtAbsenkungID=2
+SliderStandbyAbsenkungID=3
+SperreID=4
+SpeicherID=5
+LadeID=6
+SliderKFaktorID=7
+SliderTFaktorID=8
+	
+
+Min=17.0
+Max=25.0
+Inkr=0.1
+MinD=0.0
+MaxD=10.0
+InkrD=0.1
+/// Regler im EibPC
+// KFaktor
+MinK=0.0
+MaxK=10.0
+InkrK=0.1
+WohnenKFaktor=5.0
+WohnenTFaktor=120.0
+LadenRKWohnen=AUS
+SpeichernRKWohnen=AUS
+// TFaktor
+MinT=0.0
+MaxT=500.0
+InkrT=5.0
+
+[WebServer]
+//Seite erstellen 
+page(WohnzimmerPageID) [$Erdgeschoss$,$Wohnzimmer$]
+design $black$
+line $Raumkontroller im EibPC$
+pshifter(HeizenID)[ABSENT,PRESENT,NIGHT,ABSENT]$Raumkontroller$ pshifter(SperreID)[ICE]$Heizregler sperren$ 
+line $Einstellungen Raumkontroller$
+peslider(SliderSollwertID)[TEMPERATURE](Min,Inkr,Max) $Sollwert-Heizen$ $°C$ 
+peslider(SliderNachtAbsenkungID)[NIGHT](MinD,InkrD,MaxD) $Nachtabsenkung$ $°C$ peslider(SliderStandbyAbsenkungID)[TEMPERATURE](MinD,InkrD,MaxD) $Standbyabsenkung$ $°C$
+line $Regelparameter des PI Reglers als K-T Vorgabe (wie üblich in der ETS)$
+peslider(SliderKFaktorID)[MONITOR](MinK,InkrK,MaxK) $Proportionalbereich (Kelvin)$ $K$ peslider(SliderTFaktorID)[TEMPERATURE](MinT,InkrT,MaxT) $Nachstellzeit (Minuten)$ $Mi$
+line $Daten im Flash abspeichern oder aus diesem laden$
+pshifter(LadeID)[RECORD]$Reglerdaten laden$ pshifter(SpeicherID)[RECORD]$Reglerdaten speichern$  
+
+[Macros]
+// Sollwerte
+SliderTemperatur(SliderSollwertID, WohnzimmerPageID,Min,Inkr,Max,"SollWohnzimmer-3/1/30")
+SliderTemperatur(SliderNachtAbsenkungID, WohnzimmerPageID,MinD,InkrD,MaxD,"NachtAbsenkungWohnzimmer-3/1/31")
+SliderTemperatur(SliderStandbyAbsenkungID, WohnzimmerPageID,MinD,InkrD,MaxD,"StandbyAbsenkungWohnzimmer-3/1/32")
+UmschaltButtonZustand(SperreID,WohnzimmerPageID,"SperreRKWohnen-3/1/33","SperreRKWohnen-3/1/33",ICE,BRIGHTRED,INACTIVE)
+Raumcontroller(HeizenID,WohnzimmerPageID,"Wohnzimmer-3/1/5","RkWohnzimmer-3/1/8")
+SliderTemperaturVar(SliderKFaktorID, WohnzimmerPageID,MinK,InkrK,MaxK,WohnenKFaktor)
+SliderTemperaturVar(SliderTFaktorID, WohnzimmerPageID,MinT,InkrT,MaxT,WohnenTFaktor)
+ToggleButtonVar(LadeID,WohnzimmerPageID,LadenRKWohnen,PLAY,DISPLAY,DISPLAY)
+ToggleButtonVar(SpeicherID,WohnzimmerPageID,SpeichernRKWohnen,RECORD,DISPLAY,DISPLAY)
+// Speichern
+PIRaumKontrollerGA(Wohnen,"RkWohnzimmer-3/1/8","SperreRKWohnen-3/1/33","SollWohnzimmer-3/1/30","RkWohnzimmerTemp-3/1/28","StandbyAbsenkungWohnzimmer-3/1/32","NachtAbsenkungWohnzimmer-3/1/31",WohnenKFaktor,WohnenTFaktor,"Wohnzimmer-3/1/5",10, SpeichernRKWohnen,LadenRKWohnen,EIN,700)
+

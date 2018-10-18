@@ -1,0 +1,17 @@
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexWebV3.lib
+
+[WebServer]
+page (1)[$Allgemein$,$Logger$]
+design $black$
+weboutput(LoggerOut_ID)[QUAD,NOICON]
+
+[EibPC]
+LoggerOut_ID=1
+WebLogger(LoggerOut_ID,MyText)
+
+
+MyText=$Hier ist das Event um $+convert(settime(),$$)
+

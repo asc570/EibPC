@@ -1,0 +1,27 @@
+[MacroLibs]
+EnertexWebV3.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+//Eine Seite erstellen
+Page(WohnzimmerPageID)[$Erdgeschoss$,$Wohnzimmer$]
+//einen Shifter erstellen mit den 4 Icons ist Voraussetzung für eine WebSchaltuhr
+pshifter(SchaltuhrID)[PLUS,MINUS,UP,DOWN]$Schaltuhr$
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1
+SchaltuhrID = 1
+FreigabeSchaltuhr = AUS
+//Die Schaltuhr soll nur Dienstags wirken
+if dayofweek()==DIENSTAG then FreigabeSchaltuhr = EIN else FreigabeSchaltuhr = AUS endif
+
+
+[Macros]
+//Eine WebSchaltuhr erstellen, der von dem pshifter gesteuert wird (Die Schaltuhr steuert aber noch keine Aktoren)
+WebSchaltuhr(SchaltuhrID,WohnzimmerPageID,Wohnzimmer,0,0)
+//Hiermit verknüpft man die Schaltuhr mit einem Aktor
+WebSchaltuhrAusfuehren(FreigabeSchaltuhr,Wohnzimmer,"WohnzimmerHauptLicht-1/1/13",EIN)
+
+

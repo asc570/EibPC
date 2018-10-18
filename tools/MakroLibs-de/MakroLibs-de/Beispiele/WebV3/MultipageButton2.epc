@@ -1,0 +1,24 @@
+[MacroLibs]
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+GartenPageID = 1
+GartenLichtID = 1
+
+
+[WebServer]
+//Seite erstellen
+Page(GartenPageID) [$Beleuchtung$,$Garten$]
+//Multibutton mit 2 Elementen erstellen ist Vorraussetzung für das Makro MultiButton2
+mpbutton(GartenLichtID)[$Licht links$, $Licht rechts$][LIGHT]$Multi-Schalter$
+
+[Macros]
+//Hiermit verbindet man den mpbutton mit den beiden Gruppenadressen und wählt das entsprechende Symbol aus
+MultipageButton2(GartenLicht,GartenLichtID, GartenPageID, INFO,"GartenLinks-2/1/0","GartenRechts-2/1/1")
+
+

@@ -1,0 +1,24 @@
+[MacroLibs]
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1
+RkID = 1
+
+
+[WebServer]
+//Seite erstellen
+Page(WohnzimmerPageID) [$Erdgeschoss$,$Wohnzimmer$]
+//pshifter erstellen ist Vorraussetzung für das Makro Raumcontroller
+pshifter(RkID)[ABSENT,PRESENT,NIGHT,ABSENT]$Raumkontroller$ 
+[Macros]
+//Hiermit wird der pshifter mit der GA des Raumkontroller und der GA der Heizung verbunden
+Raumcontroller(RkID,WohnzimmerPageID,"Wohnzimmer-3/1/5","RkWohnzimmer-3/1/8")
+
+
+

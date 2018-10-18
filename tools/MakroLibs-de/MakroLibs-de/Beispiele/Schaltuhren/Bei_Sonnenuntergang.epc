@@ -1,0 +1,10 @@
+[Macros]
+//Bei Sonnenuntergang geht das Licht im Wohnzimmer an
+Bei_Sonnenuntergang("TerasseLichtWohnzimmer-1/1/25",EIN,0)
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+EnertexSchaltuhrenV2.lib
+[EibPC]

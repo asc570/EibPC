@@ -1,0 +1,30 @@
+[Macros]
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+WohnzimmerPageID = 1
+DimmerID = 1
+//Startwert als float, braucht man später für die Umwandlung
+DimmerProzent = 0f32
+
+//Anpassen des Wertes mit Hilfe der Pfeile
+if pbutton(DimmerID,WohnzimmerPageID)==1 then DimmerProzent=DimmerProzent+1f32 endif
+if pbutton(DimmerID,WohnzimmerPageID)==2 then DimmerProzent=DimmerProzent-1f32 endif
+
+//Hier verknüpft man den Wert dann auch tatsächlich mit der Gruppenadresse
+if change(DimmerProzent) then write("WohnzimmerDimmerStatus-1/1/1", convert(DimmerProzent*255f32 / 100f32, 0)) endif
+
+//Hiermit zeigt man den Wert im Webserver an
+if change(DimmerProzent) or after(systemstart(),3000u64) then pdisplay(DimmerID,stringformat(DimmerProzent,4,3,2,0)+$%$,DOWN,INACTIVE,GREY,WohnzimmerPageID) endif
+
+[WebServer]
+page(WohnzimmerPageID)[$Erdgeschoss$,$Wohnzimmer$]
+//Man braucht einen pshifter mit 2 Elementen(UP, DOWN)
+pshifter(DimmerID)[UP,DOWN]$Dimmer$

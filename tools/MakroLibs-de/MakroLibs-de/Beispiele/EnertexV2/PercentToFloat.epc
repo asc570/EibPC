@@ -1,0 +1,25 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+
+
+
+[Macros]
+//Luftfeuchte in eine Floatzahl schreiben um sie auf einem Display anzuzeigen
+PercentToFloat("Luftfeuchtigkeit-3/5/3", Luftfeuchtigkeit)
+
+
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+
+[EibPC]
+//Immer wenn sich die Luftfeuchtigkeit ändert, wird das Display aktualisiert
+if change(Luftfeuchtigkeit) then write("Display-0/1/0", convert(Luftfeuchtigkeit, $$c14)) endif
+
+
+
+
+

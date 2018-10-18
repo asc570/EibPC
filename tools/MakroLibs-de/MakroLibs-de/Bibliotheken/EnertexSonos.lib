@@ -1,0 +1,1732 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Sonos einbinden
+//
+//  Version              : v3.100
+// 
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Klaus T. / Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/11/16 17:53:01 $
+//  Version              : $Revision: 1.7 $
+//----------------------------------------------------------------------
+
+
+
+
+
+// #define DEBUG
+// #ifdef DEBUG
+// 
+// :begin vmDebugUDP(cString)
+// :return  {
+//           sendudp(9000u16, 192.168.33.118, cString+CRLF); 
+// }
+// :end
+// :begin vmAssign(xDst, xSrc)
+// :return  {
+//          xDst=xSrc;
+// }
+// :end
+// #endif
+
+// SonosWebinterface
+// @date	06.08.2016
+// @version	2 
+// @author	Dr.-Ing.Michael Schuster ,GAStop, GANext, GABass, GATreble, GAVol, GALoudnes, GARadio
+:begin vmSonosWeb(Name,Zone,wsPage, wbZoneConnect, wbZoneSelect, wbZonePlay, wbBass, wbTreble, wbVolume, wbPlayStop, wbLoudness, wbForward, wiPlaylist, wiRadio, woSonosPlayer,ConnectGA,ConnectionStatusGA,GAPlay,GANextPrev,GAVol,GAVolRel,GABalance,GABass,GATreble,GALoudness,GANotFound,GABusy,cPlaylist,cRadioTuneIn,uGAZone)
+:info $Sonos-Webinterface$\\
+    $Name des Players, muss eindeutig sein (z.B. Wohnen)$\\
+    $ Zonen Nummer des Players (1..4), muss eindeutig sein $\\
+    $ID der Seite (u08)$\\
+    $ID des Connect-Buttons (u08)$\\
+    $ID des Select-Multibuttons (u08)$\\
+    $ID des Play-Buttons (u08)$\\
+    $ID des Bass-Sliders (u08)$\\
+    $ID des Höhen-Sliders (u08)$\\
+    $ID des Lautstärke-Sliders (u08)$\\
+    $ID des Stop-Buttons (u08)$\\
+    $ID des Loudness-Buttons (u08)$\\
+    $ID des Vorwärts-Buttons (u08)$\\
+    $ID des Playlist-Webinputs (u08)$\\
+    $ID des Radio-Webinputs (u08)$\\
+    $ID des Anzeige-Weboutputs (u08)$\\
+    $Variable oder GA, Verbindungsaufbau initieren bei EIN (b01)$\\
+    $GA auf EIN, wenn Verbindung besteht (b01)$\\
+    $GA auf EIN für das Abspielen (b01)$\\
+    $GA für Lautstärke in % (u08)$\\
+    $GA für Bass in % (u08)$\\
+    $GA für Treble in % (u08)$\\
+    $GALoudness auf EIN für Loudnessaktivierung (b01)$\\
+    $GANextPrev auf EIN für nächster Titel, AUS für vorheriger Titel (b01)$\\
+    $Playliste, die gespielt werden soll. Muss auf dem Sonossystem abgelegt worden sein. (c1400)$\\
+    $Radiosender auf cRadioTuneIn suchen (c1400)
+:shortinfo $Sonos-Webinterface$
+
+
+// Dienst aktivieren 
+if pbutton(wbZoneConnect,wsPage)==1 then {
+    write(ConnectGA,!ConnectGA);
+   	pdisplay(wbZoneConnect,$  .....  $ ,UPDATE,ACTIVE,GREEN,wsPage) 
+} endif   
+if ConnectionStatusGA or systemstart() then {
+  	pdisplay(wbZoneConnect,CLOCK_STRING+$<br>$+Name^ZoneGroupName,SWITCH,ACTIVE,GREEN,wsPage) 
+ } else {
+  	pdisplay(wbZoneConnect,CLOCK_STRING,SWITCH,INACTIVE,GREY,wsPage) 
+} endif
+vmZone(wsPage,wbZoneSelect,uGAZone,Name^ZoneNummer,Zone,Name^uZone,Name)
+
+
+// Player Auswählen für die Bedienung
+if pbutton(wbZonePlay,wsPage)==1 then {
+   uSonosWebWahl=Zone;
+} endif
+
+
+if uSonosWebWahl==Zone then {
+   pdisplay(wbZonePlay,$Aktiv$,OKCIRCLE,ACTIVE,GREEN,wsPage)
+} endif
+
+if uSonosWebWahl!=Zone then  {
+   pdisplay(wbZonePlay,$Inaktiv$,CROSSCIRCLE,INACTIVE,GREY,wsPage);
+} endif
+vmSliderZone(wsPage,wbBass,GABass,uSonosWebWahl,Zone,GABusy)
+vmSliderZone(wsPage,wbTreble,GATreble,uSonosWebWahl,Zone,GABusy)
+vmSliderZone(wsPage,wbVolume,GAVol,uSonosWebWahl,Zone,GABusy)
+vmButtonZone(wsPage,wbPlayStop,GAPlay,uSonosWebWahl,Zone,PLAY,27,GABusy)
+vmButtonZone(wsPage,wbLoudness,GALoudness,uSonosWebWahl,Zone,MEDIA,MEDIA,GABusy) 
+// Vorwärts... 
+if pbutton(wbForward, wsPage)==2 and !GABusy then {
+   write(GANextPrev,EIN);
+} endif
+if pbutton(wbForward, wsPage)==1 and !GABusy then {
+   write(GANextPrev,AUS);
+} endif
+
+:var cPlaylist@
+cPlaylist@=webinput(wiPlaylist)
+if change(cPlaylist@) and uSonosWebWahl==Zone and !GABusy then {
+   cPlaylist=cPlaylist@;
+   display(wiPlaylist,$    .... $,UPDATE,ACTIVE,GREEN);
+   cPlaylist@=$$;
+} endif
+if Name^Streambymedia and uSonosWebWahl==Zone and !GABusy then {
+   display(wiPlaylist,$    .... $,MONITOR,DISPLAY,GREEN);
+   display(wiRadio,$    .... $,RADIO,INACTIVE,GREEN);   
+} endif
+
+:var cRadio@
+cRadio@=webinput(wiRadio)
+if change(cRadio@) and uSonosWebWahl==Zone and !GABusy then {
+   cRadioTuneIn=cRadio@;
+   display(wiRadio,$    .... $,UPDATE,ACTIVE,GREEN);
+   cRadio@=$$
+} endif
+
+if !Name^Streambymedia and uSonosWebWahl==Zone and !GABusy then {
+   display(wiRadio,$    .... $,RADIO,DISPLAY,GREEN);
+   display(wiPlaylist,$    .... $,MONITOR,INACTIVE,GREEN);
+} endif
+
+
+
+:var cOut@
+cOut@=$$c2000
+
+if uSonosWebWahl==Zone  and (change(uSonosWebWahl) or change(Name^TrackURI) or change(Name^AlbumArtURI) or change(Name^ZoneGroupName)) then {
+  if Name^Streambymedia then {
+    cOut@=$<table align=left> <tr> <td><p style="font-size:15%"><img src="http://$+Name^AlbumArtURI+$" height="100" width="100"><br><br></td><td><p style="font-size:75%"> <b>Playerzone</b>:<br>$+Name^ZoneGroupName+$<br><b>Titel:</b><br>$+Name^Title+$ ($+Name^CurrentTrackDuration+$)<br><b>Interpret:</b><br>$+Name^Creator+$<br><b> Album:<br></b>$+Name^Album+$<br><br></td></tr></table>$;
+    } else {
+        cOut@=$<table align=left> <tr> <td><p style="font-size:15%"><img src="http://$+Name^AlbumArtURI+$" height="100" width="100"><br><br></td><td><p style="font-size:75%"> <b>Playerzone</b>:<br>$+Name^ZoneGroupName+$<br><b>Sendung:</b><br>$+Name^Radioshow+$<br><b>Info:<br></b>$+Name^Radiocontent+$<br><br></td></tr></table>$;
+   } endif;
+  weboutput(woSonosPlayer,cOut@);
+} endif
+
+:end
+
+
+
+// Webelement ansteuern
+// @date	20.07.2016
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin vmSliderZone(ws,wb,uGA,uSonosWahl,uMeineZone,GABusy) 
+
+if (change(uGA) or change(uSonosWahl)) and uSonosWahl==uMeineZone and !GABusy then {
+   setpslider(wb,uGA,SPEAKER,DISPLAY,ws);
+} endif
+
+:var uVar@
+uVar@=getpslider(wb,ws)
+
+if uVar@!= uGA and  uSonosWahl==uMeineZone and change(uVar@) then {
+   write(uGA,uVar@);
+} endif 
+
+:endif
+
+
+// Webelement ansteuern
+// @date	20.07.2016
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin vmButtonZone(ws,wb,uGA,uSonosWahl,uMeineZone,ICON1,ICON2,GABusy) 
+:var uNextComm@
+uNextComm@=0
+if uSonosWahl==uMeineZone and uGA and !GABusy then {
+   pdisplay(wb,CLOCK_STRING,ICON1,ACTIVE,GREEN,ws);
+   uNextComm@=0;
+} endif
+if  uSonosWahl==uMeineZone and !uGA and !GABusy  then {
+    pdisplay(wb,CLOCK_STRING,ICON2,INACTIVE,GREY,ws);
+    uNextComm@=0;
+} endif
+if pbutton(wb,ws)==1 and uNextComm@==0  and uSonosWahl==uMeineZone and !GABusy then {
+   write(uGA,!uGA);
+   uNextComm@=1;
+   pdisplay(wb,$ .... $,UPDATE,ACTIVE,GREEN,ws);
+} endif 
+
+:endif
+
+
+// Webelement ansteuern
+// @date	20.07.2016
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin vmZone(ws,wb,uGA,uZone, uMeineZone,uMeineSetZone,Name)
+
+:var uZoneWahl@
+uZoneWahl@=0
+if cSonosZone1==Name^Device then {
+    uMeineSetZone=uMeineZone;
+} endif;
+if cSonosZone2==Name^Device then {
+    uMeineSetZone=uMeineZone;
+} endif;
+if cSonosZone3==Name^Device then {
+   uMeineSetZone=uMeineZone;
+} endif;
+if cSonosZone4==Name^Device then {
+   uMeineSetZone=uMeineZone;
+ } endif;
+
+
+if mpbutton(wb,1,ws)==255 then {
+   uZoneWahl@=1;
+} endif 
+if mpbutton(wb,2,ws)==255 then {
+   uZoneWahl@=2;
+} endif 
+if mpbutton(wb,3,ws)==255 then {
+   uZoneWahl@=3;
+} endif 
+if mpbutton(wb,4,ws)==255 then {
+   uZoneWahl@=4;
+} endif 
+
+if change(uZoneWahl@) then {
+   	pdisplay(wb,$Text$,UPDATE,ACTIVE,GREY,ws,uZoneWahl@);
+} endif 
+
+if (uSonosZone^uMeineZone==uMeineZone) then {
+   	pdisplay(wb,$Text$,NEAR,STATE7,GREY,ws,uSonosZone^uMeineZone);
+ } else {
+   	pdisplay(wb,$Text$,NEAR,STATE4,GREY,ws,uSonosZone^uMeineZone);
+} endif;
+
+if mpbutton(wb,1,ws)==1 then {
+	write(uGA,1)
+} endif
+if mpbutton(wb,2,ws)==1 then {
+	write(uGA,2)
+} endif
+if mpbutton(wb,3,ws)==1 then {
+	write(uGA,3)
+} endif
+if mpbutton(wb,4,ws)==1 then {
+	write(uGA,4)
+} endif
+
+:end
+
+
+
+
+
+// Sonos Zonen
+// @date	01.08.2016
+// @version	1 
+// @author	Dr.-Ing.Michael Schuster ,GAStop, GANext, GABass, GATreble, GAVol, GALoudnes, GARadio
+:begin vmSonosZones(Name1,uGAZone1,Name2,uGAZone2,Name3,uGAZone3,Name4,uGAZone4)
+:info $Sonos-Zonnendefinition$\\
+      $Name der Zone 1 des entprechenden SonosMakros, falls ungenutzt "Unused" setzen (c1400)$\\
+      $GA Zuordnen einer Zone (1 ... 4) als Zahl, keine Zone =0 (u08)$ \\
+      $Name der Zone 2 des entprechenden SonosMakros, falls ungenutzt "Unused" setzen (c1400)$\\
+            $GA Zuordnen einer Zone (1 ... 4) als Zahl, keine Zone =0 (u08)$ \\
+      $Name der Zone 3 des entprechenden SonosMakros, falls ungenutzt "Unused" setzen (c1400)$\\
+            $GA Zuordnen einer Zone (1 ... 4) als Zahl, keine Zone =0 (u08)$ \\
+      $Name der Zone 4 des entprechenden SonosMakros, falls ungenutzt "Unused" setzen (c1400)$\\
+      $GA Zuordnen einer Zone (1 ... 4) als Zahl, keine Zone =0 (u08)$ \\
+:shortinfo $Sonos-Zonnendefinition$
+UnusedDevice=$$
+// Alsbald eine Zone sich verbunden hat, erfolgt hier die Zuweisung
+cSonosZone1=$$
+cSonosDevice1=$$
+uSonosZone1=1
+cSonosZone2=$$
+cSonosDevice2=$$
+uSonosZone2=2
+cSonosZone3=$$
+cSonosDevice3=$$
+uSonosZone3=3
+cSonosZone4=$$
+cSonosDevice4=$$
+uSonosZone4=4
+uSonosWebWahl=0;
+cSonosChange=AUS;
+// Zonen über GA setzen
+vmZoneSet(uGAZone1,1,Name1,Name2,Name3,Name4)
+vmZoneSet(uGAZone2,2,Name1,Name2,Name3,Name4)
+vmZoneSet(uGAZone3,3,Name1,Name2,Name3,Name4)
+vmZoneSet(uGAZone4,4,Name1,Name2,Name3,Name4)
+
+
+:end
+
+:begin vmZoneSet(uGA,ID,Name1,Name2,Name3,Name4)
+
+if change(uGA) then {
+   if (uGA == 1) then {
+      cSonosZone^ID=Name1^Device;
+      uSonosZone^ID=1;
+      cSonosChange=!cSonosChange;
+   } endif;
+   if (uGA == 2) then {
+      cSonosZone^ID=Name2^Device;
+      uSonosZone^ID=2;
+      cSonosChange=!cSonosChange;
+   } endif;
+   if (uGA == 3) then {
+      cSonosZone^ID=Name3^Device;
+      uSonosZone^ID=3;
+      cSonosChange=!cSonosChange;
+   } endif;
+   if (uGA == 4) then {
+      cSonosZone^ID=Name4^Device;
+      uSonosZone^ID=4;
+      cSonosChange=!cSonosChange;
+   } endif;
+
+} endif 
+:end
+
+
+// Sonos Ansteuerung
+// @date	01.03.2016
+// @version	1 
+// @author	Dr.-Ing.Michael Schuster ,GAStop, GANext, GABass, GATreble, GAVol, GALoudnes, GARadio
+:begin vmSonos(Name,uZonenID,IpAdresse,EibPCAdresse, uEibPCPort, ConnectGA,ConnectionStatusGA,GAPlay,GANextPrev,GAVol,GAVolRel,GABalance,GABass,GATreble,GALoudness,GANotFound,GABusy,cPlaylist,cRadioTuneIn)
+:info $Sonos-Dienst$\\
+	$Name des Players, muss eindeutig sein (z.B. Wohnen)$\\
+    $ Zonen Nummer des Players (1..4), muss eindeutig sein $\\
+    $IP-Adresse des Sonosplayers (c1400)$\\
+	$IP-Adresse des EibPC$\\
+	$TCP Port des EibPC [Standard:4810] $\\
+    $Variable oder GA, Verbindungsaufbau initieren bei EIN (b01)$\\
+    $GA auf EIN, wenn Verbindung besteht (b01)$\\
+    $GA auf EIN für das Abspielen/Stoppen (b01)$\\
+    $GANextPrev auf EIN für nächster Titel, AUS für vorheriger Titel (b01)$\\
+    $GA für Lautstärke in % (u08)$\\
+    $GA für rel. Lautstärke(b04)$\\
+    $GA für Balance in % (50% ist ausgeglichen)(u08)$\\
+    $GA für Bass in % (u08)$\\
+    $GA für Treble in % (u08)$\\
+    $GALoudness auf EIN für Loudnessaktivierung (b01)$\\
+    $GANotFound: Kein Erfolg bei Titel/Radioszuche (b01)$\\
+    $GABusy EIN, wenn Kommunikation mit der Sonosbox im Gange (b01)$\\
+    $Playliste, die gespielt werden soll. Muss auf dem Sonossystem abgelegt worden sein. (c1400)$\\
+    $Radiosender auf cRadioTuneIn suchen (c1400)
+:shortinfo $Sonos-Dienst$
+
+
+:var kuInit@
+kuInit@=100
+// Antwortzeit beim Verstellen der Paramter wie Bass etc. 
+:var kuResponseTime@
+kuResponseTime@=600u64
+//-------------------------------------------------------------------------------------------------------------------
+// Play/Stop Kommando
+if event(GAPlay) and GAPlay and !(Name^TransportState==$TRANSITIONING$ or Name^TransportState==$PLAYING$) and (uStateCom@==LASTSUB@) and uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$Play$;
+   cSonosCommandParam@=$<Speed>1</Speed>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if Name^TransportState==$PLAYING$  then {
+   if GAPlay!=EIN then write(GAPlay,EIN) endif;
+} endif
+
+if event(GAPlay) and !GAPlay and !(Name^TransportState==$TRANSITIONING$ or Name^TransportState==$STOPPED$ or Name^TransportState==$PAUSED_PLAYBACK$) and (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$Pause$;
+   cSonosCommandParam@=$$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif 
+if Name^TransportState==$STOPPED$ or Name^TransportState==$PAUSED_PLAYBACK$ then {
+   if GAPlay!=AUS then write(GAPlay,AUS) endif;
+} endif
+if eventread(GAPlay) then write(GAPlay,GAPlay) endif
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Playliste
+:var cMyPlaylist@
+cMyPlaylist@=$$
+:var cMyPlaylistID@
+cMyPlaylistID@=$$
+
+if change(cPlaylist) and cPlaylist!=$$ then {
+   if (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+       cSonosPostServiceDir@=$MediaServer/ContentDirectory/Control$;
+       cRinconPost@=$ uuid:$+cUDN@;
+       cSonosPostService@= $ContentDirectory$;
+       cSonosCommand@=$Browse$;
+       cSonosCommandParam@=$<ObjectID>Q:0</ObjectID><BrowseFlag>BrowseDirectChildren</BrowseFlag><Filter>dc:title,res,dc:creator,upnp:artist,upnp:album,upnp:albumArtURI</Filter><StartingIndex>0</StartingIndex><RequestedCount>100</RequestedCount><SortCriteria></SortCriteria>$;
+
+       //    cSonosPostServiceDir@=$MediaServer/Queue/Control$;
+       //    cRinconPost@=$ uuid:$+cUDN@;
+       //    cSonosPostService@= $Queue$;
+       //    cSonosCommand@=$RemoveAllTracks$;
+       //    cSonosCommandParam@=$<QueueID>0</QueueID><UpdateID>Q:0</UpdatueID>$;
+       uStatePostExtern@=kuPlaylistClearSearch@;
+       uPostIP@=uSonosIP@;
+       uPostPort@=uSonosPort@;
+       uStatePost@=0;
+       cMyPlaylist@=cPlaylist;
+    } endif;
+    cPlaylist=$$;
+} endif
+
+if uStatePostExtern@==kuPlaylistSearch@ then {
+   cSonosPostServiceDir@=$MediaServer/ContentDirectory/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $ContentDirectory$;
+   cSonosCommand@=$Browse$;
+   cSonosCommandParam@=$<ObjectID>SQ:</ObjectID><BrowseFlag>BrowseDirectChildren</BrowseFlag><Filter>dc:title,res</Filter><StartingIndex>0</StartingIndex><RequestedCount>100</RequestedCount><SortCriteria>dc:title</SortCriteria>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if uStatePostExtern@==kuSetPlaylist@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$AddURIToQueue$;
+   cSonosCommandParam@=$<EnqueuedURI>file:///jffs/settings/savedqueues.rsq#$+cMyPlaylistID@+$</EnqueuedURI><EnqueuedURIMetaData>&lt;DIDL-Lite xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot; xmlns:r=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot; xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot;&gt;&lt;item id=&quot;SQ:0&quot; parentID=&quot;SQ:&quot; restricted=&quot;true&quot;&gt;&lt;dc:title&gt;$+cMyPlaylist@+$&lt;/dc:title&gt;&lt;upnp:class&gt;object.container.playlistContainer&lt;/upnp:class&gt;&lt;desc id=&quot;cdudn&quot; nameSpace=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot;&gt;RINCON_AssociatedZPUDN&lt;/desc&gt;&lt;/item&gt;&lt;/DIDL-Lite&gt;</EnqueuedURIMetaData><DesiredFirstTrackNumberEnqueued>0</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if uStatePostExtern@==kuStartPlaylist@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$SetAVTransportURI$;
+   cSonosCommandParam@=$<InstanceID>0</InstanceID><CurrentURI>x-rincon-queue:$+cUDN@+$#0</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+
+if Name^TransportState==$PLAYING$  then {
+   if GAPlay!=EIN then write(GAPlay,EIN) endif;
+} endif
+
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Radiosender
+if change(cRadioTuneIn) and cRadioTuneIn!=$$ then {
+   if (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+       // Postkommando Playing
+       cSonosPostServiceDir@=$Radio.asmx$;
+       cExternHost@=$legato.radiotime.com$;
+       cExternCommand@=$http://www.sonos.com/Services/1.1#search$;
+       cExternSoap@=$<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Header><credentials xmlns="http://www.sonos.com/Services/1.1"><deviceId>$+cDeviceID@+$</deviceId><deviceProvider>Sonos</deviceProvider></credentials></s:Header><s:Body><search xmlns="http://www.sonos.com/Services/1.1"><id>search:station</id><term>$+\\
+                 cRadioTuneIn+\\
+                 $</term><index>0</index><count>1</count></search></s:Body></s:Envelope>$;
+       // Kommando Extern
+       uPostIP@= resolve($legato.radiotime.com$);
+       uPostPort@=80u16;
+       uStatePostExtern@=kuRadio@;
+       uStatePost@=0;
+   }endif;
+   cRadioTuneIn=$$;
+} endif
+
+if uStatePostExtern@==kuSetRadio@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$SetAVTransportURI$;
+   cSonosCommandParam@=$<CurrentURI>x-sonosapi-stream:$+cRadioID@+$?sid=254&amp;flags=8224&amp;sn=0</CurrentURI><CurrentURIMetaData>&lt;DIDL-Lite xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot; xmlns:upnp=&quot;urn:schemas-upnp-org:metadata-1-0/upnp/&quot; xmlns:r=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot; xmlns=&quot;urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/&quot;&gt;&lt;item id=&quot;F00092020s00000&quot; parentID=&quot;F00020000search%3astation:enertex&quot; restricted=&quot;true&quot;&gt;&lt;dc:title&gt;enertex&lt;/dc:title&gt;&lt;upnp:class&gt;object.item.audioItem.audioBroadcast&lt;/upnp:class&gt;&lt;desc id=&quot;cdudn&quot; nameSpace=&quot;urn:schemas-rinconnetworks-com:metadata-1-0/&quot;&gt;SA_RINCON65031_&lt;/desc&gt;&lt;/item&gt;&lt;/DIDL-Lite&gt;</CurrentURIMetaData>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if uStatePostExtern@==kuPlay@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$Play$;
+   cSonosCommandParam@=$<Speed>1</Speed>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif 
+
+
+
+//-------------------------------------------------------------------------------------------------------------------
+
+// Next 
+if event(GANextPrev) and GANextPrev and (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$Next$;
+   cSonosCommandParam@=$$;
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   // Kommando Initiieren
+   uStatePost@=0;
+} endif
+if event(GANextPrev) and !GANextPrev and (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $AVTransport$;
+   cSonosCommand@=$Previous$;
+   cSonosCommandParam@=$$;
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   // Kommando Initiieren
+   uStatePost@=0;
+} endif
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// 
+:var Volume@
+Volume@=convert(convert(Name^Volume,0f32)*2.55f32,0)
+
+if event(GAVol) and (GAVol!=Volume@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetVolume$;
+   cSonosCommandParam@=$<Channel>Master</Channel><DesiredVolume>$+convert(convert(convert(GAVol,0f32)/2.55f32,0),$$)+$</DesiredVolume>$;
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   // Kommando Initiieren
+   uStatePost@=0;
+} endif
+
+if change(Volume@) and GAVol!=Volume@ and uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+   vmDebugUDP($Vol$+convert(GAVol,$$) + $ : $ + convert(Volume@,$$));
+   write(GAVol,Volume@);
+} endif
+
+if eventread(GAVol) then write(GAVol,GAVol) endif
+
+//-------------------------------------------------------------------------------------------------------------------
+// 
+:var Bass@
+Bass@=convert(convert(Name^Bass,0f32)*12.7f32+128f32,0)
+
+if event(GABass) and (GABass!=Bass@) and uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetBass$;
+   cSonosCommandParam@=$<DesiredBass>$+convert(convert(convert(GABass,0f32)/12.7f32-10f32,0s08),$$)+$</DesiredBass>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if change(Bass@) and GABass!=Bass@ and uStatePost@==kuInit@ then {
+   write(GABass,Bass@);
+} endif
+
+if eventread(GABass) then write(GABass,GABass) endif
+
+//-------------------------------------------------------------------------------------------------------------------
+// 
+:var Treble@
+Treble@=convert(convert(Name^Treble,0f32)*12.7f32+128.0f32,0)
+
+if event(GATreble) and (GATreble!=Treble@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetTreble$;
+   cSonosCommandParam@=$<DesiredTreble>$+convert(convert(convert(GATreble,0f32)/12.7f32-10f32,0s08),$$)+$</DesiredTreble>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if change(Treble@) and  GATreble!=Treble@ and uStatePost@==kuInit@ then {
+    write(GATreble,Treble@);
+} endif
+
+if eventread(GATreble) then write(GATreble,GATreble) endif
+//-------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+// 
+:var Loudness@
+Loudness@=convert(Name^Loudness,EIN)
+
+if event(GALoudness) and (GALoudness!=Loudness@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetLoudness$;
+   cSonosCommandParam@=$<Channel>Master</Channel><DesiredLoudness>$+convert(GALoudness,$$)+$</DesiredLoudness>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if GALoudness!=Loudness@ and uStatePost@==kuInit@ then {
+   write(GALoudness,Loudness@);
+} endif
+
+if eventread(GALoudness) then write(GALoudness,GALoudness) endif
+
+//-------------------------------------------------------------------------------------------------------------------
+// 
+:var Balance@
+Balance@=convert(convert(Name^Balance,0f16)*12.7+127.0,0)
+
+if event(GABalance) and (GABalance!=Balance@) and uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetBalance$;
+   cSonosCommandParam@=$<Channel>Master</Channel><DesiredBalance>$+convert(convert(convert(GABalance,0f16)*0.07843137255-10.0,0s08),$$)+$</DesiredBalance>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+
+if change(Balance@) and GABalance!=Balance@ and uStatePost@==kuInit@ then {
+   write(GABalance,Balance@);
+} endif
+
+if eventread(GABalance) then write(GABalance,GABalance) endif
+if (uStateCom@==LASTSUB@) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+      if GABusy!=AUS then write(GABusy,AUS) endif;
+      } else {
+      if GABusy!=EIN then write(GABusy,EIN) endif; 
+} endif
+
+//-------------------------------------------------------------------------------------------------------------------
+:var VolumeRel@
+VolumeRel@=0s08
+if event(GAVolRel) and uStatePost@==kuInit@  and uStatePostExtern@==kuInit@ then {
+   // Postkommando Playing
+   VolumeRel@=convert(GAVolRel and 7b04,0s08);
+   if shift(convert(GAVolRel,0u08),-3s08)==0 then {
+      VolumeRel@=-VolumeRel@+convert(Name^Volume,0s08);
+      if VolumeRel@<-100s08 then  VolumeRel@=-100s08 endif;
+   } else {
+     VolumeRel@=VolumeRel@+convert(Name^Volume,0s08);
+     if VolumeRel@>100s08 then  VolumeRel@=100s08 endif;
+   } endif ;
+   cSonosPostServiceDir@=$MediaRenderer/RenderingControl/Control$;
+   cRinconPost@=$ uuid:$+cUDN@;
+   cSonosPostService@= $RenderingControl$;
+   cSonosCommand@=$SetVolume$;
+   cSonosCommandParam@=$<Channel>Master</Channel><DesiredVolume>$+convert(VolumeRel@,$$)+$</DesiredVolume>$;
+   // Kommando Initiieren
+   uPostIP@=uSonosIP@;
+   uPostPort@=uSonosPort@;
+   uStatePost@=0;
+} endif
+//-------------------------------------------------------------------------------------------------------------------
+    
+
+:var uZoneChange@
+uZoneChange@=kuInit@
+Name^uZone=kuInit@
+
+:var cZoneMaster@
+cZoneMaster@=$$
+
+// Nur beim Initialsieren einmalig auswählen
+if change(Name^Device) then {
+   cSonosDevice^uZonenID=Name^Device;
+   uSonosZone^uZonenID=uZonenID;
+} endif
+
+
+
+
+// Meine Zone ändert sich?
+if change(cSonosChange) then {
+    if cZoneMaster@!=cSonosZone^uZonenID then {
+    // Bei der Initialisierung erst mal nix machen
+    if size(cZoneMaster@)>0u16 then uZoneChange@=0 endif;
+    cZoneMaster@=cSonosZone^uZonenID;
+    vmDebugUDP($Change Zonemaster ^Name^ $+cZoneMaster@+$ in Z$+convert(Name^uZone,$$));
+    } endif;
+
+} endif
+                
+
+
+if uZoneChange@==0 and  uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+   vmDebugUDP($cUDN $+cUDN@+ $ZM: $+ cZoneMaster@+ CRLF+$ Z1:$+cSonosZone1+ CRLF+$ Z2:$+cSonosZone2+ CRLF+$ Z3:$+cSonosZone3+ CRLF+$ Z4:$+cSonosZone4);
+   if cUDN@==cZoneMaster@ then {
+       cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+       cRinconPost@=$ uuid:$+cUDN@;
+       cSonosPostService@= $AVTransport$;
+       cSonosCommand@=$BecomeCoordinatorOfStandaloneGroup$;
+       cSonosCommandParam@=$$;
+       vmDebugUDP($UDN A:$+cSonosCommandParam@);
+       // Kommando Initiieren
+       uPostIP@=uSonosIP@;
+       uPostPort@=uSonosPort@;
+       uStatePost@=0;
+       uZoneChange@=kuInit@;
+       uSonosZone^uZonenID=uZonenID;
+    } else {
+       cSonosPostServiceDir@=$MediaRenderer/AVTransport/Control$;
+       cRinconPost@=$ uuid:$+cUDN@;
+       cSonosPostService@= $AVTransport$;
+       cSonosCommand@=$SetAVTransportURI$;
+       cSonosCommandParam@=$<CurrentURI>x-rincon:$+cZoneMaster@+$</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>$;
+       vmDebugUDP($UDN C:$+cSonosCommandParam@);
+       // Kommando Initiieren
+       uPostIP@=uSonosIP@;
+       uPostPort@=uSonosPort@;
+       uStatePost@=0;
+       uZoneChange@=kuInit@;
+   } endif;
+} endif
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// 
+
+
+if eventread(GABalance) then write(GABalance,GABalance) endif
+
+
+
+if uStatePostExtern@==kuNotFound@ and   uStatePost@==kuInit@  then {
+   write(GANotFound,EIN);
+   uStatePostExtern@=kuInit@;
+} endif 
+
+
+
+Name^Volume=$$
+Name^Bass=$$
+Name^Balance=$$
+Name^Treble=$$
+Name^Loudness=$$
+Name^Radiostation=cRadioStation@
+Name^Radioshow=$$
+Name^Radiocontent=$$
+Name^Streambymedia=(size(Name^Radioshow)==0u16)
+
+// Verschiedene Zustände des Abspielens:
+// TransportState: PLAYING, STOPPED,TRANSITIONING,PAUSED_PLAYBACK
+Name^TransportState=$$
+Name^CurrentTrackDuration=$$
+Name^NumberOfTracks=0
+Name^CurrentTrack=0
+Name^CurrentValidPlayModes=$$
+Name^PlaybackStorageMedium=$$
+// title&amp;gt;....&amplt
+Name^Title=$$
+// creator&amp;gt;....&amp;lt
+Name^Creator=$$
+// upnp:album&amp;gt;....&amp;lt
+Name^Album=$$
+Name^TrackURI=$$
+Name^AlbumArtURI=$$
+// 
+Name^ZoneName=$$
+Name^ZoneNummer=uZonenID
+Name^ZoneGroupName=$$
+Name^MusicType=$$
+Name^Device=cUDN@
+
+// Adress or IP
+:var cSonosHost@
+cSonosHost@ = IpAdresse
+// IP (as u32)
+:var uSonosIP@
+uSonosIP@ = resolve(cSonosHost@)
+:var uSonosPort@
+uSonosPort@ = 1400u16
+:var uClosePort@
+uClosePort@ = 0u16
+// type of service for SOAP Communication
+:var cSonosService@
+cSonosService@ = $AVTransport$
+:var bSonosConnected@
+bSonosConnected@=AUS
+
+// Subscribed Services
+// 0 nothing
+// 1 AVRenderer
+:var bSubscribed@
+bSubscribed@=0
+// global Comamnd
+:var cSonosCommand@
+cSonosCommand@ = $$
+
+:var cSonosCommandParam@
+cSonosCommandParam@ = $$
+
+
+cSonosPlaylistNr^_Name = $$
+
+//-------------------------------------------------------------------------------------------------------------------
+// Device
+:var cGetDevice@
+cGetDevice@= $GET /xml/device_description.xml HTTP/1.1$+CRLF+\\
+             $CONNECTION: close$+CRLF+\\
+             $ACCEPT: */*$+CRLF+\\
+             $HOST: $ + cSonosHost@ + $:$ + convert(uSonosPort@, $$) + CRLF + \\
+             $USER-AGENT: Sonos$+CRLF+\\
+             CRLF
+// Device
+:var cSubScribe@
+cSubScribe@=   $SUBSCRIBE /$+cSonosService@ + $ HTTP/1.1$ + CRLF + \\
+               $HOST: $ + cSonosHost@ + $:$ + convert(uSonosPort@, $$) + CRLF + \\
+               $USER-AGENT: Linux UPnP/1.0 Sonos/31.9-26010 (WDCR:EibPC-Client)$+CRLF+\\
+               $CALLBACK: <http://$+EibPCAdresse+$:$+convert(uEibPCPort^u16,$$)+$/notify>$+ CRLF + \\
+               $NT: upnp:event$+CRLF + \\
+               $TIMEOUT: Second-3600$+CRLF + \\
+               CRLF
+// Device
+:var cSonosServiceCon@
+cSonosServiceCon@=$$
+
+:var cUnsubScribe@
+cUnsubScribe@= $UNSUBSCRIBE /$+cSonosService@ + $ HTTP/1.1$ + CRLF + \\
+               $USER-AGENT: Linux UPnP/1.0 Sonos/31.9-26010 (WDCR:EibPC-Client)$+CRLF+\\
+               $HOST: $ + cSonosHost@ + $:$ + convert(uSonosPort@, $$) + CRLF + \\
+               $SID:$+cSonosServiceCon@+CRLF + \\
+               CRLF
+
+:var cOK@
+cOK@= $HTTP/1.1 200 OK$+CRLF+\\
+      $Server: Linux UPnP/1.0 Sonos/31.9-26010 (WDCR:EibPC-Client)$+CRLF+\\
+      $Connection: close$+CRLF+\\
+      CRLF
+:var uOKLen@
+uOKLen@ = size( cOK@)
+
+// Kommandospezifisch
+:var cSonosPostService@
+cSonosPostService@=$$
+:var   cSonosPostServiceDir@
+cSonosPostServiceDir@=$$
+
+:var cRinconPost@
+cRinconPost@=$$
+
+:var cExternHost@
+cExternHost@=$$
+
+:var cExternCommand@
+cExternCommand@=$$
+
+:var cExternString@
+cExternString@ = $POST /$+cSonosPostServiceDir@ + $ HTTP/1.1$ + CRLF + \\
+               $CONNECTION: close$ + CRLF + \\
+               $HOST: $ + cExternHost@ + CRLF + \\
+               $USER-AGENT: Linux UPnP/1.0 Sonos/31.9-26010 (WDCR:EibPC-Client)$+CRLF+\\
+               $CONTENT-LENGTH: $ + convert(size(cExternSoap@), $$) + CRLF + \\
+               $CONTENT-TYPE: text/xml; charset="utf-8"$ + CRLF + \\
+               $ACCEPT-LANGUAGE:de-DE,en=US;q=0.9$+ CRLF+\\
+               $SOAPACTION: "$+ cExternCommand@ + $"$ + CRLF + \\
+               CRLF
+
+:var cExternSoap@
+cExternSoap@=$$
+
+
+:var cSonosString@
+cSonosString@ = $POST /$+cSonosPostServiceDir@ + $ HTTP/1.1$ + CRLF + \\
+               $CONNECTION: close$ + CRLF + \\
+               $HOST: $ + cSonosHost@ + $:$ + convert(uSonosPort@, $$) + CRLF + \\
+               $USER-AGENT: Linux UPnP/1.0 Sonos/31.9-26010 (WDCR:EibPC-Client)$+CRLF+\\
+               $CONTENT-LENGTH: $ + convert(size(cSonosSoap@), $$) + CRLF + \\
+               $CONTENT-TYPE: text/xml; charset="utf-8"$ + CRLF + \\
+               $X-SONOS-TARGET-UDN:$+ cRinconPost@+ CRLF+\\
+               $SOAPACTION: "urn:schemas-upnp-org:service:$ + cSonosPostService@ + $:1#$ + cSonosCommand@ + $"$ + CRLF + \\
+               CRLF
+
+
+:var cSonosSoap@
+cSonosSoap@= $<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"$ + \\
+             $ s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">$ + \\
+             $<s:Body>$ + \\
+             $<u:$ + cSonosCommand@ + $ xmlns:u="urn:schemas-upnp-org:service:$ + cSonosPostService@ + $:1">$ + \\
+             $<InstanceID>0</InstanceID>$ + \\
+             cSonosCommandParam@ + \\
+             $</u:$ + cSonosCommand@ + $>$ + \\
+             $</s:Body>$ + \\
+             $</s:Envelope>$;
+
+//-------------------------------------------------------------------------------------------------------------------
+// Initalwert 
+:var uSonosStatus@
+uSonosStatus@ = kuInit@
+
+// global Connection is closed
+:var bSonosClose@
+bSonosClose@ = AUS
+// Counts transfers
+:var uSonosCount@
+uSonosCount@ = 0u32
+// a message can be distributed over some TCP Telegrams
+:var cData@
+cData@=$$c12000
+// readtcp String
+:var cMessage@
+cMessage@=$$c12000
+
+// Die gesamte Zustandsmaschine für den Rincon Anmelder wird hiermit erledig
+// Ab Wert 3 wird ist deren Intialiserung für eine IP Kommunikation abgeschlossen,
+// und die einzelnen Services werden abgesprochen.
+:var uStateCom@
+uStateCom@=0
+
+// Message Recieved on port
+:var uDataPort@
+uDataPort@=0u16
+// Message Recieved of IP
+:var uDataServerIP@
+uDataServerIP@=0u32
+
+// Count recieces
+:var uRecCount@
+uRecCount@=0u32
+
+// Closed connection
+:var uClose@
+uClose@=kuInit@
+// Name des Sonosgeräts
+:var cSonosName@
+cSonosName@=$$
+
+cSonosModel^_Name=$$
+
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Für die Verbindungen des UNPNP
+//-------------------------------------------------------------------------------------------------------------------
+if event(ConnectGA) and ConnectGA then {
+   bSonosConnected@= EIN; 
+   uSonosStatus@   = kuInit@;
+} endif 
+if event(ConnectGA) and !ConnectGA then {
+   bSonosConnected@=AUS; 
+   uStateCom@        = kuInit@;
+   uStatePost@       = kuInit@;
+   uStatePostExtern@ = kuInit@;
+   uPostStatus@      = kuInit@;
+   if GABusy==EIN then write(GABusy,AUS); endif;
+   Name^Volume=$$;
+   Name^Bass=$$;
+   Name^Balance=$$;
+   Name^Treble=$$;
+   Name^Loudness=$$;
+   Name^Radioshow=$$;
+   Name^Radiocontent=$$;
+   Name^Streambymedia=(size(Name^Radioshow)==0u16);
+   Name^CurrentTrackDuration=$$;
+   Name^Title=$$;
+   Name^Creator=$$;
+   Name^Album=$$;
+   Name^TrackURI=$$;
+   Name^AlbumArtURI=$$;
+   // 
+   Name^ZoneName=$Offline$;
+   Name^ZoneGroupName=$Offline$;
+   Name^MusicType=$$;
+   bLock@=AUS;
+} endif
+
+
+if uSonosStatus@>5 and change(bSonosConnected@) and bSonosConnected@ then {
+   uSonosStatus@ = connecttcp(uSonosPort@, uSonosIP@); 
+   uStateCom@=0;
+   vmDebugUDP($Connect Init:$+convert(uStateCom@,$$));        
+} endif
+
+// Ask for the Sonos basic Data
+if uSonosStatus@ == 0  and uStateCom@==0 then {
+   sendtcparray(uSonosPort@, uSonosIP@, cGetDevice@,size(cGetDevice@));
+   uStateCom@=1;  
+   uSonosCount@ = uSonosCount@ + 1u32;
+   uClose@     = kuInit@;
+    vmDebugUDP($Send Init:$+convert(uStateCom@,$$));        
+   // waiting for the answer of the sonos device => readtcp 
+} endif
+// Verbindung wurde zurückgewiesen
+
+if uSonosStatus@ > 1 and  uSonosStatus@ < 6 then {
+   //   write(ConnectGA,AUS);
+   vmDebugUDP($Status:$+convert(uSonosStatus@,$$));
+} endif
+
+//-------------------------------------------------------------------------------------------------------------------
+// Status
+if  (uStateCom@==LASTSUB@) then {
+   write(ConnectionStatusGA,EIN);
+} endif
+if  (uStateCom@==LASTSUB@+98) then {
+   write(ConnectionStatusGA,AUS);
+} endif
+if eventread(ConnectionStatusGA) then writeresponse(ConnectionStatusGA,ConnectionStatusGA) endif 
+
+//-------------------------------------------------------------------------------------------------------------------
+// Kommunikation 
+//
+// Als Master der Kommunikationszustandsmaschine dient uStateCom@
+// 0 : Disconnected
+// 1 : Basis Data GET => wait for Info
+// 2 : First info ok, close tcp
+// 3 : wait for close
+//    Ab dem Wert drei sind nun die einzelnen Services zu definieren. Für jeden Verbindungsaufbau
+//    werden nun jeweils wieder 5 Zustände benöitigt in vmSubScribe hochgezählt.
+//    Beim Unsubcribe sind es ebenso wieder 5 Zustände, wobei dieser mit dem Wert ENDCONNECT@ eingeleitet
+//    wird. 
+// 
+:var cSubScribeZoneID@
+cSubScribeZoneID@=$XX$
+:var SUBZONE@
+SUBZONE@=3
+// RingconID
+:var cUDN@
+cUDN@=$$
+// Device
+:var cDeviceID@
+cDeviceID@=$$
+
+
+
+:var cZoneGroupCordinator@
+cZoneGroupCordinator@=$$
+
+:var cSubMediaID@
+cSubMediaID@=$XX$
+:var SUBMEDIA@
+SUBMEDIA@=8
+
+:var cSubRenderingID@
+cSubRenderingID@=$XX$
+:var SUBRENDERING@
+SUBRENDERING@=13
+
+:var cSubAVTransID@
+cSubAVTransID@=$XX$
+:var SUBAVTRANS@
+SUBAVTRANS@=18
+
+
+:var cSubAVControlID@
+cSubAVControlID@=$XX$
+:var SUBAVCONTROL@
+SUBAVCONTROL@=23
+
+// Der letzte Service: Nun ist man bereit für Nachrichten ... 
+:var LASTSUB@
+LASTSUB@=27
+
+:var cSubMediaServerID@
+cSubMediaServerID@=$XX$
+:var SUBMEDIASERVER@
+SUBMEDIASERVER@=99
+
+:var cSubControlID@
+cSubControlID@=$XX$
+:var SUBCONTROL@
+SUBCONTROL@=99
+
+
+// Ev. für die Zukunft
+
+
+:var cSubSysPropID@
+cSubSysPropID@=$XX$
+:var SUBSYSPROP@
+SUBSYSPROP@=99
+
+
+// Diese Variable blockiert den Subscribeprozess, wenn diese auf EIN steht
+:var bLock@
+bLock@=AUS
+:var uStateVorLock@
+uStateVorLock@=0
+
+:var ENDCONNECT@
+ENDCONNECT@=100
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Subscribe und Unsubscribe Services
+//-------------------------------------------------------------------------------------------------------------------
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$ZoneGroupTopology/Event$,SUBZONE@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$SystemProperties/Event$,SUBSYSPROP@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$SystemProperties/Control$,SUBCONTROL@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$MediaServer/ContentDirectory/Event$,SUBMEDIA@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$MediaServer/ContentDirectory/Control$,SUBMEDIASERVER@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$MediaRenderer/RenderingControl/Event$,SUBRENDERING@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$MediaRenderer/AVTransport/Event$,SUBAVTRANS@,bLock@,kuInit@)
+vmSubScribe(uSonosPort@,uSonosIP@,uStateCom@,uSonosStatus@,uClose@,cSonosService@,cSubScribe@,bSonosClose@,$MediaRenderer/AVTransport/Control$,SUBAVCONTROL@,bLock@,kuInit@)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubScribeZoneID@, cSonosService@,$ZoneGroupTopology/Event$,bSonosClose@,cUnsubScribe@,ENDCONNECT@)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubSysPropID@,cSonosService@,$SystemProperties/Event$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBSYSPROP@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubControlID@, cSonosService@,$SystemProperties/Control$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBCONTROL@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubMediaID@,cSonosService@,\\
+    $MediaServer/ContentDirectory/Event$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBMEDIA@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubMediaServerID@,cSonosService@,\\
+    $MediaServer/ContentDirectory/Control$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBMEDIASERVER@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubRenderingID@,cSonosService@,\\
+    $MediaRenderer/RenderingControl/Event$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBRENDERING@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubAVTransID@,cSonosService@,\\
+    $MediaRenderer/AVTransport/Event$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBAVTRANS@-3)
+vmUnsubScribe(uSonosPort@,uSonosIP@,bSonosConnected@,uStateCom@,uSonosStatus@,cSonosServiceCon@,cSubAVControlID@,cSonosService@,\\
+    $MediaRenderer/AVTransport/Control$,bSonosClose@,cUnsubScribe@,ENDCONNECT@+SUBAVCONTROL@-3)
+
+
+
+// end the tcp connection
+if change(bSonosClose@) and  uSonosStatus@ == 0 then {
+    uClose@=closetcp(uClosePort@, uSonosIP@);
+    uStateCom@=uStateCom@+1;
+    vmDebugUDP($Closetcp Init: $+convert(uStateCom@,$$)+$ P:$ +convert(uClosePort@,$$) ); 
+} endif
+// closetcp is ready 
+if uSonosStatus@==7 and uStateCom@>1 then {
+    uStateCom@=uStateCom@+1;
+    vmDebugUDP($Now closed Init:$+convert(uStateCom@,$$));     
+} endif
+
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Ringcon Kommunikation 
+// Eingangspuffer 
+:var cMyScribeID@
+cMyScribeID@=$$
+
+:var cStateRincom@
+cStateRincom@=kuInit@
+
+:var uAntwortPort@
+uAntwortPort@=0u16
+//-------------------------------------------------------------------------------------------------------------------
+// reading tcp: Server => Sonos and Server => EibPC
+//-------------------------------------------------------------------------------------------------------------------
+if event(readtcp(uDataPort@,uDataServerIP@,cData@)) and cData@!=$$ then {
+   vmDebugUDP($Nachricht im Zustand: $+convert(uStateCom@,$$)+$ von $ +convert(uDataServerIP@,$$)+$:$+convert(uDataPort@,$$));
+   if uDataPort@==uSonosPort@ and uDataServerIP@==uSonosIP@  then 
+   {
+        if (uStateCom@!=LASTSUB@) then {
+          uRecCount@=uRecCount@+1u32;
+          if uStateCom@==1 then {     
+             // Configration is read
+             if find(cData@,$</root>$,0u16)!=EOS then {
+                 vmXMLParse(cData@,roomName,cSonosName@,CRLF);
+                 vmXMLParse(cData@,UDN,cUDN@,CRLF);
+                 vmXMLParse(cData@,serialNum,cDeviceID@,CRLF);
+                 vmDebugUDP($GET Antwort$);
+                 vmDebugUDP(cData@);
+                 vmDebugUDP(split(cData@,1400u16,2800u16));
+                 bSonosClose@=!bSonosClose@;
+                 uClosePort@=uSonosPort@;
+                } endif;
+          } endif;
+          vmDebugUDP($Ringcons Holen$);
+          // Die einzelnen IDs aus der Subscribe Message extrahieren bzw. später
+          // wieder abmelden.
+          vmGetSubID(uStateCom@,cData@,  SUBZONE@,   cSubScribeZoneID@,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBZONE@,   cSubScribeZoneID@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@,  SUBSYSPROP@,cSubSysPropID@,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBSYSPROP@,cSubSysPropID@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBCONTROL@,cSubControlID@,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBCONTROL@,cSubControlID@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBMEDIA@  ,cSubMediaID@  ,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBMEDIA@  ,cSubMediaID@  ,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBMEDIASERVER@  ,cSubMediaServerID@  ,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBMEDIASERVER@  ,cSubMediaServerID@  ,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBRENDERING@,cSubRenderingID@  ,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBRENDERING@,cSubRenderingID@  ,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBAVTRANS@,cSubAVTransID@ ,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBAVTRANS@,cSubAVTransID@ ,bSonosClose@,uClosePort@, uSonosPort@);
+          vmGetSubID(uStateCom@,cData@  ,SUBAVCONTROL@,cSubAVControlID@ ,cRinconPost@,bSonosClose@,uClosePort@, uSonosPort@);
+          vmEndSubID(uStateCom@,ENDCONNECT@,SUBAVCONTROL@,cSubAVControlID@ ,bSonosClose@,uClosePort@, uSonosPort@);
+       } else {
+          vmDebugUDP($POST Antwort$+convert(uDataPort@,$$)+cMyScribeID@ +$-- $+ cSubScribeZoneID@ );
+
+          if  uStatePostExtern@==kuPlaylistClearSearch@ then {
+              // kein OK
+              uStatePost@=4;
+          } else {
+            if  uStatePostExtern@==kuPlaylistSearch@ then {
+                cMyPlaylistID@=$$;
+                vmParsePlaylist(cData@,$title&gt;$+cMyPlaylist@,$&gt;file:///jffs/settings/savedqueues.rsq$,cMyPlaylistID@);
+                if cMyPlaylistID@==$$ then {
+                   vmDebugUDP($keine Playlist$);
+                   uStatePostExtern@=kuNotFound@;
+                } endif;
+                // kein OK
+                uStatePost@=4;
+             }  else {
+             // OK Nachricht initialisieren
+             uStatePost@=uStatePost@+1;
+             // Wenn hier nix gefunden wurde, Verbindung schließen
+             if uStatePostExtern@==kuNotFound@ then uStatePost@=4 endif;
+             } endif;
+         } endif;
+       } endif;
+       
+   } endif;
+   // 
+   if uDataPort@!=uSonosPort@ and uDataServerIP@==uSonosIP@  then {
+      // NOTIFY Nachrichten
+      cMessage@=cData@;
+      if find(cMessage@,$NOTIFY$,0u16)==0u16 then {   
+         vmSubScribeParse(cMessage@,$SID:$,cMyScribeID@,CRLF);
+         uAntwortPort@=uDataPort@;
+         // Parsen starten
+         cStateRincom@=0;
+         vmDebugUDP($NOTIFY RING von $+convert(uDataPort@,$$)+cMyScribeID@ +$-- $+ cSubScribeZoneID@ );
+      } else {
+         vmAssign(cMessage@,cMessage@);
+         vmDebugUDP($Nachricht $+convert(cMessage@,$$));
+         bSonosClose@=!bSonosClose@;
+         uClosePort@=uDataPort@;
+      } endif;    
+   } endif;
+   // Externe Antwort auf Radio
+   if uDataPort@==uPostPort@ and uDataServerIP@==uPostIP@ and uStatePostExtern@==kuRadio@ then    {
+         vmXMLParse(cData@,id,cRadioID@,CRLF);
+         vmXMLParse(cData@,title,cRadioStation@,CRLF);
+         vmXMLParse(cData@,logo,cRadioLogo@,CRLF);
+         vmXMLParse(cData@,curentShow,Name^Title,CRLF);
+         vmXMLParse(cData@,count,cCountAnswer@,CRLF);
+         // Kein OK senden
+         uStatePost@=4;
+         vmAssign(cMessage@,cData@);
+         vmDebugUDP($Nachricht Extern: $+convert(cMessage@,$$));
+         if cCountAnswer@==$0$ then {
+            uStatePostExtern@=kuNotFound@;
+            vmDebugUDP($Kein Sender$);
+         } endif
+   } endif;
+
+  
+   //vmAssign(cMessage@,cData@);
+   //vmDebugUDP($Nachricht $+convert(cMessage@,$$));
+   cData@=$$;
+} endif;
+
+
+
+//--------------------------------------------------------------------------------------------------------------
+// Parsen der Notifys
+//--------------------------------------------------------------------------------------------------------------
+
+
+// TCP Handling 
+// Beenden 
+if cStateRincom@==1 then {
+   sendtcparray(uAntwortPort@, uSonosIP@, cOK@,uOKLen@);
+   cStateRincom@=cStateRincom@+1;
+ } endif ;
+ 
+if change(cStateRincom@) and cStateRincom@==2 then {
+    uClose@=closetcp(uAntwortPort@, uSonosIP@);
+    vmDebugUDP($Closetcp Rincom: $); 
+    cStateRincom@=kuInit@;
+    if LASTSUB@!=uStateCom@ then {
+       uStateCom@=uStateCom@+1;
+       // Erkennen, ob der nächste RinCon nicht verarbeitet wird. 
+       cRinconPost@=$$;
+    } endif;
+} endif
+
+
+// -----------------------------------
+// Parsen der verschiedenen Services
+// -----------------------------------
+// Transport 
+if cMyScribeID@==cSubAVTransID@ and  cStateRincom@==0 then {
+   vmDebugUDP(cMessage@);
+   vmDebugUDP(split(cMessage@,1400u16,2800u16));
+   vmNotifyParse(cMessage@,$title$,$&amp;gt;$,$&amp;lt$,Name^Title);
+   vmNotifyParse(cMessage@,$album$,$&amp;gt;$,$&amp;lt$,Name^Album);  
+   vmNotifyParse(cMessage@,$creator$,$&amp;gt;$,$&amp;lt$,Name^Creator);
+   vmNotifyParse(cMessage@,$CurrentTrackDuration$,$ val=&quot;$,$&quot$,Name^CurrentTrackDuration);
+   vmNotifyParse(cMessage@,$TransportState$,$ val=&quot;$,$&quot$,Name^TransportState);
+   vmNotifyParse(cMessage@,$CurrentTrackURI$,$ val=&quot;$,$&quot$,Name^TrackURI);
+   Name^Radioshow=$$;
+   vmNotifyParse(cMessage@,$r:radioShowMd$,$&amp;gt;$,$&amp;lt;/r:radioShowMd$,Name^Radioshow);
+   if size(Name^Radioshow)!=0u16 then {
+      Name^Radioshow=split(Name^Radioshow,0u16,find(Name^Radioshow,$,$,0u16)-1u16);
+   } endif;
+   vmNotifyParse(cMessage@,$r:streamContent$,$&amp;gt;$,$&amp;lt;/r:streamContent&amp$,Name^Radiocontent);
+   vmNotifyParse(cMessage@,$upnp:albumArtURI$,$&amp;gt;$,$&amp;lt;/upnp:albumArtURI$,Name^AlbumArtURI);
+   if size(Name^AlbumArtURI)!=0u16 then {
+      Name^AlbumArtURI=split(Name^AlbumArtURI,0u16,find(Name^AlbumArtURI,$amp;amp$,0u16)-1u16)+split(Name^AlbumArtURI,find(Name^AlbumArtURI,$amp;amp$,0u16)+12u16,EOS);
+      Name^AlbumArtURI= cSonosHost@ + $:$ + convert(uSonosPort@, $$)+Name^AlbumArtURI;
+   } endif;
+   if size(Name^TrackURI)>0u16 then {
+      Name^MusicType=split(Name^TrackURI,0u16,find(Name^TrackURI,$:$,0u16)-1u16);
+      vmDebugUDP($Name^MusicType $+Name^MusicType);
+   } endif;
+   cStateRincom@=cStateRincom@+1;
+   vmDebugUDP($Rendering AV Transport erkannt$);
+} endif 
+
+:var bFound@
+bFound@=0;
+:var cZoneName@
+cZoneName@=0;
+
+
+
+// Zone ID: Max 4 Zonen
+if cMyScribeID@==cSubScribeZoneID@ and  cStateRincom@==0 then {
+   Name^ZoneName=cSonosName@;
+   //    vmDebugUDP(cMessage@);
+   //    vmDebugUDP(split(cMessage@,1400u16,2800u16));
+   //    vmDebugUDP(split(cMessage@,2800u16,4200u16));
+   vmDebugUDP(split(cMessage@,4200u16,5800u16));
+   vmNotifyZone(cMessage@,cZoneGroupCordinator@,cUDN@,Name^ZoneName,0u16,bFound@);
+   if bFound@==1 then {
+      vmNotifyZone(cMessage@,cZoneGroupCordinator@,cUDN@,Name^ZoneName,1u16,bFound@);
+      if bFound@==1 then {
+         vmNotifyZone(cMessage@,cZoneGroupCordinator@,cUDN@,Name^ZoneName,2u16,bFound@);
+         if bFound@==1 then {
+            vmNotifyZone(cMessage@,cZoneGroupCordinator@,cUDN@,Name^ZoneName,3u16,bFound@);
+        } endif;
+      } endif;
+   } endif;
+   vmXMLParse(cMessage@,ZoneGroupName,Name^ZoneGroupName,CRLF);
+   if Name^ZoneGroupName==$$ then Name^ZoneGroupName=Name^ZoneName endif;
+   cStateRincom@=cStateRincom@+1;
+   // Änderungen mitbekommen
+   if uZoneChange@==kuInit@ and uStatePost@==kuInit@ and uStatePostExtern@==kuInit@ then {
+       // Setze die Zone auf die ID des Cordinators
+       cSonosZone^uZonenID=cZoneGroupCordinator@;
+   } endif;
+   vmDebugUDP($Zone erkannt: Z$+convert(uSonosZone^uZonenID,$$)+$ $+convert(uZoneChange@,$$) );
+} endif
+
+
+if change(cZoneGroupCordinator@) then {
+    if cZoneGroupCordinator@==cSonosDevice1 then {
+        uSonosZone^uZonenID=1;
+    } endif;
+    if cZoneGroupCordinator@==cSonosDevice2 then {
+        uSonosZone^uZonenID=2;
+    } endif;
+    if cZoneGroupCordinator@==cSonosDevice3 then {
+        uSonosZone^uZonenID=3;
+    } endif;
+    if cZoneGroupCordinator@==cSonosDevice4 then {
+        uSonosZone^uZonenID=4;
+    } endif;
+} endif
+
+if cMyScribeID@== cSubSysPropID@ and  cStateRincom@==0 then {
+   vmDebugUDP($SystemProperties/Control$);
+   cStateRincom@=cStateRincom@+1;
+} endif
+if cMyScribeID@==cSubAVControlID@ and  cStateRincom@==0 then {
+   vmDebugUDP($MediaRenderer/AVTransport/Control$);
+   cStateRincom@=cStateRincom@+1;
+} endif
+
+if cMyScribeID@==cSubMediaID@ and  cStateRincom@==0 then {
+   vmDebugUDP($MediaServer/ContentDirectory/Event$);
+   cStateRincom@=cStateRincom@+1;
+} endif
+
+if cMyScribeID@==cSubMediaServerID@ and  cStateRincom@==0 then {
+   vmDebugUDP($AlarmClock/Event$); 
+   cStateRincom@=cStateRincom@+1;
+} endif
+
+// Musikeinstellungen
+if cMyScribeID@== cSubRenderingID@ and  cStateRincom@==0 then {
+   vmNotifyParse(cMessage@,$Bass$,$ val=&quot;$,$&quot$,Name^Bass);
+   vmNotifyParse(cMessage@,$Treble$,$ val=&quot;$,$&quot$,Name^Treble);
+   vmNotifyParse(cMessage@,$Balance$,$ val=&quot;:$,$&quot$,Name^Balance);  
+   vmNotifyParse(cMessage@,$Volume channel$,$=&quot;Master&quot; val=&quot;$,$&quot$,Name^Volume);
+   vmNotifyParse(cMessage@,$Loudness channel$,$=&quot;Master&quot; val=&quot;$,$&quot$,Name^Loudness);  
+   cStateRincom@=cStateRincom@+1;
+   vmDebugUDP($Control AV Transport erkannt$);
+} endif
+
+//-------------------------------------------------------------------------------------------------------------------
+// Für die Verbindungen der POST Kommandos 
+//-------------------------------------------------------------------------------------------------------------------
+// Zustandsmaschine POST Kommando
+:var uStatePost@
+uStatePost@=kuInit@
+// Externes POST Kommando 
+:var uStatePostExtern@
+uStatePostExtern@=kuInit@
+// Statemaschine uStatePostExtern@
+:var kuRadio@
+kuRadio@=0
+:var kuSetRadio@
+kuSetRadio@=1
+:var kuPlay@
+kuPlay@=2
+:var kuSetPlaylist@
+kuSetPlaylist@=4
+:var kuPlaylistSearch@
+kuPlaylistSearch@=3
+
+:var kuPlaylistClearSearch@
+kuPlaylistClearSearch@=6
+:var kuStartPlaylist@
+kuStartPlaylist@=7
+
+:var kuNotFound@
+kuNotFound@=5
+
+:var cRadioID@
+cRadioID@=$$
+:var cRadioStation@
+cRadioStation@=$$
+:var cRadioLogo@
+cRadioLogo@=$$
+:var cCountAnswer@
+cCountAnswer@=$$
+// Verbindungsdaten 
+:var uPostIP@
+uPostIP@=0u32
+:var uPostPort@
+uPostPort@=0u16
+
+
+
+:var uPostStatus@
+uPostStatus@=kuInit@
+
+if uStatePost@==0 and uPostIP@!=0u32 then {
+   uPostStatus@ = connecttcp(uPostPort@, uPostIP@);
+   uStatePost@=1;
+   vmDebugUDP($Connect Post Init:$+convert(uStatePost@,$$)+$ IP:$+convert(uPostIP@,$$)+$ :$+convert(uPostPort@,$$));        
+} endif
+
+// Verbindung hat geklappt 
+if uPostStatus@ == 0  and uStatePost@==1 then {
+   if uStatePostExtern@==kuRadio@ then {
+      sendtcparray(uPostPort@, uPostIP@, cExternString@,size(cExternString@));
+      sendtcparray(uPostPort@, uPostIP@, cExternSoap@,size(cExternSoap@));
+      //vmDebugUDP($Send Post Ext:$+convert(uStatePost@,$$)+CRLF+cExternString@);
+      //vmDebugUDP(cExternSoap@);        
+   } else {
+         /// Auf zwei Pakete verteilen
+         sendtcparray(uPostPort@, uPostIP@, cSonosString@,size(cSonosString@));
+         sendtcparray(uPostPort@, uPostIP@, cSonosSoap@,size(cSonosSoap@));
+         //vmDebugUDP($Send Post:$+convert(uStatePost@,$$)+CRLF+cSonosString@);
+         //vmDebugUDP(cSonosSoap@);        
+  } endif ;
+
+   uStatePost@=2;
+   // Warte auf recieve..
+} endif
+
+
+if uStatePost@==3 and uPostStatus@ == 0 then {
+    sendtcparray(uPostPort@, uPostIP@, cOK@,uOKLen@);
+    uStatePost@=4;
+} endif
+
+
+if uStatePost@==4 and uPostStatus@ == 0 then {
+    closetcp(uPostPort@, uPostIP@);
+    uStatePost@=5;
+    vmDebugUDP($Closetcp Post $ +convert(uPostPort@,$$) ); 
+} endif
+
+// Verbindung wurde zurückgewiesen
+if uPostStatus@ > 1 and uPostStatus@ < 6 then {
+   uStatePost@=kuInit@;
+} endif 
+
+// closetcp is ready 
+if (uPostStatus@==7 or uPostStatus@==6) and uStatePost@==5 then {
+   uStatePost@=kuInit@;               
+   vmDebugUDP($Now closed POST:$+convert(uStateCom@,$$));
+   if uStatePostExtern@==kuNotFound@ then {
+      uStatePostExtern@=kuInit@;
+   } endif;
+   if uStatePostExtern@==kuPlay@ then {
+      uStatePostExtern@=kuInit@;
+   } endif;
+   if uStatePostExtern@==kuSetRadio@ then {
+      // Das Radio abspielen
+      uStatePostExtern@=kuPlay@;
+   } endif;
+   if uStatePostExtern@==kuRadio@ then {
+      // Das Radio einstellen
+      uStatePostExtern@=kuSetRadio@;
+   } endif;
+   // Abspielen der Playlist
+   if uStatePostExtern@==kuStartPlaylist@ then {
+      uStatePostExtern@=kuPlay@;
+   } endif;
+   if uStatePostExtern@==kuSetPlaylist@ then {
+      uStatePostExtern@=kuStartPlaylist@;
+   } endif;
+   if uStatePostExtern@==kuPlaylistSearch@ then {
+      uStatePostExtern@=kuSetPlaylist@;
+   } endif;
+   if uStatePostExtern@==kuPlaylistClearSearch@ then {
+      uStatePostExtern@=kuPlaylistSearch@;
+   } endif;
+
+
+} endif
+
+
+
+
+
+:end
+
+// Sonos Subcriber
+// @date	01.03.2016
+// @version	1 
+// @author	Dr.-Ing.Michael Schuster
+:begin vmSubScribe(uSonosPort,uSonosIP,uStateCom,uSonosStatus,uClose,cSonosService,cSubScribe,bSonosClose,cMyService,uState,bLock,kuInit)
+:info $Subsciber for the Sonos UPNP Service$
+
+if uClose==0 and uStateCom==uState and bLock==AUS then {
+   uSonosStatus = connecttcp(uSonosPort, uSonosIP); 
+   uStateCom=uStateCom+1;
+   vmDebugUDP($Connect Subscribe: $+convert(uStateCom,$$)); 
+} endif
+
+if uSonosStatus == 0  and uStateCom==uState+1 then {
+   cSonosService=cMyService;
+   sendtcparray(uSonosPort, uSonosIP, cSubScribe,size(cSubScribe));
+   uStateCom=uStateCom+1;
+   uClose=kuInit;   
+   vmDebugUDP($Send Subscribe: $+convert(uStateCom,$$)); 
+} endif
+
+:end
+
+
+
+:begin vmUnsubScribe(uSonosPort,uSonosIP,bSonosConnected,uStateCom,uSonosStatus,cSonosServiceCon,cMyServiceID, cSonosService,cMyService,bSonosClose,cUnsubScribe,uState)
+:info $Subsciber for the Sonos UPNP Service$
+
+if !bSonosConnected and uStateCom==uState then {
+   uStateCom=uStateCom+1;
+   uSonosStatus = connecttcp(uSonosPort, uSonosIP);
+   vmDebugUDP($Connect Service: $+convert(uStateCom,$$)); 
+} endif 
+
+if !bSonosConnected and uStateCom==uState+1 and uSonosStatus == 0 then {
+   cSonosServiceCon=cMyServiceID;
+   cSonosService=cMyService;      
+   sendtcparray(uSonosPort, uSonosIP, cUnsubScribe,size(cUnsubScribe));
+   vmDebugUDP($Send Unsubscribe: $+convert(uStateCom,$$)); 
+   uStateCom=uStateCom+1;
+} endif
+:end 
+
+
+:begin vmGetSubID(uStateCom,cMessage,SUBID,cSubScribeID,cLastSubID, bClose,uClosePort, uPort)
+:return  {
+         if uStateCom==SUBID+2 then {
+           vmSubScribeParse(cMessage,$SID:$,cSubScribeID,CRLF);
+           cLastSubID=cSubScribeID;
+           vmDebugUDP($SubScribe $+convert(cSubScribeID,$$)+$ Zustand $+convert(uStateCom,$$));
+           bClose=!bClose;
+           uClosePort=uPort;
+        } endif;
+}
+:end
+
+
+:begin vmEndSubID(uStateCom,ENDCONNECT,SUBID,cSubScribeID,bClose,uClosePort, uPort)
+:return  {
+         if uStateCom==ENDCONNECT+SUBID-1 then {
+           cSubScribeID=$$;
+           vmDebugUDP($Unsubscribe vollständig $+convert(cSubScribeID,$$)+$ Zustand $+convert(uStateCom,$$));
+           bClose=!bClose;
+           uClosePort=uPort;
+           // Synchronisierung der Statemaschine:
+           // Da der Verbindungsabbau nur 4 Zustände benötigt, hier ausgleichen.
+           uStateCom=uStateCom+1;
+
+        } endif;        
+}
+:end
+
+
+:begin vmSubScribeParse(cString,cMask,cResult,cFieldSep)
+:var uPos@
+uPos@=0u16 
+:return  { 
+        uPos@=find(cString, cMask, 0u16); 
+        if uPos@!=EOS then { 
+            cResult=split(cString, uPos@+ size(cMask),uPos@+300u16);
+            cResult=split(cResult, 0u16,find(cResult,cFieldSep,0u16)+1u16);
+        } endif;
+}
+:end
+
+
+:begin vmXMLParse(XMLString,Mask,cResult,cFieldSep)
+:var uPos@
+uPos@=0u16 
+:return  { 
+        uPos@=find(XMLString, $<^Mask^>$, 0u16); 
+        if uPos@!=EOS then { 
+            cResult=split(XMLString, uPos@+ size($<^Mask^>$)-1u16,find(XMLString, $</^Mask^>$, 0u16)-1u16);
+            cResult=split(cResult, find(cResult,cFieldSep,1u16)+2u16,find(cResult,cFieldSep,2u16)-1u16);
+            vmDebugUDP($^Mask^: $+cResult);
+        } endif;
+}
+:end
+
+
+
+
+:begin vmNotifyParse(cString,cMask,cBegin,cEnd,cResult)
+:var uPos@
+uPos@=0u16 
+:return  { 
+        uPos@=find(cString, cMask+cBegin, 0u16);
+        if uPos@!=EOS then {
+            cResult=split(cString, uPos@+ size(cMask)+size(cBegin),uPos@+1000u16);
+            uPos@=find(cResult,cEnd,0u16);
+            if uPos@>0u16 then {
+               cResult=split(cResult, 0u16,uPos@-1u16);
+            } else {
+               cResult=$$;
+            } endif;
+            vmDebugUDP(cMask+$: $+cResult);
+        } endif;
+}
+:end
+
+
+:begin vmParsePlaylist(cString,cMask,cBegin,cResult)
+:var uPosStart@
+uPosStart@=0u16
+:var uPos@
+uPos@=0u16
+:return  { 
+        uPos@=find(cString, cMask, 0u16);
+        if uPos@!=EOS then {
+            cResult=split(cString, uPos@,EOS);
+            uPosStart@=uPos@;
+            uPos@=find(cResult,cBegin,0u16);
+            if uPos@>0u16 then {
+               cResult=split(cResult, uPos@+size(cBegin)+1u16,find(cResult,$&lt;/res$,0u16)-1u16);
+            } else {
+               cResult=$$;
+            } endif;
+            vmDebugUDP(cMask+$: $+cResult);
+        } endif;
+}
+:end
+
+
+
+:begin vmNotifyZone(cString,cZone,cUDN,cName,uNr,bFound)
+:var uPos@
+uPos@=0u16
+:var cTemp@
+cTemp@=$$ 
+:return  { 
+         uPos@=find(cString, $ZoneGroup Coordinator=&quot;$,uNr);
+         if uPos@!=EOS then {
+            // Coordinator
+            cTemp@=split(cString, uPos@+28u16,uPos@+355u16);
+            cZone=split(cTemp@, 0u16,find(cTemp@,$&quot$,0u16)-1u16);
+            if cUDN==cZone then {
+                // Zone Name
+                uPos@=find(cTemp@, $ZoneName=&quot;$,0u16);
+                cTemp@=split(cTemp@, uPos@+15u16,uPos@+100u16);
+                cTemp@=split(cTemp@, 0u16,find(cTemp@, $&quot$,0u16)-1u16);                
+                if cName!=cTemp@ then {
+                   if size(cName)> 0u16 then {
+                      cName=cName+$, $;
+                    } endif;
+                    cName=cName+split(cTemp@, 0u16,find(cTemp@, $&quot$,0u16)-1u16);               
+                } endif;
+            } endif;
+            bFound=1;
+            vmDebugUDP($Zonen: $+cName+$--$+cZone);
+         } else bFound=0; endif;
+}
+:end
+

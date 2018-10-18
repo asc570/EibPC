@@ -1,0 +1,53 @@
+// Webelemente für den Raum Wetterseite in der Etage Allgemein: 
+page(AllgemeinWetterseiteID)[$Allgemein$,$Wetterseite$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Party in der Etage Keller: 
+page(KellerPartyID)[$Keller$,$Party$] 
+design $blue$
+header(0)
+footer(0)
+button(ClockID)[CLOCK]$Uhrzeit$ button(DateID)[DATE]$Datum$ none none 
+pshifter(Licht1ID)[LIGHT]$Licht 1$ none none 
+// Webelemente für den Raum Lager in der Etage Keller: 
+page(KellerLagerID)[$Keller$,$Lager$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Heizung in der Etage Keller: 
+page(KellerHeizungID)[$Keller$,$Heizung$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Wohnzimmer in der Etage Erdgeschoss: 
+page(ErdgeschossWohnzimmerID)[$Erdgeschoss$,$Wohnzimmer$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Esszimmer in der Etage Erdgeschoss: 
+page(ErdgeschossEsszimmerID)[$Erdgeschoss$,$Esszimmer$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Kueche in der Etage Erdgeschoss: 
+page(ErdgeschossKuecheID)[$Erdgeschoss$,$Kueche$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Flur in der Etage Erdgeschoss: 
+page(ErdgeschossFlurID)[$Erdgeschoss$,$Flur$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Schlafzimmer_Eltern in der Etage Stock_1: 
+page(Stock_1Schlafzimmer_ElternID)[$Stock_1$,$Schlafzimmer_Eltern$] 
+design $blue$
+header(0)
+footer(0)
+// Webelemente für den Raum Schlafzimmer_Kinder in der Etage Stock_1: 
+page(Stock_1Schlafzimmer_KinderID)[$Stock_1$,$Schlafzimmer_Kinder$] 
+design $blue$
+header(0)
+footer(0)
+

@@ -1,0 +1,690 @@
+Weisshauptstr.12
+Sys.Dach.0/4/0	WXstatus	EIS 1 'Switching' (1 Bit)	Low	
+Sys.Dach.0/4/1	WXRainStatus	EIS 1 'Switching' (1 Bit)	Low	
+Sys.GEN.0/0/1	sTime	Uncertain (3 Byte)	Low	
+Sys.GEN.0/0/4	sDate	Uncertain (3 Byte)	Low	
+Sys.GEN.0/0/5	SymPresents	EIS 1 'Switching' (1 Bit)	Low	
+Sys.GEN.0/0/6	sAbwSimu	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/1	EG_Küche_Kaffe_StSw	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/2	EG_Küche_Kaffe_GetH	Uncertain (2 Byte)	Low	
+ElPower.EG.1/2/3	EG_Küche_Kaffe_ResetH	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/4	EG_Küche_Kaffe_GetA	Uncertain (2 Byte)	Low	
+ElPower.EG.1/2/5	EG_Küche_Kaffe_GetUnderload	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/6	EG_Küche_Kaffe_Reset	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/7	EG_Küche_Kaffe_WirkWh	Uncertain (4 Byte)	Low	
+ElPower.EG.1/2/8	Sw_Sko_EG_EssZ_2_2_06	EIS 1 'Switching' (1 Bit)	Low	1/2/9
+ElPower.EG.1/2/9	SwSt_Sko_EG_EssZ_2_2_06	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/10	Sw_Sko_EG_WohnZ_2_1_02	EIS 1 'Switching' (1 Bit)	Low	1/2/11
+ElPower.EG.1/2/11	SwSt_Sko_EG_WohnZ_2_1_02	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/12	Sw_Sko_EG_WohnZ_2_1_16	EIS 1 'Switching' (1 Bit)	Low	1/2/13
+ElPower.EG.1/2/13	SwSt_Sko_EG_WohnZ_2_1_16	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/14	Sw_Sko_EG_EssZ_2_2_01	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/15	SwSt_Sko_EG_EssZ_2_2_01	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/16	Sw_Sko_EG_WohnZ_2_1_13	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.EG.1/2/17	SwSt_Sko_EG_WohnZ_2_1_13	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.OG1.1/3/0	Sw_Sko_OG1_Puck_3_3_05_gr	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.OG1.1/3/1	SwSt_Sko_OG1_Puck_3_3_05_gr	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.Dach.1/4/0	Sw_ExtPwr1_Dach	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.Dach.1/4/1	SwSt_ExtPwr1_Dach	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.Dach.1/4/2	Sw_Bodentank_Gray	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.Dach.1/4/3	Sw_Bodentank_Brown	EIS 1 'Switching' (1 Bit)	Low	
+ElPower.Dach.1/4/4	Sw_BalkonDecke	EIS 1 'Switching' (1 Bit)	Low	
+Light.UG.2/1/0	lgtTest	Uncertain (2 Byte)	Low	
+Light.UG.2/1/1	StSW Treppe Neo	EIS 1 'Switching' (1 Bit)	Low	
+Light.UG.2/1/2	StSW Wasc Neo	EIS 1 'Switching' (1 Bit)	Low	
+Light.UG.2/1/3	StSW Heiz Neo	EIS 1 'Switching' (1 Bit)	Low	
+Light.UG.2/1/4	StSW Raum1 Neo	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/6	SW Küche Spot	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/7	SW Küche Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/8	DIM Küche Spot	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/9	DIM Küche Pendel	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/10	SW WohnZ Spot	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/11	SW WohnZ Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/12	SW EssZKlavier Spot	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/13	SW EssZ Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/14	DIM EssZ Pendel	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/15	DIM EssZKlavier Spot	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/21	ZentralDali	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/28	DV Küche Koffee	Uncertain (1 Byte)	Low	
+Light.EG.2/2/29	DIM Küche Koffee	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/30	SW Küche Koffee	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/31	DV EssZ Spot	Uncertain (1 Byte)	Low	
+Light.EG.2/2/32	DIM WohnZ Spot	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/37	StSW Ez Spot Klavier	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/38	DV EssZ Spot	Uncertain (1 Byte)	Low	
+Light.EG.2/2/39	StSW Kü Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/40	StSW Kü Sp Koffee	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/43	StSW Kü Sp SO	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/44	StSW Ez Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/45	StSW WohnZ Spot 	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/46	StSW  Flur Sp	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/47	StSW TreppenH Spot	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/48	StSW WC Wall	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/49	StSW WC Sp	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/50	StSW Kü Spot SW	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/51	StSW Kü Spot NW	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/52	StSW Tr unten	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/53	StSW Tr mitte	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/54	StSW Tr oben	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/55	SW AussenEingang	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/56	StSW AussenEingang	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/57	StSW WohnZ Pendel	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/58	DIM WohnZ Pendel	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.EG.2/2/59	StVal EssZKlavier Spot	Uncertain (1 Byte)	Low	
+Light.EG.2/2/60	StVal EssZ Pendel	Uncertain (1 Byte)	Low	
+Light.EG.2/2/61	SW TreppeFlur	EIS 1 'Switching' (1 Bit)	Low	2/2/62
+Light.EG.2/2/62	StSW TreppeFlur	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/63	SW AussenEingangEx	EIS 1 'Switching' (1 Bit)	Low	
+Light.EG.2/2/64	SW LED-Stripe Ess White	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/1	SwTreppeR6	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/2	SwFlurR7	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/0	SwMarisaSpot01	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/3	DimMarisaSpot01	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/4	SwMarisaPendel01	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/6	DimMartisaPendel01	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/7	SwEmiliaPendel01	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/8	DimEmiliaPendel01	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/9	SwEmiliaSpot01	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/10	DimEmiliaSpot01	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/13	Dim_BadSpot	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/14	ExSw_BadSpot	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/15	StDimBadSpot	Uncertain (1 Byte)	Low	
+Light.OG1.2/3/16	SetDim_BadSpot	Uncertain (1 Byte)	Low	
+Light.OG1.2/3/17	SwBueroSpotAll	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/18	DimBueroSpotAll	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.OG1.2/3/19	StDimBueroSpotAll	Uncertain (1 Byte)	Low	
+Light.OG1.2/3/20	SwRaumSuedSpot	EIS 1 'Switching' (1 Bit)	Low	
+Light.OG1.2/3/21	StRaumSuedSpot	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/0	SW-Rail-1-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/1	SW-Rail-1-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/8	SW-Rail-4-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/9	SW-Rail-4-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/17	SW-Rail-7-1	EIS 1 'Switching' (1 Bit)	Low	2/4/38
+Light.Dach.2/4/18	SW-Rail-7-2	EIS 1 'Switching' (1 Bit)	Low	2/4/39
+Light.Dach.2/4/19	SW-Rail-7-3	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/20	StSW-Rail-1-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/21	StSW-Rail-1-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/29	StSW-Rail-4-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/30	StSW-Rail-4-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/38	StSW-Rail-7-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/39	StSW-Rail-7-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/40	StSW-Rail-7-3	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/41	SW-Rail-10-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/42	SW-Rail-10-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/44	StSW-Rail-10-1	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/45	StSW-Rail-10-2	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/47	SW-BadSpot	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/49	Dim-BadSpot	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.Dach.2/4/52	SetDim-BadSpot	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/54	SwLed1DachOstGreen	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/55	SwLed1DachOstBlue	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/56	SwLed1DachOstWhite	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/58	DimLed1DachOstGreen	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.Dach.2/4/59	DimLed1DachOstBlue	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.Dach.2/4/60	DimLed1DachOstWhite	EIS 2 'Dimming - control' (4 Bit)	Low	
+Light.Dach.2/4/62	ValLed1DachOstGreen	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/63	ValLed1DachOstBlue	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/64	ValLed1DachOstWhite	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/66	StSwLed1DachOstGreen	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/67	StSwLed1DachOstBlue	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/68	StSwLed1DachOstWhite	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/70	StValLed1DachOstGreen	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/71	StValLed1DachOstBlue	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/72	StValLed1DachOstWhite	Uncertain (1 Byte)	Low	
+Light.Dach.2/4/73	StErrorFlagLed1DachOstRed	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/74	StErrorFlagLed1DachOstGreen	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/75	StErrorFlagLed1DachOstBlue	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/76	StErrorFlagLed1DachOstWhite	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/77	StErrorValLed1DachOstRed	Uncertain (4 Byte)	Low	
+Light.Dach.2/4/78	StErrorValLed1DachOstGreen	Uncertain (4 Byte)	Low	
+Light.Dach.2/4/79	StErrorValLed1DachOstBlue	Uncertain (4 Byte)	Low	
+Light.Dach.2/4/80	StErrorValLed1DachOstWhite	Uncertain (4 Byte)	Low	
+Light.Dach.2/4/81	StErrorLimitLed1DachOstRed	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/82	StErrorLimitLed1DachOstGreen	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/83	StErrorLimitLed1DachOstBlue	EIS 1 'Switching' (1 Bit)	Low	
+Light.Dach.2/4/84	StErrorLimitLed1DachOstWhite	EIS 1 'Switching' (1 Bit)	Low	
+Light.Gen.2/0/0	e64_1_Night	EIS 1 'Switching' (1 Bit)	Low	
+Light.Gen.2/0/1	e64_1_Test	EIS 1 'Switching' (1 Bit)	Low	
+Light.Gen.2/0/2	e64_1_Panik	EIS 1 'Switching' (1 Bit)	Low	
+Light.Gen.2/0/3	e64_Effekt	Uncertain (1 Byte)	Low	
+Light.Gen.2/0/4	e64Szene	Uncertain (1 Byte)	Low	
+Light.Outside.2/5/1	St_Sw_Einfahrt_Boden	EIS 1 'Switching' (1 Bit)	Low	
+Light.Outside.2/5/2	Sw_LgtAussen_SO	EIS 1 'Switching' (1 Bit)	Low	
+Light.Outside.2/5/3	St_SwLgtAussen_SO	EIS 1 'Switching' (1 Bit)	Low	
+Light.Outside.2/5/4	Sw_LgtAussenS-W	EIS 1 'Switching' (1 Bit)	Low	
+Light.Outside.2/5/5	St_SwAussenS-W	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.UG.3/1/1	T_Aussen	Uncertain (2 Byte)	Low	
+Klimat.UG.3/1/3	D_Aussen	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/1	HkSwB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/6	HkSwG	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/7	HkSwH	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/8	GetPosA	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/9	GetPosB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/10	GetPosC	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/12	GetPosE	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/13	GetPosF	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/14	StEmeregencyModA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/16	StEmeregencyModC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/18	StEmeregencyModE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/19	StEmeregencyModF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/20	HkEMO5Ist	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/21	HkEMO5Status	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/22	HkLockA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/23	HkLockB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/24	HkLockC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/25	HkLockD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/26	HkLockE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/27	HkLockF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/28	SetTKomfortA	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/30	SetTKomfortC	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/32	SetTKomfortE	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/33	SetTKomfortF	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/34	SetTShiftA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/38	SetTShiftE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/40	HVAC_A	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/42	HVAC_C	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/44	HVAC_E	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/45	HVAC_F	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/46	GetTargetTA	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/48	GetTargetTC	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/50	GetTargetTE	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/51	GetTargetTF	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/52	HVACstA	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/54	HVACstC	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/56	HVACstE	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/57	HVACstF	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/58	RHCCstA	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/60	RHCCstC	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/62	RHCCstE	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/63	RHCCstF	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/64	SetModKomfortA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/66	SetModKomfortC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/68	SetModKomfortE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/69	SetModKomfortF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/70	setModNightA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/72	setModNightC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/74	setModNightE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/75	setModNightF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/76	SetModSafeA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/78	SetModSafeC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/81	SetModSafeF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/82	AlertFrostA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/84	AlertFrostC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/86	AlertFrostE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/87	AlertFrostF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/88	AlertHeatA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/90	AlertHeatC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/92	AlertHeatE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/93	AlertHeatF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/94	HzEGReqHeater	EIS 1 'Switching' (1 Bit)	High	
+Klimat.EG.3/2/96	SetLockPosA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/97	SetLockPosB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/98	SetLockPosC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/99	SetLockPosD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/100	SetLockPosE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/101	SetLockPosF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/104	GetSetShiftT_C	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/108	EGmaxStellwertIn	Uncertain (1 Byte)	High	
+Klimat.EG.3/2/109	EGmaxStellwertOut	Uncertain (1 Byte)	High	
+Klimat.EG.3/2/110	ErrAHK-0800_Power	EIS 1 'Switching' (1 Bit)	High	
+Klimat.EG.3/2/117	SetValvePercentG	Uncertain (1 Byte)	Low	
+Klimat.EG.3/2/119	HkLockG	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/120	HkLockH	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/121	GetPosG	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/122	GetPosH	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/125	SetLockPosG	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/126	SetLockPosH	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/127	TavgEgWohnZ	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/128	TavgEgEssZ	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/129	TavgEgKueche	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/130	TavgEgGardeobe	Uncertain (2 Byte)	Low	
+Klimat.EG.3/2/131	TavgEgTreppe	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/0	T_FbhBadA	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/1	T_FbhBadB	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/6	SetModKomfortE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/12	SetModNightE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/15	HkProp2Ist	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/16	HkProp2St	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/17	FBHSw	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/18	FBHStSw	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/20	HkSwA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/27	GetPosPercB	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/28	GetPosPercC	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/29	GetPosPercD	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/30	GetPosPercE	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/31	GetPosPercF	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/32	StEmergencyModeA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/34	StEmergencyModeC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/35	StEmergencyModeD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/36	StEmergencyModeE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/37	StEmergencyModeF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/38	HkLockA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/39	HkLockB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/40	HkLockC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/41	HkLockD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/42	HkLockE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/43	HkLockF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/44	LockPosA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/45	LockPosB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/46	LockPosC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/47	LockPosD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/48	LockPosE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/49	LockPosF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/54	SetTKomfortE	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/60	SetTshiftE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/72	HVAC_E	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/78	StHVAC_E	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/84	StRHCC_E	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/90	StAlertFrostE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/96	StAlertHeatE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/102	GetTKomfort_E	Uncertain (2 Byte)	Low	
+Klimat.OG1.3/3/104	OG1MaxStellwertIn	Uncertain (1 Byte)	High	
+Klimat.OG1.3/3/105	OG1MaxStellwertOut	Uncertain (1 Byte)	High	
+Klimat.OG1.3/3/106	StOG1AHK-0800_ErrPower	EIS 1 'Switching' (1 Bit)	High	
+Klimat.OG1.3/3/113	ReqHeater	EIS 1 'Switching' (1 Bit)	High	
+Klimat.OG1.3/3/108	SetPosPercB	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/109	SetPosPercC	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/110	SetPosPercD	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/112	SetPosPercF	Uncertain (1 Byte)	Low	
+Klimat.OG1.3/3/130	GetBoolA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/136	SetModeFrostE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/0	Gen Scene	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/4	HzBlowe:2	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/5	WX:TempDach	Uncertain (2 Byte)	Low	
+Klimat.Dach.3/4/6	WX:WindSpeed	Uncertain (2 Byte)	Low	
+Klimat.Dach.3/4/7	WX:Rain	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/2	HyBad	Uncertain (2 Byte)	Low	
+Klimat.Dach.3/4/3	DPBad	Uncertain (2 Byte)	Low	
+Klimat.Dach.3/4/22	FanLow	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/23	FanHigh	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/24	StFanLow	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/25	StFanHigh	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/79	DfBothShadeUp_Down	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/80	DfBothWindowUp_Down	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/81	DfBothShadeStop	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/82	DfBothWindowStop	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/83	SetPosPercA	Uncertain (1 Byte)	Low	3/4/84 3/4/85 3/4/86 3/4/87 3/4/88
+Klimat.Dach.3/4/84	SetPosPercB	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/85	SetPosPercC	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/86	SetPosPercD	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/87	SetPosPercE	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/88	SetPosPercF	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/91	GetPosPercC	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/93	GetPosPercE	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/94	GetPosPercF	Uncertain (1 Byte)	Low	
+Klimat.Dach.3/4/107	HkLockA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/108	HkLockB	EIS 1 'Switching' (1 Bit)	Low	7/3/6
+Klimat.Dach.3/4/109	HkLockC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/110	HkLockD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/111	HkLockE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/112	HkLockF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/113	LockPosA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/114	LockPosB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/115	LockPosC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/116	LockPosD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/117	LockPosE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/118	LockPosF	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/151	StAlertHeatC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/153	StAlertHeatE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/155	SwHkA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/156	SwHkB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/158	SwHkD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/161	StSwHkA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/162	StSwHkB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/164	StSwHkD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/173	fLockHumBadSW1	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/174	fDach Bad Log: Cold OR HUM	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/175	DfCUpDown	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/177	RefA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/178	RefB	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/179	RefC	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/180	RefD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Gen.3/0/3	SetWinter	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/0	RsRainRaining	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/1	RsRainAlive	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/2	RsRainHeatingOK	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/3	RsWxWindSpeed	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/4	RsWxTemp	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/5	RsWxStatus	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/6	RsWxLgtnessDawn	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/8	RsWx	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/9	RsWx	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/23	RsWXWindThreshold1	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/25	RsWXTempThreshold1	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/27	RsWXSunEastThreshold1	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/33	RsWXSunEastLock	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/36	RsWxIsLuxNight	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Outside.3/6/37	RsWxLuxEast	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/38	RsWxLuxSouth	Uncertain (2 Byte)	Low	
+Klimat.Outside.3/6/39	RsWxLuxWest	Uncertain (2 Byte)	Low	
+Presents.UG.4/1/0	_P_1_Flur_Treppe_slave	EIS 1 'Switching' (1 Bit)	Low	
+Presents.UG.4/1/1	P_1_Flur_Treppe_master	EIS 1 'Switching' (1 Bit)	Low	
+Presents.UG.4/1/2	P_1_Raum1_master	EIS 1 'Switching' (1 Bit)	Low	
+Presents.UG.4/1/3	P_1_Heizungsr_master	EIS 1 'Switching' (1 Bit)	Low	
+Presents.UG.4/1/4	P_1_Waschr_master	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/0	EG Flur enter	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/1	EG TreppenH enter	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/4	EG WohnZ enter	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/5	EG KücheExtSw	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/6	EG Küche HKL1	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/7	EG Küche HKL1 Lock	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/8	EG_GardrobeEnter	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/9	EG_lux_TreppenH	Uncertain (2 Byte)	Low	
+Presents.EG.4/2/10	EG_Treppenhaus_HKL1	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/11	EG_Treppenhaus_HKL_Lock1	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/12	EG_Aussen_West_Tor_Test	EIS 1 'Switching' (1 Bit)	Low	
+Presents.EG.4/2/13	EG_Aussen_Slave_Einfahrt	EIS 1 'Switching' (1 Bit)	Low	
+Presents.OG1.4/3/2	Lock_P_Bad	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/0	P_Ost_Flur	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/1	Psw_Ost_Flur	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/2	Psw_Flur_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/3	P_OstFlur_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/5	Lock_P_Bad	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/6	P_Lock_Flur_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/7	HKS1_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/8	HKS2_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/9	Plock_Ost_Flur	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Dach.4/4/10	Light_OstFlur_Night	EIS 1 'Switching' (1 Bit)	Low	
+Presents.Aussen.4/5/5	Sw_Gen_Sperre	EIS 1 'Switching' (1 Bit)	Low	
+Test.LUX DachOst.10/0/0	loxOst	Uncertain (2 Byte)	Low	
+Test.EibPC.10/4/0	DebugOut	EIS 15 'Character String' (14 Byte)	Low	
+Szene.EG.5/0/0	SzeneEG01	Uncertain (1 Byte)	Low	
+Szene.OG1.5/1/0	SzeneOG01	Uncertain (1 Byte)	Low	
+Szene.Dach.5/2/0	SzDach01	Uncertain (1 Byte)	Low	
+UVR1611.Din.11/0/1	Din01	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/2	Din02	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/3	Din03	EIS 1 'Switching' (1 Bit)	High	11/0/1 11/0/2 11/0/4 11/0/5 11/0/6 11/0/7 11/0/8 11/0/9 11/0/10 11/0/11 11/0/12 11/0/13 11/0/14
+UVR1611.Din.11/0/4	Din04	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/5	Din05	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/6	Din06	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/7	Din07	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/8	Din08	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/9	Din09	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/10	Din010	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/11	Din11	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/12	Din12	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/13	Din13	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Din.11/0/14	Din14	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/1	Dout01	EIS 1 'Switching' (1 Bit)	High	11/1/2 11/1/3 11/1/4 11/1/5 11/1/6 11/1/7 11/1/8 11/1/9 11/1/10 11/1/11 11/1/12 11/1/13 11/1/14 11/1/15 11/1/16
+UVR1611.Dout.11/1/2	Dout02	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/3	Dout03	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/4	Dout04	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/5	Dout05	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/6	Dout06	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/7	Dout07	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/8	Dout08	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/9	Dout09	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/10	Dout10	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/11	Dout11	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/12	Dout12	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/13	Dout13	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/14	Dout14	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/15	Dout15	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Dout.11/1/16	Dout16	EIS 1 'Switching' (1 Bit)	High	
+UVR1611.Ain.11/2/1	Ain01	Uncertain (2 Byte)	Low	11/2/2 11/2/3 11/2/4 11/2/5 11/2/6 11/2/7 11/2/8 11/2/9 11/2/10 11/2/11 11/2/12 11/2/13 11/2/14 11/2/15
+UVR1611.Ain.11/2/2	Ain02	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/3	Ain03	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/4	Ain04	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/5	Ain05	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/6	Ain06	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/7	Ain07	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/8	Ain08	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/9	Ain09	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/10	Ain10	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/11	Ain11	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/12	Ain12	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/13	Ain13	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/14	Ain14	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/15	Ain15	Uncertain (2 Byte)	Low	
+UVR1611.Ain.11/2/16	Ain16	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/1	Aout01	Uncertain (2 Byte)	Low	11/3/2 11/3/3 11/3/4 11/3/5 11/3/6 11/3/7 11/3/8 11/3/9 11/3/10 11/3/11 11/3/12 11/3/13 11/3/14 11/3/15 11/3/16
+UVR1611.Aout.11/3/2	Aout02	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/3	Aout03	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/4	Aout04	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/5	Aout05	Uncertain (2 Byte)	Low	11/3/6 11/3/7 11/3/8
+UVR1611.Aout.11/3/6	Aout06	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/7	Aout07	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/8	Aout08	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/9	Aout09	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/10	Aout10	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/11	Aout11	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/12	Aout12	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/13	Aout13	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/14	Aout14	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/15	Aout15	Uncertain (2 Byte)	Low	
+UVR1611.Aout.11/3/16	Aout16	Uncertain (2 Byte)	Low	
+UVR1611.Aux.11/4/0	GetAllHzMode	Uncertain (1 Byte)	Low	8/5/21 8/5/22 8/5/23 8/5/24
+UVR1611.Aux.11/4/1	AllHzMode	Uncertain (1 Byte)	Low	8/0/4 8/0/5 8/0/6 8/0/7 8/0/8 8/0/10 8/2/22 8/2/23 8/2/24 8/2/25 8/2/26 8/2/27 8/2/28 8/2/29 8/2/30 8/2/31 8/5/17 8/5/18 8/5/19 8/5/20 8/6/23 11/4/7 11/4/8 11/4/9 11/4/10 11/4/16
+UVR1611.Aux.11/4/6	SelSby_Auto	EIS 1 'Switching' (1 Bit)	Low	3/3/38 3/3/39 3/3/40 3/3/41 3/3/42 3/3/43 3/3/44 3/3/45 3/3/46 3/3/47 3/3/48 3/3/49 3/4/107 3/4/108 3/4/109 3/4/110 3/4/111 3/4/112 3/4/113 3/4/114 3/4/115 3/4/116 3/4/117 3/4/118 8/2/10 8/2/11 8/2/12 8/2/13 8/2/14 8/2/15 8/2/37 8/5/1 8/5/3 8/5/5 8/6/0 8/6/1 8/6/2 8/6/3 8/6/4 8/6/5 8/6/6 8/6/7 8/6/8 8/6/9 8/6/10 8/6/11 8/6/12 8/6/13 8/6/14 8/6/15 8/6/21 8/6/22
+UVR1611.Aux.11/4/7	HzMode1	Uncertain (1 Byte)	Low	
+UVR1611.Aux.11/4/8	HzMode2	Uncertain (1 Byte)	Low	
+UVR1611.Aux.11/4/9	HzMode3	Uncertain (1 Byte)	Low	
+UVR1611.Aux.11/4/10	HzMode4	Uncertain (1 Byte)	Low	
+UVR1611.Aux.11/4/11	HzTimerPC1	EIS 1 'Switching' (1 Bit)	Low	3/2/25 3/2/99 3/4/156 8/0/9 8/2/17 8/2/18 8/2/19 8/2/20 8/2/21 8/2/32 8/2/33 8/2/34 8/2/35 8/2/36 8/2/38 8/2/39 8/2/40 8/2/41 8/2/42 8/2/43 8/2/46 8/2/47 8/2/48 8/2/49 8/2/50 8/2/51 8/3/0 8/3/1 8/3/4 8/3/5 8/3/6 8/4/2 8/4/3 8/4/4 8/5/0 8/5/7 8/5/8 8/5/9 8/5/10 8/5/11 8/5/12 8/5/13 8/5/14 8/5/15 8/5/16 8/6/16 8/6/17 8/6/18 8/6/19 8/6/20 8/6/24 8/6/25 8/6/26 11/4/12 11/4/13 11/4/14 11/4/15
+UVR1611.Aux.11/4/12	HzTimerPC2	EIS 1 'Switching' (1 Bit)	Low	
+UVR1611.Aux.11/4/13	HzTimerPC3	EIS 1 'Switching' (1 Bit)	Low	
+UVR1611.Aux.11/4/14	HzTimerPC4	EIS 1 'Switching' (1 Bit)	Low	
+UVR1611.Aux.11/4/15	HzTimerPC_All	EIS 1 'Switching' (1 Bit)	Low	
+UVR1611.Aux.11/4/16	HzMode5	Uncertain (1 Byte)	Low	
+TempSens.EG.6/1/0	tEgKuecheSentido	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/1	tEgEssZZas	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/3	tEgMixWohnZ	Uncertain (2 Byte)	Low	3/2/127 3/2/128 3/2/129 3/2/130 3/2/131 6/1/0 6/1/4 6/1/5 6/1/6 6/1/7 6/1/8 6/1/9 6/1/10 6/1/13 6/1/14 6/1/15 6/1/16 6/1/17 6/2/4 6/2/5 6/2/6 6/2/7 6/2/8 6/2/9 6/3/4 6/3/5 6/3/6 6/3/7
+TempSens.EG.6/1/4	tEgMixEssZ	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/5	tEgMixWC	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/6	tEGMixGard	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/7	tEgMixTreppe	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/8	nil	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/9	tEgWohnZSentidoEingang	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/10	tEgWC	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/11	tEgWCElsnerTH_UP	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/12	tEgWohnZ_Send	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/13	TavgEGWohnZ	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/14	TavgEGEssZ	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/15	TavgEGWC	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/16	TavgEGGard	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/17	TavgEGTreppe	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/1	T_OG1_Bad_Basalte	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/3	T_OG1_Buero_Merten_MEG	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/4	TavgOG1Marisa	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/5	TavgOG1Gast	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/6	TavgOG1Emilia	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/7	TavgOG1Buero	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/8	TavgOG1Bad	Uncertain (2 Byte)	Low	
+TempSens.OG1.6/2/9	TavgOG1Treppe	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/0	T_Dach_Bad_T_HY	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/1	T_Dach_Ost_ZAS_WWest	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/2	T_Dach_Ost_ZAS_Hz	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/3	T_Dach_F50_Ost	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/4	TavgDachWest	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/5	TavgDachOst	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/6	TavgDachBad	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/7	TavgDachTreppe	Uncertain (2 Byte)	Low	
+Controls.UG.7/0/0	KlingelAussen	EIS 1 'Switching' (1 Bit)	Low	
+Controls.EG.7/1/0	fZasEssZBuzz	EIS 1 'Switching' (1 Bit)	Low	
+Controls.EG.7/1/1	fCoffeMakerON	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/0	SetMEG_Emilia_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/1	GetMEG_Emilia_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/2	SetMEG_Emilia_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/3	GetMEG_Emilia_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/5	GetMEG_Emilia_IstT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/6	SetMEG_Emilia_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/7	GetMEG_Emilia_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/8	SetMEG_Emilia_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/9	GetMEG_Emilia_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/10	SetMEG_Emilia_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/11	StMEG_Emilia_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/12	SetMEG_EmiliaExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/13	GetMEG_EmiliaExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/14	SetMEG_Marisa_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/15	GetMEG_Marisa_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/16	SetMEG_Marisa_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/17	GetMEG_Marisa_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/18	SetMEG_Marisa_IstT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/19	GetMEG_Marisa_IstT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/20	SetMEG_Marisa_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/21	GetMEG_Marisa_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/22	SetMEG_Marisa_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/23	GetMEG_Marisa_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/24	SetMEG_Marisa_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/25	StMEG_Marisa_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/26	SetMEG_MarisaExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/27	GetMEG_MarisaExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/28	SetMEG_Buero_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/29	GetMEG_Buero_HVAC	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/30	SetMEG_Buero_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/31	GetMEG_Buero_SollT	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/34	SetMEG_Buero_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/35	GetMEG_Buero_TShift	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/36	SetMEG_Buero_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/37	GetMEG_Buero_Lock	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/38	SetMEG_Buero_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/39	GetMEG_Buero_FrostMode	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/40	SetMEG_Buero_ExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/41	GetMEG_Buero_ExtKomfort	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/42	SetMEG_Emilia_LockButton	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/43	SetMEG_Marisa_LockButton	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/44	SetMEG_Buero_LockButton	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/45	SetMEG_Emilia_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/46	GetMEG_Emilia_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/47	SetMEG_Marisa_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/48	GetMEG_Marisa_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/49	SetMEG_Buero_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/50	GetMEG_Buero_Msg	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/51	StMEG_Emilia_Frost	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/52	StMEG_Marisa_Frost	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/53	StMEG_Buero_Frost	EIS 1 'Switching' (1 Bit)	Low	
+Controls.OG1.7/2/54	StMEG_Emilia_HVAC1	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/55	StMEG_Marisa_HVAC1	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/56	StMEG_Buero_HVAC1	Uncertain (1 Byte)	Low	
+Controls.OG1.7/2/57	StMEG_Emilia_HVAC2	Uncertain (2 Byte)	Low	
+Controls.OG1.7/2/58	StMEG_Marisa_HVAC2	Uncertain (2 Byte)	Low	
+Controls.Dach.7/3/5	F50_Ost_Led_blue	EIS 1 'Switching' (1 Bit)	Low	
+Controls.Dach.7/3/6	TuerOstOpen	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzUVR1611.8/0/0	stHkPumpOn1	EIS 1 'Switching' (1 Bit)	Low	8/0/1 8/0/2 8/0/3 8/5/2 8/5/4 8/5/6 8/5/25
+EibPC.HzUVR1611.8/0/1	stHkPumpOn2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzUVR1611.8/0/2	stHkPumpOn3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzUVR1611.8/0/3	stHkPumpOn4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzUVR1611.8/0/4	PcUvrMode_Hk1	Uncertain (1 Byte)	Low	
+EibPC.HzUVR1611.8/0/5	PcUvrMode_Hk2	Uncertain (1 Byte)	Low	
+EibPC.HzUVR1611.8/0/6	PcUvrMode_Hk3	Uncertain (1 Byte)	Low	
+EibPC.HzUVR1611.8/0/7	PcUvrMode_Hk4	Uncertain (1 Byte)	Low	
+EibPC.HzUVR1611.8/0/8	PcUvrMode_HkAll	Uncertain (1 Byte)	Low	
+EibPC.HzUVR1611.8/0/9	fPcNightOverride	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzUVR1611.8/0/10	PcUvrMode_Hk5	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/0	HzEGnH_WohnZ	Uncertain (1 Byte)	Low	8/2/1 8/2/2 8/2/3 8/2/4 8/2/5 8/2/6 8/2/7 8/2/8 8/2/9 8/2/44 8/2/45 8/3/2 8/3/3 8/4/0 8/4/1
+EibPC.HzKnxEG.8/2/1	HzEGnH_EssZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/2	HzEGnH_WC	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/3	HzEGnH_Gard	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/4	HzEGnH_Tr	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/5	HzEGdH_WohnZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/6	HzEGdH_EssZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/7	HzEGdH_WC	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/8	HzEGdH_Gard	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/9	HzEGdH_Tr	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/10	SetShiftHzEGnH_WohnZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/11	SetShiftHzEGnH_EssZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/12	SetShiftHzEGnH_WC	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/13	SetShiftHzEGnH_Gard	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/14	SetShiftHzEGnH_Tr	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/15	SetShiftTHzEG_E_K	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/16	SollT_EssZ_Kueche	Uncertain (2 Byte)	Low	
+EibPC.HzKnxEG.8/2/17	fHzPcEgAuto_WohnZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/18	fHzPcEgAuto_EssZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/19	fHzPcEgAuto_WC	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/20	fHzPcEgAuto_Gard	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/21	fHzPcEgAuto_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/22	HzPcEgMode_WohnZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/23	HzPcEgMode_EssZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/24	HzPcEgMode_WC	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/25	HzPcEgMode_Gard	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/26	HzPcEgMode_Treppe	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/27	MdtMode_WohnZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/28	MdtMode_EssZ	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/29	MdtMode_WC	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/30	MdtMode_Gard	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/31	MdtMode_Treppe	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/32	fMdtAuto_WohnZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/33	fMdtAuto_EssZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/34	fMdtAuto_WC	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/35	fMdtAuto_Gard	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/36	fMdtAuto_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/37	ZASEssZupdate	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/38	HzEgBoost_WohnZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/39	HzEgBoost_EssZ	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/40	HzEgBoost_WC	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/41	HzEgBoost_Gard	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/42	HzEgBoost_Treppe	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/43	HzEgBoost_All	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/44	HzEGdHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/45	HzEGnHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxEG.8/2/46	fHzEG_Boost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/47	fHzEG_Frost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/48	SetShiftHzEGnH_Global	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/49	SetShiftHzEGdH_Global	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/50	fNightOverride_EG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/51	fNightOverride_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxOG1.8/3/0	fHzOG1_IsDay	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxOG1.8/3/1	fHzOG1_IsDay_Override	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxOG1.8/3/2	HzOG1dHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxOG1.8/3/3	HzOG1nHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxOG1.8/3/4	fHzOG1_Boost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxOG1.8/3/5	fHzOG1_Frost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxOG1.8/3/6	fNightOverride_OG1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxDach.8/4/0	HzDachdHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxDach.8/4/1	HzDachnHGlobal	Uncertain (1 Byte)	Low	
+EibPC.HzKnxDach.8/4/2	fHzDach_Boost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxDach.8/4/3	fHzDach_Frost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxDach.8/4/4	fNightOverride_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/0	fDay_IsWorkDay	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/1	setHzGlobalFrostMode	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/2	getHzGlobalFrostMode	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/3	setHzGlobalBoost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/4	getHzGlobalBoost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/5	nil	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/6	nil	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/7	fHk1_NightOverride	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/8	fHk12NightOverride	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/9	fHk3_NightOverride	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/10	fHk4_NightOverride	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/11	fHzInitHK1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/12	fHzInitHK3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/13	fHzInitHK4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/14	fHzInitRadEG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/15	fHzInitRadOG1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/16	fHzInitRadDach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Gen.8/5/17	bm_EG	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/18	bm_OG1	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/19	bm_Dach	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/20	bm_All	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/21	bm_stEG	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/22	bm_stOG1	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/23	bm_stDach	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/24	bm_stAll	Uncertain (1 Byte)	Low	
+EibPC.Gen.8/5/25	EibPC_before_shutdown	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/0	eIHzVaRad_EG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/1	eIHzVaRad_OG1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/2	eIHzVaRad_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/3	eIHzVaRad_All	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/4	eSetPcAuto_Hk1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/5	eSetPcAuto_Hk2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/6	eSetPcAuto_Hk3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/7	eSetPcAuto_Hk4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/8	eSetPcAuto_HkAll	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/9	eSetUvrAuto_Hk1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/10	eSetUvrAuto_Hk2	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/11	eSetUvrAuto_Hk3	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/12	eSetUvrAuto_Hk4	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/13	eSetUvrAuto_HkAll	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/14	eIHzVaFbh_EG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/15	eIHzVaFbh_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/16	eIHzVaAll	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/17	fHzLockPos_EG	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/18	fHzLockPos_OG1	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/19	fHzLockPos_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/20	fHzLockPos_All	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/21	fHk1_4_5Frost	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/22	fHzFrostHaus	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/23	Hk3TimeMax	Uncertain (1 Byte)	Low	
+EibPC.Hz.8/6/24	fHk3Max1Houre	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/25	fHk5Arme	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.Hz.8/6/26	fHzMasterON	EIS 1 'Switching' (1 Bit)	Low	

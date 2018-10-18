@@ -1,0 +1,21 @@
+[Macros]
+// Das Gerät 1.1.60 überprüfen: Alle 330 Minuten muss dieses mindestens 
+// auf einer beliebigen GA einen Wert senden.
+//
+// Aktor1Raw_Error wird auf EIN gesetzt, wenn diese Zeit überschritten wurde.
+//
+// Aktor1Raw_MaxTime ist die maximale Zeit zwischen zwei Telegrammen 
+// Aktor1Raw_MinTime ist die minimale Zeit zwischen zwei Telegrammen 
+// Aktor1Raw_AvgTime ist die Durchschnittszeit zwischen zwei Telegrammen 
+PhyMonitor(Aktor1,1.1.60,330)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexPhyMonitor.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+ 

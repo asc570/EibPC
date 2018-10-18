@@ -1,0 +1,228 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Anwesentheitssimulation
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/09/01 08:36:31 $
+//  Version              : $Revision: 1.7 $
+//----------------------------------------------------------------------
+
+
+// Define for DEBUGGING the Makro using 10/0/10
+// #define DEBUG
+//----------------------------------------------------------------------
+// Internal Makros: Donot use for external use 
+
+//----------------------------------------------------------------------
+// Internal Makros: Donot use for external use 
+:begin InternalSchedulerW(MyWeek,Sim) 
+:shortinfo $Nur für interne Zwecke$
+InternalSchedulerD(0, MyWeek,Sim)
+InternalSchedulerD(1, MyWeek,Sim)
+InternalSchedulerD(2, MyWeek,Sim)
+InternalSchedulerD(3, MyWeek,Sim)
+InternalSchedulerD(4, MyWeek,Sim)
+InternalSchedulerD(5, MyWeek,Sim)
+InternalSchedulerD(6, MyWeek,Sim)
+:end 
+
+
+:begin InternalSchedulerD(Day, MyWeek,Sim) 
+:shortinfo $Nur für interne Zwecke$
+// Each Scheduler for each day is the same
+// From 0:00 to 24:00 = 1440 Minutes (5000 Telgramms)
+InternalScheduler(0,0,1440,Day, MyWeek,Sim)
+:end 
+
+
+// Only valid for Hour=0 and Minute=0
+// 
+:begin InternalScheduler(Hour, Minute,Duration, Day, Week,Sim) 
+:shortinfo $Nur für interne Zwecke$
+//------------------------------------------
+// Recording in a certain interval
+//------------------------------------------
+
+// Timer
+Timer_Hour_Minute_Day_Week=0u64
+// Aktivanzeige
+Start_Hour_Minute_Day_Week=OFF
+// TimeStamp
+TimeStamp_Hour_Minute_Day_Week=$$c20000
+// Recorder for telegrams
+Recorder_Hour_Minute_Day_Week=$$c20000
+// DataRecorder for telegrams
+Data_Hour_Minute_Day_Week=$$c20000
+// Position in Recorder/TimeStamp
+// Max. c20000/4=5000 Telegramms per Minute-Interval
+Position_Hour_Minute_Day_Week=0u16
+// Timer for Playing the Simulation
+DiffTimer_Hour_Minute_Day_Week=0u64
+
+
+
+// Die Uhr wird gestartet (Countdowntimer)
+if SimDay==Day and Sim_week==Week then {
+    // Die Alte Position wird beibehalten und der exakten Stelle weiter
+    Start_Hour_Minute_Day_Week=ON;
+    // Den Timer setzen: Bereits seit 0:00:00 verstrichene Zeit bis jetzt abziehen
+    Timer_Hour_Minute_Day_Week= Duration^000u64*60u64-convert(hour(),0u64)*3600000u64-convert(minute(),0u64)*60000u64-convert(second(),0u64)*1000u64;
+	Sim_MyGA=OFF;
+    // Wenn eine Aufzeichnung läuft, muss der Positionszähler um eins nach hinten gesetzt werden
+    if (Position_Hour_Minute_Day_Week>3u16) then {
+        Position_Hour_Minute_Day_Week=Position_Hour_Minute_Day_Week-4u16;
+    }endif
+} endif 
+// actual timestamp of position pointer:
+T_Hour_Minute_Day_Week=convert(stringcast(TimeStamp_Hour_Minute_Day_Week,1u32,Position_Hour_Minute_Day_Week),0u64)
+
+// Die Aufzeichnung wird gestoppt nach dem Intervall bzw. durch dies Anweisung gestartet
+if afterc(SimDay==Day and Sim_week==Week,Duration^000u64*60u64,Timer_Hour_Minute_Day_Week) or SimDay!=Day then {	
+	Start_Hour_Minute_Day_Week=AUS;
+	Position_Hour_Minute_Day_Week=0u16; 
+    Timer_Hour_Minute_Day_Week=0u64;
+} endif  
+
+// if recordings starts, delete the actual timestamp and position to ensure, that old recordings 
+// are deleted
+if Sim_Record and Start_Hour_Minute_Day_Week then {
+   stringset(TimeStamp_Hour_Minute_Day_Week,0u32,Position_Hour_Minute_Day_Week);
+} endif
+
+if  Start_Hour_Minute_Day_Week and Sim_Record and !Sim_Play and Sim_Next then { 
+	// Special case: if a telegram arrives exact at timer Start, the Timer_Hour_Minute_Day_Week would be still 0
+	if Timer_Hour_Minute_Day_Week!=0u64 then {
+		stringset(TimeStamp_Hour_Minute_Day_Week,convert(Timer_Hour_Minute_Day_Week,0u32),Position_Hour_Minute_Day_Week);
+	} else {
+		stringset(TimeStamp_Hour_Minute_Day_Week,convert(Sim_Interval-1u64,0u32),Position_Hour_Minute_Day_Week);
+	} endif;
+    // Erase old timestamp
+    stringset(TimeStamp_Hour_Minute_Day_Week,0u32,Position_Hour_Minute_Day_Week+4u16);
+	// Store the GA number
+	stringset(Recorder_Hour_Minute_Day_Week,Sim_GA,Position_Hour_Minute_Day_Week);
+	// Store the GA Len at the last two Bytes
+	stringset(Recorder_Hour_Minute_Day_Week,Sim_Len,Position_Hour_Minute_Day_Week+2u16);
+	// We cast the Raw-Data to u32 Values 
+	stringset(Data_Hour_Minute_Day_Week,Sim_RawData,Position_Hour_Minute_Day_Week);
+#ifdef DEBUG
+    write('10/0/10'c14, $T:$c14+convert(Timer_Hour_Minute_Day_Week,$$c14));
+    write('10/0/10'c14, $G:$c14+convert(Sim_GA,$$c14));
+    write('10/0/10'c14, $L:$c14+convert(Sim_Len,$$c14));
+    write('10/0/10'c14, $V:$c14+convert(Sim_RawData,$$c14));
+#endif 
+	Sim_MyGA=OFF;
+	Sim_Next=OFF;
+	Sim_GA=65365u16;
+	Position_Hour_Minute_Day_Week=Position_Hour_Minute_Day_Week+4u16;
+    // Test auf Überlauf:
+	if Position_Hour_Minute_Day_Week>size(TimeStamp_Hour_Minute_Day_Week) then Start_Hour_Minute_Day_Week=AUS endif;
+} endif
+
+//------------------------------------------
+// Playing all GAs in my Intervall
+//-----------------------------------------
+Play_Hour_Minute_Day_Week=AUS
+if Sim_Play and Start_Hour_Minute_Day_Week and Timer_Hour_Minute_Day_Week<T_Hour_Minute_Day_Week+1000u64   then {
+    SimGA_Out=stringcast(Recorder_Hour_Minute_Day_Week,0u16,Position_Hour_Minute_Day_Week);
+	SimGA_Len=stringcast(Recorder_Hour_Minute_Day_Week,0,Position_Hour_Minute_Day_Week+2u16);
+	SimGA_Val=stringcast(Data_Hour_Minute_Day_Week,0u32,Position_Hour_Minute_Day_Week);
+    // play only, if not too long in the past
+    if Timer_Hour_Minute_Day_Week>T_Hour_Minute_Day_Week then {
+        Play_Hour_Minute_Day_Week=EIN;                       
+    } endif
+    // if we would send diretcly here, our string Values cannot be copied to the write object. We
+    // need an extra processing if-statement.
+} endif
+
+if  change(Play_Hour_Minute_Day_Week) and Play_Hour_Minute_Day_Week then {
+    if SimGA_Len==1 then write(address(SimGA_Out),convert(SimGA_Val,0b04)) endif;
+    if SimGA_Len==2 then write(address(SimGA_Out),convert(SimGA_Val,0)) endif;
+    if SimGA_Len==3 then write(address(SimGA_Out),convert(SimGA_Val,0u16)) endif;
+    if SimGA_Len==4 then write(address(SimGA_Out),SimGA_Val) endif;
+#ifdef DEBUG
+    write('10/0/10'c14, $X:$c14+convert(stringcast(TimeStamp_Hour_Minute_Day_Week,1u32,Position_Hour_Minute_Day_Week),$$c14));
+    write('10/0/10'c14, $T:$c14+convert(Timer_Hour_Minute_Day_Week,$$c14));
+    write('10/0/10'c14, $G:$c14+convert(SimGA_Out,$$c14));
+    write('10/0/10'c14, $L:$c14+convert(SimGA_Len,$$c14));
+    write('10/0/10'c14, $V:$c14+convert(SimGA_Val,$$c14));
+#endif 
+	Position_Hour_Minute_Day_Week=Position_Hour_Minute_Day_Week+4u16;
+    Play_Hour_Minute_Day_Week=AUS;
+} endif 
+
+
+:end
+
+
+//----------------------------------------------------------------------
+:begin Scheduler_2Wochen(SimPlay) 
+:info $Dieses Makro ist das Basismakro für eine Aufzeichnung. Binden Sie dies nur einmal in Ihr Programm ein.$\\
+      $Starten Sie das Abspielen eine Aufzeichnung durch eine GA oder Variable (Typ b01). Wenn diese Variable auf AUS steht, wird automatisch im Ring für 2 Wochen zurück mitgeschrieben.$
+:shortinfo $Anwesenheitssimulation - Basismakro$
+Sim_Minute=0
+Sim_Hour=0
+// The Maximum RecordingIntervall 24 Stunden
+Sim_Interval=14400000u64
+// Record
+Sim_Record=!SimPlay
+Sim_Play=SimPlay
+Sim_MyGA=OFF
+// Used in every macro
+Sim_Kontroll=0
+Sim_Sender=0.0.0
+Sim_GA=0u16
+Sim_IsGa=AUS
+Sim_RoutingCnt=0
+Sim_Len=0
+Sim_Data=$$
+Sim_Clear=$$
+// Used in the Internal Scheduler
+SimGA_Out=0u16
+SimGA_Len=0
+SimGA_Val=0u32
+// all data is converted to u32
+Sim_RawData=0u32
+Sim_Check=OFF
+Sim_Next=OFF 
+// The lenght of the recording in weeks
+Sim_week=0
+SimDay = dayofweek()
+
+#ifdef DEBUG
+dummy='10/0/10'c14
+#endif 
+
+if event(readrawknx(Sim_Kontroll,Sim_Sender,Sim_GA,Sim_IsGa,Sim_RoutingCnt,Sim_Len,Sim_Data)) and Sim_Len!=0 and Sim_IsGa and !Sim_Play then {
+	if !Sim_MyGA then Sim_Next=OFF endif;
+	if Sim_MyGA then { 
+		if Sim_Len==1 then Sim_RawData=convert(stringcast(Sim_Data,0u08,1u16) and 0x7F,0u32) endif;
+		if Sim_Len==2 then Sim_RawData=convert(stringcast(Sim_Data,0u08,2u16),0u32) endif;
+		// Byte Order has to be considered
+		if Sim_Len==3 then Sim_RawData=convert(stringcast(Sim_Data,0u08,2u16),0u32)*256u32 +convert(stringcast(Sim_Data,0u08,3u16),0u32) endif;
+		if Sim_Len==5 then Sim_RawData=convert(stringcast(Sim_Data,0u08,2u16),0u32)*16777216u32 +convert(stringcast(Sim_Data,0u08,3u16),0u32)*65536u32+convert(stringcast(Sim_Data,0u08,4u16),0u32)*256u32+convert(stringcast(Sim_Data,0u08,5u16),0u32)  endif;
+		Sim_Next=ON;
+	} endif;
+} endif
+if cwtime(0,0,0,MONDAY) and Sim_week==0 then Sim_week=1 endif
+if cwtime(0,0,0,MONDAY) and Sim_week==1 then Sim_week=0 endif
+
+// Use the Internal Scheduler
+InternalSchedulerW(0,Sim) 
+InternalSchedulerW(1,Sim) 
+
+:end
+:begin Rec_GA(Gruppenaddresse) 
+:info $Mit diesem Makro definieren die Gruppenaddresse, welche aufgezeichnet werden soll (Typ c14 können nicht aufgezeichnet werden)$\\
+      $Die Gruppenadresse$
+:shortinfo $Gruppenaddresse in Simulation aufzeichnen$
+if Sim_GA==getaddress(Gruppenaddresse) then Sim_MyGA=ON else Sim_MyGA=OFF endif
+:end

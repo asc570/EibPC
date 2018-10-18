@@ -1,0 +1,78 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//------------------------------------------------------
+//
+//         Einstellung der Heizung 
+//
+//------------------------------------------------------
+AussenTemperatur2 ="Außentemperatur-3/5/0"
+
+HeizungSauna      ="Sauna-3/0/1"
+HeizungKellerflur ="Flur-3/0/2"
+HeizungParty      ="Party-3/0/3"
+HeizungLager      ="Lager-3/0/4"
+HeizungWaescheschacht="WäscheSchacht-3/0/5"
+HeizungFlur       ="Flur-3/1/0"
+HeizungGaesteWC   ="GästeWC-3/1/1"
+HeizungKueche     ="Küche-3/1/3"
+HeizungEssen      ="Esszimmer-3/1/4"
+HeizungWohnen     ="Wohnzimmer-3/1/5"
+HeizungArbeiten   ="Arbeitszimmer-3/1/7"
+HeizungWiga       ="Wiga-3/1/13"
+HeizungBadwand    ="BadWandkörper-3/2/0"
+HeizungBib        ="Bib-3/2/1"
+HeizungJohanna    ="Johanna-3/2/2"
+HeizungSchorschi  ="Schorschi-3/2/3"
+HeizungHans       ="Hans-3/2/4"	
+HeizungEltern     ="Eltern-3/2/5"
+HeizungKinderbad  ="KinderBad-3/2/6"
+HeizungBadBoden   ="Bad-3/2/8"
+HeizungHausbedarf ="Heizvorlauf-0/0/1"
+
+
+//  Es wird der Maximale Heizbedarf (in %) ermittlet. 
+// -- Der Maximale Bedarf: 
+// Fußbodenheizungen HeizungWiga,HeizungBad sind nicht dabei
+
+//Variable wird aktualisiert sobald sich der Wert auf der rechten Seite ändert
+HeizungMax = max(HeizungSauna,HeizungKellerflur,HeizungParty,HeizungLager,HeizungWaescheschacht,HeizungFlur,\\
+                 HeizungGaesteWC,HeizungKueche,HeizungEssen,HeizungWohnen,HeizungArbeiten,HeizungBadwand,\\
+                 HeizungBib,HeizungJohanna,HeizungSchorschi,HeizungHans,HeizungEltern,HeizungKinderbad,HeizungWiga)
+
+HeizungAnforderung=max(HeizungMax,HeizungBadBoden)
+
+SollWertVorlauf="SollwertVorlauf-3/3/1"
+// Konstanten
+HeizSchwelle    = 12f16
+HeizSchwelleMin = 7f16
+HeizSchwelleFrost= 0f16
+HeizungBedarf   = 1f32
+Vorlauf         = 0
+// Vorlauf 67% entspricht 46° Vorlauf, 100% 55°, 10% 28°
+// Aussentemperatur > 12° --> Vorlauf = 0.6 * HeizungMax (HeizungBedarf = 0.60)
+if (AussenTemperatur2>=HeizSchwelle) and change(HeizungMax) then {																			HeizungBedarf=0.60f32;									
+						Vorlauf=convert(convert(HeizungMax,HeizungBedarf)*HeizungBedarf,100%)			
+						}  endif
+// 7° < Aussentemperatur < 12° --> Vorlauf = min(HeizungMax,63%)		
+if (AussenTemperatur2>=HeizSchwelleMin) and (AussenTemperatur2<HeizSchwelle) and change(HeizungMax) then \\
+						if (HeizungMax>64%) then Vorlauf = 63%  \\
+							else Vorlauf = HeizungMax endif \\
+						endif
+// 0° < Aussentemperatur < 7° --> Vorlauf =  min(HeizungMax, 68%)
+if (AussenTemperatur2>HeizSchwelleFrost) and (AussenTemperatur2<HeizSchwelleMin) and change(HeizungMax) then \\
+						if (HeizungMax>69%) then Vorlauf = 68% \\
+							else Vorlauf = HeizungMax endif \\
+						endif 
+// Aussentemperatur < 0° --> Vorlauf = HeizungMax
+if (AussenTemperatur2=<HeizSchwelleFrost) and change(HeizungMax) then \\
+					Vorlauf = HeizungMax       \\
+				      endif 
+
+
+// Zyklisches Schreiben auf den Bus alle 2 Minuten bzw. sofort bei Änderung
+if change(HeizungMax) or cycle(2,00) then write("Heizvorlauf-0/0/1",Vorlauf) endif 
+

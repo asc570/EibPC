@@ -1,0 +1,10 @@
+
+[MacroLibs]
+//Makro-Bibliotheken
+CHGLibrary_FritzBox.lib
+
+[Macros]
+// Name der Fritzbox, TCP-Port, IP-Adresse
+FritzBoxCallMonitor(7170,1012u16,10.0.0.10)
+
+[EibPC]

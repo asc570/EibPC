@@ -1,0 +1,33 @@
+[Macros] 
+CommandFusion(CFT,0.0.0.0,EibPC)
+// Dimmer
+JoinToggle2GA(CFT,d601,"DimmerAn-0/2/2","DimmerAn-0/2/2")
+JoinToggle2GA(CFT,d602,"DimmerLangsamAn-0/2/4","DimmerLangsamAn-0/2/4"
+JoinDimmer(CFT,a601,"DimmerProzentWert-0/2/0")
+JoinDimmer(CFT,a602,"DimmerLangsamProzentWert-0/2/5")
+//Anzeigen
+JoinStatus(CFT,s3001,setdate())
+JoinStatus(CFT,s3002,settime())
+JoinStatus(CFT,s631,"Temperatur-1/0/1")
+JoinStatus(CFT,s632,"BasisSollwert-1/0/7")
+JoinCommand(CFT,d692,callscene('3/3/3'u08,1))
+// Szenenaufrufen
+JoinCommand(CFT,d693,callscene('3/3/3'u08,2))
+JoinCommand(CFT,d694,callscene('3/3/3'u08,3))
+JoinCommand(CFT,d691,storescene('3/3/3'u08,1))
+// szene Speichern 
+JoinToggle2GA(CFT,d603,"LED1-0/0/15","LED1-0/0/15")
+// LEDS
+JoinToggle2GA(CFT,d604,"LED2-0/0/16","LED2-0/0/16")
+JoinToggle2GA(CFT,d605,"Akt1-0/0/5","Licht2Status-0/1/1")
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+TestBoard.esf
+
+[EibPC]  
+scene('3/3/3'u08,"DimmerAn-0/2/2","DimmerProzentWert-0/2/0","Akt1-0/0/5","Akt2-0/0/6","Akt3-0/0/8","Akt4-0/0/7","Akt5-0/0/9","Akt6-0/0/12","Akt7-0/0/13","Akt8-0/0/14","LED1-0/0/15","LED2-0/0/16")

@@ -1,0 +1,1126 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Makros zur Kommunikation mit Phillips Hue
+//
+//  Version              : v1.000
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/11/16 17:53:01 $
+//  Version              : $Revision: 1.2 $
+//----------------------------------------------------------------------
+
+//#define DEBUG
+#ifdef DEBUG
+
+:begin vmDebugUDP(cString)
+:return  {
+          sendudp(9000u16, 192.168.33.118, cString+CRLF); 
+}
+:end
+:begin vmAssign(xDst, xSrc)
+:return  {
+         xDst=xSrc;
+}
+:end
+#endif
+
+// Lampen defineren
+:begin vmDefLamp(Name,ID,cText)
+Name^ID_Hue=0u16
+Name^ID_Sat=0
+Name^ID_Bri=0
+    Name^ID_Effect=$$
+Name^ID_OnOff=$$
+Name^ID_Nam=$$
+if change(Name^ID_Nam) then {
+   writeflashvar(Name^ID_Nam);
+} endif
+if systemstart() then {
+   readflashvar(Name^ID_Nam);
+   // Compiler erkennt hier sonst unerlaubte Rekursion, hier ein Hack... 
+   if size(Name^ID_Nam)>0u16 then {  Name^ID_Bri=1  } endif;
+   if Name^ID_Bri==1  then {
+   cText=cText+$<tr style="font-size:120%" align=center><td><font color=teal  align=center>^ID^</font></td><td>$+Name^ID_Nam+$</td></tr>$;$$;
+   } endif 
+} endif
+
+:end
+
+
+
+
+//:begin vmBridgeGAKommunikation(Name,LampenID,uGAHue,uGASat,uGABri)
+
+
+
+:begin vmHueSzene(uGASzene,uLampenID,bGABitSzene1,bGABitSzene2)
+:info $Mit diesem Makro wird eine Bridge über eine 8 Bit Szene und 2x1 Bit Szenen (1. und 2. Szene)  angesteuert. \\
+Die Szene wird der LampenID der Hue zugeordnet. Dabei ist für Lampe "0" die Szene 0 und 1, für Lampe "1" die Szene 2 und 3 usw. auszuwählen$\\
+$GA für die 8-Bitszene (u08)$\\
+$Nummer der Lampe (1.. 10) $\\
+$GA für die 1-Bitszene der 1. Szene (b01)$\\
+$GA für die 1-Bitszene der 2. Szene (b01)$
+:shortinfo $Szeneaktor für die HUE$
+
+if event(bGABitSzene1) and bGABitSzene1==EIN then {
+   callscene(uGASzene, (uLampenID-1)*2);
+} endif
+
+if event(bGABitSzene2) and bGABitSzene2==EIN then {
+   callscene(uGASzene, (uLampenID-1)*2+1);
+} endif
+
+
+if event(bGABitSzene1) and bGABitSzene1==AUS then {
+   // Lampe Ausschalten
+   callscene(uGASzene, (uLampenID-1)+20);
+} endif 
+if event(bGABitSzene2) and bGABitSzene2==AUS then {
+   // Lampe Ausschalten
+   callscene(uGASzene, (uLampenID-1)+20);
+} endif 
+
+
+:end
+
+
+
+:begin vmBridge(Name,cIP,wbSuchen,woLichter,wbTimeout,wbZyklus,wbVerbindung, wiFarbe, wbFarbAuswahl,wbSchalten,wbLichtStatus, wbSzene1, wbSzene2, ws,wsHue,bGAVerbindung,uGASzene)
+:info $Mit diesem Makro wird eine Bridge gesucht, bzw. falls das schon geschehen, sich mit dieser verbunden. Die Daten werden im EibPC remanent gespeichert.$\\
+   $Name der Bridge, muss eindeutig sein, z.B. Wohnen$\\
+    $IP der Brigde als String mit umfassenden Dollarzeichen (c1400)$\\
+    $ID des Suchenknopfes (u08)$\\
+    $ID des globalen Outputfeldes (u08)$\\
+    $ID des Timoutsliders (u08)$\\
+    $ID des Zyklussliders (u08)$\\
+    $ID des Linkknopfes (u08)$\\
+    $ID des Farbwahlelements (u08)$\\
+    $ID des Licht-Auswahlelements (u08)$\\
+    $ID des EIN/AUS Elements (u08)$\\
+    $ID des Farbanzeigeelements (u08)$\\
+    $ID des 8-Bit Szene Elements (u08)\\
+    $ID des 1.Szene 1-Bit Elements (u08)$\\
+    $ID des 2.Szene 1-Bit-Elements (u08)$\\
+    $ID der Konfigurationsseite (u08)$\\
+    $ID der Bedienseite (u08)$\\
+    $GA für den Verbindungsaufbau (b01)$\\
+    $GA für die 8-Bitszene (u08)$
+:shortinfo $BridgeConnect$
+
+
+:var bFlashDaten@
+:var cBridgeID@
+:var uPort@
+:var kuInit@
+:var uStatus@
+:var bConnect@
+:var bConnected@
+:var uStateCom@
+:var cGetDeviceJson@
+:var cGetDevice@
+:var cGetApi@
+
+
+
+
+
+cBridgeID@              =$$
+uPort@                  =80u16
+kuInit@                 =100
+uStatus@                =kuInit@
+bConnect@               = AUS
+bConnected@             = AUS
+uStateCom@              =kuInit@
+bFlashDaten@            =EIN
+
+Name^BridgeID=$$
+
+vmDefLamp(Name,1,cLogger@)
+vmDefLamp(Name,2,cLogger@)
+vmDefLamp(Name,3,cLogger@)
+vmDefLamp(Name,4,cLogger@)
+vmDefLamp(Name,5,cLogger@)
+vmDefLamp(Name,6,cLogger@)
+vmDefLamp(Name,7,cLogger@)
+vmDefLamp(Name,8,cLogger@)
+vmDefLamp(Name,9,cLogger@)
+vmDefLamp(Name,10,cLogger@)
+// Szenen 
+Name^SzeneHue=convert(uH@,0u16)*257u16
+Name^SzeneSat=uS@
+Name^SzeneBri=uV@
+Name^SzeneEff=cEffekt@
+Name^SzeneOnOff=cOn@
+
+if eventread(bGAVerbindung) then writeresponse(bGAVerbindung,bGAVerbindung) endif
+
+scene(uGASzene,Name^SzeneHue,Name^SzeneSat,Name^SzeneBri,Name^SzeneEff,Name^SzeneOnOff,bGAVerbindung)
+presetscene(uGASzene,0,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,1,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,2,AUS,16100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,3,AUS, 6100u16,EIN, 50,EIN,231,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,4,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,5,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,6,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,7,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,8,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,9,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,10,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,11,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,12,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,13,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,14,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,15,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,16,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,17,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,18,AUS,46100u16,EIN,100,EIN,100,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+presetscene(uGASzene,19,AUS,26100u16,EIN, 30,EIN, 10,EIN,$none$,EIN,$true$,EIN,EIN,EIN)
+// Diese Szene dürfen nicht geändert werden. Sie schalten das Licht aus (für die Bitszenen
+presetscene(uGASzene,20,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,21,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,22,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,23,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,24,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,25,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,26,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,27,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,28,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,29,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+presetscene(uGASzene,30,EIN,    0u16,EIN,  0,EIN,  0,EIN,$none$,EIN,$false$,EIN,AUS,EIN)
+
+
+// Zyklus und Timeout
+if systemstart() then {
+   bFlashDaten@=readflashvar(Name^BridgeID);
+   readflashvar(uTimeout@);
+   readflashvar(uZyklus@);
+   webdisplay(wbVerbindung,$getrennt$,SIGNAL,INACTIVE,GREY);
+   vmDebugUDP($Flashdaten gelesen$);
+   pdisplay(wbSuchen,$Drücken für Synchronisierung$, UPDATE, BRIGHTRED, GREEN, ws);
+} endif
+if bFlashDaten@ then {
+   bConnect@=!bConnect@;
+} else {
+   uStateCom@=uStateFromFlash@;
+   cLoggerID@=$ADD$;
+   bEintrag@=!bEintrag@;
+} endif 
+
+if Name^BridgeID!=$$ then {
+   pdisplay(wbSuchen,$Sychronisiert$, UPDATE, ACTIVE, GREEN, ws);
+   writeflashvar(Name^BridgeID);
+} endif
+
+if Name^BridgeID==$$ then {
+   pdisplay(wbSuchen,$Bitte Bridge- Knopf Drücken$, UPDATE, BRIGHTRED, GREEN, ws);
+   writeflashvar(Name^BridgeID);
+} endif 
+//-------------------------------------------------------------------------------------------------------------------
+// Device
+
+cGetDeviceJson@=${"devicetype":"ColorsForHue#Enertex-EibPC"}$
+cGetDevice@= $POST /api HTTP/1.1$+CRLF+\\
+             $Content-Type: application/json$+CRLF+\\
+             $CONNECTION: keep-alive$+CRLF+\\
+             $ACCEPT: */*$+CRLF+\\
+             $HOST: $ + cIP + $:$ + convert(uPort@, $$) + CRLF + \\
+             $USER-AGENT: EibPC$+CRLF+\\
+             $ACCEPT-ENCODIG: deflate$+CRLF+\\
+             $Content-Length: $+convert(size(cGetDeviceJson@),$$)+CRLF+\\
+             CRLF+ cGetDeviceJson@
+cGetApi@=   $GET /api/$+ Name^BridgeID +$ HTTP/1.1$+CRLF+\\
+             $CONNECTION: keep-alive$+CRLF+\\
+             $ACCEPT: */*$+CRLF+\\
+             $HOST: $ + cIP + $:$ + convert(uPort@, $$) + CRLF + \\
+             $USER-AGENT: EibPC$+CRLF+\\
+             $ACCEPT-ENCODIG: deflate$+CRLF+\\
+             CRLF
+// IP Data
+:var cHost@
+:var uIP@
+// Message Recieved on port
+:var uDataPort@
+// Message Recieved of IP
+:var uDataServerIP@
+:var  uClose@
+:var cData@
+:var cMessage@
+:var cAnswer@
+:var cLights@
+:var uStatusAPI@
+
+cHost@          =cIP
+uIP@            = resolve(cHost@)
+uDataPort@      =0u16
+uDataServerIP@  =0u32
+uClose@         =kuInit@
+cData@          =$$c65000
+cMessage@       =$$c65000
+cAnswer@        =$$
+cLights@        =$$
+uStatusAPI@    = kuInit@
+ 
+
+
+// Statemachine
+:var uStateConnectStart@
+:var uStateConnectSearch@
+:var uStateReConnectSearch@
+:var uStateReadyforReConnectSearch@
+:var uStateCloseSearch@
+:var uStateReadyforDeviceInfo@
+:var uStateReadDeviceInfo@
+:var uStateCloseforReady@
+:var uStateReady@
+:var uStateComplete@
+:var uStateFromFlash@
+:var uStateSetWaitAnswer@
+:var uStateComError@
+uStateConnectStart@             =0
+uStateConnectSearch@            =1
+uStateReConnectSearch@          =2
+uStateReadyforReConnectSearch@  =3
+uStateCloseSearch@              =4
+uStateReadyforDeviceInfo@       =5
+uStateReadDeviceInfo@           =6
+uStateCloseforReady@            =7
+uStateReady@                    =8
+uStateComplete@                 =9
+uStateFromFlash@                =10
+uStateSetWaitAnswer@            =11
+uStateComError@                 =12
+
+if uStatus@>5 and change(bConnect@) and bConnect@ then {
+   uStatus@ = connecttcp(uPort@, uIP@); 
+   uStateCom@=uStateConnectStart@;
+   vmDebugUDP($Connect Init:$+convert(uStateCom@,$$));
+   cLoggerID@=$CLEAR$;
+   bEintrag@=!bEintrag@;
+} endif
+
+// Ask for the  basic Data
+if uStatus@ == 0  and uStateCom@==uStateConnectStart@  then {
+   sendtcparray(uPort@, uIP@, cGetDevice@,size(cGetDevice@));
+   uStateCom@=uStateConnectSearch@;  
+   uClose@     = kuInit@;
+   vmDebugUDP($Send Init:$+convert(uStateCom@,$$));        
+   // waiting for the answer of the device => readtcp 
+} endif
+
+// Verbindung wurde zurückgewiesen
+if uStatus@ > 1 and  uStatus@ < 6 then {
+   uStateCom@=uStateComError@;
+   uStatus@=kuInit@;
+   vmDebugUDP($Status:$+convert(uStatus@,$$));
+} endif
+
+if event(readtcp(uDataPort@,uDataServerIP@,cData@)) and cData@!=$$ then {
+   vmDebugUDP($Nachricht im Zustand: $+convert(uStateCom@,$$)+$ von $ +convert(uDataServerIP@,$$)+$:$+convert(uDataPort@,$$));
+   //vmDebugUDP(cData@);
+   cLights@=cData@;
+     // Abfrage der Daten 
+   if uStateCom@==uStateReadDeviceInfo@ then {
+         uStateCom@=uStateCloseforReady@;
+    } endif;
+   // Verbindungsaufbau
+   if uStateCom@==uStateConnectSearch@ then {
+      cAnswer@=$$;
+      vmBridgeParse(cLights@,description,cAnswer@);
+      if cAnswer@==$link button not pressed$ then {
+         uStateCom@=uStateReConnectSearch@;
+         vmDebugUDP($button drücken:$);
+      } else {
+         vmDebugUDP($Nachricht API erhalten$);
+         Name^BridgeID=$$;
+         vmBridgeParse(cLights@,username,Name^BridgeID);
+         if size(Name^BridgeID)>0u16 then {
+             uStateCom@=uStateCloseSearch@;
+         } else {
+           uStateCom@=uStateReConnectSearch@;
+         } endif;
+      } endif;
+    } endif ;
+  if uPollStateCom@==uStateConnectSearch@ and uSetStateCom@==kuInit@ then {
+     uPollStateCom@=uStateCloseSearch@;
+  } endif;
+  if uSetStateCom@==uStateSetWaitAnswer@ then {
+     uSetStateCom@=uStateCloseSearch@;
+  } endif;
+
+} endif
+
+if uStateCom@==uStateReConnectSearch@ or uStateCom@==uStateCloseSearch@ or uStateCom@==uStateCloseforReady@ and uClose@==kuInit@  then {
+   uClose@=closetcp(uPort@, uIP@);
+   if uStateCom@==uStateReConnectSearch@ then  {
+      uStateCom@=uStateReadyforReConnectSearch@;
+      bConnect@=AUS;
+      vmDebugUDP($ReadyForReConnect:$+convert(uStateCom@,$$));
+   } endif;
+   if uStateCom@==uStateCloseSearch@ then  {
+      uStateCom@=uStateReadyforDeviceInfo@;
+      vmDebugUDP($ReadyForDeviceInfo:$+convert(uStateCom@,$$));
+   } endif;
+   if uStateCom@==uStateCloseforReady@ then {
+      uStateCom@=uStateReady@;
+      vmDebugUDP($Ready:$+convert(uStateCom@,$$)); 
+   } endif;
+} endif 
+
+
+if uStatus@>5 and uStateCom@==uStateReadyforDeviceInfo@ and uClose@==0  then {
+   uStatusAPI@ = connecttcp(uPort@, uIP@); 
+   uStateCom@=uStateReadDeviceInfo@;
+   vmDebugUDP($Connect API Init:$+convert(uStateCom@,$$));        
+} endif
+
+// Ask for the Lights
+if uStatusAPI@ == 0  and uStateCom@==uStateReadDeviceInfo@  then {
+   sendtcparray(uPort@, uIP@, cGetApi@,size(cGetApi@));
+   uClose@     = kuInit@;
+   vmDebugUDP($Send Init API:$+convert(uStateCom@,$$));        
+   // waiting for the answer of the sonos device => readtcp 
+} endif
+
+:var bEintrag@
+:var cLogger@
+:var cLoggerID@
+:var uGefundeneLampe@
+:var cTextLoggerOut@
+:var uTextLoggerCout@
+:var uTextLoggerLine@
+:var cTextLoggerHeader@
+:var cTextLoggerBody@
+:var uTextLoggerLines@
+
+cTextLoggerOut@    =$$
+uTextLoggerCout@   =0
+uTextLoggerLines@ = 12
+// 
+uTextLoggerLine@   =$$
+cTextLoggerHeader@ =$<body><table border="1" align=center width="160" rules="groups" style="font-size:120%">   <thead><tr><th><font color=white> Nr </font></th> <th  width="94%"> Name </th> </tr></thead><tbody>$c200
+cTextLoggerBody@   =$$
+
+uGefundeneLampe@=0;
+
+cLogger@=$$
+/// Beim Start Werte Schreiben
+cLoggerID@=$$
+bEintrag@=AUS
+
+
+if uStateCom@==uStateReady@ and uClose@==0 then {
+   cAnswer@=$$;
+   vmDebugUDP($Parse cLights$); 
+   vmBridgeParseLamp(cLights@,1,2,cAnswer@,Name,cLogger@,cLoggerID@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@);
+   if cLoggerID@!=$--$ then {
+      uGefundeneLampe@=1;
+      bEintrag@=!bEintrag@;
+   } else {
+      uStateCom@=uStateComplete@;
+   }endif;
+   
+} endif
+
+vmNextLampe(uGefundeneLampe@,2,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,3,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,4,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,5,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,6,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,7,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,8,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,9,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+vmNextLampe(uGefundeneLampe@,10,cLights@,cAnswer@, Name,cLogger@, cLoggerID@,bEintrag@,uStateCom@,uStateComplete@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+
+if (uGefundeneLampe@==10) or uStateCom@==uStateComplete@ then {
+   cLoggerID@=$SHOW$;
+   bEintrag@=!bEintrag@;
+} endif 
+
+if after(uStateCom@==uStateReadyforReConnectSearch@, 3000u64) and uStatus@==7 and uStateCom@==uStateReadyforReConnectSearch@ and bConnected@ then {
+   bConnect@=EIN;
+   vmDebugUDP($ReConnectSearch: $+convert(uStateCom@,$$)); 
+} endif 
+
+vmLampen(woLichter,cLoggerID@,cLogger@,bEintrag@,cTextLoggerOut@,uTextLoggerCout@,uTextLoggerLine@,cTextLoggerHeader@,cTextLoggerBody@,uTextLoggerLines@)
+
+
+// Zyklus und Timeout
+:var uTimeout@
+:var uTimeoutVisu@
+:var uZyklus@
+:var bVerbindung@
+
+uZyklus@            =10;
+uTimeout@           =120;
+uTimeoutVisu@       =0;
+Name^Verbindung     =AUS
+bVerbindung@        =AUS
+
+HueSliderVar(wbTimeout,ws,15,15,240,uTimeout@,CLOCK)
+
+if change(uTimeout@) then {
+   writeflashvar(uTimeout@);
+}endif
+
+if (event(bGAVerbindung) or (button(wbVerbindung)==1) ) and (uStateCom@==uStateComplete@ or uStateCom@==uStateFromFlash@) then {
+   Name^Verbindung=EIN;
+   uTimeoutVisu@=uTimeout@;
+} endif
+
+if delay(event(bGAVerbindung) or (button(wbVerbindung)==1),convert(uTimeout@,0u64)*1000u64) then {
+   Name^Verbindung=AUS;
+   bPoll@         =AUS;
+   webdisplay(wbVerbindung,$getrennt$,SIGNAL,INACTIVE,GREY);
+} endif
+
+if Name^Verbindung and change(second()) then {
+   webdisplay(wbVerbindung,$Verbunden $+convert(uTimeoutVisu@,$$),SIGNAL,ACTIVE,GREEN);
+   uTimeoutVisu@=uTimeoutVisu@-1;
+} endif
+
+HueSliderVar(wbZyklus,ws,5,5,30,uZyklus@,MONITOR)
+
+if change(uZyklus@) then {
+   writeflashvar(uZyklus@);
+} endif
+
+// Starten der Suche
+if pbutton(wbSuchen,ws)==1 then {
+   bConnected@=!bConnected@;
+   if !bConnected@ then {
+      bConnect@=AUS;
+   } else {
+      bConnect@=EIN;
+      Name^BridgeID=$$;
+    } endif;
+} endif
+
+:var uPollStateCom@
+:var uPollStatus@
+:var uPollClose@
+:var bPoll@
+uPollStatus@    =kuInit@
+uPollStateCom@  =kuInit@
+uPollClose@     =kuInit@
+bPoll@          =EIN
+if Name^Verbindung==EIN and bPoll@ and uSetStateCom@==kuInit@ then {
+   uPollStatus@ = connecttcp(uPort@, uIP@); 
+   uPollStateCom@=uStateConnectStart@;
+   vmDebugUDP($Connect Poll Init:$+convert(uPollStateCom@,$$));
+} endif
+
+// Ask for the  basic Data
+if uPollStatus@ == 0  and uPollStateCom@==uStateConnectStart@   then {
+   sendtcparray(uPort@, uIP@, cGetApi@,size(cGetApi@));
+   uPollStateCom@=uStateConnectSearch@;  
+   uPollClose@     = kuInit@;
+   vmDebugUDP($Send Poll:$+convert(uPollStateCom@,$$));        
+   // waiting for the answer of the sonos device => readtcp 
+} endif
+
+if uPollStateCom@==uStateCloseSearch@ and uPollClose@==kuInit@  then {
+   uPollClose@=closetcp(uPort@, uIP@);
+   uPollStateCom@=uStateComplete@;
+   bPoll@=AUS;
+   vmDebugUDP($Close Poll:$+convert(uPollStateCom@,$$));
+   vmStatusLamp(cLights@,1,2,cAnswer@,Name);
+   vmStatusLamp(cLights@,2,3,cAnswer@,Name);
+   vmStatusLamp(cLights@,3,4,cAnswer@,Name);
+   vmStatusLamp(cLights@,4,5,cAnswer@,Name);
+   vmStatusLamp(cLights@,5,6,cAnswer@,Name);
+   vmStatusLamp(cLights@,6,7,cAnswer@,Name);
+   vmStatusLamp(cLights@,7,8,cAnswer@,Name);
+   vmStatusLamp(cLights@,8,9,cAnswer@,Name);
+   vmStatusLamp(cLights@,9,10,cAnswer@,Name);
+   vmStatusLamp(cLights@,10,11,cAnswer@,Name);
+} endif 
+
+// Verbindung wurde zurückgewiesen
+if uPollStateCom@==uStateComplete@ and (uPollStatus@ > 5 and  uPollStatus@ < 9) then {
+    uPollStatus@    =kuInit@;
+    uPollStateCom@  =kuInit@;
+    uPollClose@     =kuInit@;
+} endif;
+
+if cycle(0,uZyklus@) and bPoll@==AUS and uSetStateCom@==kuInit@ then {
+   bPoll@=EIN;
+   // Verbindung wurde zurückgewiesen
+   if uPollStatus@ > 1 and  uPollStatus@ < 6 then {
+      uPollStatus@    =kuInit@;
+      uPollStateCom@  =kuInit@;
+      uPollClose@     =kuInit@;
+  } endif;
+} endif 
+
+
+
+//----------------------------------
+// Lampen und Farbauswahl UI:
+:var cLampe@
+:var uLampe@
+:var cFarbe@
+:var uRot@
+:var uGruen@
+:var uBlau@
+:var cEffekt@
+:var bStatus@
+:var uH@
+:var fH@
+:var uS@
+:var fS@
+:var uV@
+:var fV@
+cLampe@=$$
+cEffekt@=$$
+bStatus@=AUS
+uRot@=0
+uGruen@=0
+uBlau@=0
+uH@=0
+fH@=0.0
+uS@=0
+fS@=0.0
+uV@=0
+fV@=0.0
+// Default Lampe 1 
+uLampe@=1
+cFarbe@=webinput(wiFarbe)
+
+
+if pbutton(wbSzene1,wsHue)==1  then {
+   callscene(uGASzene, (uLampe@-1)*2);
+   pdisplay(wbSzene1,$Szene $ +convert((uLampe@)*2-1,$$)+$ um $+CLOCK_STRING,RECORD,INACTIVE,GREEN,wsHue);
+} endif
+if pbutton(wbSzene1,wsHue)==2 then {
+   storescene(uGASzene, (uLampe@-1)*2);
+   pdisplay(wbSzene1,$Szene $ +convert((uLampe@)*2-1,$$)+$ gespeichert am $+CLOCKDATE_STRING,RECORD,INACTIVE,GREY,wsHue);
+} endif
+
+if pbutton(wbSzene2,wsHue)==1 then {
+   callscene(uGASzene, (uLampe@-1)*2+1);
+   pdisplay(wbSzene2,$Szene $ +convert(uLampe@*2,$$)+$ um $+CLOCK_STRING,RECORD,INACTIVE,GREEN,wsHue);
+} endif
+if pbutton(wbSzene2,wsHue)==2 then {
+   storescene(uGASzene, (uLampe@-1)*2+1);
+    pdisplay(wbSzene2,$Szene $ +convert(uLampe@*2,$$)+$ gespeichert am $+CLOCK_STRING,RECORD,INACTIVE,GREY,wsHue);
+} endif
+
+
+
+
+
+if event(uGASzene) and uGASzene<63 then {
+   // Pro Lampe 2 Szenen
+   uSetLampe@=mod(uGASzene,2);
+   cHue@=convert(Name^SzeneHue,$$);
+   cSat@=convert(Name^SzeneSat,$$);
+   cBri@=convert(Name^SzeneBri,$$);
+   cEffekt@=Name^SzeneEff;
+   cOn@=Name^SzeneOnOff;
+   uSetStateCom@=uStateConnectStart@;
+   uSetStatus@=kuInit@;
+   uSetClose@=0;
+   uSetLampe@=uLampe@;
+   vmDebugUDP($ Ändere Licht$);
+} endif
+
+
+if pbutton(wbSchalten,wsHue)==1 then {
+   if bStatus@ then {
+      cOn@=$false$;
+      cBri@=$0$;
+      pdisplay(wbSchalten,CLOCK_STRING,LIGHT, INACTIVE,GREY,wsHue);
+   } endif;
+   if !bStatus@ then {
+      cOn@=$true$;
+      pdisplay(wbSchalten,CLOCK_STRING,LIGHT, ACTIVE,GREEN,wsHue)
+   } endif;
+   bStatus@=! bStatus@;
+   uNextStateCom@=uStateConnectStart@;
+   uSetStatus@=kuInit@;
+   uSetClose@=0;
+   uSetLampe@=uLampe@;
+   vmDebugUDP($ Ändere Licht$);
+   bLampeAnzeigen@=bLampeAnzeigen@; 
+} endif
+
+if change(cFarbe@) then {
+   uRot@=convert(split(cFarbe@,0u16,3u16),0);
+   uGruen@=convert($0x$+split(cFarbe@,4u16,5u16),0);
+   uBlau@=convert($0x$+split(cFarbe@,6u16,7u16),0);
+   vmRGB2HSV(uRot@,uGruen@,uBlau@,uH@,uS@,uV@);
+   fH@=convert(uH@,0f16)*360.0/255.0;
+   fS@=convert(uS@,0f16)/2.55;
+   fV@=convert(uV@,0f16)/2.55;
+   pdisplay(wbLichtStatus,$<span style="background-color: rgb($+convert(uRot@,$$)+$,$+convert(uGruen@,$$)+$,$+convert(uBlau@,$$)+$)"> Lichtfarbe </span>$,RGB, STATE4, GREY,wsHue );
+   cHue@=convert(convert(fH@*182.0,0u16),$$);
+   cSat@=convert(uS@,$$);
+   cBri@=convert(uV@,$$);
+   cOn@=$true$;
+   // In jedem Fall neue Verbindung öffnen
+   uNextStateCom@=uStateConnectStart@;
+   uSetStatus@=kuInit@;
+   uSetClose@=0;
+   uSetLampe@=uLampe@;
+   vmDebugUDP($ Ändere Licht$);
+   pdisplay(wbSchalten,CLOCK_STRING,LIGHT, ACTIVE,GREEN,wsHue);
+} endif
+
+
+if systemstart() then {
+   pdisplay(wbFarbAuswahl,$$,OKCIRCLE, ACTIVE,GREY,wsHue,1);
+} endif
+
+vmWaehleLampe(Name,1,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,2,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,3,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,4,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,5,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,6,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,7,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,8,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,9,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+vmWaehleLampe(Name,10,wbFarbAuswahl,wsHue,cLampe@,uH@,uV@,uS@,bStatus@,cEffekt@,uLampe@,bPoll@,bLampeAnzeigen@)
+
+:var bLampeAnzeigen@
+bLampeAnzeigen@=AUS
+
+// Wenn neuer Wert von der Hue kommt... 
+if change(bLampeAnzeigen@) or change(uLampe@) then {
+   vmDebugUDP($HSV Lampe: $+convert(uH@,$$)+$ $+convert(uS@,$$)+$ $+convert(uV@,$$));
+   vmHSV2RGB(uH@,uS@,uV@,uRot@,uGruen@,uBlau@);
+   if bStatus@ then {
+      pdisplay(wbSchalten,CLOCK_STRING,LIGHT, ACTIVE,GREEN,wsHue);
+      pdisplay(wbLichtStatus,$<span style="background-color: rgb($+convert(uRot@,$$)+$,$+convert(uGruen@,$$)+$,$+convert(uBlau@,$$)+$)"> Lichtfarbe </span>$,RGB, STATE4, GREY,wsHue );
+   } else {
+      pdisplay(wbSchalten,CLOCK_STRING,LIGHT, INACTIVE,GREY,wsHue);
+      pdisplay(wbLichtStatus,$<span style="background-color: rgb(0,0,0)"> ausgeschaltet </span>$,RGB, STATE4, GREY,wsHue );
+   } endif;
+} endif
+
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// Werte ändern
+
+:var cPutApi@
+:var cPutApiJson@
+:var cBri@
+:var cSat@
+:var cHue@
+:var cEffect@
+:var cOn@
+:var uSetStateCom@
+:var uNextStateCom@
+:var uSetStatus@
+:var uSetClose@
+:var uSetCommand@
+:var uSetLampe@
+uSetCommand@    =1
+uSetStateCom@   =kuInit@
+uNextStateCom@  =kuInit@
+cBri@           =$$
+cSat@           =$$
+cHue@           =$$
+cEffect@        =$none$
+cOn@            =$$
+uSetStatus@     =kuInit@
+uSetClose@      = 0
+uSetLampe@      = 0
+cPutApi@=    $PUT /api/$+ Name^BridgeID +$/lights/$+convert(uSetLampe@,$$)+$/state HTTP/1.1$+CRLF+\\
+             $ACCEPT: */*$+CRLF+\\
+             $HOST: $ + cIP + $:$ + convert(uPort@, $$) + CRLF + \\
+             $CONNECTION: keep-alive$+CRLF+\\
+             $USER-AGENT: EibPC$+CRLF+\\
+             $ACCEPT-ENCODIG: deflate$+CRLF+\\
+             $ACCEPT-LANGUAGE: de-de$+CRLF+\\
+             $Content-Length: $+convert(size(cPutApiJson@),$$)+CRLF+\\
+             CRLF+cPutApiJson@
+             
+cPutApiJson@=$$
+
+// Darf sich nicht mit dem Pollen überlappen.
+if uNextStateCom@ ==uStateConnectStart@ and uSetStateCom@==kuInit@ and uPollStateCom@==kuInit@ then {
+   uSetStateCom@=uStateConnectStart@;
+   uNextStateCom@=kuInit@;
+} endif
+
+if uSetStateCom@==uStateConnectStart@  and (uSetStatus@>5) and uSetClose@==0 then {
+   uSetStatus@= connecttcp(uPort@, uIP@); 
+   vmDebugUDP($Connect PUT Init:$+convert(uSetStateCom@,$$));
+} endif
+
+// Ask for the  basic Data
+if uSetStatus@== 0 then {
+   if uSetCommand@==1 then {
+      cPutApiJson@=${"bri": $+cBri@+$, "on": $+cOn@+$}$;
+      sendtcparray(uPort@, uIP@, cPutApi@,size(cPutApi@));
+   } endif;
+   if uSetCommand@==2 then {
+      cPutApiJson@=${"hue": $+cHue@+$, "sat": $+cSat@+$}$;
+      sendtcparray(uPort@, uIP@, cPutApi@,size(cPutApi@));
+   } endif;
+   uSetStateCom@   =uStateSetWaitAnswer@;
+   // Kontrolle vor dem Schließen                   
+   uSetClose@      = kuInit@;
+   vmDebugUDP($Send PUT:$+convert(uSetStateCom@,$$)+$ Command $+convert(uSetCommand@,$$));        
+   // waiting for the answer of the device => readtcp 
+} endif
+
+if uSetStateCom@==uStateCloseSearch@ then  {
+   uSetClose@ =closetcp(uPort@, uIP@);
+   uSetStateCom@=uStateComplete@;
+} endif
+
+
+// Verbindung ist nun beendet 
+if uSetStateCom@==uStateComplete@ and (uSetStatus@>5 and uSetStatus@<9) then {
+   if uSetCommand@==2 then {
+      uSetStateCom@ =kuInit@;
+      uSetCommand@=1;
+      // Zurücksetzen, damit gegf. eine neue Abfrage gestartet wird.
+      if Name^Verbindung then bPoll@=AUS endif;
+   } endif ;
+   if uSetCommand@==1 and uSetStateCom@!=kuInit@ then {
+      uSetCommand@=2;
+      // Zweiten Teil abschicken.
+      uSetStateCom@=uStateConnectStart@;
+   }endif;
+   vmDebugUDP($Close PUT:$+convert(uSetStateCom@,$$)+$ Command $+ convert(uSetCommand@,$$));        
+} endif
+
+
+// Verbindung wurde zurückgewiesen
+if uSetStatus@ > 1 and  uSetStatus@ < 6 then {
+   uSetStateCom@=kuInit@;
+   uSetStatus@=kuInit@;
+   uSetClose@=0;
+   vmDebugUDP($Status:$+convert(uStatus@,$$));
+} endif
+
+:end
+
+
+
+//
+:begin vmWaehleLampe(Name,ID,wb,wsHue,cLampe,uH,uV,uS,bStatus,cEffekt,uLampe,bPoll,bLampeAnzeigen)
+if mpbutton(wb,ID,wsHue)==255 then {
+   uLampe=ID;
+   vmDebugUDP($Lampe ^ID^ ist aktiv$);
+} endif
+
+if uLampe==ID and ((change(bPoll) and bPoll==AUS) or change(uLampe)) then {
+   cLampe=Name^ID_Nam;
+   uH=convert(Name^ID_Hue/257u16,0);
+   //257=182*360/255
+   uS=Name^ID_Sat;
+   uV=Name^ID_Bri;
+   cEffekt=Name^ID_Effect;
+   bStatus=(Name^ID_OnOff==$true$);
+   vmDebugUDP($Lampe ^ID^ neue Daten$);
+   vmDebugUDP($HSV: $+convert(uH,$$)+$ $+convert(uS,$$)+$ $+convert(uV,$$));
+   vmDebugUDP($Effekt: $+cEffekt);
+   vmDebugUDP($bStatus: $+convert(bStatus,$$));
+   bLampeAnzeigen=!bLampeAnzeigen;
+} endif
+
+:end
+
+
+
+:begin vmNextLampe(uGefundeneLampe,ID,cLights,cAnswer, Name,cLogger, cLoggerID,bEintrag,uStateCom, uState,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines)
+       
+if uGefundeneLampe==ID-1 then {
+      cAnswer=$$;
+      vmBridgeParseLamp(cLights,ID,ID+1,cAnswer,Name,cLogger,cLoggerID,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines);
+      if cLoggerID !=$--$ then {
+         uGefundeneLampe=ID;
+         bEintrag=!bEintrag;
+      } else {
+         uStateCom=uState;
+         // keinen Eintrag vornehmen
+      }endif;
+} endif 
+
+:endif 
+
+:begin vmBridgeParse(cString,Mask,cResult)
+:var uPos@
+uPos@=0u16 
+:return  { 
+        uPos@=find(cString, $"^Mask^":$, 0u16);
+        if uPos@!=EOS then {
+            vmDebugUDP($"^Mask^": $+split(cString, uPos@+ size($"^Mask^":$)+1u16,EOS)); 
+            cResult=split(cString, uPos@+ size($"^Mask^":$)+1u16,EOS);
+            cResult=split(cResult, 0u16,find(cResult,$"$,0u16)-1u16);
+            vmDebugUDP($"^Mask^": $+cResult); 
+        } endif;
+}
+:end
+
+
+ //"
+
+
+
+
+:begin vmStatusLamp(cString,uID,uIDNext,cResult,Name)
+:var uPos@
+uPos@=0u16 
+:var cRes@
+cRes@=$$
+:var cDelimt@
+cDelimt@=$:$+tostring(123)+$"state":$
+
+:return  { 
+        uPos@=find(cString, $"^uID^":$+tostring(123)+$"state":$, 0u16);
+        if uPos@!=EOS then { 
+            cResult=split(cString, uPos@+ size($"^uID^":$+tostring(123)+$"state":$)+1u16,EOS);
+            cResult=split(cResult, 0u16,find(cResult,tostring(125)+$,"^uIDNext^":$+tostring(123)+$"state":$,0u16)-1u16);
+            vmDebugUDP(cResult);
+            vmPairParse(cResult,on,Name^uID_OnOff,uPos@);
+            vmPairParse(cResult,hue,Name^uID_Hue,uPos@);
+            vmPairParse(cResult,sat,Name^uID_Sat,uPos@);
+            vmPairParse(cResult,bri,Name^uID_Bri,uPos@);
+            vmPairParse(cResult,effect,Name^uID_Effect,uPos@);
+            vmPairParse(cResult,name,Name^uID_Nam,uPos@);
+        } endif;
+}
+:end
+
+:begin vmBridgeParseLamp(cString,uID,uIDNext,cResult,Name,cText,cTextID,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines)
+:var uPos@
+uPos@=0u16 
+:var cRes@
+cRes@=$$
+:var cDelimt@
+cDelimt@=$:$+tostring(123)+$"state":$
+
+
+:return  { 
+        uPos@=find(cString, $"^uID^":$+tostring(123)+$"state":$, 0u16);
+        if uPos@!=EOS then { 
+            cResult=split(cString, uPos@+ size($"^uID^":$+tostring(123)+$"state":$)+1u16,EOS);
+            cResult=split(cResult, 0u16,find(cResult,tostring(125)+$,"^uIDNext^":$+tostring(123)+$"state":$,0u16)-1u16);
+            vmDebugUDP(cResult);
+            vmPairParse(cResult,on,Name^uID_OnOff,uPos@);
+            vmPairParse(cResult,hue,Name^uID_Hue,uPos@);
+            vmPairParse(cResult,sat,Name^uID_Sat,uPos@);
+            vmPairParse(cResult,bri,Name^uID_Bri,uPos@);
+            vmPairParse(cResult,effect,Name^uID_Effect,uPos@);
+            vmPairParse(cResult,name,Name^uID_Nam,uPos@);
+            cTextID=$^uID^$;
+            cText=Name^uID_Nam;
+            vmLampenAdd(wb,cTextID,cText,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines)
+        } else {
+            cTextID=$--$;
+            cText=$Keine Lampen gefunden$;
+        } endif;
+}
+:end
+
+
+
+:begin vmPairParse(cString,Mask,xResult,uPos)
+:var cRes@
+cRes@=$$
+:return  { 
+        uPos=find(cString, $"^Mask^":$, 0u16);
+        if uPos!=EOS then { 
+            cRes@=split(cString, uPos+size($"^Mask^":$),EOS);
+            cRes@=split(cRes@, 0u16,find(cRes@,$,$,0u16)-1u16);
+            xResult=convert(cRes@,xResult); 
+            vmDebugUDP($"^Mask^":$+cRes@);         
+        } endif;
+}
+:end
+
+
+// Nutzt ein Weboutputfeld als formatiertes Loggerfenster - Addiere Eintrag
+// @date    18.07.2014
+// @version    1 
+// @author    Enertex Bayern GmbH (msc)
+:begin vmLampenAdd(wb,cTextID,cText,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines)
+
+:return {
+         uTextLoggerLine=cText;
+         if uTextLoggerCout>uTextLoggerLines then {
+              cTextLoggerBody=$<tr style="font-size:120%" align=center><td>< font color=teal>$+cTextID+$</font></td><td>$+uTextLoggerLine+$</td></tr>$+split(cTextLoggerBody,0u16,(find(cTextLoggerBody,$</td>$,0u16)+4u16));
+               } else {
+             cTextLoggerBody=cTextLoggerBody+$<tr style="font-size:120%" align=center><td><font color=teal  align=center>$+cTextID+$</font></td><td>$+uTextLoggerLine+$</td></tr>$;
+             uTextLoggerCout=uTextLoggerCout+1;  
+         } endif;
+         cTextLoggerOut=cTextLoggerHeader +cTextLoggerBody+$</tbody></table></body>$;
+         vmDebugUDP(cTextID+$:$+cText);
+}
+:end
+
+
+
+// Nutzt ein Weboutputfeld als formatiertes Loggerfenster
+// @date    18.07.2014
+// @version    1 
+// @author    Enertex Bayern GmbH (msc)
+:begin vmLampen(wb,cTextID,cText,bEintrag,cTextLoggerOut,uTextLoggerCout,uTextLoggerLine,cTextLoggerHeader,cTextLoggerBody,uTextLoggerLines)
+
+// Kommandos zum Ansteuern
+if cTextID==$CLEAR$ and change(bEintrag) then {
+   cTextLoggerBody=$$;
+   cTextLoggerOut=cTextLoggerHeader +cTextLoggerBody+$</tbody></table></body>$;
+   vmDebugUDP(cTextID+$:$+cTextLoggerOut);
+   weboutput(wb, cTextLoggerOut);
+} endif 
+
+if cTextID==$ADD$ and change(bEintrag) then {
+   cTextLoggerOut=cTextLoggerHeader +cText+$</tbody></table></body>$;
+   vmDebugUDP(cTextID+$:$+cTextLoggerOut);
+   weboutput(wb, cTextLoggerOut);
+} endif 
+
+if cTextID==$SHOW$ and change(bEintrag) then {
+   cTextLoggerOut=cTextLoggerOut;
+   vmDebugUDP(cTextID+$:$+cTextLoggerOut);
+   weboutput(wb,cTextLoggerOut);
+} endif 
+
+:end
+
+
+
+
+// Webelement
+:begin HueSliderVar(ID,PageID,Min,Inkr,Max,Var,ICON)
+
+// Variable
+InternTemperatur_^ID_^PageID=getpeslider(ID,PageID)
+InternTemperatur_^ID_^PageID_Inkrement=convert(Inkr,Var)
+
+// 
+if change(Var) then InternTemperatur_^ID_^PageID=convert(Var,InternTemperatur_^ID_^PageID) endif
+
+
+if pbutton(ID,PageID)==1 and InternTemperatur_^ID_^PageID_Inkrement>=convert(0,Var) then {
+   if Var+InternTemperatur_^ID_^PageID_Inkrement=<convert(Max,Var) then {
+              Var=InternTemperatur_^ID_^PageID_Inkrement+Var 
+     } else {
+             InternTemperatur_^ID_^PageID_Inkrement=-convert(Inkr,Var)
+      } endif
+}   endif
+
+if pbutton(ID,PageID)==1 and InternTemperatur_^ID_^PageID_Inkrement<convert(0,Var) then {
+        if Var+InternTemperatur_^ID_^PageID_Inkrement=>convert(Min,Var) then {
+             Var=InternTemperatur_^ID_^PageID_Inkrement+Var
+      } else {
+             InternTemperatur_^ID_^PageID_Inkrement=-convert(Inkr,Var)
+      } endif
+}   endif
+   
+
+if change(InternTemperatur_^ID_^PageID) then {
+	if InternTemperatur_^ID_^PageID!=convert(Var,InternTemperatur_^ID_^PageID) then {
+	   Var=convert(InternTemperatur_^ID_^PageID,Var)
+	} endif;
+
+     if ((InternTemperatur_^ID_^PageID!=convert(Max,InternTemperatur_^ID_^PageID)) and (InternTemperatur_^ID_^PageID!=convert(Min,InternTemperatur_^ID_^PageID))) then {     
+         setpeslider(ID,InternTemperatur_^ID_^PageID,ICON,DISPLAY,PageID)
+     } endif;
+    if (InternTemperatur_^ID_^PageID>=convert(Max,InternTemperatur_^ID_^PageID)) then {
+         setpeslider(ID,InternTemperatur_^ID_^PageID,ICON,DISPLAY,PageID)       
+    } endif;
+    if (InternTemperatur_^ID_^PageID<=convert(Min,InternTemperatur_^ID_^PageID)) then {
+         setpeslider(ID,InternTemperatur_^ID_^PageID,ICON,DISPLAY,PageID)
+    } endif
+} endif
+
+
+:end
+
+
+:begin vmRGB2HSV(uRot,uGruen,uBlau,uH,uS,uV)
+:info $Umwandlung von RGB nach HSV$ \\
+      $Rot als GA/Variable (u08)$\\
+      $Gruen als GA/Variable (u08)$\\
+      $Blau als GA/Variable (u08)$\\
+      $Hue als Variable (u08)$\\
+      $Sättigung als Variable (u08)$\\
+      $Helligkeit als Variable (u08)$
+:shortinfo $Umwandlung von RGB nach HSV$
+:var uMin@
+:var fT@
+:var uDelta@
+uMin@=0
+uDelta@=0
+fT@=0.0
+:return { 
+         uV=max(uRot,uGruen,uBlau);
+         uMin@=min(uRot,uGruen,uBlau);
+         uDelta@=uV-uMin@;
+         if uV>0 then {
+            uS=convert(convert(uDelta@,0u16)*255u16/convert(uV,0u16),0);
+         } else {
+            uS=0;
+         } endif;
+         if uV==uRot then {
+            fT@=(convert(uGruen,0f16)-convert(uBlau,0f16))/convert(uDelta@,0f16)*60.0;
+          } endif;
+         if uV==uGruen then {     
+            fT@= ((convert(uBlau,0f16)-convert(uRot,0f16))/convert(uDelta@,0f16)+2.0)*60.0;
+         } endif;
+         if uV==uBlau then  {
+            fT@= ((convert(uRot,0f16)-convert(uGruen,0f16))/convert(uDelta@,0f16)+4.0)*60.0;
+         } endif;
+         vmDebugUDP($Farbe in °$+convert(fT@,$$));
+         if fT@<0.0 then fT@= fT@+360.0 endif;
+         // 255/360 =0.7083333333
+         uH=  convert(fT@*0.7083333333,0);
+         vmDebugUDP($HSV: $+convert(uH,$$)+$ $+convert(uS,$$)+$ $+convert(uV,$$));
+}
+:end
+
+
+:begin vmHSV2RGB(uH,uS,uV,uRot,uGruen,uBlau)
+:info $Umwandlung von RGB nach HSV$ \\
+      $Rot als GA/Variable (u08)$\\
+      $Gruen als GA/Variable (u08)$\\
+      $Blau als GA/Variable (u08)$\\
+      $Hue als Variable (u08)$\\
+      $Sättigung als Variable (u08)$\\
+      $Helligkeit als Variable (u08)$
+:shortinfo $Umwandlung von RGB nach HSV$
+:var fP@
+:var fQ@
+:var fT@
+:var fH@
+:var uHS@
+:var fFract@
+fP@=0.0f32
+fQ@=0.0f32
+fT@=0.0f32
+fH@=0.0f32
+fFract@=0.0f32
+uHS@=0u16
+:return {
+         uHS@=convert(convert(uH,0u32)*360u32/255u32,0u16);
+         fH@=convert(uHS@,0f32)/60f32;
+         fFract@=fH@-floor(fH@);
+         fP@ = convert(uV,0f32)/255f32 * (1f32-convert(uS,0f32)/255f32);
+         fQ@ = convert(uV,0f32)/255f32 * (1f32-convert(uS,0f32)/255f32*fFract@);
+         fT@ = convert(uV,0f32)/255f32 * (1f32-convert(uS,0f32)/255f32*(1f32-fFract@));
+         
+         if uHS@<60u16                    then uRot=uV; uGruen=convert(fT@*255f32,0); uBlau=convert(fP@*255f32,0); endif;
+         if uHS@<120u16 and  uHS@>=60u16  then uRot=convert(fQ@*255f32,0); uGruen=uV; uBlau=convert(fP@*255f32,0); endif;
+         if uHS@<180u16 and  uHS@>=120u16 then uRot=convert(fP@*255f32,0); uGruen=uV; uBlau=convert(fT@*255f32,0); endif;
+         if uHS@<240u16 and  uHS@>=180u16 then uRot=convert(fP@*255f32,0); uGruen=convert(fQ@*255f32,0); uBlau=uV; endif;
+         if uHS@<300u16 and  uHS@>=240u16 then uRot=convert(fT@*255f32,0); uGruen=convert(fP@*255f32,0); uBlau=uV; endif;
+         if                  uHS@>=300u16 then uRot=uV; uGruen=convert(fP@*255f32,0); uBlau=convert(fQ@*255f32,0); endif;
+         vmDebugUDP($Konvert HSV: $+convert(uH,$$)+$ $+convert(uS,$$)+$ $+convert(uV,$$));
+         vmDebugUDP($RGB: $+convert(uRot,$$)+$ $+convert(uGruen,$$)+$ $+convert(uBlau,$$));
+}
+:end 

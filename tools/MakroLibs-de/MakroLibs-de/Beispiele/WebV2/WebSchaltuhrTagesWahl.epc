@@ -1,0 +1,29 @@
+[MacroLibs]
+EnertexWebV2.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+//Eine Seite erstellen
+Page(WohnzimmerPageID)[$Erdgeschoss$,$Wohnzimmer$]
+//Ein mpshifter folgender Form ist Vorraussetzung für das Makro WebSchaltuhrTagesWahl
+mpshifter(DateID)[$Montag$,$Dienstag$,$Mittwoch$,$Donnerstag$,$Freitag$,$Samstag$,$Sonntag$,$----------$,$Werktags$,$Wochenende$,$----------$,$Nie$,$Täglich$][DATE]$Tageswahl$
+//einen Shifter erstellen mit den 4 Icons ist Voraussetzung für eine WebSchaltuhr
+pshifter(SchaltuhrID)[PLUS,MINUS,UP,DOWN]$Schaltuhr$
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1
+SchaltuhrID = 1
+DateID = 2
+
+
+[Macros]
+//Eine WebSchaltuhr erstellen, der von dem pshifter gesteuert wird (Die Schaltuhr steuert aber noch keine Aktoren)
+WebSchaltuhr(SchaltuhrID,WohnzimmerPageID,Wohnzimmer,12,00)
+//Hiermit verknüpft man die Schaltuhr mit einem Aktor
+WebSchaltuhrAusfuehren(FreigabeSchaltuhr,Wohnzimmer,"WohnzimmerHauptLicht-1/1/13",EIN)
+//Hiermit kann man die Freigabevariable über den Webserver steuern
+WebSchaltuhrTagesWahl(FreigabeSchaltuhr,DateID,WohnzimmerPageID,AUS,EIN,AUS,AUS,AUS,AUS,AUS)
+
+

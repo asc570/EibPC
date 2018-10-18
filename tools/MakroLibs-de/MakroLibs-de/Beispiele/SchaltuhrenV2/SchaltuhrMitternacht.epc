@@ -1,0 +1,13 @@
+[Macros]
+//Die LED soll von 20Uhr-6Uhr jeden Tag leuchten
+SchaltuhrMitternacht(Wohnen,"LED-Brenner-0/1/6",20,00,6,00)
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexSchaltuhrenV2.lib
+
+[EibPC]

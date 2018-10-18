@@ -1,0 +1,63 @@
+// $Id: weiN001.epc 68 2014-10-07 13:38:32Z asc $
+[Performance]
+// Performance Einstellungen
+20
+70
+3
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+C:\Users\asc\repo\EibPC/EtsExport/Weisshauptstr.12v5.esf
+
+[Macros]
+
+
+
+//WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
+[MacroLibs]
+//Makro-Bibliotheken
+C:\Users\asc\repo\EibPC/lib/EibPCHz.lib
+C:\Users\asc\repo\EibPC/lib/WeiHz.lib
+C:\Users\asc\repo\EibPC/lib/EibPCBase.lib
+C:\Users\asc\repo\EibPC/lib/HzInit.lib
+C:\Users\asc\repo\EibPC/lib/visuMain.lib
+C:\Users\asc\repo\EibPC\lib/webOut01.lib
+C:\Users\asc\repo\EibPC/lib/HzViso.lib
+C:\Users\asc\repo\EibPC/lib/RemMem.lib
+//C:/Users/Public/dev/knx/EibPC/lib/BMXRemanent8.lib
+//C:/Users/Public/dev/knx/EibPC/lib/test.lib
+
+
+[InitGA]
+
+
+[Location]
+// Länge und Breite des Aufstellungsorts
+110.5
+48.166666666666664
+
+
+[EibPC]
+#ifndef EMPTY
+#include C:\Users\asc\repo\EibPC/include/DefHz.inc
+#include C:\Users\asc\repo\EibPC/include/RemMem.inc
+//
+//////////////////////////////////////////////////////////////////////
+// EibPC-UVR1611
+//
+// HK
+ButtonON = 1
+if webbutton(ButtonON)==1 then webdisplay(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
+[WebServer]
+
+page(1)[$Allgemein$,$Übersicht$]
+header(0)
+footer(0)
+design $black$
+pbutton(ButtonON)[STOP]$Shutdown$
+
+//////////////////////////////////////////////////////
+
+#endif	
+
+

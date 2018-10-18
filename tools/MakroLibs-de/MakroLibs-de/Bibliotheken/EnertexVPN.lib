@@ -1,0 +1,74 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Nutzung der VPN Funktionen 
+// 
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.2 $
+//----------------------------------------------------------------------
+
+
+// VPN Freigabe
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Michael Schuster
+:begin VPNFreigabeGA(Username,Start,StatusGA)
+:info $Gibt einen VPN-User (muss vorher über Eibstudio angelegt werden) frei. Es werden folgenden Variablen definiert$ \\
+	$Name der User z.B. Helmut$\\
+	$Variable oder GA, welche den User für VPN-Nutzung freigibt,Datentyp b01 (EIN oder AUS)$\\
+    $StatusGA. Wenn der User online ist, wird auf diese EIN geschrieben, sonst AUS$
+:shortinfo $Makro zur VPN UserVerwaltung$
+
+if systemstart() then startvpn() endif 
+if Start then openvpnuser($^Username^$) else closevpnuser($^Username^$) endif 
+
+if cycle(0,30) then {
+	if find(getvpnusers(),$^Username^ $+getvpnusers()+$ connected$,0u16)!=EOS then {
+            if !StatusGA then write(StatusGA,EIN) endif } 
+         else {
+            if StatusGA then write(StatusGA,AUS) endif ) 
+         } endif;
+} endif 
+:end 
+
+
+
+:begin VPNFreigabe(Username,Start)
+:info $Öffnet einen VPN-User (muss vorher über Eibstudio angelegt werden) den Zugang. Es werden folgende Variablen definiert:UsernameConnected (Datentyp b01, EIN wenn verbunden), UsernameFrom (Datentyp c1400, IPAdresse des VpnZugriffs als Text), UsernameSince (Datentyp c1400, Zeitstempel, als User eingeloggt hatte)$ \\
+	$Name des User z.B. Helmut$ 
+:shortinfo $Makro zur VPN UserVerwaltung mit detaillierten Informationen$
+
+Username^VPNUsers=$$
+Username^Count=0u16
+Username^Connected=AUS
+Username^OnlineSince=$$
+Username^From=$$
+Username^Endline=$$
+
+if systemstart() then startvpn() endif 
+if Start then openvpnuser($^Username^$) else closevpnuser($^Username^$) endif 
+
+if cycle(0,30) then {
+	// Look for the open Users
+	Username^VPNUsers=getvpnusers();
+    stringset(Username^Endline,0xa,0u16);
+	Username^Count=find(Username^VPNUsers,$^Username^ $+Username^VPNUsers+$ connected$,0u16);
+	// Set an 1-Bit Variable
+    if Username^Count!=EOS then Username^Connected=EIN endif;
+	// How long is my User online
+    Username^OnlineSince=split(Username^VPNUsers,Username^Count-22u16,Username^Count-1u16);
+	// From where am I connected
+	Username^From=split(Username^VPNUsers,Username^Count,1399u16);
+	Username^From=split(Username^From,find(Username^From,$from$,0u16)+5u16,find(Username^From,Username^ Endline,0u16));
+} endif 
+
+:end

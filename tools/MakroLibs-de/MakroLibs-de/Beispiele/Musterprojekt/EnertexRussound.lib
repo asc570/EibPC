@@ -1,0 +1,627 @@
+
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Russound einbinden
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.5 $
+//----------------------------------------------------------------------
+
+// Init Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin InitRussound(PortServer,IPServer)
+:info $Sie müssen dieses Makro einmal verwenden um die anderen Makros für die Russound verwenden zu können. Serielle Einstellungen: baud rad: 19200, data bits: 8, stop bits: 1, parity: none, flow control: none, FIFO: enable; Netzwerkeinstellungen an der Moxa: operation mode: UPD Mode, packing length: 0, delimiter 1: f7 - enable, delimiter 2: 0, Destination IP adresse 1: Adresse des EibPCs, Port 4806$\\
+	$Serverport(im Normalfall "4806")$\\
+	$IP der Schnittstelle zur Russound (z.B. Moxa im Format: "192.168.0.20")$
+:shortinfo $Russound über Moxa einbinden$
+
+ServerPort=PortServer^u16
+ServerIP=IPServer
+GotServerPort=0u16
+GotServerIP=0u32
+
+//#define DEBUG
+test='10/10/10'c14
+debug=EIN
+rawdata=$$
+
+SetBassEvent=0u08
+SetTrebleEvent=1u08
+SetBalanceEvent=3u08
+
+GetBassEvent=0u08
+GetTrebleEvent=1u08
+GetLoudnessEvent=2u08
+GetBalanceEvent=3u08
+GetTurnOnVolumeEvent=4u08
+
+:end
+
+
+
+// Set state Russound toggle
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetStateRussoundToggle(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Setzt den Status einer Zone für einen bestimmten Controller. Bei einem EIN Signal auf die Gruppenadresse wird die Zone eingeschaltet, bei einem AUS Signal wird die Zone ausgeschaltet. Beim Einschalten wird gleichzeitig die TurnOn Lautstärke erfragt und die Variable Name^TurnOnVolume geschrieben.$\\
+	$Name:  $\\
+	$Gruppenadresse $\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Status einer Zone und eines Controllers setzen$
+
+:var StateChecksumme@
+StateChecksumme@=0u08
+
+Name^TurnOnVolume=0u08
+Name^Volume=Name^TurnOnVolume
+Name^Bass=10u08
+Name^Treble=10u08
+Name^Balance=10u08
+Name^Loudness=AUS
+
+
+// Einschalt-Lautstärke abfragen
+if SchalterGA then {
+	SendQuery(ControllerNumber,ZoneNumber,GetTurnOnVolumeEvent)
+} endif
+if after(SchalterGA,100u64) then {
+	Name^TurnOnVolume=ReadAnswer(ControllerNumber,ZoneNumber, GetTurnOnVolumeEvent)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$OnTOV: $c14+convert(Name^TurnOnVolume,$$c14)) endif
+	#endif 
+} endif
+
+// Zone einschalten
+if after(SchalterGA,10u64) then {
+	StateChecksumme@=getChecksumForSet(0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x23,0x00,0x01,0x00,ZoneNumber,0x00,0x01);
+	sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x23,0x00,0x01,0x00,ZoneNumber,0x00,0x01,StateChecksumme@,0xf7)
+} endif
+
+
+if !SchalterGA then {
+	StateChecksumme@=getChecksumForSet(0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x23,0x00,0x00,0x00,ZoneNumber,0x00,0x01);
+	sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x23,0x00,0x00,0x00,ZoneNumber,0x00,0x01,StateChecksumme@,0xf7) 
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$State OFF$c14) endif
+	#endif 
+} endif
+:end
+
+
+// Set volume Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetVolumeRussound(Name,SchalterUpGA,SchalterDownGA,ControllerNumber,ZoneNumber)
+:info $Verändert die Lautstärke schrittweise.$\\
+	$Name:  $\\
+	$Gruppenadresse  um die Lautstärke zu erhöhen$\\
+	$Gruppenadresse  um die Lautstärke zu verringern$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Verändert die Lautstärke schrittweise$
+
+:var Checksumme@
+Checksumme@=0u08
+
+if event(SchalterUpGA) then {
+	Name^Volume=Name^Volume+2;
+	if Name^Volume>50u08 then Name^Volume=50u08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Name^Volume=Name^Volume-2;
+	if Name^Volume<1u08 or Name^Volume>250u08 then Name^Volume=0u08 endif
+} endif
+
+if change(Name^Volume) then {
+	Checksumme@=getChecksumForSet(0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x21,0x00,Name^Volume,0x00,ZoneNumber,0x00,0x01);
+	sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x05,0x02,0x02,0x00,0x00,0xf1,0x21,0x00,Name^Volume,0x00,ZoneNumber,0x00,0x01,Checksumme@,0xf7)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$Vol:$c14+convert(Name^Volume,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Set TurnOnvolume Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetTurnOnVolumeRussound(Name,SchalterUpGA,SchalterDownGA,ControllerNumber,ZoneNumber)
+:info $Verändert die Einschaltlautstärke schrittweise.$\\
+	$Name:  $\\
+	$Gruppenadresse  um die Lautstärke zu erhöhen$\\
+	$Gruppenadresse  um die Lautstärke zu verringern$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Verändert die Einschaltlautstärke schrittweise$
+
+:var TurnOnVolumeChecksum@
+TurnOnVolumeChecksum@=0u08
+
+if event(SchalterUpGA) then {
+	Name^TurnOnVolume=Name^TurnOnVolume+2;
+	if Name^TurnOnVolume>50u08 then Name^TurnOnVolume=50u08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Name^TurnOnVolume=Name^TurnOnVolume-2;
+	if Name^TurnOnVolume<1u08 or Name^TurnOnVolume>250u08 then Name^TurnOnVolume=0u08 endif
+} endif
+
+if change(Name^TurnOnVolume) then {
+	TurnOnVolumeChecksum@=getChecksumForSetExtended(0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, Name^TurnOnVolume);
+	sendudp(ServerPort,ServerIP,0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, Name^TurnOnVolume,TurnOnVolumeChecksum@,0xf7)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$change TOV:$c14+convert(Name^TurnOnVolume,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Set Bass Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetBassRussound(Name,SchalterUpGA,SchalterDownGA,ControllerNumber,ZoneNumber)
+:info $Verändert den Bass schrittweise.$\\
+	$Name:  $\\
+	$Gruppenadresse  um den Bass zu erhöhen$\\
+	$Gruppenadresse  um den Bass zu verringern $\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Verändert den Bass schrittweise$
+
+Name^Bass^Checksumme=0u08
+
+if event(SchalterUpGA) then {
+	Name^Bass=Name^Bass+1;
+	if Name^Bass>20 then Name^Bass=20u08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Name^Bass=Name^Bass-1;
+	if Name^Bass<0 or Name^Bass>250u08 then Name^Bass=0u08 endif
+} endif
+
+if change(Name^Bass) then {
+	SendCommand(ControllerNumber,ZoneNumber,SetBassEvent,Name^Bass)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$Bass: $c14+convert(Name^Bass,$$c14)) endif
+	#endif 
+} endif
+
+:end
+
+
+// Set treble Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetTrebleRussound(Name,SchalterUpGA,SchalterDownGA,ControllerNumber,ZoneNumber)
+:info $Verändert die Höhen schrittweise.$\\
+	$Name:  $\\
+	$Gruppenadresse  um die Höhen zu erhöhen$\\
+	$Gruppenadresse  um die Höhen zu verringern $\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Verändert die Höhen schrittweise$
+
+Name^Treble^Checksumme=0u08
+
+if event(SchalterUpGA) then {
+	Name^Treble=Name^Treble+1;
+	if Name^Treble>20 then Name^Treble=20u08 endif
+} endif
+
+if event(SchalterDownGA) then {
+	Name^Treble=Name^Treble-1;
+	if Name^Treble<0 or Name^Treble>250u08 then Name^Treble=0u08 endif
+} endif
+
+if change(Name^Treble) then {
+	SendCommand(ControllerNumber, ZoneNumber, SetTrebleEvent,Name^Treble)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$Treble:$c14+convert(Name^Treble,$$c14)) endif
+	#endif 
+} endif
+
+:end
+
+// Set loudness Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetLoudnessRussoundToggle(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schaltet loudness zu oder ab (toggelnd).$\\
+	$Name:  $\\
+	$Gruppenadresse  mit der geschalten wird (vom Datentyp b01)$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schaltet loudness zu oder ab (toggelnd)$
+
+Name^Loudness^Checksumme=0u08
+
+if SchalterGA then {
+	Name^Loudness^Checksumme=getChecksumForSetExtended(0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01);
+	sendudp(ServerPort,ServerIP,0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01,Name^Loudness^Checksumme,0xf7);
+	Name^Loudness=EIN
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$check:$c14+convert(Name^Loudness^Checksumme,$$c14)) endif
+	#endif 
+} endif
+
+if !SchalterGA then {
+	Name^Loudness^Checksumme=getChecksumForSetExtended(0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00);
+	sendudp(ServerPort,ServerIP,0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00,Name^Loudness^Checksumme,0xf7);
+	Name^Loudness=AUS
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$check:$c14+convert(Name^Loudness^Checksumme,$$c14)) endif
+	#endif 
+} endif
+:end
+
+
+// Set balance Russound
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SetBalanceRussound(Name,SchalterLeftGA,SchalterRightGA,ControllerNumber,ZoneNumber)
+:info $Verändert die Balance schrittweise.$\\
+	$Name:  $\\
+	$Gruppenadresse   für links$\\
+	$Gruppenadresse  für rechts$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Verändert die Balance schrittweise$
+
+if event(SchalterLeftGA) then {
+	Name^Balance=Name^Balance+1;
+	if Name^Balance>20 then Name^Balance=20u08 endif
+} endif
+
+if event(SchalterRightGA) then {
+	Name^Balance=Name^Balance-1;
+	if Name^Balance<0 or Name^Balance>250u08 then Name^Balance=0u08 endif
+} endif
+
+if change(Name^Balance) then {
+	SendCommand(ControllerNumber, ZoneNumber, SetBalanceEvent,Name^Balance)
+	#ifdef DEBUG
+	;if debug then write('10/10/10'c14,$Balance: $c14+convert(Name^Balance,$$c14)) endif
+	#endif 
+} endif
+
+:end
+
+// Send commands
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SendCommand(ControllerNumber,ZoneNumber,Event,Command)
+:info $Internes Makro um Commandos zu senden.$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$\\
+	$Event$\\
+	$Command$
+:shortinfo $Internes Makro um Commandos zu senden.$
+
+:var zSum@
+:var zCheckSum@
+
+zSum@=convert(0xf0,0u16)+convert(ControllerNumber,0u16)+convert(0x00,0u16)+convert(0x7f,0u16)+convert(0x00,0u16)+convert(0x00,0u16)+convert(0x70,0u16)+convert(0x00,0u16)+convert(0x05,0u16)+convert(0x02,0u16)+convert(0x00,0u16)+convert(ZoneNumber,0u16)+convert(0x00,0u16)+convert(Event,0u16)+convert(0x00,0u16)+convert(0x00,0u16)+convert(0x00,0u16)+convert(0x01,0u16)+convert(0x00,0u16)+convert(0x01,0u16)+convert(0x00,0u16)+convert(Command,0u16)+convert(0x16,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+
+sendudp(ServerPort,ServerIP,0xf0, ControllerNumber, 0x00, 0x7f, 0x00, 0x00, 0x70, 0x00, 0x05, 0x02, 0x00, ZoneNumber, 0x00, Event, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, Command, convert(zCheckSum@,0u08),0xf7)
+:end
+
+
+// Get bass
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetBass(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^GetBass den aktuellen Bass-Wert$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^GetBass den aktuellen Bass-Wert$
+
+Name^GetBass^Query=OFF
+Name^GetBass=0u08
+
+if SchalterGA then {
+	SendQuery(ControllerNumber,ZoneNumber,GetBassEvent);
+	Name^GetBass^Query=ON
+} endif
+if after(Name^GetBass^Query,100u64) then {
+	Name^GetBass=ReadAnswer(ControllerNumber,ZoneNumber, GetBassEvent);
+	Name^GetBass^Query=OFF
+} endif
+
+:return Name^GetBass
+:end
+
+// Get turn on volume
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetTurnOnVolume(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^TurnOnVolume den TurnOnVolume Wert$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^TurnOnVolume den TurnOnVolume Wert$
+
+if SchalterGA then SendQuery(ControllerNumber,ZoneNumber,GetTurnOnVolumeEvent) endif
+Name^GetTurnOnVolume=ReadAnswer(ControllerNumber,ZoneNumber, GetTurnOnVolumeEvent)
+
+:return Name^GetTurnOnVolume
+:end
+
+// Get treble
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetTreble(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^GetTreble die aktuellen Höhen$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^GetTreble die aktuellen Höhen$
+
+if SchalterGA then SendQuery(ControllerNumber,ZoneNumber,GetTrebleEvent) endif
+Name^GetTreble=ReadAnswer(ControllerNumber,ZoneNumber, GetTrebleEvent)
+
+:return Name^GetTreble
+:end
+
+
+// Get loudness
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetLoudness(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^GetTreble den loudness Status$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^GetTreble den loudness Status$
+
+
+if SchalterGA then SendQuery(ControllerNumber,ZoneNumber,GetLoudnessEvent) endif
+Name^GetLoudness=ReadAnswer(ControllerNumber,ZoneNumber, GetLoudnessEvent)
+
+:return Name^GetLoudness
+:end
+
+// Get balance
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetBalance(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^GetBalance die aktuelle Balance$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^GetBalance die aktuelle Balance$
+
+if SchalterGA then SendQuery(ControllerNumber,ZoneNumber,GetBalanceEvent) endif
+Name^GetBalance=ReadAnswer(ControllerNumber,ZoneNumber, GetBalanceEvent)
+
+:return Name^GetBalance
+:end
+
+// Get volume
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin GetVolume(Name,SchalterGA,ControllerNumber,ZoneNumber)
+:info $Schreibt in die Variable Name^Volume die aktuelle Lautstärke$\\
+	$Name:  $\\
+	$Gruppenadresse oder Variable die die Abfrage startet$\\
+	$Controller Nummer$\\
+	$Zonen Nummer$
+:shortinfo $Schreibt in die Variable Name^Volume die aktuelle Lautstärke$
+
+:var Volume@
+:var Checksumme@
+:var Message@
+Volume@=0u08
+Message@=$$
+Checksumme@=0u08
+
+if SchalterGA then {
+	Checksumme@=getChecksumForGet(0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x01,0x04,0x02,0x00,ZoneNumber,0x01,0x00,0x00);
+	sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x01,0x04,0x02,0x00,ZoneNumber,0x01,0x00,0x00,Checksumme@,0xf7)
+} endif
+
+if event(readudp(GotServerPort,GotServerIP,Message@)) and GotServerPort==ServerPort and GotServerIP==ServerIP then {
+	if stringcast(Message@,0u08,4u16)==ControllerNumber and stringcast(Message@,0u08,12u16)==ZoneNumber and stringcast(Message@,0u08,13u16)==1 then {
+		Volume@=stringcast(Message@,0u08,20u16)
+		#ifdef DEBUG
+		;if debug then write('10/10/10'c14,$GetVol: $c14+convert(Volume@,$$c14)) endif
+		#endif 
+	} endif
+} endif
+
+Name^GetVolume=Volume@
+:return Name^GetVolume
+:end
+
+
+// read incomming udp
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin ReadAnswer(ControllerNumber,ZoneNumber, Event)
+:info $Internes Makro um ankommend UDP Telegramm zu lesen.$
+:shortinfo $Internes Makro um ankommend UDP Telegramm zu lesen.$
+:var Ergebnis@
+:var Message@
+Ergebnis@=0u08
+Message@=$$
+
+if event(readudp(GotServerPort,GotServerIP,Message@)) and GotServerPort==ServerPort and GotServerIP==ServerIP then {
+	if stringcast(Message@,0u08,4u16)==ControllerNumber and stringcast(Message@,0u08,12u16)==ZoneNumber and stringcast(Message@,0u08,14u16)==Event then {
+		Ergebnis@=stringcast(Message@,0u08,21u16)
+		#ifdef DEBUG
+		;if debug then write('10/10/10'c14,$Ergebnis: $c14+convert(Ergebnis@,$$c14)) endif
+		#endif 
+	} endif
+} endif
+
+:return Ergebnis@
+:end
+
+
+// send query
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin SendQuery(ControllerNumber, ZoneNumber, Event)
+:info $Internes Makro um Anfragen zu senden.$
+:shortinfo $Internes Makro um Anfragen zu senden.$
+
+:var zSum@
+:var zCheckSum@
+
+ zSum@=convert(0xf0,0u16)+convert(ControllerNumber,0u16)+convert(0x00,0u16)+convert(0x7f,0u16)+convert(0x00,0u16)+convert(0x00,0u16)+convert(0x70,0u16)+convert(0x01,0u16)+convert(0x05,0u16)+convert(0x02,0u16)+convert(0x00,0u16)+convert(ZoneNumber,0u16)+convert(0x00,0u16)+convert(Event,0u16)+convert(0x00,0u16)+convert(0x00,0u16)+convert(0x10,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x01,0x05,0x02,0x00,ZoneNumber,0x00,Event,0x00,0x00,convert(zCheckSum@,0u08),0xf7)
+:end
+
+
+// Get Checksum for set
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin getChecksumForSet(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20)
+:info $Internes Makro zur Berechnung einer Checksumme.$
+:shortinfo $Internes Makro zur Berechnung einer Checksumme.$
+
+:var zSum@
+:var zCheckSum@
+zSum@=convert(b1,0u16)+convert(b2,0u16)+convert(b3,0u16)+convert(b4,0u16)+convert(b5,0u16)+convert(b6,0u16)+convert(b7,0u16)+convert(b8,0u16)+convert(b9,0u16)+convert(b10,0u16)+convert(b11,0u16)+convert(b12,0u16)+convert(b13,0u16)+convert(b14,0u16)+convert(b15,0u16)+convert(b16,0u16)+convert(b17,0u16)+convert(b18,0u16)+convert(b19,0u16)+convert(b20,0u16)+convert(0x14,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+:return convert(zCheckSum@,0u08)
+:end
+
+
+// Get Checksum for set extended
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin getChecksumForSetExtended(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22)
+:info $Internes Makro zur Berechnung einer Checksumme.$
+:shortinfo $Internes Makro zur Berechnung einer Checksumme.$
+
+:var zSum@
+:var zCheckSum@
+zSum@=convert(b1,0u16)+convert(b2,0u16)+convert(b3,0u16)+convert(b4,0u16)+convert(b5,0u16)+convert(b6,0u16)+convert(b7,0u16)+convert(b8,0u16)+convert(b9,0u16)+convert(b10,0u16)+convert(b11,0u16)+convert(b12,0u16)+convert(b13,0u16)+convert(b14,0u16)+convert(b15,0u16)+convert(b16,0u16)+convert(b17,0u16)+convert(b18,0u16)+convert(b19,0u16)+convert(b20,0u16)+convert(b21,0u16)+convert(b22,0u16)+convert(0x16,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+:return convert(zCheckSum@,0u08)
+:end
+
+// Get Checksum for get
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin getChecksumForGet(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15)
+:info $Internes Makro zur Berechnung einer Checksumme.$
+:shortinfo $Internes Makro zur Berechnung einer Checksumme.$
+
+:var zSum@
+:var zCheckSum@
+ zSum@=convert(b1,0u16)+convert(b2,0u16)+convert(b3,0u16)+convert(b4,0u16)+convert(b5,0u16)+convert(b6,0u16)+convert(b7,0u16)+convert(b8,0u16)+convert(b9,0u16)+convert(b10,0u16)+convert(b11,0u16)+convert(b12,0u16)+convert(b13,0u16)+convert(b14,0u16)+convert(b15,0u16)+convert(0x0f,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+:return convert(zCheckSum@,0u08)
+:end
+
+// Get Checksum for get extended
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin getChecksumForGetExtended(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16)
+:info $Internes Makro zur Berechnung einer Checksumme.$
+:shortinfo $Internes Makro zur Berechnung einer Checksumme.$
+
+:var zSum@
+:var zCheckSum@
+ zSum@=convert(b1,0u16)+convert(b2,0u16)+convert(b3,0u16)+convert(b4,0u16)+convert(b5,0u16)+convert(b6,0u16)+convert(b7,0u16)+convert(b8,0u16)+convert(b9,0u16)+convert(b10,0u16)+convert(b11,0u16)+convert(b12,0u16)+convert(b13,0u16)+convert(b14,0u16)+convert(b15,0u16)+convert(b16,0u16)+convert(0x10,0u16)
+zCheckSum@=zSum@ and convert(0x7F,0u16)
+
+:return convert(zCheckSum@,0u08)
+:end
+
+// debugger
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin ReadData(rawdata)
+:info $Makro zum Debuggen$\\
+:shortinfo $Makro zum Debuggen$
+if change(rawdata) then {
+	write('10/10/10'c14,$0: $c14+convert(stringcast(rawdata,0u08,0u16),$$c14));
+	write('10/10/10'c14,$1: $c14+convert(stringcast(rawdata,0u08,1u16),$$c14));
+	write('10/10/10'c14,$2: $c14+convert(stringcast(rawdata,0u08,2u16),$$c14));
+	write('10/10/10'c14,$3: $c14+convert(stringcast(rawdata,0u08,3u16),$$c14));
+	write('10/10/10'c14,$4: $c14+convert(stringcast(rawdata,0u08,4u16),$$c14));
+	write('10/10/10'c14,$5: $c14+convert(stringcast(rawdata,0u08,5u16),$$c14));
+	write('10/10/10'c14,$6: $c14+convert(stringcast(rawdata,0u08,6u16),$$c14));
+	write('10/10/10'c14,$7: $c14+convert(stringcast(rawdata,0u08,7u16),$$c14));
+	write('10/10/10'c14,$8: $c14+convert(stringcast(rawdata,0u08,8u16),$$c14));
+	write('10/10/10'c14,$9: $c14+convert(stringcast(rawdata,0u08,9u16),$$c14));
+	write('10/10/10'c14,$10: $c14+convert(stringcast(rawdata,0u08,10u16),$$c14));
+	write('10/10/10'c14,$11: $c14+convert(stringcast(rawdata,0u08,11u16),$$c14));
+	write('10/10/10'c14,$12: $c14+convert(stringcast(rawdata,0u08,12u16),$$c14));
+	write('10/10/10'c14,$13: $c14+convert(stringcast(rawdata,0u08,13u16),$$c14));
+	write('10/10/10'c14,$14: $c14+convert(stringcast(rawdata,0u08,14u16),$$c14));
+	write('10/10/10'c14,$15: $c14+convert(stringcast(rawdata,0u08,15u16),$$c14));
+	write('10/10/10'c14,$16: $c14+convert(stringcast(rawdata,0u08,16u16),$$c14));
+	write('10/10/10'c14,$17: $c14+convert(stringcast(rawdata,0u08,17u16),$$c14));
+	write('10/10/10'c14,$18: $c14+convert(stringcast(rawdata,0u08,18u16),$$c14));
+	write('10/10/10'c14,$19: $c14+convert(stringcast(rawdata,0u08,19u16),$$c14));
+	write('10/10/10'c14,$20: $c14+convert(stringcast(rawdata,0u08,20u16),$$c14));
+	write('10/10/10'c14,$21: $c14+convert(stringcast(rawdata,0u08,21u16),$$c14));
+	write('10/10/10'c14,$22: $c14+convert(stringcast(rawdata,0u08,22u16),$$c14));
+	write('10/10/10'c14,$23: $c14+convert(stringcast(rawdata,0u08,23u16),$$c14));
+	write('10/10/10'c14,$----$c14)
+} endif
+:end
+
+// Lautstärke anfragen
+if SchalterGA then {
+	TurnOnVolumeChecksumme@=getChecksumForGetExtended(0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x01,0x05,0x02,0x00,ZoneNumber,0x00,0x04,0x00,0x00);
+	sendudp(ServerPort,ServerIP,0xf0,ControllerNumber,0x00,0x7f,0x00,0x00,0x70,0x01,0x05,0x02,0x00,ZoneNumber,0x00,0x04,0x00,0x00,TurnOnVolumeChecksumme@,0xf7)
+} endif
+
+if event(readudp(GotServerPort,GotServerIP,TurnOnVolumeMessage@)) and GotServerPort==ServerPort and GotServerIP==ServerIP then {
+	/* Einschaltlautstärke  */;
+	if stringcast(TurnOnVolumeMessage@,0u08,4u16)==ControllerNumber and stringcast(TurnOnVolumeMessage@,0u08,12u16)==ZoneNumber and stringcast(TurnOnVolumeMessage@,0u08,14u16)==4 then {
+		Name^TurnOnVolume=stringcast(TurnOnVolumeMessage@,0u08,21u16)
+		#ifdef DEBUG
+		;if debug then write('10/10/10'c14,$TurnOnVol:$c14+convert(Name^TurnOnVolume,$$c14)) endif
+		#endif 
+	} endif
+} endif

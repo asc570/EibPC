@@ -1,0 +1,30 @@
+[Macros]
+PIRaumKontrollerVar( Heizregler,KellerHeizungID,Raumkontroller_Keller_Heizung,SperreHeizung_Keller_Heizung,Sollwert_Keller_Heizung,"SaunaIstTemp-3/0/8",Standbyabsenkung_Keller_Heizung,Nachtabsenkung_Keller_Heizung,KFaktorHeizregler_Keller_Heizung,TFaktorHeizregler_Keller_Heizung,"Sauna-3/0/1",SchreibzyklusHeizaktorwert,SpeichereHeizreglerParameter_Keller_Heizung,LadeHeizreglerParameter_Keller_Heizung,1b01,1)
+
+[MacroLibs]
+//Makro-Bibliotheken
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/EnertexV2/EnertexV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/EnertexV2/Haus.esf
+
+[EibPC]
+// Das Heizreglermakro regelt hier die Temperatur "SaunaIstTemp-3/0/8" auf die Solltemperatur Sollwert_Keller_Heizung.
+// Dies geschieht indem der Regler die Stellgröße, d.h. den Aktorwert "Sauna-3/0/1", alle SchreibzyklusHeizaktorwert Minuten 
+// nachregelt. Ändert sich der Wert der Variablen SpeichereHeizreglerParameter_Keller_Heizung, dann werden alle Reglerparameter 
+// im Flash gespeichert. Beim Wechsel der Variablen LadeHeizreglerParameter_Keller_Heizung oder nach dem Neustart des EibPCs
+// werden diese vorher gespeicherten Variablen wieder aus dem Flash geladen. D.h. man sollte für jeden Raum sinnvolle Reglerwerte 
+// ermitteln und diese dann im Flash abspeichern.
+
+// Definition PI-Heizreglervariablen
+Raumkontroller_Keller_Heizung = 2u08
+SperreHeizung_Keller_Heizung = 1b01
+Sollwert_Keller_Heizung = 18.0f16
+Standbyabsenkung_Keller_Heizung = 3.0f16
+Nachtabsenkung_Keller_Heizung = 3.0f16
+KFaktorHeizregler_Keller_Heizung = 3.0f16
+TFaktorHeizregler_Keller_Heizung = 180f16
+SchreibzyklusHeizaktorwert = 5u08
+SpeichereHeizreglerParameter_Keller_Heizung = 0b01
+LadeHeizreglerParameter_Keller_Heizung = 0b01

@@ -1,0 +1,18 @@
+[Macros]
+Scheduler_2Wochen(Start)
+Rec_GA("Heizvorlauf-0/0/1")
+Rec_GA("WohnzimmerSzene-0/2/2")
+Rec_GA("WigaDimmer-1/1/22")
+ 
+[MacroLibs]
+//Makro-Bibliotheken
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/Anwesenheit/EnertexAnwesenheit.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+// Wen Start auf EIN gestellt ist, werden die mit Rec_GA aufgezeichneten Gruppenadressen automatisch abgespielt, 
+// ansonsten (START auf AUS) werden die Gruppenadressen aufgezeichnet.
+Start=AUS

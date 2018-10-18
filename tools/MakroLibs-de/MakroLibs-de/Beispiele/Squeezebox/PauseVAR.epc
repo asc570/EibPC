@@ -1,0 +1,16 @@
+[Macros]
+//Die Squeezebox wird eingebunden über den Standard Port 9090 und die IP-Adresse des Servers mit der Standardverzögerung von 100ms
+Squeezebox(9090,192.168.22.18,100)
+//Wenn das Telefon klingelt soll die Squeezebox pausieren
+PauseVAR(SQ1,Telefon)
+[MacroLibs]
+EnertexSqueezebox.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+SQ1 = $Squeezebox$
+Telefon = AUS
+//Wenn das Telefon klingelt, soll die Variable den Wert EIN annehmen
+if "Telefon-0/1/1" then Telefon = EIN endif

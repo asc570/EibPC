@@ -1,0 +1,23 @@
+[Macros]
+// Die Squeezebox wird eingebunden über den Standard Port 9090 und 
+// die IP-Adresse des Servers mit der Standardverzögerung von 100ms
+//
+// ACHTUNG: Die Standardbedienung des Squeezecenters erfolgt 
+//          über Port 9002. Hier ist aber die Kommunikation gemeint, 
+//          die gewöhnlich über Port 9090 läuft!
+//
+Squeezebox(9090,192.168.22.18,100)
+//
+// Sie können die Squeezebox mit Macadresse ansprechen oder mit dem Namen, der
+// im Squeezecenter für das Gerät vergeben wurde bzw. angezeigt wird.
+//  
+// ACHTUNG: Mac Adressen müssen klein geschrieben werden und per 
+//          Komma getrennt werden
+PowerSchalter($ae:58:fb:41:00:55$,"Squeezbox ein-aus-5/4/0")
+[MacroLibs]
+EnertexSqueezebox.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

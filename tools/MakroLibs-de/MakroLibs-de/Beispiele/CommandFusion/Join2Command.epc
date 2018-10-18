@@ -1,0 +1,15 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//Über einen Join eine Szene aufrufen bei kurzem Druck und die Szene speichern bei langem Druck
+Join2Command(IPod,d22,callscene("Szene-1/0/28",1),storescene("Szene-1/0/28",1))
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+

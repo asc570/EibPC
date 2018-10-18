@@ -1,0 +1,21 @@
+[Macros]
+// Das Gerät 1.1.22 überprüfen: Alle 330 Minuten muss dieses mindestens 
+// auf der GA "Außentemperatur-3/5/0" einen Wert senden.
+//
+// Aktor1Raw_Error wird auf EIN gesetzt, wenn diese Zeit überschritten wurde.
+//
+// Aktor1Raw_MaxTime ist die maximale Zeit zwischen zwei Telegrammen auf 3/5/0
+// Aktor1Raw_MinTime ist die minimale Zeit zwischen zwei Telegrammen auf 3/5/0  
+// Aktor1Raw_AvgTime ist die Durchschnittszeit zwischen zwei Telegrammen auf 3/5/0  
+PhyGAMonitor(Aktor1,1.1.22,"Außentemperatur-3/5/0",330)
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexPhyMonitor.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+ 

@@ -1,0 +1,24 @@
+[MacroLibs]
+EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+BeschattungsPageID = 1
+RolloID = 1
+
+
+[WebServer]
+//Seite erstellen
+Page(BeschattungsPageID) [$Beschattung$,$Esszimmer$]
+//pshifter erstellen ist Vorraussetzung für das Makro Rollo
+pshifter(RolloID)[UP,BLIND,DOWN]$Rollo$
+
+[Macros]
+//Hiermit verbindet man den pshifter mit einem Rollo
+Rollo(RolloID,BeschattungsPageID,"EsszimmerFenster-5/0/3","EsszimmerStop-5/0/13")
+
+

@@ -1,0 +1,16 @@
+[Macros]
+//Wenn Wakeup auf EIN geht, wird der Empfänger mit der MAC-Adresse "00:04:20:12:85:fc" per Wake-on-lan "aufgeweckt"
+WOL(Wakeup,00,04,20,12,85 ,fc )
+[MacroLibs]
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/Enertex/Enertex.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+/share/Texte/Projekte/InterneEntwicklung/1137-HausEmPC/Software/MakroLibs/Beispiele/Enertex/Haus.esf
+
+[EibPC]
+
+Wakeup = AUS
+//Mit einem Taster kann man den Empfänger "aufwecken"
+if "Taster-0/2/5" then Wakeup = EIN else Wakeup = AUS endif
+

@@ -1,0 +1,11 @@
+[Macros]
+//Die Rolläden im EG sollen 30min nach Sonnenaufgang hochgefahren werden, spätestens aber um 8Uhr
+Bei_Sonnenaufgang_Gedeckelt(AufgangEG, "EG-Rollos-5/0/44",EIN,1800,8,0,0)
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+EnertexSchaltuhrenV2.lib
+
+[EibPC]

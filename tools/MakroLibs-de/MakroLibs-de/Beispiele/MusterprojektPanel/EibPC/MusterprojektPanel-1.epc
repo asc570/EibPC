@@ -1,0 +1,845 @@
+[HTTPS]
+// HTTPS-Konfiguration: Benutzerkennung, Passwort, Aktiviert
+username1
+password1
+1
+
+[Performanc]e
+// Performance Einstellungen
+250
+70
+15
+
+[MailConf]
+// E-Mail Einstellungen
+enertex@gmx.de
+mail.gmx.net
+enertex@gmx.de
+enertegus
+1
+
+[InitGA]
+// Initialisierte Gruppenaddressen
+"LagerAlleLichter-0/0/3"
+"WCDamen10Fensterkontakt-4/1/6"
+"WCDamen9Fensterkontakt-4/2/5"
+"WCHerren10Fensterkontakt-4/2/6"
+
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+/home/praktikum/KNX/1148-Firmengebaeude-14.esf
+
+[WebServer]
+// Webelemente für den Raum Wetterseite in der Etage Allgemein: 
+page(AllgemeinWetterseiteID)[$Allgemein$,$Startseite$] 
+design $black$[$/upload/EnertexLogoSilber2.jpg$]
+header(0)
+footer(0)
+
+button(WINDID)[WIND]$Wind in km/h$ pbutton(31)[TEMPERATURE]$Außentemperatur$  pshifter(17)[TEMPERATURE,TEMPERATURE]$Aussentemp.: Min und Max in °C$  plink(3)[RIGHT][StatusID]$Zur Statusseite Hauptgebäude$ pbutton(5)[OKCIRCLE]$Status HG$
+pbutton(15)[WEATHER]$Licht in Lux$ button(WolkenID)[WEATHER]$Aktuelles Wetter$ pshifter(14)[WEATHER,NIGHT]$Sonnenauf- und Sonnenuntergang$ plink(4)[RIGHT][StatusNGID]$Zur Statusseite Nebengebäude$   pbutton(6)[OKCIRCLE]$Status NG$
+
+picture(2)[DOUBLE,CENTERGRAF]($Durchschnittliche Tagestemperaturen$,$http://wetter.tagesschau.de/import/wetter-cms/vorhersagen/img/de-vs-tt_webL.jpg$) none none picture(1)[DOUBLE,CENTERGRAF]($3 - Tagesvorhersage$,$http://wetter.tagesschau.de/import/wetter-cms/vorhersagen/img/de-vs-3t_webL.jpg$) 
+
+shifter(ClockID)[CLOCK] $Uhrzeit$ pshifter(13)[INFO]$Online$  shifter(DateID)[DATE]$Datum$  
+
+
+page(WetterseiteID)[$Allgemein$,$Wetterseite$] 
+design $black$
+header(0)
+footer(0)
+
+button(WINDID)[WIND]$Wind in km/h$ pbutton(14)[WEATHER]$Wetter$ pbutton(25)[WEATHER]$Regenwahrscheinlichkeit$ pbutton(24)[RAIN]$Feuchtigkeit$  pbutton(12)[TEMPERATURE]$Aussentemp.: Min$ pbutton(13)[TEMPERATURE]$Aussentemp.:Max$
+picture(9)[DOUBLE,ZOOMGRAF]($Windrichtungen$,$http://wwwdyn.zdf.de/ext/weather/wind-brd-0.jpg$) mtimechart(8)[QUAD,NOAUTOSCALE,48,-10,45,-10,65]( $Aussentemperaturverlauf$,LEFT, ChartBuffer1,$Sonnenstand$,RIGHT,ChartBuffer2)  picture(4)[DOUBLE,CENTERGRAF]($RegenRadar$,$http://images2.wetterdienst.de/maps/sat/euro/prec_s.gif$) 
+ button(ELEVATION)[WEATHER]$Höhenwinkel in °$ button(Sonnenstand)[UP]$Sonnenstand$ button(AZIMUTH)[WEATHER]$AZIMUTH$ pbutton(23)[CLOCK]$Sonnenhöchststand:$ pshifter(10)[PLAY]$Wetterfilm abspielen$ 
+
+line$Wettervorhersage für Morgen$
+pbutton(15)[WIND]$Windrichtung$ pbutton(18)[WEATHER]$Wetter$ pbutton(26)[WEATHER]$Regenwahrscheinlichkeit$ pbutton(27)[RAIN]$Feuchtigkeit$  pbutton(16)[TEMPERATURE]$Aussentemp.: Min$ pbutton(17)[TEMPERATURE]$Aussentemp.:Max$
+
+line$Wettervorhersage für Übermorgen$
+
+
+pbutton(19)[WIND]$Windrichtung$ pbutton(22)[WEATHER]$Wetter$ pshifter(20)[TEMPERATURE]$Aussentemp.: Min$ pshifter(21)[TEMPERATURE]$Aussentemp.:Max$
+
+//Webelemente für Status Hauptgebäude
+page(StatusID)[$Allgemein$,$Status Hauptgebäude$]
+design $black$
+header(0)
+footer(0)
+
+plink(5)[RIGHT][ObergeschossID]$Zur Obergeschoss - Seite$ none shifter(HauptschalterObergeschoss)[LIGHT]$Obergeschoss alle Lichter ausschalten$ pshifter(11)[WINDOW]$Fenster Obergeschoss$ 
+
+
+plink(6)[RIGHT][ErdgeschossID]$Zur Erdgeschoss-Seite$ none shifter(HauptschalterErdgeschoss)[LIGHT]$Erdgeschoss alle Lichter ausschalten$ pshifter(10)[WINDOW]$Fenster Erdgeschoss$    
+plink(7)[RIGHT][KellerID]$Zur Keller - Seite$ none shifter(HauptschalterKellergeschoss)[LIGHT]$Keller alle Lichter ausschalten$ pshifter(9)[WINDOW]$Fenster Keller$
+
+
+plink(15)[RIGHT][TreppenhausID]$Zur Treppenhaus-Seite$ none shifter(HauptschalterTreppenhaus)[SWITCH]$Treppenhaus alle Lichter ausschalten$ pshifter(31)[WINDOW]$Fenster Kellertreppe$
+
+plink(38)[UP][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ pshifter(20)[SWITCH]$Alle Lichter ausschalten$  shifter(DateID)[DATE]$Datum$ 
+
+
+
+
+
+//Webelemente für Status Nebengebäude
+page(StatusNGID)[$Allgemein$,$Status Nebengebäude$]
+design $black$
+header(0)
+footer(0)
+
+
+
+plink(8)[RIGHT][AnbauOGID]$Lichter Anbau Obergeschoss$ none shifter(HauptschalterAnbauOG)[LIGHT]$Anbau Erdgeschoss alle Lichter ausschalten$ pshifter(14)[WINDOW]$Fenster Anbau Obergeschoss$
+plink(12)[RIGHT][AnbauEGID]$Lichter Anbau Erdgeschoss$ none shifter(HauptschalterAnbauEG)[LIGHT]$Anbau Erdgeschoss alle Lichter ausschalten$ pshifter(13)[WINDOW]$Fenster Anbau Erdgeschoss$
+plink(38)[UP][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ pshifter(2)[SWITCH]$Alle Lichter ausschalten$  shifter(DateID)[DATE]$Datum$ 
+
+
+
+// Webelemente für Jalousien
+page(AutomatikID)[$Allgemein$,$Jalousien$]
+design $black$
+header(0)
+footer(0)
+
+
+pshifter(4)[SWITCH]$Beschattung Haupthaus Automatik$ none none pshifter(3)[SWITCH]$Beschattung Anbau Automatik$ 
+mpshifter(1)[$Alle$,$Haupthaus$,$Haupthaus KG$,$Haupthaus EG$,$Haupthaus OG$][UP,BLIND,DOWN]$Jalousien$ none none mpshifter(2)[$Anbau$,$Anbau EG$,$Anbau OG$][UP,BLIND,DOWN]$Jalousien$ 
+
+
+plink(32)[UP][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ none none shifter(DateID)[DATE]$Datum$ 
+
+
+// Webelemente für Obergeschoss: 
+page(ObergeschossID)[$Hauptgebäude$,$Obergeschoss$] 
+design $black$
+header(0)
+footer(0)
+
+pshifter(3)[LIGHT]$Geschäftsleitung$  pshifter(9)[LIGHT]$Ankleide$ pshifter(4)[WINDOW]$Geschäftsleitung$  
+pshifter(5)[LIGHT]$Jürgen$ pshifter(6)[LIGHT]$Olaf$ pshifter(8)[WINDOW]$Simulation$
+pshifter(7)[LIGHT]$Labortisch$ pshifter(1)[LIGHT]$Besprechungszimmer$ pshifter(2)[WINDOW]$Besprechungszimmer$
+pshifter(11)[LIGHT]$WC Herren$ pshifter(10)[LIGHT]$WC Damen$ pbutton(14)[WINDOW]$WC Herren$ pbutton(13)[WINDOW]$WC Damen$  
+pslider(16)[SWITCH]$Lounge$ pshifter(12)[LIGHT]$Flur$  pshifter(15)[WINDOW]$Flur$ 
+plink(24)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ shifter(HauptschalterObergeschoss)[LIGHT]$Obergeschoss alle Lichter ausschalten$ shifter(DateID)[DATE]$Datum$ 
+// Webelemente für Erdgeschoss:  
+page(ErdgeschossID)[$Hauptgebäude$,$Erdgeschoss$] 
+design $black$
+header(0)
+footer(0)
+
+pshifter(8)[LIGHT]$Flur$ pshifter(3)[LIGHT]$Entwicklung I$ pbutton(29)[WINDOW]$Flur$   pbutton(35)[WINDOW]$Entwicklung I$ 
+pshifter(1)[LIGHT]$Labor$ pshifter(4)[LIGHT]$Entwicklung II$ pbutton(32)[WINDOW]$Labor$  pbutton(37)[WINDOW]$Entwicklung II$
+pshifter(5)[LIGHT]$Küche Nr. 1$ pshifter(6)[LIGHT]$Küche Nr. 2$ pshifter(24)[WINDOW]$Küche$
+pshifter(7)[LIGHT]$Abstellraum$ pshifter(2)[LIGHT]$WC Damen$ pshifter(33)[WINDOW]$WC$
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$  button(ClockID)[CLOCK] $Uhrzeit$ shifter(HauptschalterErdgeschoss)[LIGHT]$Erdgeschoss alle Lichter ausschalten$ shifter(DateID)[DATE]$Datum$ 
+// Webelemente für den Keller: 
+page(KellerID)[$Hauptgebäude$,$Keller$] 
+design $black$
+header(0)
+footer(0)
+
+pshifter(16)[LIGHT]$Büro alle Lichter ausschalten$ none none pshifter(17)[WINDOW]$Büro$ 
+shifter(LichtLagerKG)[LIGHT]$Lager$ shifter(LichtTechnikKG)[LIGHT]$Technik$ pshifter(12)[WINDOW]$Lager$
+shifter(LichtFlurKG)[LIGHT]$Flur$ shifter(LichtBadKG)[LIGHT]$Bad$   pshifter(21)[WINDOW]$Feuchtraum$  
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ shifter(HauptschalterKellergeschoss)[LIGHT]$Keller alle Lichter ausschalten$ shifter(DateID)[DATE]$Datum$ 
+//Webelemente für das Treppenhaus
+page(TreppenhausID)[$Hauptgebäude$,$Treppenhaus$]
+design $black$
+header(0)
+footer(0)
+
+line$Lichter Treppenhaus$
+pshifter(5)[LIGHT]$Treppenhaus Wandlichter ausschalten$ pshifter(3)[LIGHT]$Obergeschosstreppe Wandlicht$  pshifter(1)[LIGHT]$Kellertreppe Wandlicht$ 
+pshifter (6)[LIGHT]$Treppenhaus LED-Lichter ausschalten$ pshifter(4)[LIGHT]$Obergeschosstreppe LEDs$ pshifter(2)[LIGHT]$Kellertreppe LEDs$
+
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ pshifter(7)[WINDOW]$Kellertreppe Fenster$ shifter(DateID)[DATE]$Datum$ 
+
+//Webelemente für den Anbau OG
+page(AnbauOGID)[$Nebengebäude$,$Anbau Obergeschoss$]
+design $black$ 
+header(0)
+footer(0)
+
+line $Anbau Obergeschoss$
+
+pshifter(8)[LIGHT]$AnbauOG Büro 1$ pshifter(9)[LIGHT]$AnbauOG Büro 2$ pbutton(22)[WINDOW]$AnbauOG Büro 1$ pbutton(23)[WINDOW]$AnbauOG Büro 2$ 
+pshifter(10)[LIGHT]$AnbauOG Büro 3$ pshifter(11)[LIGHT]$AnbauOG Büro 4$ pbutton(24)[WINDOW]$AnbauOG Büro 3$ pbutton(25)[WINDOW]$AnbauOG Büro 4$
+
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ shifter(HauptschalterAnbauOG)[LIGHT]$Anbau Obergeschoss alle Lichter ausschalten$ shifter(DateID)[DATE]$Datum$ 
+//Webelemente für den Anbau EG
+page(AnbauEGID)[$Nebengebäude$,$Anbau Erdgeschoss$]
+design $black$
+header(0)
+footer(0)
+
+
+line $Anbau Erdgeschoss$
+
+pshifter(1)[LIGHT]$AnbauEG Büro 1_1$ pshifter(2)[LIGHT]$AnbauEG Büro 1_2$ pshifter(20)[WINDOW]$AnbauEG Büro 1$ 
+pshifter(3)[LIGHT]$AnbauEG Büro 2_1$ pshifter(4)[LIGHT]$AnbauEG Büro 2_2$ pshifter(21)[WINDOW]$AnbauEG Büro 2$ 
+pshifter(5)[LIGHT]$AnbauEG Büro 2_3$ pshifter(6)[LIGHT]$AnbauEG Büro 2_4$ 
+
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(ClockID)[CLOCK] $Uhrzeit$ shifter(HauptschalterAnbauEG)[LIGHT]$Anbau Erdgeschoss alle Lichter ausschalten$ shifter(DateID)[DATE]$Datum$ 
+
+// Webelemente für den Raum Aussen in der Etage Aussenanlage: 
+page(AussenanlageAussenID)[$Aussenanlage$,$Aussen$] 
+design $black$
+header(0)
+footer(0)
+pshifter(3)[LIGHT]$Haupteingang$ none none 
+pshifter(4)[LIGHT]$Hintereingang$ none none 
+plink(31)[RIGHT][AllgemeinWetterseiteID]$Zur Startseite$ button(5)[LIGHT]$Hintereingang Lager$ pshifter(2)[SWITCH]$Steckdose Hintereingang$ 
+
+[Macros]
+// Makros für den Raum Wetterseite in der Etage Allgemein: 
+UhrzeitanzeigeGlobal(ClockID,"Uhr-7/0/1")
+DatumsanzeigeGlobal(DateID,"Datum-7/0/0")
+OnlineAnzeigeButtonLokal(13,AllgemeinWetterseiteID)
+SonnenAufUntergangAnzeigeShifterLokal(14, AllgemeinWetterseiteID)
+LichtAnzeigeButtonLokal(15,AllgemeinWetterseiteID,"Licht-14/6/4")
+WindAnzeigeButtonGlobal(WINDID,"Wind-14/6/0")
+MinMaxTemperaturAnzeigeButtonLokal(17,AllgemeinWetterseiteID,"Außentemperatur-14/6/3")
+// Makros für den Keller: 
+//Kellerlicht
+UmschaltShifterGlobal( LichtFlurKG ,"Flur-0/0/8","Flur_Status-0/0/21",LIGHT)
+UmschaltShifterGlobal( LichtTechnikKG ,"Technik-0/0/14","Technik_Status-0/0/22",LIGHT)
+UmschaltShifterGlobal( LichtBadKG ,"Bad10-0/0/16","Bad10_Status-0/0/23",LIGHT)
+UmschaltShifterAUS(16,KellerID,"BüroAlleLichter-0/0/7",KGBuero_An,LIGHT)
+UmschaltShifterAUSGlobal(HauptschalterKellergeschoss,"KGalleLichter-0/5/0",KGAlleLichter,LIGHT)
+Fensterkontakte( 12,KellerID,"LagerFensterkontakt-4/0/7")
+Fensterkontakte( 17,KellerID,"BüroFensterkontakt-4/0/9")
+Fensterkontakte( 21,KellerID,"Bad5Fensterkontakt-4/0/3")
+// Makros für Erdgeschoss: 
+UmschaltShifter(1,ErdgeschossID,"Labor_1-0/1/0","Labor_1_Status-0/1/18",LIGHT) 
+UmschaltShifter(2,ErdgeschossID,"WCDamen_9-0/1/10","WCDamen_9_Status-0/1/26",LIGHT) 
+UmschaltShifter(3,ErdgeschossID,"Büro_2-0/1/1","Büro_2_Status-0/1/19",LIGHT) 
+UmschaltShifter(4,ErdgeschossID,"KonstruktionAlleLichter-0/1/4","Konstruktion_4_Status-0/1/21",LIGHT) 
+UmschaltShifter(5,ErdgeschossID,"Küche_6-0/1/6","Küche_6_Status-0/1/23",LIGHT) 
+UmschaltShifter(6,ErdgeschossID,"Küche_7-0/1/7","Küche_7_Status-0/1/24",LIGHT) 
+UmschaltShifter(7,ErdgeschossID,"Abstellraum 8-0/1/9","Abstellraum 8_Status-0/1/25",LIGHT)
+UmschaltShifter(8,ErdgeschossID,"Flur_5-0/1/5","Flur_5_Status-0/1/22",LIGHT)
+Fensterkontakte(32,ErdgeschossID,"Labor1Fensterkontakt-4/1/7")
+Fensterkontakte(33,ErdgeschossID,"WCDamen10Fensterkontakt-4/1/6")
+Fensterkontakte(35,ErdgeschossID,"Büro2+3Fensterkontakt-4/1/0")
+Fensterkontakte(37,ErdgeschossID,"Konstruktion4+5Fensterkontakt-4/1/2")
+Fensterkontakte(24,ErdgeschossID,"Küche7+8Fensterkontakt-4/1/4")
+Fensterkontakte(29,ErdgeschossID,"Flur6+9Fensterkontakt-4/1/8")
+UmschaltShifterAUSGlobal(HauptschalterErdgeschoss,"EGalleLichter-0/5/1",EGAlleLichter,LIGHT)
+//
+// Makros für Obergeschoss: 
+UmschaltShifter(1,ObergeschossID,"Besprechung_1-0/2/0","Besprechung_1_Status-0/2/20",LIGHT)
+UmschaltShifter(3,ObergeschossID,"Büro1_3-0/2/2","Büro1_3_Status-0/2/22",LIGHT)
+UmschaltShifter(5,ObergeschossID,"Büro2_4-0/2/4","Büro2_4_Status-0/2/23",LIGHT)
+UmschaltShifter(6,ObergeschossID,"Büro2_5-0/2/5","Büro2_5_Status-0/2/24",LIGHT)
+UmschaltShifter(7,ObergeschossID,"Büro2_6-0/2/6","Büro2_6_Status-0/2/25",LIGHT)
+UmschaltShifter(9,ObergeschossID,"Ankleide 12-0/2/12","Ankleide 12_Status-0/2/28",LIGHT)
+UmschaltShifter(10,ObergeschossID,"WCDamen 11-0/2/13","WCDamen 11_Status-0/2/29",LIGHT)
+UmschaltShifter(11,ObergeschossID,"WCHerren 10-0/2/14","WCHerren 10_Status-0/2/30",LIGHT)
+UmschaltShifter(12,ObergeschossID,"Flur-0/2/9","Flur_Status-0/2/27",LIGHT)
+SliderDimmer(16,ObergeschossID,"Lounge 13DimmerWert-0/2/19")
+Fensterkontakte(2,ObergeschossID,"Besprechung1Fensterkontakt-4/2/7")
+Fensterkontakte(4,ObergeschossID,"Büro1Fensterkontakt-4/2/16")
+Fensterkontakte(8,ObergeschossID,"Büro2Fensterkontakt-4/2/17")
+Fensterkontakte(13,ObergeschossID,"WCDamen9Fensterkontakt-4/2/5")
+Fensterkontakte(14,ObergeschossID,"WCHerren10Fensterkontakt-4/2/6")
+Fensterkontakte(15,ObergeschossID,"FlurFensterkontakt-4/2/18")
+UmschaltShifterAUSGlobal(HauptschalterObergeschoss,"OGalleLichter-0/5/2",OGAlleLichter,LIGHT)
+// Makros für den Raum Aussen in der Etage Aussenanlage:
+UmschaltShifter( 3,AussenanlageAussenID,"HaupteingangAußen-0/6/2","HaupteingangAußen-0/6/2",LIGHT)
+UmschaltShifter( 4,AussenanlageAussenID,"KellerlichtAußen-0/6/0","KellerlichtAußen-0/6/0",LIGHT)
+UmschaltShifter( 5,AussenanlageAussenID,"KellerBüroAußen-0/6/1","KellerBüroAußen-0/6/1",LIGHT)
+UmschaltShifter( 2,AussenanlageAussenID,"TerrasseSteckdose-4/0/5","TerrasseSteckdoseStatus-4/0/6",SWITCH)
+UmschaltShifter(1,AnbauEGID,"Büro1_1-0/3/0","Büro1_1_Status-0/3/13",LIGHT)
+//Makros für Anbau EG/OG LICHT
+UmschaltShifterAUS(2,StatusNGID,"AnbauAlleLichter-0/5/6",AlleLichterNG,SWITCH)
+//EG
+UmschaltShifter(2,AnbauEGID,"Büro1_2-0/3/1","Büro1_2_Status-0/3/14",LIGHT)
+UmschaltShifter(3,AnbauEGID,"Büro2_3-0/3/4","Büro2_3Status-0/3/11",LIGHT)
+UmschaltShifter(4,AnbauEGID,"Büro2_4-0/3/5","Büro2_4Status-0/3/10",LIGHT)
+UmschaltShifter(5,AnbauEGID,"Büro2_5-0/3/3","Büro2_5Status-0/3/12",LIGHT)
+UmschaltShifter(6,AnbauEGID,"Büro2_6-0/3/6","Büro2_6Status-0/3/9",LIGHT)
+UmschaltShifter(7,AnbauEGID,"ProduktionSilvia_Elisabeth-0/3/7","ProduktionSilvia_Elisabeth-0/3/7",LIGHT)
+UmschaltShifterAUSGlobal(HauptschalterAnbauEG,"AnbauEGalleLichter-0/5/3",AnbauEGAlleLichter,LIGHT)
+//OG 
+UmschaltShifter(8,AnbauOGID,"Büro1_1-0/4/0","Büro1_1_Status-0/4/4",LIGHT)
+UmschaltShifter(9,AnbauOGID,"Büro2_2-0/4/1","Büro2_2_Status-0/4/5",LIGHT)
+UmschaltShifter(10,AnbauOGID,"Büro3_3-0/4/2","Büro3_3_Status-0/4/6",LIGHT)
+UmschaltShifter(11,AnbauOGID,"Büro4_4-0/4/3","Büro4_4_Status-0/4/7",LIGHT)
+UmschaltShifterAUSGlobal(HauptschalterAnbauOG,"AnbauOGalleLichter-0/5/4",AnbauOGAlleLichter,LIGHT)
+//Treppenhaus
+UmschaltShifter( 1,TreppenhausID,"TreppeKGEG-0/1/16","TreppeKGEG_Status-0/1/28",LIGHT)
+UmschaltShifter( 2,TreppenhausID,"TreppeKGEG_led-0/1/15","TreppeKGEG_led_Status-0/1/27",LIGHT)
+UmschaltShifter(3,TreppenhausID,"TreppeEGOG-0/2/16","TreppeEGOG_Status-0/2/31",LIGHT)
+UmschaltShifter(4,TreppenhausID,"TreppeEGOGled-0/2/17","TreppeEGOGled_Status-0/2/32",LIGHT)
+UmschaltShifterAUS(5,TreppenhausID,"Treppe-0/5/8",TreppeWandlicht,LIGHT)
+UmschaltShifterAUS(6,TreppenhausID,"TreppeLEDs-0/5/9",TreppeLedLicht,LIGHT)
+Fensterkontakte(7,TreppenhausID,"TreppeKGEGFensterkontakt-4/0/10") 
+// Makros für StatusSeite
+UmschaltShifterAUSLokal2Schalter(20,StatusID,"HaupthausAlleLichter-0/5/5","Treppe-0/5/8","TreppeLEDs-0/5/9",AlleLichterHG,TreppeWandlicht,TreppeLedLicht,SWITCH)
+Fensterkontakte(31,StatusID,"TreppeKGEGFensterkontakt-4/0/10")
+// Makros für Rollos in StatusID:
+FuenfRollos( 1,StatusID,"AlloRolloAufZu-3/5/6","AlloRolloAufZu-3/5/6","HaupthausAlloRolloAufZu-3/5/7","HaupthausAlloRolloAufZu-3/5/7","KGalloRolloAufZu-3/5/0","KGalloRolloAufZu-3/5/0","EGalloRolloAufZu-3/5/1","EGalloRolloAufZu-3/5/1","OGalloRolloAufZu-3/5/2","OGalloRolloAufZu-3/5/2")
+DreiRollos(2,StatusID,"AnbauAlloRolloAufZu-3/5/5","AnbauAlloRolloAufZu-3/5/5","AnbauEGalloRolloAufZu-3/5/3","AnbauEGalloRolloAufZu-3/5/3","AnbauOGalloRolloAufZu-3/5/4","AnbauOGalloRolloAufZu-3/5/4")
+UmschaltButton(4,StatusID,"BeschattungFreigabe-7/0/3","BeschattungFreigabe-7/0/3",BLIND)
+UmschaltButton(3,StatusID,"BeschattungHaupthausFreigabe-7/0/4","BeschattungHaupthausFreigabe-7/0/4",BLIND)
+UmschaltShifterAUSGlobal2Schalter(HauptschalterTreppenhaus,"Treppe-0/5/8","TreppeLEDs-0/5/9",TreppeWandlicht,TreppeLedLicht,LIGHT)
+Wettervorhersage(a13fea5986537b36,Pretzfeld,Bavaria,after(systemstart(),1300u64) or cycle(10,00))
+[MacroLibs]
+//Makro-Bibliotheken
+/home/praktikum/KNX/Bibliotheken/InternEnertexWebV3.lib
+/home/praktikum/KNX/MakroLibs/Bibliotheken/User.lib
+
+[EibPC]
+//Initialisierung der Webelement IDs für den Visalisierungsassistenten
+
+WINDID= 1
+WolkenID= 2
+ClockID= 3
+DateID=4
+LichtBesprechungOG = 5
+LichtBuero1_3OG = 6
+LichtBuero2_4OG = 7
+LichtBuero2_5OG = 8
+LichtBuero2_6OG = 9
+ChartBuffer1 = 10
+LichtAnkleideOG = 11
+LichtWCDamenOG = 12
+LichtWCHerrenOG = 13
+LichtFlurOG = 14
+LichtLoungeOG = 15
+LichtBuero_2EG = 16
+LichtWCDamenEG = 17
+LichtLaborEG = 18
+LichtKonstruktionAlleEG = 19
+LichtKueche1EG = 20
+LichtKueche2EG = 21
+LichtAbstellraumEG = 22
+LichtFlurEG = 23
+HauptschalterTreppenhaus = 24
+HauptschalterErdgeschoss = 25
+LichtLagerKG = 26
+ELEVATION = 27
+AZIMUTH = 28
+Sonnenstand = 29
+ChartBuffer2 = 30 
+LichtFlurKG = 31
+LichtTechnikKG = 32
+LichtBadKG = 33
+HauptschalterAnbauEG = 34
+HauptschalterAnbauOG = 35
+HauptschalterKellergeschoss = 36
+HauptschalterObergeschoss = 37
+// = 38
+// = 39
+// = 40
+
+
+
+
+// Initialisierung der PageIDs für den Visalisierungsassistenten
+AllgemeinWetterseiteID = 1
+StatusID = 2
+ObergeschossID = 3
+ErdgeschossID = 4
+KellerID = 5
+AnbauOGID = 8
+AnbauEGID = 9
+TreppenhausID = 10 
+AussenanlageAussenID = 11
+WetterseiteID = 12
+StatusNGID = 13
+AutomatikID= 14
+
+
+
+
+
+
+WebZeit=convert(convert(hour(), 0f32)+convert(minute(),0f32)/60f32,0f16)
+
+AnbauOGFensterOffen = 0b01
+AnbauEGFensterOffen = 0b01
+OG_FensterOffen = 0b01
+EG_FensterOffen = 0b01
+KG_FensterOffen = 0b01
+KGAlleLichter = 0b01
+KGBuero_An = 0b01
+EGAlleLichter = 0b01
+OGAlleLichter = 0b01
+StatusHG = 0b01
+AnbauEGAlleLichter = 0b01 
+AnbauOGAlleLichter = 0b01
+TreppeWandlicht = 0b01
+TreppeLedLicht = 0b01
+Treppe = 0b01
+AnbauFenster= 0b01
+KellertreppenFenster = 0b01
+AlleLichterHG = 0b01
+AlleLichterNG = 0b01
+HWinkel = 0f32
+
+
+
+
+
+
+//Obergeschoss Alle Lichter
+if( "Besprechung_1_Status-0/2/20" == AUS and "Büro1_2_Status-0/2/21" == AUS and "Büro1_3_Status-0/2/22" == AUS and "Büro2_4_Status-0/2/23" == AUS and "Büro2_5_Status-0/2/24" == AUS and "Büro2_6_Status-0/2/25" == AUS and "Büro2_7_Status-0/2/26" == AUS and "Flur_Status-0/2/27" == AUS and "Ankleide 12_Status-0/2/28" == AUS and "WCDamen 11_Status-0/2/29" == AUS and "WCHerren 10_Status-0/2/30" == AUS and "Lounge 13Schalten_Status-0/2/33" == AUS) then OGAlleLichter = AUS else OGAlleLichter = EIN endif
+//Obergeschoss Fenster
+if("WCDamen9Fensterkontakt-4/2/5" or "WCHerren10Fensterkontakt-4/2/6" or "Besprechung1Fensterkontakt-4/2/7" or "Büro1Fensterkontakt-4/2/16" or "Büro2Fensterkontakt-4/2/17" or "FlurFensterkontakt-4/2/18") then OG_FensterOffen = 1b01 else OG_FensterOffen = 0b01 endif
+//Erdgeschoss Alle Lichter
+
+if("Labor_1_Status-0/1/18" == AUS and "Büro_2_Status-0/1/19" == AUS and "Konstruktion_3_Status-0/1/20" == AUS and "Konstruktion_4_Status-0/1/21" == AUS and "Flur_5_Status-0/1/22" == AUS and "Küche_6_Status-0/1/23" == AUS and "Küche_7_Status-0/1/24" == AUS and "Abstellraum 8_Status-0/1/25" == AUS and "WCDamen_9_Status-0/1/26" == AUS) then EGAlleLichter = AUS else EGAlleLichter = EIN endif
+
+//Erdgeschoss Fenster
+if "Büro2+3Fensterkontakt-4/1/0" or"Konstruktion4+5Fensterkontakt-4/1/2" or "Küche7+8Fensterkontakt-4/1/4" or "WCDamen10Fensterkontakt-4/1/6" or "Labor1Fensterkontakt-4/1/7" or "Flur6+9Fensterkontakt-4/1/8" then EG_FensterOffen = 1b01 endif
+
+//Keller Alle Lichter
+if ("Büro_3_Status-0/0/18" == AUS and "Büro_4_Status-0/0/19" == AUS and "Büro_5_Status-0/0/20" == AUS) then KGBuero_An = AUS else KGBuero_An = EIN endif
+if ("LagerAlleLichter_Status-0/0/17" == AUS and  KGBuero_An == AUS and  "Flur_Status-0/0/21" == AUS and  "Technik_Status-0/0/22" == AUS and "Bad10_Status-0/0/23" == AUS) then KGAlleLichter = AUS else KGAlleLichter = EIN endif
+
+//Keller Fenster
+if ("LagerFensterkontakt-4/0/7" or "BüroFensterkontakt-4/0/9" or "Bad5Fensterkontakt-4/0/3") then KG_FensterOffen = 1b01 else KG_FensterOffen = 0b01 endif
+
+//ANbau OG Alle Lichter
+if ( "Büro3_3_Status-0/4/6" == AUS and "Büro4_4_Status-0/4/7" == AUS and "Büro1_1_Status-0/4/4" == AUS and "Büro2_2_Status-0/4/5" == AUS) then AnbauOGAlleLichter = AUS else AnbauOGAlleLichter = EIN endif
+if("Büro1Fensterkontakt12-4/4/0" or "ZwangsstellungStrasse3-4/4/1" or "ZwangsstellungHof2-4/4/2" or "Büro2Fensterkontakt10+11-4/4/15" or "Büro3Fensterkontakt8+9-4/4/16" or "Büro4Fensterkontakt13+14-4/4/17") then AnbauOGFensterOffen = 1b01 else AnbauOGFensterOffen = 0b01 endif
+
+//Anbau EG Alle Lichter
+if("Büro1_1_Status-0/3/13" == AUS and "Büro1_2_Status-0/3/14" == AUS and "Büro2_3Status-0/3/11" == AUS and "Büro2_4Status-0/3/10" == AUS and "Büro2_5Status-0/3/12" == AUS and "Büro2_6Status-0/3/9" == AUS) then AnbauEGAlleLichter = AUS else AnbauEGAlleLichter = EIN endif
+
+//Anbau EG Fenster
+if ("ZwangsstellungFensterBüro2-4/3/0" or "Büro2_3+4Fensterkontakt-4/3/1" or "ZwangsstellungFensterBüro1-4/3/2" or "Büro2_1+2ensterkontakt-4/3/4" or "Büro1_6+7Fensterkontakt-4/3/11" or "Büro1_5Fensterkontakt-4/3/12") then AnbauEGFensterOffen = 1b01 else AnbauEGFensterOffen = 0b01 endif
+
+//Treppe Alle Lichter
+if ("TreppeKGEG_Status-0/1/28" == AUS and "TreppeEGOG_Status-0/2/31" == AUS) then TreppeWandlicht = AUS else TreppeWandlicht = EIN endif
+if ("TreppeKGEG_led_Status-0/1/27" == AUS and "TreppeEGOGled_Status-0/2/32" == AUS) then TreppeLedLicht = AUS else TreppeLedLicht = EIN endif
+if (TreppeWandlicht == AUS and TreppeLedLicht == AUS ) then Treppe = AUS else Treppe = EIN endif
+//Treppe Fenster
+if "TreppeKGEGFensterkontakt-4/0/10" then KellertreppenFenster = 1b01 endif
+
+// if-Lichter
+if ( Treppe == EIN or OGAlleLichter== EIN or EGAlleLichter == EIN or KGAlleLichter == EIN or EG_FensterOffen == EIN or KG_FensterOffen ==EIN or OG_FensterOffen == EIN ) then StatusHG = EIN else StatusHG = AUS endif 
+
+if (KGAlleLichter == AUS and EGAlleLichter == AUS  and OGAlleLichter == AUS and Treppe== AUS) then AlleLichterHG = AUS else AlleLichterHG = EIN endif 
+if (AnbauOGAlleLichter == AUS and AnbauEGAlleLichter == AUS) then AlleLichterNG = AUS else AlleLichterNG = EIN endif 
+// if-Fenster
+if (AnbauOGFensterOffen == 1b01 or AnbauEGFensterOffen == 1b01) then AnbauFenster = 1b01 else AnbauFenster = 0b01 endif
+
+//plinks AllgemeinWetterseiteID 
+
+plink(3,$Zur Statusseite Hauptgebäude$,RIGHT,ACTIVE,AllgemeinWetterseiteID,StatusID)
+plink(4,$Zur Statusseite Nebengebäude$,RIGHT,ACTIVE,AllgemeinWetterseiteID,StatusNGID)
+
+// plinks StatusID
+
+plink(5,$Zur Obergeschoss -  Seite$,RIGHT,ACTIVE,StatusID,ObergeschossID)
+plink(6,$Zur Erdgeschoss - Seite$,RIGHT,ACTIVE,StatusID,ErdgeschossID)
+plink(7,$Zur Keller - Seite$,RIGHT,ACTIVE,StatusID,KellerID)
+plink(15,$Zur Treppenhaus - Seite$,RIGHT,ACTIVE,StatusID,TreppenhausID)
+plink(31,$Zur Startseite$,UP,ACTIVE,ErdgeschossID,AllgemeinWetterseiteID)
+plink(24,$Zur Startseite$,UP,ACTIVE,ObergeschossID,AllgemeinWetterseiteID)
+plink(38,$Zur Startseite$,UP,ACTIVE,StatusID,AllgemeinWetterseiteID)
+plink(38,$Zur Startseite$,UP,ACTIVE,StatusNGID,AllgemeinWetterseiteID)
+plink(31,$Zur Startseite$,UP,ACTIVE,KellerID,AllgemeinWetterseiteID)
+plink(31,$Zur Startseite$,UP,ACTIVE,TreppenhausID,AllgemeinWetterseiteID)
+plink(32,$Zur Startseite$,UP,ACTIVE,AutomatikID,AllgemeinWetterseiteID)
+plink(31,$Zur Startseite$,UP,ACTIVE,AnbauOGID,AllgemeinWetterseiteID)
+plink(31,$Zur Startseite$,UP,ACTIVE,AnbauEGID,AllgemeinWetterseiteID)
+plink(31,$Zur Startseite$,UP,ACTIVE,AussenanlageAussenID,AllgemeinWetterseiteID)
+
+
+
+//plinks StatusNGID
+plink(8,$Zur Anbau - Obergeschoss - Seite$,RIGHT,ACTIVE,StatusNGID,AnbauOGID)
+plink(12,$Zur Anbau - Erdgeschoss - Seite$,RIGHT,ACTIVE,StatusNGID,AnbauEGID)
+
+
+
+//// Webdisplay Lichter globale Variablen 
+
+
+
+// OG
+if OGAlleLichter == EIN then webdisplay (HauptschalterObergeschoss,$Im Obergeschoss leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterObergeschoss,$Im Obergeschoss leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+// EG
+if EGAlleLichter == EIN then webdisplay (HauptschalterErdgeschoss,$Im Erdgeschoss leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterErdgeschoss,$Im Erdgeschoss leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+// KG
+if KGAlleLichter == EIN then webdisplay(HauptschalterKellergeschoss,$Im Keller leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterKellergeschoss,$Im Keller leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+// NG-OG
+if AnbauOGAlleLichter == EIN then webdisplay (HauptschalterAnbauOG,$Im Obergeschoss des Anbaus leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterAnbauOG,$Im Obergeschoss des Anbaus leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+// NG-EG
+if AnbauEGAlleLichter == EIN then webdisplay(HauptschalterAnbauEG,$Im Erdgeschoss des Anbaus leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterAnbauEG,$Im Erdgeschoss des Anbaus leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+
+if Treppe == EIN then webdisplay (HauptschalterTreppenhaus,$Im Treppenhaus leuchten Lampen$,LIGHT,BRIGHTRED,BLINKRED) else webdisplay(HauptschalterTreppenhaus,$Im Treppenhaus leuchten keine Lampen$,LIGHT,INACTIVE,GREEN) endif
+
+
+
+
+
+
+
+//// pdisplay Lichter lokale Variablen
+//Hauptschalter
+if AlleLichterHG == EIN  then pdisplay(20,$Lichter sind AN$,SWITCH,BRIGHTRED,BLINKRED,StatusID) else pdisplay(20, $Lichter sind AUS$,SWITCH,INACTIVE,GREEN,StatusID)endif
+if AlleLichterNG == EIN  then pdisplay(2,$Lichter sind AN$,SWITCH,BRIGHTRED,BLINKRED,StatusNGID) else pdisplay(2, $Lichter sind AUS$,SWITCH,INACTIVE,GREEN,StatusNGID)endif
+
+
+//Anbau EG
+if(AnbauEGAlleLichter == EIN or AnbauOGAlleLichter == EIN or AnbauFenster == 1b01 ) then pdisplay(6,$Status kontrollieren$,CROSSCIRCLE,BRIGHTRED,BLINKRED,AllgemeinWetterseiteID) else pdisplay(6,$Status OK$,OKCIRCLE,ACTIVE,GREEN,AllgemeinWetterseiteID) endif
+//Treppe
+if(TreppeWandlicht == EIN) then pdisplay(5,$Treppenhaus Wandlicht ausschalten$,LIGHT,BRIGHTRED,BLINKRED,TreppenhausID) else pdisplay (5,$Treppenhaus Wandlicht ist aus$,LIGHT,INACTIVE,GREY,TreppenhausID) endif
+
+if(TreppeLedLicht == EIN) then pdisplay(6,$Treppenhaus LED-Licht ausschalten$,LIGHT,BRIGHTRED,BLINKRED,TreppenhausID) else pdisplay (6,$Treppenhaus LED-Licht ist aus$,LIGHT,INACTIVE,GREY,TreppenhausID) endif
+
+if StatusHG == EIN then pdisplay(5,$Status kontrollieren$,CROSSCIRCLE,BRIGHTRED,BLINKRED,AllgemeinWetterseiteID) endif
+if StatusHG == AUS then pdisplay(5,$Status OK$,OKCIRCLE,ACTIVE,GREEN,AllgemeinWetterseiteID) endif
+
+
+
+//// pdisplay Fenster lokale Variablen
+
+if ("FlurFensterkontakt-4/2/18")then pdisplay(15,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (15,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if ("Büro1Fensterkontakt-4/2/16")then pdisplay(4,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (4,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if ("Büro2Fensterkontakt-4/2/17")then pdisplay(8,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (8,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if ("WCDamen9Fensterkontakt-4/2/5")then pdisplay(13,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (13,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if ("WCHerren10Fensterkontakt-4/2/6")then pdisplay(14,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (14,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if ("Besprechung1Fensterkontakt-4/2/7")then pdisplay(2,$Fenster Offen$,WINDOW,BRIGHTRED,BLINKRED,ObergeschossID) else pdisplay (2,$Fenster geschlossen$,WINDOW,INACTIVE,GREY,ObergeschossID) endif
+if OG_FensterOffen then pdisplay(11,$Obergeschoss - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(11,$Obergeschoss - Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+
+if EG_FensterOffen then pdisplay(10,$Erdgeschoss - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(10,$Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+
+if KG_FensterOffen then pdisplay(9,$Keller-Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(9,$Keller-Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+//AnbauOG
+if("Büro1Fensterkontakt12-4/4/0") then pdisplay(22,$Büro 1 OG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauOGID) else pdisplay(22,$Büro 1 OG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauOGID) endif
+if("Büro2Fensterkontakt10+11-4/4/15") then pdisplay(23,$Büro 2 OG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauOGID) else pdisplay(23,$Büro 2 OG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauOGID) endif
+if("Büro3Fensterkontakt8+9-4/4/16") then pdisplay(24,$Büro 3 OG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauOGID) else pdisplay(24,$Büro 3 OG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauOGID) endif
+if("Büro4Fensterkontakt13+14-4/4/17") then pdisplay(25,$Büro 4 OG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauOGID) else pdisplay(25,$Büro 4 OG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauOGID) endif
+if AnbauOGFensterOffen then pdisplay(14,$Anbau OG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(14,$Anbau OG - Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+//AnbauEG
+if AnbauEGFensterOffen then pdisplay(13,$Anbau EG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(13,$Anbau EG - Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+if ("Büro2_1+2ensterkontakt-4/3/4" or "Büro2_3+4Fensterkontakt-4/3/1") then pdisplay(21,$Büro 2 EG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauEGID) else pdisplay(21,$Büro 2 EG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauEGID) endif
+if ("Büro1_5Fensterkontakt-4/3/12" or "Büro1_6+7Fensterkontakt-4/3/11" ) then pdisplay(20,$Büro 1 EG - Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,AnbauEGID) else pdisplay(20,$Büro 1 EG - Fenster zu$,WINDOW,INACTIVE,GREY,AnbauEGID) endif
+//Treppe
+if(KellertreppenFenster == 1b01) then pdisplay(7,$Kellertreppen Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,TreppenhausID) else pdisplay(7,$Kellertreppe Fenster zu$,WINDOW,INACTIVE,GREY,TreppenhausID) endif
+if(KellertreppenFenster == 1b01) then pdisplay(31,$Kellertreppen Fenster offen$,WINDOW,BRIGHTRED,BLINKRED,StatusID) else pdisplay(31,$Kellertreppe Fenster zu$,WINDOW,INACTIVE,GREY,StatusID) endif
+
+
+// Wetter
+if ( Sommerzeit == EIN and "Regenmeldung-14/6/1"==EIN) then webdisplay(WolkenID, $Es regnet$,WEATHER,STATE6,GREY) endif
+//Sommerzeit
+if( Sommerzeit == EIN and "Regenmeldung-14/6/1"==AUS and delay("Licht-14/6/4" <= 20000f16,60000u64)) then webdisplay(WolkenID,$bedeckt$,WEATHER,STATE5,GREY) endif
+if ( Sommerzeit == EIN and "Regenmeldung-14/6/1"==AUS and "Licht-14/6/4" > 20000f16 and delay("Licht-14/6/4" <= 45000f16,60000u64)) then webdisplay(WolkenID, $wolkig$,WEATHER,STATE4,GREY) endif
+if ( Sommerzeit == EIN and "Regenmeldung-14/6/1"==AUS and "Licht-14/6/4" > 45000f16 and delay("Licht-14/6/4" <= 70000f16,60000u64)) then webdisplay(WolkenID, $sonnig$,WEATHER,DISPLAY,GREY) endif
+if ( Sommerzeit == EIN and "Regenmeldung-14/6/1"==AUS  and  delay("Licht-14/6/4" > 70000f16,60000u64)) then webdisplay(WolkenID, $starker Sonnenschein$,WEATHER,BRIGHTRED,BLINKRED) endif
+//Winterzeit
+if (Winterzeit == EIN and "Außentemperatur-14/6/3" < 0.0 and  "Regenmeldung-14/6/1"==EIN) then webdisplay(WolkenID, $Es schneit$,ICE,ACTIVE,BLINKBLUE) endif
+if (Winterzeit == EIN and "Regenmeldung-14/6/1"==AUS and delay("Licht-14/6/4" <= 3500f16,60000u64)) then webdisplay(WolkenID,$bedeckt$,WEATHER,STATE5,GREY) endif
+if (Winterzeit == EIN and "Regenmeldung-14/6/1"==AUS and "Licht-14/6/4" > 3500f16 and delay("Licht-14/6/4" <= 9000f16,60000u64)) then webdisplay(WolkenID, $wolkig$,WEATHER,STATE4,GREY) endif
+if (Winterzeit == EIN and "Regenmeldung-14/6/1"==AUS and "Licht-14/6/4" > 9000f16 and delay("Licht-14/6/4" <= 15000f16,60000u64)) then webdisplay(WolkenID, $sonnig$,WEATHER,DISPLAY,GREY) endif
+if (Winterzeit == EIN and "Regenmeldung-14/6/1"==AUS and delay("Licht-14/6/4" >15000f16,60000u64)) then webdisplay(WolkenID, $starker Sonnenschein$,WEATHER,BRIGHTRED,BLINKRED) endif
+
+
+
+
+
+// Temperatur
+
+if change("Außentemperatur-14/6/3") and "Außentemperatur-14/6/3">=28f16   then pdisplay(31,"Außentemperatur-14/6/3",TEMPERATURE,BRIGHTRED,BLINKRED,AllgemeinWetterseiteID) endif
+if change("Außentemperatur-14/6/3") and "Außentemperatur-14/6/3">=18f16 and "Außentemperatur-14/6/3" <28f16  then pdisplay(31,"Außentemperatur-14/6/3",TEMPERATURE,DARKRED,GREEN,AllgemeinWetterseiteID) endif
+if change("Außentemperatur-14/6/3") and "Außentemperatur-14/6/3">=5f16 and "Außentemperatur-14/6/3" <18f16  then pdisplay(31,"Außentemperatur-14/6/3",TEMPERATURE,DISPLAY,GREY,AllgemeinWetterseiteID) endif
+if change("Außentemperatur-14/6/3") and "Außentemperatur-14/6/3" < 5f16  then pdisplay(31,"Außentemperatur-14/6/3",TEMPERATURE,ACTIVE,BLINKBLUE,AllgemeinWetterseiteID) endif
+
+
+
+
+
+
+
+
+
+
+// Wettereinbindung
+
+
+if change(azimuth()) then webdisplay(AZIMUTH,(convert(convert(azimuth(), 0.0 ), $$c14 ) + $ Grad $c14), WIND, ACTIVE, GREEN) endif
+if change(elevation()) then webdisplay(ELEVATION,(convert(convert(elevation(), 0.0 ), $$c14) + $ Grad$c14), WIND, ACTIVE, GREEN) endif
+
+if (change(elevation()) and azimuth()<175f32 and elevation()>0f32 ) then webdisplay(Sonnenstand, $steigt$, UP, BRIGHTRED, BLINKRED) endif
+
+if (change(elevation()) and azimuth()>175f32 and elevation()<185f32 )then webdisplay(Sonnenstand,$Sonne im Zenit$, WEATHER, BRIGHTRED, BLINKRED) endif
+
+if(change(elevation()) and azimuth()>185f32 and elevation()>0f32 )then webdisplay(Sonnenstand,$fällt$ , DOWN, ACTIVE, BLINKBLUE) endif
+
+if (change(elevation()) and azimuth()>185f32 and elevation()<0f32 )then webdisplay(Sonnenstand,$Nacht$ , NIGHT, DISPLAY, GREY) endif
+
+
+
+//Höchster Sonnenstand:
+
+
+if azimuth()>=185f32  then pdisplay(23,settime(),CLOCK,ACTIVE,GREEN,WetterseiteID) endif
+
+
+//mtimechart
+Len=35040u16
+Datatyp=3.3f16
+MemTyp=0
+timebufferconfig(ChartBuffer1, MemTyp, Len,"Außentemperatur-14/6/3" )
+timebufferconfig(ChartBuffer2, MemTyp, Len,elevation() )
+
+if mtime(0,0) or mtime(15,0) or mtime(30,0) or mtime(45,0) then {timebufferadd(ChartBuffer1,"Außentemperatur-14/6/3");
+timebufferadd(ChartBuffer2,elevation() )
+} endif
+
+//if chtime(01,00,00) then {
+//timebufferstore(ChartBuffer1);timebufferstore(ChartBuffer2)
+//} endif
+
+//if systemstart() then {
+//timebufferread(ChartBuffer1);timebufferread(ChartBuffer2)
+//} endif
+
+
+
+
+
+
+
+
+
+
+
+
+Jahr=split(convert(setdate(),$$), 6u16, 9u16)
+Monat=split(convert(setdate(),$$), 3u16, 4u16)
+Tag=split(convert(setdate(),$$), 0u16, 1u16)
+Weatherhour=convert(hour()-2,$$);
+
+
+URL1 = $$
+URL2 = $$
+URL3 = $$
+URL4 = $$
+URL5 = $$
+URL6 = $$
+URL7 = $$
+URL8 = $$
+URL9 = $$
+URL10 = $$
+URL11 = $$
+URL12 = $$
+
+
+NachZehn=0
+
+
+if cycle (01,00) then Weatherhour=convert(hour()-2,$$) endif
+
+if chtime(11,59,59) then NachZehn=1 else NachZehn=0 endif
+
+
+
+
+if NachZehn == 1 and mtime(01,00) then URL1=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$00$+$_BAY_Intensity.gif$ endif
+
+if NachZehn == 1 and mtime(06,00) then URL2=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$05$+$_BAY_Intensity.gif$ endif
+
+ 
+if NachZehn == 1 and mtime(11,00) then URL3=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$10$+$_BAY_Intensity.gif$ endif 
+
+if NachZehn == 1 and mtime(16,00) then URL4=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$15$+$_BAY_Intensity.gif$ endif 
+
+
+if NachZehn == 1 and mtime(21,00) then  URL5=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$20$+$_BAY_Intensity.gif$ endif
+
+if NachZehn == 1 and mtime(26,00) then URL6=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$25$+$_BAY_Intensity.gif$ endif 
+
+
+if NachZehn == 1 and mtime(31,00) then URL7=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$30$+$_BAY_Intensity.gif$ endif
+
+if NachZehn == 1 and mtime(36,00) then URL8=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$35$+$_BAY_Intensity.gif$ endif 
+
+
+
+if NachZehn == 1 and mtime(41,00) then URL9=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$40$+$_BAY_Intensity.gif$ endif
+
+if NachZehn == 1 and mtime(46,00) then URL10=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$45$+$_BAY_Intensity.gif$ endif 
+
+
+if NachZehn == 1 and mtime(51,00) then URL11=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$50$+$_BAY_Intensity.gif$ endif
+
+if NachZehn == 1 and mtime(56,00) then URL12=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$)  + convert(Weatherhour,$$)+$55$+$_BAY_Intensity.gif$ endif 
+
+
+
+
+
+
+
+
+if NachZehn == 0 and mtime(01,00) then URL1=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$00$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(06,00) then URL2=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$05$ +$_BAY_Intensity.gif$ endif
+
+ 
+if NachZehn == 0 and mtime(11,00) then URL3=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$10$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(16,00) then URL4=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$15$ +$_BAY_Intensity.gif$ endif
+
+
+if NachZehn == 0 and mtime(21,00) then  URL5=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$20$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(26,00) then URL6=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$25$ +$_BAY_Intensity.gif$ endif
+
+
+if NachZehn == 0 and mtime(31,00) then URL7=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$30$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(36,00) then URL8=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$35$ +$_BAY_Intensity.gif$ endif
+
+
+
+if NachZehn == 0 and mtime(41,00) then URL9=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$40$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(46,00) then URL10=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$45$ +$_BAY_Intensity.gif$ endif 
+
+
+if NachZehn == 0 and mtime(51,00) then URL11=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$50$ +$_BAY_Intensity.gif$ endif
+
+if NachZehn == 0 and mtime(56,00) then URL12=$http://www.wetteronline.de/?pid=p_radar_map&ireq=true&src=radar/vermarktung/p_radar_map/wom/$ + convert(Jahr,$$) + $/$ + convert(Monat,$$) + $/$ + convert(Tag,$$) + $/Intensity/BAY/grey_flat/$  + convert(Jahr,$$) + convert(Monat,$$) + convert(Tag,$$) + $0$ + convert(Weatherhour,$$)+$55$ +$_BAY_Intensity.gif$ endif 
+
+
+
+Zeit = 0u08
+
+if mtime(01,05) then picture(4,$Regenradar$,WetterseiteID,URL1) endif
+if mtime(06,05) then picture(4,$Regenradar$,WetterseiteID,URL2) endif
+if mtime(11,05) then picture(4,$Regenradar$,WetterseiteID,URL3) endif
+if mtime(16,05) then picture(4,$Regenradar$,WetterseiteID,URL4) endif
+if mtime(21,05) then picture(4,$Regenradar$,WetterseiteID,URL5) endif
+if mtime(26,05) then picture(4,$Regenradar$,WetterseiteID,URL6) endif
+if mtime(31,05) then picture(4,$Regenradar$,WetterseiteID,URL7) endif
+if mtime(36,05) then picture(4,$Regenradar$,WetterseiteID,URL8) endif
+if mtime(41,05) then picture(4,$Regenradar$,WetterseiteID,URL9) endif
+if mtime(46,05) then picture(4,$Regenradar$,WetterseiteID,URL10) endif
+if mtime(51,05) then picture(4,$Regenradar$,WetterseiteID,URL11) endif
+if mtime(56,05) then picture(4,$Regenradar$,WetterseiteID,URL12) endif
+
+
+if mtime(56,30) then picture(4,$Regenradar$,WetterseiteID,URL1) endif
+if mtime(56,35) then picture(4,$Regenradar$,WetterseiteID,URL2) endif
+if mtime(56,40) then picture(4,$Regenradar$,WetterseiteID,URL3) endif
+if mtime(56,45) then picture(4,$Regenradar$,WetterseiteID,URL4) endif
+if mtime(56,50) then picture(4,$Regenradar$,WetterseiteID,URL5) endif
+if mtime(56,55) then picture(4,$Regenradar$,WetterseiteID,URL6) endif
+if mtime(57,00) then picture(4,$Regenradar$,WetterseiteID,URL7) endif
+if mtime(57,05) then picture(4,$Regenradar$,WetterseiteID,URL8) endif
+if mtime(57,10) then picture(4,$Regenradar$,WetterseiteID,URL9) endif
+if mtime(57,15) then picture(4,$Regenradar$,WetterseiteID,URL10) endif
+if mtime(57,20) then picture(4,$Regenradar$,WetterseiteID,URL11) endif
+if mtime(57,25) then picture(4,$Regenradar$,WetterseiteID,URL12) endif
+if mtime(57,30) then picture(4,$Regenradar$,WetterseiteID,URL1) endif
+if mtime(57,35) then picture(4,$Regenradar$,WetterseiteID,URL2) endif
+if mtime(57,40) then picture(4,$Regenradar$,WetterseiteID,URL3) endif
+if mtime(57,45) then picture(4,$Regenradar$,WetterseiteID,URL4) endif
+if mtime(57,50) then picture(4,$Regenradar$,WetterseiteID,URL5) endif
+if mtime(57,55) then picture(4,$Regenradar$,WetterseiteID,URL6) endif
+if mtime(58,00) then picture(4,$Regenradar$,WetterseiteID,URL7) endif
+if mtime(58,05) then picture(4,$Regenradar$,WetterseiteID,URL8) endif
+if mtime(58,10) then picture(4,$Regenradar$,WetterseiteID,URL9) endif
+if mtime(58,15) then picture(4,$Regenradar$,WetterseiteID,URL10) endif
+if mtime(58,20) then picture(4,$Regenradar$,WetterseiteID,URL11) endif
+if mtime(58,25) then picture(4,$Regenradar$,WetterseiteID,URL12) endif
+
+Schalter = 0b01 
+if pbutton(10,WetterseiteID)==1 then pdisplay(10,$Wetterfilm läuft$,PLAY,DISPLAY,BLINKRED,WetterseiteID) endif
+if pbutton(10,WetterseiteID)==1 then Schalter=1b01 endif
+if pbutton(10,WetterseiteID)==1 then Zeit = minute() endif
+
+
+
+if after(Schalter,10u64) then picture(4,$Regenradar$,WetterseiteID,URL1) endif
+if after(Schalter,1000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL2) endif
+if after(Schalter,2000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL3) endif
+if after(Schalter,3000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL4) endif
+if after(Schalter,4000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL5) endif
+if after(Schalter,5000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL6) endif
+if after(Schalter,6000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL7) endif
+if after(Schalter,7000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL8) endif
+if after(Schalter,8000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL9) endif
+if after(Schalter,9000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL10) endif
+if after(Schalter,10000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL11) endif
+if after(Schalter,11000u64)  then  picture(4,$Regenradar$,WetterseiteID,URL12) endif
+
+
+if after(Schalter,12000u64) and (1u08 <= Zeit and Zeit < 6u08)  then picture(4,$Regenradar$,WetterseiteID,URL1) endif
+if after(Schalter,12000u64) and (6u08 <= Zeit and Zeit < 11u08) then picture(4,$Regenradar$,WetterseiteID,URL2) endif
+if after(Schalter,12000u64) and (11u08 <= Zeit and Zeit < 16u08) then picture(4,$Regenradar$,WetterseiteID,URL3) endif
+if after(Schalter,12000u64) and (16u08 <= Zeit and Zeit < 21u08) then picture(4,$Regenradar$,WetterseiteID,URL4) endif
+if after(Schalter,12000u64) and (21u08 <= Zeit and Zeit < 26u08) then picture(4,$Regenradar$,WetterseiteID,URL5) endif
+if after(Schalter,12000u64) and (26u08 <= Zeit and Zeit < 31u08) then picture(4,$Regenradar$,WetterseiteID,URL6) endif
+if after(Schalter,12000u64) and (31u08 <= Zeit and Zeit < 36u08) then picture(4,$Regenradar$,WetterseiteID,URL7) endif
+if after(Schalter,12000u64) and (36u08 <= Zeit and Zeit < 41u08) then picture(4,$Regenradar$,WetterseiteID,URL8) endif
+if after(Schalter,12000u64) and (41u08 <= Zeit and Zeit < 46u08) then picture(4,$Regenradar$,WetterseiteID,URL9) endif
+if after(Schalter,12000u64) and (46u08 <= Zeit and Zeit < 51u08) then picture(4,$Regenradar$,WetterseiteID,URL10) endif
+if after(Schalter,12000u64) and (51u08 <= Zeit and Zeit < 56u08) then picture(4,$Regenradar$,WetterseiteID,URL11) endif
+if after(Schalter,12000u64) and (56u08 <= Zeit and Zeit <= 59u08) then picture(4,$Regenradar$,WetterseiteID,URL12) endif
+if after(Schalter,12000u64) or systemstart() then pdisplay(10,$Wetterfilm starten$,PLAY,ACTIVE,GREEN,WetterseiteID) endif
+if after(Schalter,13000u64)  then  Schalter = 0b01 endif
+if after(Schalter,13000u64) then Zeit = 0u08 endif
+
+
+
+
+//Wounderworld Wetter
+if after(systemstart(),3000u64) or  change(Wettervorhersage_Heute_Wind_Max_Richtung) then pdisplay(11,$aus $ + convert(Wettervorhersage_Heute_Wind_Max_Richtung,$$),WIND,ACTIVE,BLINKBLUE,WetterseiteID) endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Heute_Temperatur_Min) then pdisplay(12,convert(Wettervorhersage_Heute_Temperatur_Min,$$)+$ °C$,TEMPERATURE,ACTIVE,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Heute_Temperatur_Max) then pdisplay(13,convert(Wettervorhersage_Heute_Temperatur_Max,$$)+$ °C$,TEMPERATURE,BRIGHTRED,BLINKRED,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Heute_Wetter) then pdisplay(14,convert(Wettervorhersage_Heute_Wetter,$$),WEATHER,STATE4,GREY,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Heute_Regenwahrscheinlichkeit) then pdisplay(25,convert(Wettervorhersage_Heute_Regenwahrscheinlichkeit,$$)+$ % $,WEATHER,STATE6,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Heute_Feuchtigkeit) then pdisplay(24,convert(Wettervorhersage_Heute_Feuchtigkeit,$$)+ $ % $,RAIN,ACTIVE,BLINKBLUE,WetterseiteID)endif
+
+if after(systemstart(),3000u64) or  change(Wettervorhersage_Morgen_Wind_Max_Richtung) then pdisplay(15,$aus $ + convert(Wettervorhersage_Morgen_Wind_Max_Richtung,$$),WIND,ACTIVE,BLINKBLUE,WetterseiteID) endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Morgen_Temperatur_Min) then pdisplay(16,convert(Wettervorhersage_Morgen_Temperatur_Min,$$)+$ °C$,TEMPERATURE,ACTIVE,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Morgen_Temperatur_Max) then pdisplay(17,convert(Wettervorhersage_Morgen_Temperatur_Max,$$)+$ °C$,TEMPERATURE,BRIGHTRED,BLINKRED,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Morgen_Regenwahrscheinlichkeit) then pdisplay(26,convert(Wettervorhersage_Morgen_Regenwahrscheinlichkeit,$$)+$ % $,WEATHER,STATE6,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Morgen_Feuchtigkeit) then pdisplay(27,convert(Wettervorhersage_Morgen_Feuchtigkeit,$$)+$ % $,RAIN,ACTIVE,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Morgen_Wetter) then pdisplay(18,convert(Wettervorhersage_Morgen_Wetter,$$),WEATHER,STATE4,GREY,WetterseiteID)endif
+
+if after(systemstart(),3000u64) or  change(Wettervorhersage_Uebermorgen_Wind_Max_Richtung) then pdisplay(19,$aus $ + convert(Wettervorhersage_Uebermorgen_Wind_Max_Richtung,$$),WIND,ACTIVE,BLINKBLUE,WetterseiteID) endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Uebermorgen_Temperatur_Min) then pdisplay(20,convert(Wettervorhersage_Uebermorgen_Temperatur_Min,$$)+$ °C$,TEMPERATURE,ACTIVE,BLINKBLUE,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Uebermorgen_Temperatur_Max) then pdisplay(21,convert(Wettervorhersage_Uebermorgen_Temperatur_Max,$$)+$ °C$,TEMPERATURE,BRIGHTRED,BLINKRED,WetterseiteID)endif
+if after(systemstart(),3000u64) or change(Wettervorhersage_Uebermorgen_Wetter) then pdisplay(22,convert(Wettervorhersage_Uebermorgen_Wetter,$$),WEATHER,STATE4,GREY,WetterseiteID)endif
+
+
+//-------------------------------------------
+//  EibPC Haupthaus: 192.168.22.251
+//  EibPC Tablet: 192.168.22.144
+//  Router HH: 192.168.22.253
+//  Interface HH: 192.168.22.128
+//-------------------------------------------
+
+//-------------------------------------------
+// Lüften
+//-------------------------------------------
+FensterSimulation="Büro2Fensterkontakt-4/2/17"
+FensterChef="Büro1Fensterkontakt-4/2/16"
+FensterBesprechung="Besprechung1Fensterkontakt-4/2/7"
+FensterWCHerrenOG="WCHerren10Fensterkontakt-4/2/6"
+FensterWCDamenOG="WCDamen9Fensterkontakt-4/2/5"
+FensterWCDamenEG="WCDamen10Fensterkontakt-4/1/6"
+FensterEntwicklungII="Konstruktion4+5Fensterkontakt-4/1/2"
+FensterEntwicklungI="Büro2+3Fensterkontakt-4/1/0"
+FensterLabor="Labor1Fensterkontakt-4/1/7"
+FensterProduktionKG="BüroFensterkontakt-4/0/9"
+Sommerzeit= month(01,05) and !month(30,09)
+Winterzeit= month(01,01) and !month(30,04) or month(01,10) and !month(31,12)
+Wochenende= dayofweek()==0 or dayofweek()==6
+Nachts= chtime(20,00,00) or !chtime(08,00,00)
+WarnungenAktiv = Winterzeit and !Wochenende and !Nachts
+
+
+
+

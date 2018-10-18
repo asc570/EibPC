@@ -1,0 +1,846 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Anbindung an 1-Wire mit dem HA7E Adapter oder über OW-Extender
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.10 $
+//----------------------------------------------------------------------
+
+// Init HA7E
+// @date	11.01.2012
+// @version	2 
+// @author	Enertex Bayern GmbH
+:begin HA7E()
+:info $Bindet den HA7E Adapter ein$\\
+    
+:shortinfo $Bindet den HA7E Adapter ein$
+
+// if you want to observe the actions please comment #undef DEBUG like this //#undef DEBUG
+#define DEBUG 
+#undef DEBUG
+#ifdef DEBUG
+HA_Debug = ON
+//Debug-Address
+dummy = '9/9/9'c14
+#endif
+//Command-Queue
+HA_Queue=$$
+//One Command
+HA_Command=$$
+HA_Next=AUS
+HA_Split=$;$
+//Gap between two commands
+HA_Gap = 400u64
+HA_Device = $$
+CarriageReturn = 13u08
+HA_rawdata=$$ 
+HA_Data=$$ 
+HA_Len=0u16
+HA_read=AUS
+//Next Message
+if change(HA_Next) then {
+    if HA_Queue==$$ then HA_Command=$$ endif;
+    if HA_Queue!=$$ then {
+        HA_Command=split(HA_Queue,0u16,find(HA_Queue,HA_Split,0u16) - 1u16);
+        HA_Queue=split(HA_Queue,find(HA_Queue,HA_Split,0u16)+1u16,END)
+    } endif
+} endif
+
+//Is it an address command?
+if split(HA_Command,0u16,0u16) == $A$ then HA_Device = split(HA_Command,1u16,END) endif
+
+//Sending the Command
+if after(change(HA_Next), HA_Gap) and HA_Command != $$ then {
+    sendrs232(HA_Command, CarriageReturn);
+    #ifdef DEBUG
+    if HA_Debug then write('9/9/9'c14, $S:$c14+convert(HA_Command, $$c14)) endif;
+    #endif 
+    /*Is it the Command to convert the temperature?*/;
+    if HA_Command == $W0144$ then HA_Gap = 750u64 else HA_Gap = 400u64 endif; 
+    // neglect all recieved messages before
+    HA_Len=0u16;
+    HA_Next=!HA_Next;
+
+} endif
+
+if event(readrs232(HA_rawdata,HA_Len)) then {
+    // ROM answer
+    if (HA_Len==21u16) then HA_read =!HA_read endif;
+ } endif
+
+// if nothing happens, reset the HA7E after 60 Minutes
+if delay(change(HA_read),3600000u64) then resetrs232() endif 
+
+:end
+
+
+//Family Code 10, DS18B20 Family Code 28
+// @date    11.01.2012
+// @version    2 
+// @author    Enertex Bayern GmbH
+:begin Temperature(NameD, ROMID,Minute)
+:info $Liest zyklisch die Temperatur eines Sensors(DS18S20 oder DS18B20) am OneWire aus und speichert die Temperatur in der Variable NameD_Temperature als f16 Wert. Das Makro HA7E muss eingebunden sein.$\\
+    $Name des Sensors$\\
+    $ROM-ID des Sensors$\\
+    $Gibt an in welchem Abstand der Wert aktualisiert wird, in Minuten$
+:shortinfo $Liest zyklisch die Temperatur eines Sensors$
+//Default-Value(e.g. important for webcharts)
+NameD_TemperatureRead=100.0f16
+NameD_Temperature=100.0f16
+NameD_Message=$$
+NameD_Buffer=$$
+NameD_CR = 0f16
+NameD_CP = 0f16
+NameD_DS18S20 = OFF
+NameD_DS18B20 = OFF
+//Debug-Address
+
+//Sequence to read temperature
+if after(cycle(Minute,0),convert(random(240u32),0u64)) then {
+    HA_Queue=HA_Queue + $R$ + HA_Split;
+    HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;    
+    HA_Queue=HA_Queue + $W0144$ + HA_Split;
+    HA_Queue=HA_Queue + $R$ + HA_Split;
+    HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+    HA_Queue=HA_Queue + $W0ABEFFFFFFFFFFFFFFFFFF$ + HA_Split;
+    HA_Next=!HA_Next;
+} endif
+
+//if change(HA_Next) then write('9/9/9'c14,$next: $c14 + convert(HA_Next,$$c14)) endif
+
+//DS18B20 or DS18S20?
+if split(ROMID,14u16,15u16) == $10$ then NameD_DS18S20 = ON endif
+if split(ROMID,14u16,15u16) == $28$ then NameD_DS18B20 = ON endif
+
+//News from this sensor
+if change(HA_read) and (ROMID==HA_Device)  then {
+    NameD_Buffer=split(HA_rawdata,0u16,HA_Len);
+    /*Is it the Scratchpad?*/;
+    if split(NameD_Buffer,0u16,1u16) == $BE$ then {
+//	write('9/9/9'c14,$B2:$c14 + convert(NameD_Buffer,$$c14));
+         /* Hier werden ungueltige Daten abgefangen*/;
+        if split(NameD_Buffer,2u16,10u16) != $FFFFFFFFF$ then {
+            NameD_TemperatureRead = convert(convert($0x$+split(NameD_Buffer,4u16,5u16) + split(NameD_Buffer,2u16,3u16),0s16),0f16) / 2.0;
+            #ifdef DEBUG
+            if HA_Debug then {
+                write('9/9/9'c14,$TR:$c14 + convert(NameD_TemperatureRead,$$c14))
+            } endif;
+            #endif 
+            /*DS18S20?*/;
+            if NameD_TemperatureRead >= -55f16 and NameD_TemperatureRead <= 125f16 and NameD_DS18S20 then {
+                NameD_CR = convert(convert($0x$ + split(NameD_Buffer,14u16,15u16),0s16),0f16);
+                NameD_CP = convert(convert($0x$ + split(NameD_Buffer,16u16,17u16),0s16),0f16);
+                NameD_Temperature = NameD_TemperatureRead - 0.25 + (NameD_CP - NameD_CR) / NameD_CP
+            } endif;
+            /*DS18B20?*/;
+            if NameD_TemperatureRead > -440f16 and NameD_TemperatureRead < 1000f16 and NameD_DS18B20 then {
+                NameD_Temperature = NameD_TemperatureRead / 8.0
+            } endif
+        } endif
+    } endif;
+    #ifdef DEBUG
+    if HA_Debug then {
+        write('9/9/9'c14,convert($R:$ + NameD_Buffer,$$c14));
+        write('9/9/9'c14,convert(Minute,$$c14)+$:T:$c14 + convert(NameD_Temperature,$$c14))
+    } endif;
+    #endif 
+    HA_Len=0u16;
+} endif
+:end
+
+//Family Code 10, DS18B20 Family Code 28
+// @date	11.01.2012
+// @version	2
+// @author	Enertex Bayern GmbH
+:begin TemperatureGA(NameD, ROMID,GA,Minute)
+:info $Liest zyklisch die Temperatur eines Sensors(DS18S20 oder DS18B20) am OneWire aus und speichert die Temperatur in der Variable NameD_Temperature als f16 Wert und schickt den Wert sobald er sich ändert auf die angegebene Gruppenadresse. Das Makro HA7E muss eingebunden sein.$\\
+	$Name des Sensors$\\
+	$ROM-ID des Sensors$\\
+	$Gruppenadresse, auf die der Wert geschickt werden soll(Datentyp f16)$\\
+	$Gibt an in welchem Abstand der Wert aktualisiert wird, in Minuten $
+:shortinfo $Liest zyklisch die Temperatur eines Sensors und sendet sie an eine Gruppenadresse$
+//Default-Value(e.g. important for webcharts)
+NameD_TemperatureRead=100.0f16
+NameD_Temperature=100.0f16
+NameD_Message=$$
+NameD_Len=0u16
+NameD_Buffer=$$
+NameD_rawdata=$$
+NameD_CR = 0f16
+NameD_CP = 0f16
+NameD_DS18S20 = OFF
+NameD_DS18B20 = OFF
+
+//Sequence to read temperature
+if after(cycle(Minute,0),convert(random(240u32),0u64)) then {
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0144$ + HA_Split;
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0ABEFFFFFFFFFFFFFFFFFF$ + HA_Split;
+	HA_Next=!HA_Next
+	
+} endif
+
+//DS18B20 or DS18S20?
+if split(ROMID,14u16,15u16) == $10$ then NameD_DS18S20 = ON endif
+if split(ROMID,14u16,15u16) == $28$ then NameD_DS18B20 = ON endif
+
+//News from this sensor
+if change(HA_read) and (ROMID==HA_Device)  then {
+	NameD_Buffer=split(NameD_rawdata,0u16,NameD_Len);
+	NameD_rawdata=split(NameD_rawdata,NameD_Len+1u16,EOS);
+	/*Is it the Scratchpad?*/;
+	if split(NameD_Buffer,0u16,1u16) == $BE$ then {
+		/* Hier werden ungültige Daten abgefangen*/;
+		if (size(NameD_Buffer)>=14u16) and split(NameD_Buffer,2u16,10u16) != $FFFFFFFFF$ then {
+			NameD_TemperatureRead = convert(convert($0x$+split(NameD_Buffer,4u16,5u16) + split(NameD_Buffer,2u16,3u16),0s16),0f16) / 2.0;
+			#ifdef DEBUG
+			if HA_Debug then {
+				write('9/9/9'c14,$TR:$c14 + convert(NameD_TemperatureRead,$$c14))
+			} endif;
+			#endif 
+			/*DS18S20?*/;
+			if NameD_TemperatureRead >= -55f16 and NameD_TemperatureRead <= 125f16 and NameD_DS18S20 then {
+				NameD_CR = convert(convert($0x$ + split(NameD_Buffer,14u16,15u16),0s16),0f16);
+				NameD_CP = convert(convert($0x$ + split(NameD_Buffer,16u16,17u16),0s16),0f16);
+				NameD_Temperature = NameD_TemperatureRead - 0.25 + (NameD_CP - NameD_CR) / NameD_CP
+			} endif;
+			/*DS18B20?*/;
+			if NameD_TemperatureRead > -440f16 and NameD_TemperatureRead < 1000f16 and NameD_DS18B20 then {
+				NameD_Temperature = NameD_TemperatureRead / 8.0
+			} endif
+		} endif
+	} endif;
+	#ifdef DEBUG
+	if HA_Debug then {
+		write('9/9/9'c14,convert($R:$ + NameD_Buffer,$$c14));
+		write('9/9/9'c14,convert(Minute,$$c14)+$:T:$c14 + convert(NameD_Temperature,$$c14))
+	} endif;
+	#endif 
+	NameD_Len = 0u16
+} endif
+
+if change(NameD_Temperature) then write(GA,NameD_Temperature) endif
+:end
+
+
+//Family Code 10, DS18B20 Family Code 28
+// @date	11.01.2012
+// @version	2
+// @author	Dr. Ing. Michael Schuster
+:begin TemperatureSync(NameD, ROMID,Sync,Second)
+:info $Liest zyklisch die Temperatur eines Sensors(DS18S20 oder DS18B20) am OneWire aus und speichert die Temperatur in der Variable NameD_Temperature als f16 Wert. Das Makro HA7E muss eingebunden sein.$\\
+	$Name des Sensors$\\
+	$ROM-ID des Sensors$\\
+	$Ein Startimpuls zum Auslesen$\\
+	$Eine Verzögerung in Sekunden nach dem Ausleseimpuls$ 
+:shortinfo $Liest zyklisch die Temperatur eines Sensors$
+//Default-Value(e.g. important for webcharts)
+NameD_TemperatureRead=100.0f16
+NameD_Temperature=100.0f16
+NameD_Message=$$
+NameD_Len=0u16
+NameD_Buffer=$$
+NameD_rawdata=$$
+NameD_CR = 0f16
+NameD_CP = 0f16
+NameD_DS18S20 = OFF
+NameD_DS18B20 = OFF
+//Debug-Address
+
+//Sequence to read temperature
+if after(Sync,Second^001u64)  then {
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0144$ + HA_Split;
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0ABEFFFFFFFFFFFFFFFFFF$ + HA_Split;
+	HA_Next=!HA_Next
+} endif
+
+//DS18B20 or DS18S20?
+if split(ROMID,14u16,15u16) == $10$ then NameD_DS18S20 = ON endif
+if split(ROMID,14u16,15u16) == $28$ then NameD_DS18B20 = ON endif
+
+//News from this sensor
+if change(HA_read) and (ROMID==HA_Device)  then {
+	NameD_Buffer=split(NameD_rawdata,0u16,NameD_Len);
+	NameD_rawdata=split(NameD_rawdata,NameD_Len+1u16,EOS);
+	/*Is it the Scratchpad?*/;
+	if split(NameD_Buffer,0u16,1u16) == $BE$ then {
+		/* Hier werden ungültige Daten abgefangen*/;
+		if (size(NameD_Buffer)>=14u16) and split(NameD_Buffer,2u16,10u16) != $FFFFFFFFF$ then {
+			NameD_TemperatureRead = convert(convert($0x$+split(NameD_Buffer,4u16,5u16) + split(NameD_Buffer,2u16,3u16),0s16),0f16) / 2.0;
+			#ifdef DEBUG
+			if HA_Debug then {
+				write('9/9/9'c14,$TR:$c14 + convert(NameD_TemperatureRead,$$c14))
+			} endif;
+			#endif 
+			/*DS18S20?*/;
+			if NameD_TemperatureRead >= -55f16 and NameD_TemperatureRead <= 125f16 and NameD_DS18S20 then {
+				NameD_CR = convert(convert($0x$ + split(NameD_Buffer,14u16,15u16),0s16),0f16);
+				NameD_CP = convert(convert($0x$ + split(NameD_Buffer,16u16,17u16),0s16),0f16);
+				NameD_Temperature = NameD_TemperatureRead - 0.25 + (NameD_CP - NameD_CR) / NameD_CP
+			} endif;
+			/*DS18B20?*/;
+			if NameD_TemperatureRead > -440f16 and NameD_TemperatureRead < 1000f16 and NameD_DS18B20 then {
+				NameD_Temperature = NameD_TemperatureRead / 8.0
+			} endif
+		} endif
+	} endif;
+	#ifdef DEBUG
+	if HA_Debug then {
+		write('9/9/9'c14,convert($R:$ + NameD_Buffer,$$c14));
+		write('9/9/9'c14,convert(Minute,$$c14)+$:T:$c14 + convert(NameD_Temperature,$$c14))
+	} endif;
+	#endif 
+	NameD_Len = 0u16
+} endif
+
+:end
+
+//Family Code 10, DS18B20 Family Code 28
+// @date	11.01.2012
+// @version	2
+// @author	Dr. Ing. Michael Schuster
+:begin TemperatureGASync(NameD, ROMID,GA,Sync,Second)
+:info $Liest zyklisch die Temperatur eines Sensors(DS18S20 oder DS18B20) am OneWire aus und speichert die Temperatur in der Variable NameD_Temperature als f16 Wert und schickt den Wert sobald er sich ändert auf die angegebene Gruppenadresse. Das Makro HA7E muss eingebunden sein.$\\
+	$Name des Sensors$\\
+	$ROM-ID des Sensors$\\
+	$Gruppenadresse, auf die der Wert geschickt werden soll(Datentyp f16)$\\
+	$Ein Startimpuls zum Auslesen$\\
+	$Eine Verzögerung in Sekunden nach dem Ausleseimpuls$ 
+:shortinfo $Liest zyklisch die Temperatur eines Sensors und sendet sie an eine Gruppenadresse$
+//Default-Value(e.g. important for webcharts)
+NameD_TemperatureRead=100.0f16
+NameD_Temperature=100.0f16
+NameD_Message=$$
+NameD_Len=0u16
+NameD_Buffer=$$
+NameD_rawdata=$$
+NameD_CR = 0f16
+NameD_CP = 0f16
+NameD_DS18S20 = OFF
+NameD_DS18B20 = OFF
+
+//Sequence to read temperature
+if after(Sync,Second^001u64)  then {
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0144$ + HA_Split;
+	HA_Queue=HA_Queue + $R$ + HA_Split;
+	HA_Queue=HA_Queue + $A$ + ROMID + HA_Split;
+	HA_Queue=HA_Queue + $W0ABEFFFFFFFFFFFFFFFFFF$ + HA_Split;
+	HA_Next=!HA_Next
+	
+} endif
+
+//DS18B20 or DS18S20?
+if split(ROMID,14u16,15u16) == $10$ then NameD_DS18S20 = ON endif
+if split(ROMID,14u16,15u16) == $28$ then NameD_DS18B20 = ON endif
+
+//News from this sensor
+if change(HA_read) and (ROMID==HA_Device)  then {
+	NameD_Buffer=split(NameD_rawdata,0u16,NameD_Len);
+	NameD_rawdata=split(NameD_rawdata,NameD_Len+1u16,EOS);
+	/*Is it the Scratchpad?*/;
+	if split(NameD_Buffer,0u16,1u16) == $BE$ then {
+		/* Hier werden ungültige Daten abgefangen*/;
+		if (size(NameD_Buffer)>=14u16) and split(NameD_Buffer,2u16,10u16) != $FFFFFFFFF$ then {
+			NameD_TemperatureRead = convert(convert($0x$+split(NameD_Buffer,4u16,5u16) + split(NameD_Buffer,2u16,3u16),0s16),0f16) / 2.0;
+			#ifdef DEBUG
+			if HA_Debug then {
+				write('9/9/9'c14,$TR:$c14 + convert(NameD_TemperatureRead,$$c14))
+			} endif;
+			#endif 
+			/*DS18S20?*/;
+			if NameD_TemperatureRead >= -55f16 and NameD_TemperatureRead <= 125f16 and NameD_DS18S20 then {
+				NameD_CR = convert(convert($0x$ + split(NameD_Buffer,14u16,15u16),0s16),0f16);
+				NameD_CP = convert(convert($0x$ + split(NameD_Buffer,16u16,17u16),0s16),0f16);
+				NameD_Temperature = NameD_TemperatureRead - 0.25 + (NameD_CP - NameD_CR) / NameD_CP
+			} endif;
+			/*DS18B20?*/;
+			if NameD_TemperatureRead > -440f16 and NameD_TemperatureRead < 1000f16 and NameD_DS18B20 then {
+				NameD_Temperature = NameD_TemperatureRead / 8.0
+			} endif
+		} endif
+	} endif;
+	#ifdef DEBUG
+	if HA_Debug then {
+		write('9/9/9'c14,convert($R:$ + NameD_Buffer,$$c14));
+		write('9/9/9'c14,convert(Minute,$$c14)+$:T:$c14 + convert(NameD_Temperature,$$c14))
+	} endif;
+	#endif 
+	NameD_Len = 0u16
+} endif
+
+if change(NameD_Temperature) then write(GA,NameD_Temperature) endif
+:end
+
+
+// Init Devices
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Initialisieren()
+:info $Schreibt alle Devices am OneWire in eine Variable(Device1,...,Device100). Das Makro HA7E muss eingebunden sein. Dieses Makro nur benutzen um die ROMIDs der Sensoren herauszufinden, danach wieder aus dem Code nehmen, da sonst die anderen Makros nicht funktionieren.$\\
+
+:shortinfo $Initialisiert den HA7E$
+
+rawdata = $$
+len = 0u16
+Buffer = $$
+Counter=1
+
+Device1 = $$
+Device2 = $$
+Device3 = $$
+Device4 = $$
+Device5 = $$
+Device6 = $$
+Device7 = $$
+Device8 = $$
+Device9 = $$
+Device10 = $$
+Device11 = $$
+Device12 = $$
+Device13 = $$
+Device14 = $$
+Device15 = $$
+Device16 = $$
+Device17 = $$
+Device18 = $$
+Device19 = $$
+Device20 = $$
+Device21 = $$
+Device22 = $$
+Device23 = $$
+Device24 = $$
+Device25 = $$
+Device26 = $$
+Device27 = $$
+Device28 = $$
+Device29 = $$
+Device30 = $$
+Device31 = $$
+Device32 = $$
+Device33 = $$
+Device34 = $$
+Device35 = $$
+Device36 = $$
+Device37 = $$
+Device38 = $$
+Device39 = $$
+Device40 = $$
+Device41 = $$
+Device42 = $$
+Device43 = $$
+Device44 = $$
+Device45 = $$
+Device46 = $$
+Device47 = $$
+Device48 = $$
+Device49 = $$
+Device50 = $$
+Device51 = $$
+Device52 = $$
+Device53 = $$
+Device54 = $$
+Device55 = $$
+Device56 = $$
+Device57 = $$
+Device58 = $$
+Device59 = $$
+Device60 = $$
+Device61 = $$
+Device62 = $$
+Device63 = $$
+Device64 = $$
+Device65 = $$
+Device66 = $$
+Device67 = $$
+Device68 = $$
+Device69 = $$
+Device70 = $$
+Device71 = $$
+Device72 = $$
+Device73 = $$
+Device74 = $$
+Device75 = $$
+Device76 = $$
+Device77 = $$
+Device78 = $$
+Device79 = $$
+Device80 = $$
+Device81 = $$
+Device82 = $$
+Device83 = $$
+Device84 = $$
+Device85 = $$
+Device86 = $$
+Device87 = $$
+Device88 = $$
+Device89 = $$
+Device90 = $$
+Device91 = $$
+Device92 = $$
+Device93 = $$
+Device94 = $$
+Device95 = $$
+Device96 = $$
+Device97 = $$
+Device98 = $$
+Device99 = $$
+Device100 = $$
+
+
+//Search first device
+if after(systemstart(), 1000u64) then HA_Queue = HA_Queue + $S$ + HA_Split; HA_Next = !HA_Next endif
+if event(readrs232(rawdata,len)) then {
+	Buffer = split(rawdata,0u16,len);
+	rawdata = split (rawdata,len + 1u16,EOS);
+	/*search more devices*/;
+	if stringcast(Buffer,0u08,0u16) != CarriageReturn and size(Buffer) > 0u16 then {	
+		HA_Queue = HA_Queue + $s$ + HA_Split;
+		#ifdef DEBUG
+		if HA_Debug then write('9/9/9'c14, convert(Buffer,$$c14)) endif;
+		#endif 
+		HA_Next = !HA_Next;
+		if Counter == 1 then Device1 = Buffer endif;
+		if Counter == 2 then Device2 = Buffer endif;
+		if Counter == 3 then Device3 = Buffer endif;
+		if Counter == 4 then Device4 = Buffer endif;
+		if Counter == 5 then Device5 = Buffer endif;
+		if Counter == 6 then Device6 = Buffer endif;
+		if Counter == 7 then Device7 = Buffer endif;
+		if Counter == 8 then Device8 = Buffer endif;
+		if Counter == 9 then Device9 = Buffer endif;
+		if Counter == 10 then Device10 = Buffer endif;
+		if Counter == 11 then Device11 = Buffer endif;
+		if Counter == 12 then Device12 = Buffer endif;
+		if Counter == 13 then Device13 = Buffer endif;
+		if Counter == 14 then Device14 = Buffer endif;
+		if Counter == 15 then Device15 = Buffer endif;
+		if Counter == 16 then Device16 = Buffer endif;
+		if Counter == 17 then Device17 = Buffer endif;
+		if Counter == 18 then Device18 = Buffer endif;
+		if Counter == 19 then Device19 = Buffer endif;
+		if Counter == 20 then Device20 = Buffer endif;
+		if Counter == 21 then Device21 = Buffer endif;
+		if Counter == 22 then Device22 = Buffer endif;
+		if Counter == 23 then Device23 = Buffer endif;
+		if Counter == 24 then Device24 = Buffer endif;
+		if Counter == 25 then Device25 = Buffer endif;
+		if Counter == 26 then Device26 = Buffer endif;
+		if Counter == 27 then Device27 = Buffer endif;
+		if Counter == 28 then Device28 = Buffer endif;
+		if Counter == 29 then Device29 = Buffer endif;
+		if Counter == 30 then Device30 = Buffer endif;
+		if Counter == 31 then Device31 = Buffer endif;
+		if Counter == 32 then Device32 = Buffer endif;
+		if Counter == 33 then Device33 = Buffer endif;
+		if Counter == 34 then Device34 = Buffer endif;
+		if Counter == 35 then Device35 = Buffer endif;
+		if Counter == 36 then Device36 = Buffer endif;
+		if Counter == 37 then Device37 = Buffer endif;
+		if Counter == 38 then Device38 = Buffer endif;
+		if Counter == 39 then Device39 = Buffer endif;
+		if Counter == 40 then Device40 = Buffer endif;
+		if Counter == 41 then Device41 = Buffer endif;
+		if Counter == 42 then Device42 = Buffer endif;
+		if Counter == 43 then Device43 = Buffer endif;
+		if Counter == 44 then Device44 = Buffer endif;
+		if Counter == 45 then Device45 = Buffer endif;
+		if Counter == 46 then Device46 = Buffer endif;
+		if Counter == 47 then Device47 = Buffer endif;
+		if Counter == 48 then Device48 = Buffer endif;
+		if Counter == 49 then Device49 = Buffer endif;
+		if Counter == 50 then Device50 = Buffer endif;
+		if Counter == 51 then Device51 = Buffer endif;
+		if Counter == 52 then Device52 = Buffer endif;
+		if Counter == 53 then Device53 = Buffer endif;
+		if Counter == 54 then Device54 = Buffer endif;
+		if Counter == 55 then Device55 = Buffer endif;
+		if Counter == 56 then Device56 = Buffer endif;
+		if Counter == 57 then Device57 = Buffer endif;
+		if Counter == 58 then Device58 = Buffer endif;
+		if Counter == 59 then Device59 = Buffer endif;
+		if Counter == 60 then Device60 = Buffer endif;
+		if Counter == 61 then Device61 = Buffer endif;
+		if Counter == 62 then Device62 = Buffer endif;
+		if Counter == 63 then Device63 = Buffer endif;
+		if Counter == 64 then Device64 = Buffer endif;
+		if Counter == 65 then Device65 = Buffer endif;
+		if Counter == 66 then Device66 = Buffer endif;
+		if Counter == 67 then Device67 = Buffer endif;
+		if Counter == 68 then Device68 = Buffer endif;
+		if Counter == 69 then Device69 = Buffer endif;
+		if Counter == 70 then Device70 = Buffer endif;
+		if Counter == 71 then Device71 = Buffer endif;
+		if Counter == 72 then Device72 = Buffer endif;
+		if Counter == 73 then Device73 = Buffer endif;
+		if Counter == 74 then Device74 = Buffer endif;
+		if Counter == 75 then Device75 = Buffer endif;
+		if Counter == 76 then Device76 = Buffer endif;
+		if Counter == 77 then Device77 = Buffer endif;
+		if Counter == 78 then Device78 = Buffer endif;
+		if Counter == 79 then Device79 = Buffer endif;
+		if Counter == 80 then Device80 = Buffer endif;
+		if Counter == 81 then Device81 = Buffer endif;
+		if Counter == 82 then Device82 = Buffer endif;
+		if Counter == 83 then Device83 = Buffer endif;
+		if Counter == 84 then Device84 = Buffer endif;
+		if Counter == 85 then Device85 = Buffer endif;
+		if Counter == 86 then Device86 = Buffer endif;
+		if Counter == 87 then Device87 = Buffer endif;
+		if Counter == 88 then Device88 = Buffer endif;
+		if Counter == 89 then Device89 = Buffer endif;
+		if Counter == 90 then Device90 = Buffer endif;
+		if Counter == 91 then Device91 = Buffer endif;
+		if Counter == 92 then Device92 = Buffer endif;
+		if Counter == 93 then Device93 = Buffer endif;
+		if Counter == 94 then Device94 = Buffer endif;
+		if Counter == 95 then Device95 = Buffer endif;
+		if Counter == 96 then Device96 = Buffer endif;
+		if Counter == 97 then Device97 = Buffer endif;
+		if Counter == 98 then Device98 = Buffer endif;
+		if Counter == 99 then Device99 = Buffer endif;
+		if Counter == 100 then Device100 = Buffer endif;
+		Counter=Counter+1
+		
+	} endif;
+	len = 0u16
+}endif
+
+:end
+	
+
+
+// OW Extender einbinden
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin OWextender(Name,IPowExtender,Sensor,Type,Startabfrage)
+:info $OneWire Sensorabfrage über OneWire-Extender. Liest zyklisch die Temperatur oder Luftfeuchte eines Sensors(DS18S20 oder DS18B20 oder DS2438) am OneWire aus und speichert den Wert in der Variable Name_Value als f16 Wert.$\\
+      $Der Name, z.B. "Wohnzimmer_Temperatur" oder "Luftfeuchte_Keller"$\\
+      $IP-Adresse des OW-Extenders z.B. 192.168.2.200$\\
+      $Sensor: Familie und Typ. z.B. 28.AF6A0E020000$\\
+      $Type der Abfrage z.B. temperature, temperature10, humidity$\\
+      $Abfragezyklus z.B. cycle(60.0)$
+:shortinfo $Sensorabfrage über OW-Extender$
+
+// if you want to observe the actions please comment #undef DEBUG like this //#undef DEBUG
+#define DEBUG 
+//#undef DEBUG
+Name_Debug = ON
+Name_Message=$$
+Name_PosStart=0u16	
+Name_PosDevStart=0u16
+Name_Value = 99.9f16
+Name_Device = $$
+Name_Result= 0u16
+Name_Port=0u16
+Name_IP=100u32
+Name_OwExtenderPort = 80u16
+Name_OwExtenderIP = 100u32 
+Name_ok= 96u16
+Name_connect=99u08
+Name_close=99u08
+
+if (Startabfrage == EIN) then {
+	Name_OwExtenderIP=resolve($^IPowExtender^$)
+}endif
+// TCP Verbindung aufmachen
+if after(Startabfrage == EIN,60u64) then {
+    Name_connect=connecttcp(Name_OwExtenderPort,Name_OwExtenderIP)
+} endif
+
+// Zeit > 600 wird problematisch
+if after(Startabfrage == EIN,500u64) then {
+	#ifdef DEBUG
+	if Name_Debug==ON then write('1/1/1'c14,$send: $c14+$^Sensor^$c14) endif;
+	#endif  
+	sendtcp(Name_OwExtenderPort,Name_OwExtenderIP,$GET /cgi-bin/owget?$+$^Sensor^$+$/$+$^Type^$+$ HTTP/1.1$,0x0D,0x0A, $Host: $+$^Name_OwExtenderIP^$, 0x0D,0x0A,0x0D,0x0A)
+} endif
+
+Name_Type_test='1/1/1'c14
+Name_Garbage=$$
+// Es kommt 1 Paket an
+if event(readtcp(Name_Port,Name_IP,Name_Message)) and Name_IP == Name_OwExtenderIP and Name_Port==Name_OwExtenderPort then {
+	#ifdef DEBUG
+	if Name_Debug==ON then write('1/1/1'c14,$read: $c14+$^Sensor^$c14) endif;
+	#endif 
+	/* < 130 = Teilstring, nicht verwertbar */
+	if size(Name_Message) > 130u16 then {
+		/* sucht nacht text/plain */;
+		Name_PosDevStart=find(Name_Message,$text/plain$,0u16)+18u16;
+		#ifdef DEBUG
+		if Name_Debug==ON then write('1/1/1'c14,$DevStart: $c14 + convert(Name_PosDevStart,$$c14)) endif;
+		#endif 
+		#ifdef DEBUG
+		if Name_Debug==ON then write('1/1/1'c14,$M-size: $c14 + convert(size(Name_Message),$$c14)) endif;
+		#endif 
+		/* Kontrolle, ob das Telegramm passt (wenn der Gerätenamen im String enthalten ist)*/;
+		Name_Result=find(Name_Message,$^Sensor^$,0u16);
+		#ifdef DEBUG
+		if Name_Debug==ON then write('1/1/1'c14,$result: $c14 + convert(Name_Result,$$c14)) endif;
+		#endif 
+		/* Temperatursensor wegen StartPos */;
+		if Name_Result==Name_ok and $^Type^$==$temperature$ then { 
+			Name_PosStart=find(Name_Message,$^Type^$,0u16)+17u16
+		} endif;
+		/* Temperatursensor9 wegen StartPos */;
+		if Name_Result==Name_ok and $^Type^$==$temperature9$ then { 
+			Name_PosStart=find(Name_Message,$^Type^$,0u16)+18u16
+		} endif;
+		/* Temperatursensor10 wegen StartPos */;
+		if Name_Result==Name_ok and $^Type^$==$temperature10$ or $^Type^$==$temperature11$ or$^Type^$==$temperature12$ then { 
+			Name_PosStart=find(Name_Message,$^Type^$,0u16)+19u16
+		} endif;
+		/* Feuchtesensor wegen StartPos */;
+		if Name_Result==Name_ok and $^Type^$==$humidity$ then { 
+			Name_PosStart=find(Name_Message,$^Type^$,0u16)+14u16
+		} endif;
+		#ifdef DEBUG
+		if Name_Debug==ON and  Name_Result==Name_ok then {
+			write('1/1/1'c14,$pos:$c14+$ $c14+convert(Name_PosStart,$$c14));
+			write('1/1/1'c14,$vout:$c14+$ $c14+convert(convert(split(Name_Message,Name_PosStart,Name_PosStart+4u16),1.1f16),$$c14));
+			write('1/1/1'c14,$size:$c14+$ $c14+convert(size(split(Name_Message,Name_PosStart,Name_PosStart+4u16)),$$c14))
+		} endif;
+		#endif 
+		/* wenn Wert > 0 und Telegramm den richtigen Sensornamen enthält, der Variable den Wert übergeben */;
+		if size(split(Name_Message,Name_PosStart,Name_PosStart+4u16))>0u16 and  Name_Result==Name_ok then {
+			Name_Value=convert(split(Name_Message,Name_PosStart,Name_PosStart+4u16),0.0f16)
+			#ifdef DEBUG
+			;if Name_Debug==ON then write('1/1/1'c14,$v:$c14+$ $c14+convert(Name_Value,$$c14)) endif
+			#endif 
+		} endif
+	} else {
+		write('1/1/1'c14,$invalid telegr$c14);
+		Name_Garbage = Name_Message
+	} endif
+} endif
+
+// TCP Verbindung wieder ordentlich schließen
+if after(Startabfrage,1000u64) then {
+   Name_close=closetcp(Name_Port,Name_IP)
+} endif
+:end
+
+
+
+// OW Extender einbinden, GA
+// @date	11.01.2012
+// @version	1 
+// @author	Stefanie Meier
+:begin OWextenderGA(Name,IPowExtender,Sensor,Type,GA,Startabfrage)
+:info $OneWire Sensorabfrage über OneWire-Extender. Liest zyklisch die Temperatur oder Luftfeuchte eines Sensors(DS18S20 oder DS18B20 oder DS2438) am OneWire aus und speichert den Wert in der Variable Name_Value als f16 Wert.$\\
+      $Der Name, z.B. "Wohnzimmer_Temperatur" oder "Luftfeuchte_Keller"$\\
+      $IP-Adresse des OW-Extenders z.B. 192.168.2.200$\\
+      $Sensor: Familie und Typ. z.B. 28.AF6A0E020000$\\
+      $Type der Abfrage z.B. temperature, temperature10, humidity$\\
+      $Gruppenadresse auf die der Wert geschrieben werden soll (Datentyp f16$\\
+      $Abfragezyklus z.B. cycle(60.0)$
+:shortinfo $Sensorabfrage über OW-Extender$
+
+// if you want to observe the actions please comment #undef DEBUG like this //#undef DEBUG
+#define DEBUG 
+#undef DEBUG
+Name_Debug = ON
+Name_Message=$$
+Name_PosStart=0u16	
+Name_PosDevStart=0u16
+Name_Value = 99.9f16
+Name_Device = $$
+Name_Result= 0u16
+Name_Port=0u16
+Name_IP=100u32
+Name_OwExtenderPort = 80u16
+Name_OwExtenderIP = 100u32 
+Name_ok= 96u16
+
+if (Startabfrage == EIN) then {
+	Name_OwExtenderIP=resolve($^IPowExtender^$)
+}endif
+// TCP Verbindung aufmachen
+if after(Startabfrage == EIN,60u64) then {
+    connecttcp(Name_OwExtenderPort,Name_OwExtenderIP)
+} endif
+
+// Zeit > 600 wird problematisch
+if after(Startabfrage == EIN,500u64) then {
+	#ifdef DEBUG
+	if Name_Debug==ON then write('1/1/1'c14,$send: $c14+$^Sensor^$c14) endif;
+	#endif 
+	sendtcp(Name_OwExtenderPort,Name_OwExtenderIP,$GET /cgi-bin/owget?$+$^Sensor^$+$/$+$^Type^$+$ HTTP/1.1$,0x0D,0x0A, $Host: $+$^Name_OwExtenderIP^$, 0x0D,0x0A,0x0D,0x0A)
+} endif
+
+Name_Type_test='1/1/1'c14
+
+
+// Es kommt 1 Paket an
+if event(readtcp(Name_Port,Name_IP,Name_Message)) and Name_IP == Name_OwExtenderIP then {
+	#ifdef DEBUG
+	if Name_Debug==ON then write('1/1/1'c14,$read: $c14+$^Sensor^$c14) endif;
+	#endif 
+	/* sucht nacht text/plain */;
+	Name_PosDevStart=find(Name_Message,$text/plain$,0u16)+18u16;
+
+	/* Kontrolle, ob das Telegramm passt (wenn der Gerätenamen im String enthalten ist)*/;
+	Name_Result=find(Name_Message,$^Sensor^$,0u16);
+        /* Temperatursensor wegen StartPos */;
+	if Name_Result==Name_ok and $^Type^$==$temperature$ then { 
+		Name_PosStart=find(Name_Message,$^Type^$,0u16)+17u16
+	} endif;
+	/* Temperatursensor9 wegen StartPos */;
+	if Name_Result==Name_ok and $^Type^$==$temperature9$ then { 
+		Name_PosStart=find(Name_Message,$^Type^$,0u16)+18u16
+	} endif;
+	/* Temperatursensor10 wegen StartPos */;
+	if Name_Result==Name_ok and $^Type^$==$temperature10$ or $^Type^$==$temperature11$ or$^Type^$==$temperature12$ then { 
+		Name_PosStart=find(Name_Message,$^Type^$,0u16)+19u16
+	} endif;
+	/* Feuchtesensor wegen StartPos */;
+	if Name_Result==Name_ok and $^Type^$==$humidity$ then { 
+		Name_PosStart=find(Name_Message,$^Type^$,0u16)+14u16
+	} endif;
+	#ifdef DEBUG
+	if Name_Debug==ON and  Name_Result==Name_ok then {
+		write('1/1/1'c14,$pos:$c14+$ $c14+convert(Name_PosStart,$$c14));
+		Name_Value=convert(split(Name_Message,Name_PosStart,Name_PosStart+4u16),0.0f16);
+		write('1/1/1'c14,$vout:$c14+$ $c14+convert(Name_Value,$$c14))
+	} endif;
+	#endif 
+	/* wenn Wert > 0 und Telegramm den richtigen Sensornamen enthält, der Variable den Wert übergeben */;
+	if size(split(Name_Message,Name_PosStart,Name_PosStart+4u16))>0u16 and  Name_Result==Name_ok then {
+		Name_Value=convert(split(Name_Message,Name_PosStart,Name_PosStart+4u16),0.0f16)
+		#ifdef DEBUG
+		;if Name_Debug==ON then write('1/1/1'c14,$v:$c14+$ $c14+convert(Name_Value,$$c14)) endif
+		#endif 
+	} endif;
+	Name_Result= 0u16;
+	Name_PosStart= 0u16
+} endif
+
+// TCP Verbindung wieder ordentlich schließen
+if after(Startabfrage,1000u64) then {
+   closetcp(Name_Port,Name_IP)
+} endif
+
+if change(Name_Value) then write(GA,Name_Value) endif
+
+:end
+

@@ -1,0 +1,10 @@
+[Macros]
+//Das Licht geht durch den Schalter für 20 Sekunden an und danach wieder aus.
+TreppenhausLicht("Schalter-0/2/6","SpeisLicht-1/1/5",20)
+[MacroLibs]
+EnertexLicht.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

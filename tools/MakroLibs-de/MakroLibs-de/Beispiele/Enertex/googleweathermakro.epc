@@ -1,0 +1,13 @@
+[Macros]
+// Täglich um 5 Uhr die Vorhersage abfragen
+GoogleWetter(Zuhause,91301,Germany,htime(5,0,0))
+[MacroLibs]
+//Makro-Bibliotheken
+Enertex.lib
+[EibPC]
+// Es wurde definiert:
+// Google_Zuhause_Wolken    : Vohersage der Wolken
+// Google_Zuhause_Temperatur: Temperatur des akt. Tages
+// Google_Zuhause_Luftfeuchte: Luftfeuchte des akt. Tages
+// Google_Zuhause_VorhersageMin: Minimale Temperatur des nächstem Tages
+// Google_Zuhause_VorhersageMax:  Maximale Temperatur des nächstem Tages

@@ -1,0 +1,12 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]

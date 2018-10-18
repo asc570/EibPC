@@ -1,0 +1,21 @@
+[WebServer]
+page(KellerHeizungID)[$Keller$,$Heizung$] 
+pshifter(2)[ICE]$Heizregler sperren$ 
+
+[Macros]
+UmschaltButtonZweiIconsVar( 2,1,SperreHeizung_Keller_Heizung,ICE,TEMPERATURE,BRIGHTRED,INACTIVE)
+
+
+[MacroLibs]
+//Makro-Bibliotheken
+./EnertexWebV2.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+./Haus.esf
+ 
+[EibPC]
+KellerHeizungID=1
+// Diese binäre Variable wird bei jedem Drücken auf den shifter der Webseite getoggelt. Dabei
+// wird für jeden Zusatnd (EIN oder AUS) jeweils ein andere Icon agezeigt.
+SperreHeizung_Keller_Heizung=EIN

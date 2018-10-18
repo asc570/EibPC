@@ -1,0 +1,805 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Anbindung an Command Fusion 
+//
+//  Version              : v1.010
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2010/09/30 14:50:09 $
+//  Version              : $Revision: 1.2 $
+//----------------------------------------------------------------------
+
+:begin CommandFusion(Name,IPSender, Pass)
+:info $Dieses Makro initialisiert den EibPC TCP Server für die Anbindung an eine Command-Fusion Oberfläche, z.B. IPhone oder IPod Touch. Sie benötigen dieses \\
+Makro einmal in Ihrem System pro Client. Wenn Sie mit mehr als einem Client arbeiten wollen, vergeben Sie entsprechend weitere Namen (IPhone, IPad) und geben \\
+diese bei den Join-Makros an. Sie müssen die IP Adresse des EibPCs in ihrem Projekt (guiDesigner) unter den Projekteinstellungen (Edit/Project Properties) \\
+im Feld "IP Address" angeben. Als Port müssen Sie dort 4809 eintragen. Um die Visu auf Ihr Iphone hochzuladen, nutzen Sie guiDesigner (File-Upload Service). \\
+Dazu müssen Sie auf dem IPhone zunächst in den Einstellungen zum iViewer im Feld "File Url" dasselbe wie im Upload Service angezeigt \\
+eingeben und "Reload GUI" wählen. Anschließend einmal iViewer starten und bedienen. Am Ende der Session die Einstellung "Reload GUI" deaktivieren, damit die GUI im \\
+Iphone gespeichert bleibt.$\\
+      $Vergeben Sie einen Namen für Ihre Anbindung, ohne Leerzeichen, z.B CF, IPhone1, IPad etc.$\\
+      $Geben, Sie an, mit welcher IP Adresse das Iphone sich anmeldet. Wenn Sie dies nicht wissen oder nur einen einzelnen Command Fusion Client,\\
+ d.h. ein einziges IPhone verwenden, geben Sie 0.0.0.0 ein.$\\
+      $Geben Sie das Passwort an, welches Sie im Command Fusion APP (Einstellungen) vergeben haben.$
+:shortinfo $EibPC an Command Fusion koppeln.$
+
+// if you want to observe the actions please change this to ON
+Name_Debug=OFF
+// Do show if an unknown message occur
+Name_Unknown=OFF
+Name_Dummy='1/2/3'c14 
+// der Client
+Name_IPC=0u32
+Name_SenderPort=0u16
+Name_Port=8019u16
+// Password
+Name_PASS=$^Pass^$
+Name_HeartBeat=$h=1$
+// connection 
+Name_Connected=AUS
+Name_Next=AUS
+// Endlimiter
+Name_EndLimiter=$ $
+// Incomming Message
+Name_Message=$$
+// Queue for all Mesages
+Name_MQueue=$$
+// A single command 
+Name_Command=$$
+Name_Arg=$$
+Name_CommandCount=0
+// Some String Data
+Name_String=$$
+Name_Send=$$
+Name_Pos=0u16
+Name_PosCount=0u16
+// Init 
+Name_Init=OFF
+// error 1: Too many unhandled Commands 
+Name_error=1
+// Heartbeat Message
+Name_MHeartbeat=ON
+Name_LastHeartbeat=OFF
+// Portrait Message
+Name_Portrait=ON
+// EachMessage is limited by an Hex 03 Value (ASCII EOT)
+if systemstart() then {
+        stringset(Name_EndLimiter,3,0u16);
+ 	stringset(Name_HeartBeat,3,size(Name_HeartBeat)); 
+} endif 
+
+//------------------------------------------------------------
+//
+//    Message Handling in MQueue
+//
+//-------------------------------------------------------------
+if event(readtcp(Name_Port,Name_IPC,Name_Message)) and (IPSender==0u32 or Name_IPC==IPSender) then {
+	if (size(Name_MQueue)+size(Name_Message))>=END then Name_error=1 endif;
+	/* We insert an EndLimiter in Queue to make things easier */;
+	if Name_Connected and size(Name_MQueue)!=0u16 then {
+		Name_MQueue=Name_MQueue+Name_Message;
+		if Name_Debug then { 
+			write('1/2/3'c14,$OM:$c14+convert(Name_Message,$$c14)) 
+		} endif
+	} endif; 
+	if !Name_Connected or (Name_Connected and size(Name_MQueue)==0u16) then {	
+		Name_MQueue=Name_EndLimiter+Name_Message;
+		/* Init Data if an incomplete Message was in Queue*/;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+        Name_CommandCount=0;
+        Name_Command=$$;
+		if Name_Debug then { 
+			write('1/2/3'c14,$NM:$c14+convert(Name_Message,$$c14)) 
+		} endif
+	} endif;  
+	/* Initiate Command Scheduler*/;
+	if size(Name_Command)==0u16 then Name_Next=!Name_Next endif
+} endif
+
+
+//------------------------------------------------------------
+//
+//    Next Telegramms in MQueue: Commands to schedule
+//
+//    We provide a small delay, to keep processing alive, if 
+//    Bustransfers are performed each time a Messages is arriving
+//-------------------------------------------------------------
+
+if after(change(Name_Next),1u64) then { 
+	Name_PosCount=Name_PosCount+1u16;
+	Name_Pos=find(Name_MQueue,Name_EndLimiter,Name_PosCount-1u16)+1u16;
+	Name_String=split(Name_MQueue,Name_Pos,find(Name_MQueue,Name_EndLimiter,Name_PosCount)-1u16);
+	Name_Command=split(Name_String,0u16,find(Name_String,$=$,0u16)-1u16);
+	Name_Arg=split(Name_String,find(Name_String,$=$,0u16)+1u16,END);
+	if Name_Pos==EOS or Name_Pos==size(Name_MQueue) then {
+		Name_MQueue=$$;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+	        Name_Command=$$;
+		Name_CommandCount=0;
+		if Name_Debug then {
+			write('1/2/3'c14,$Ready$c14)
+		} endif
+	} endif;
+	Name_CommandCount=Name_CommandCount+1;
+	if Name_Debug then {
+		if Name_Pos!=EOS and Name_Pos!=size(Name_MQueue) then{
+			write('1/2/3'c14,$N:$c14+convert(Name_Command+$=$+Name_Arg,$$c14))
+		} endif
+	} endif
+} endif 
+
+
+//-----------------------------------------------------------
+// Commands
+//-----------------------------------------------------------
+
+//------------------------------------------------------------
+//
+//    Password Command
+//
+//-------------------------------------------------------------
+if Name_Command==$p$ then {
+	if Name_Arg==Name_PASS then {
+		Name_Send=$p=ok $;
+	        stringset(Name_Send,3,size(Name_Send)-1u16);
+		Name_Connected=EIN;
+		Name_MHeartbeat==EIN;
+		sendtcp(Name_Port,Name_IPC,Name_Send);
+		if Name_Debug then write('1/2/3'c14,$Pass ok$c14) endif; 
+        } endif;
+	if Name_Arg!=Name_PASS then {
+		Name_Send=$p=bad $;
+ 		stringset(Name_Send,3,size(Name_Send)-1u16);
+	        Name_Connected=AUS;
+		Name_Init=AUS;
+		if Name_Debug then write('1/2/3'c14,$NoP$c14+convert(Name_Arg,$$c14)) endif; 
+		sendtcp(Name_Port, Name_IPC,Name_Send)
+        } endif; 
+	Name_Next=!Name_Next
+} endif 
+
+//------------------------------------------------------------
+//
+//    Heartbeat Command
+//
+//-------------------------------------------------------------
+if Name_Command==$h$ and Name_Arg==$0$ and Name_Connected then { 
+ 	Name_MHeartbeat=EIN;
+	sendtcp(Name_Port,Name_IPC,Name_HeartBeat);
+	Name_LastHeartbeat=!Name_LastHeartbeat;
+	if Name_Debug then write('1/2/3'c14,convert(Name_HeartBeat,$$c14))  endif; 
+	Name_Next=!Name_Next
+} endif 
+
+if Name_Connected and delay(change(Name_LastHeartbeat),2800u64) then {
+	sendtcp(Name_Port,Name_IPC,Name_HeartBeat);
+	Name_LastHeartbeat=!Name_LastHeartbeat
+} endif
+//------------------------------------------------------------
+//
+//   Disconnect 
+//
+//-------------------------------------------------------------
+// After 7 seconds without any Heartbeat kill connection
+if cycle(0,7) then {
+	if Name_MHeartbeat==AUS and Name_Connected then {
+		Name_Connected=AUS;
+		Name_Init=AUS;
+		Name_MQueue=$$;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+	        Name_Command=$$;
+		if Name_Debug then write('1/2/3'c14,$Timeout$c14)  endif
+	} endif;
+	if Name_Connected then Name_MHeartbeat=AUS endif
+} endif 
+	
+//------------------------------------------------------------
+//
+//   Portrait Command
+//
+//-------------------------------------------------------------
+if Name_Command==$m$ and Name_Connected then { 
+ 	if Name_Arg==$portrait$ then { 
+		Name_Portrait=EIN
+	} endif;
+	if Name_Arg==$landscape$ then { 
+	 	Name_Portrait=AUS
+        } endif;
+	if Name_Debug then write('1/2/3'c14,convert(Name_Command+$=$+Name_Arg,$$c14))  endif; 	
+	Name_Next=!Name_Next
+} endif 
+//------------------------------------------------------------
+//
+//    Initializing Command
+//
+//-------------------------------------------------------------
+if Name_Command==$i$ and Name_Arg==$1$ and Name_Connected then { 
+	if Name_Debug then write('1/2/3'c14,$Init$c14)  endif; 
+	Name_Init=EIN;
+	Name_Next=!Name_Next	 
+} endif  
+
+
+//------------------------------------------------------------
+//
+//    Unkown command: After 100ms each command must have been 
+//    processed otherewise it is cancled 
+//
+//-------------------------------------------------------------
+if delay(change(Name_CommandCount),100u64) and Name_Command!=$$ and Name_Connected then { 
+	Name_error=2; 
+	if Name_Debug or Name_Unknown then write('1/2/3'c14,$U:$c14+convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 
+	Name_Next=!Name_Next;
+} endif
+
+:end
+
+
+//------------------------------------------------------------
+// Joins mit GA
+//------------------------------------------------------------
+
+
+:begin JoinGA(Name,JoinID,GA)
+:info $Dieses Makro verbindet eine Gruppenadresse mit einen Join des Command Fusion Teilnehmers. Es wird wie bei einem Taster geschalten: "Drücken EIN, Loslassen AUS".$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Taster" für eine beliebige GA, z.B. 1 Bit: "Drücken EIN Loslassen AUS"$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+	write(GA,convert(Name_Arg,GA));	
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(GA)  and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(GA,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(GA,$$)!=$0$ and convert(GA,$$)!=$0.0$ and convert(GA,$$)!=$0.000000e+00$ then {
+             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+:end
+
+
+:begin Join2GA(Name,JoinID,GA,StatusGA)
+:info $Dieses Makro verbindet den angebenen Join des Command Fusion Teilnehmers mit der Gruppenadresse. Es wird wie bei einem Taster geschalten: "Drücken EIN, Loslassen AUS". Bei Änderung des Inhalts der StatusGruppenadresse\\
+(Telegramme auf dem KNX Bus) wird der Join an den Command Fusion Teilnehmer übermittelt. Wenn Command Fusion sendet, wird der Wert auf die Gruppenadresse gesendet$\\
+      $Der Name Ihrer Anbindung, z.B CommandFusion$\\
+      $Der Bezeichner des Joins, z.B. d1 oder a123 oder s72$\\
+      $Die Gruppenadresse, die mit dem Join als Eingang verbunden werden soll$\\
+      $Eine Statusgruppenadresse oder Variable, die mit dem Join als Ausgang verbunden werden soll$
+:shortinfo $Command Fusion - Join für GA und separater StatusGA$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+	write(GA,convert(Name_Arg,GA));	
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(StatusGA)  and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusGA,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(StatusGA,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(StatusGA,$$)!=$0$ and convert(StatusGA,$$)!=$0.0$ and convert(StatusGA,$$)!=$0.000000e+00$ then {
+             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusGA,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end
+
+
+:begin JoinToggleGA(Name,JoinID,GA)
+:info $Dieses Makro verbindet eine 1-Bit Gruppenadresse mit einen Join des Command Fusion Teilnehmers. \\
+ Wenn Command Fusion sendet, wird der Wert auf die Gruppenadresse in Form eines Umschalters gesendet.\\
+ Beim Senden des Join-Werts 1, wird die Gruppenadresse invertiert auf den Bus geschrieben ('getoggelt').$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Umschalter" für eine 1-Bit GA$
+
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,0b01) then {
+    	write(GA,!GA)
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(GA) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(GA,$$)!=$0$ and convert(GA,$$)!=$0.0$ and convert(GA,$$)!=$0.000000e+00$ then {
+      		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+:end
+
+:begin JoinToggle2GA(Name,JoinID,GA,StatusGA)
+:info $Dieses Makro verbindet eine beliebige Gruppenadresse mit einen Join des Command Fusion Teilnehmers. \\
+ Wenn Command Fusion sendet, wird der Wert auf die Gruppenadresse bei 1-Bit Objekten in Form eines Umschalters gesendet\\
+ Beim Senden des Join-Werts 1, wird die Gruppenadresse invertiert auf den Bus geschrieben (1 Bit GA: 'getoggelt').\\
+ Durch eine Statusgruppenadresse wird der Join nachgeführt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$\\
+      $Die Gruppenadresse, die den Join nachführt$
+:shortinfo $Join "Umschalter" für eine 1 Bit GA, mit gesondertem Statusobjekt$
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,0b01) then {
+    	write(GA,!StatusGA)
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(StatusGA) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusGA,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(StatusGA,$$)!=$0$ and convert(StatusGA,$$)!=$0.0$ and convert(StatusGA,$$)!=$0.000000e+00$ then {
+      		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusGA,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+:end
+
+
+:begin JoinVar(Name,JoinID,Var)
+:info $Dieses Makro verbindet eine 1-Bit Variable mit einen Join des Command Fusion Teilnehmers. \\
+Wenn Command Fusion sendet, wird der Wert auf die Variable in Form eines Tasters EIN/AUS gesendet: "Drücken EIN, Loslassen AUS"$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Variable, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Taster" für beliebige Variablen,z.B. 1-Bit Variablen: "Drücken EIN Loslassen AUS"$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+	Var=convert(Name_Arg,Var);	
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+  
+// Answering 
+if change(Var) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(Var,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(Var,$$)!=$0$ and convert(Var,$$)!=$0.0$ and convert(Var,$$)!=$0.000000e+00$ then {
+       		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+:end
+
+
+:begin Join2Var(Name,JoinID,Var,StatusVar)
+:info $Dieses Makro verbindet eine beliebige Variable mit einen Join des Command Fusion Teilnehmers. \\
+Wenn Command Fusion sendet, wird der Wert auf die Variable in Form der Vorgabe des Joins, bei 1 Bit Objekten in der Form eines Tasters EIN/AUS gesendet: "Drücken EIN, Loslassen AUS"\\
+Durch eine StatusVariable wird der Join nachgeführt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Variable, die mit dem Join des Command Fusion verbunden werden soll$\\
+      $Die Variable, die den Join nachführt$
+:shortinfo $Join "Taster" für beliebige Variablen,z.B. 1-Bit Variablen: "Drücken EIN Loslassen AUS" mit gesondertem Statusobjekt$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+	Var=convert(Name_Arg,Var);	
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(StatusVar) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(StatusVar,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(StatusVar,$$)!=$0$ and convert(StatusVar,$$)!=$0.0$ and convert(StatusVar,$$)!=$0.000000e+00$ then {
+       		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end
+
+
+:begin JoinToggleVar(Name,JoinID,Var)
+:info $Dieses Makro verbindet eine 1-Bit Variable mit einen Join des Command Fusion Teilnehmers. \\
+ Wenn Command Fusion sendet, wird der Wert auf die Variable in Form eines Umschalters gesendet.\\
+ Beim Senden des Join-Werts 1, wird auf die Variable invertiert geschrieben ('getoggelt').$\\
+       $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+       $Der Bezeichner des Joins, z.B. d100 $\\
+       $Die Variable, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Umschalter" für eine 1-Bit Variable$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,0b01) then {
+    	Var=!Var
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(Var) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(Var,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(Var,$$)!=$0$ and convert(Var,$$)!=$0.0$ and convert(Var,$$)!=$0.000000e+00$ then {
+   		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end 
+
+
+:begin JoinToggle2Var(Name,JoinID,Var,StatusVar)
+:info $Dieses Makro verbindet eine  1-Bit Variable mit einen Join des Command Fusion Teilnehmers.\\
+Wenn Command Fusion sendet, wird der Wert auf die Variable in Form eines Umschalters gesendet.\\
+Beim Senden des Join-Werts 1, wird auf die Variable invertiert geschrieben ('getoggelt').\\
+Durch eine StatusVariable wird der Join nachgeführt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 $\\
+      $Die Variable, die mit dem Join des Command Fusion verbunden werden soll$\\
+      $Die Variable, die den Join nachführt$
+:shortinfo $Join "Umschalter" für eine 1-Bit Variable mit gesondertes Statusobjekt$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,0b01) then {
+    	Var=!StatusVar
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(StatusVar) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(StatusVar,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(StatusVar,$$)!=$0$ and convert(StatusVar,$$)!=$0.0$ and convert(StatusVar,$$)!=$0.000000e+00$ then {
+   		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end 
+
+
+:begin JoinPushOn(Name,JoinID,GA)
+:info $Dieses Makro verbindet eine  1-Bit Gruppenadresse mit einen Join des Command Fusion Teilnehmers. \\
+Wenn Command Fusion sendet, wird der Wert auf die Gruppenadresse in Form eines Tasters EIN gesendet.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100$\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Taster" für eine 1-Bit GA, "Drücken EIN"$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if Name_Arg==$1$ then write(GA,convert($1$,GA)) endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+//// Answering 
+//if change(GA)  and Name_Connected then {
+//	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter);
+//	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(GA,$$c14)) endif
+// } endif 
+//
+// Initializing
+//if Name_Init and Name_Connected then {
+//       if convert(GA,$$)!=$0$ and convert(GA,$$)!=$0.0$ and convert(GA,$$)!=$0.000000e+00$ then {
+//             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter)
+//       } endif 
+//} endif 
+
+:end
+
+
+:begin JoinPushOff(Name,JoinID,GA)
+:info $Dieses Makro verbindet eine  1-Bit Gruppenadresse mit einen Join des Command Fusion Teilnehmers. \\
+Wenn Command Fusion sendet, wird der Wert auf die Gruppenadresse in Form eines Tasters AUS gesendet.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100$\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join "Taster" für eine 1-Bit GA, "Drücken AUS"$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+   	if Name_Arg==$1$ then write(GA,convert($0$,GA)) endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+//if change(GA)  and Name_Connected then {
+//	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter);
+//	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(GA,$$c14)) endif
+// } endif 
+
+// Initializing
+//if Name_Init and Name_Connected then {
+//      if convert(GA,$$)!=$0$ and convert(GA,$$)!=$0.0$ and convert(GA,$$)!=$0.000000e+00$ then {
+//             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(GA,Name_Arg)+Name_EndLimiter)
+//       } endif 
+//} endif 
+
+:end
+
+
+:begin JoinStatus(Name,JoinID,StatusVar)
+:info $Dieses Makro verbindet eine Gruppenadresse oder Variable mit einen Join des Command Fusion Teilnehmers. \\
+Bei Änderung des Inhalts einer GA oder Variable wird der Wert an den Command Fusion Teilnehmer übermittelt. \\
+Wenn Command Fusion sendet, wird der Wert ignoriert.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. d100 oder s3100$\\
+      $Die Gruppenadresse oder Variable, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join für das Anzeigen einer GA oder Variable$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    /* Do nothing */;
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(StatusVar) and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(StatusVar,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if convert(StatusVar,$$)!=$0$ and convert(StatusVar,$$)!=$0.0$ and convert(StatusVar,$$)!=$0.000000e+00$ then {
+       		      sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(StatusVar,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end
+
+:begin JoinDimmer(Name,JoinID,GA)
+:info $Dieses Makro verbindet eine Gruppenadresse vom Typ u08 mit einen analogen Join des Command Fusion Teilnehmers. \\
+Der analoge Join wird dabei passend auf einen Dimmerwert (%) skaliert.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. a123$\\
+      $Die Gruppenadresse vom Datentyp u08 (%-Wert), die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join für einen Dimmer$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+   	if convert(convert(Name_Arg,0u16)/256u16,0)!=GA then write(GA,convert(convert(Name_Arg,0u16)/256u16,0)) endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$,$$c14)+convert(convert(Name_Arg,0u16)/256u16,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering delayed
+if after(change(GA),500u64)  and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(convert(GA,0u16)*255u16,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($R^JoinID^$+$=$,$$c14)+convert(convert(GA,0u16)*255u16,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+       if GA!=0 then {
+             sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(convert(GA,0u16)*255u16,Name_Arg)+Name_EndLimiter)
+       } endif 
+} endif 
+
+:end
+
+:begin JoinMinMax(Name,JoinID,GA,Min,Max)
+:info $Dieses Makro verbindet eine Gruppenadresse mit einen analogen Join des Command Fusion Teilnehmers. \\
+Der analoge Join wird dabei passend auf einen Wert im Datenbereich der GA skaliert.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, z.B. a123$\\
+      $Die Gruppenadresse, die mit dem Join des Command Fusion verbunden werden soll$\\
+      $Minimal erlaubter Wert$\\
+      $Maximal erlaubter Wert$
+:shortinfo $Join für einen analogen Wert mit Min-Max Angabe$
+
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+Name_Skal_JoinID=65365f16/(Max^f16-Min^f16)
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+   	if convert(convert(Name_Arg,0f16)/Name_Skal_JoinID,GA)!=GA then write(GA,convert(Min^f16+convert(Name_Arg,0f16)/Name_Skal_JoinID,GA)) endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$,$$c14)+convert(convert(Name_Arg,0f16)/Name_Skal_JoinID,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering delayed
+if after(change(GA),500u64)  and Name_Connected then {
+	sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Min^f16+convert(GA,0f16)*Name_Skal_JoinID,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('1/2/3'c14,convert($^JoinID^$+$=$,$$c14)+convert(convert(GA,0f16)*Name_Skal_JoinID,$$c14)) endif
+ } endif 
+
+// Initializing
+if Name_Init and Name_Connected then {
+              sendtcp(Name_Port,Name_IPC,$^JoinID^$+$=$+convert(Min^f16+convert(GA,0f16)*Name_Skal_JoinID,Name_Arg)+Name_EndLimiter)
+} endif 
+
+:end
+
+:begin JoinCommand(Name,JoinID,Commando)
+:info $Dieses Makro verbindet 1 Kommando/Anweisung mit einen Join des Command Fusion Teilnehmers. \\
+Es können mehrere Anweisungen durch Strichpunkt getrennt angegeben werden. Nach der letzten Anweisung steht kein Strichpunkt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, d102$\\
+      $Das Kommando/Anweisung, die mit dem Join des Command Fusion verbunden werden soll$
+:shortinfo $Join zum Ausführen von Befehlen.$
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,0b01) then {
+    	Commando
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+:end
+
+:begin Join2Command(Name,JoinID,Commando1,Commando2)
+:info $Dieses Makro verbindet 2 Kommandos/Anweisungen mit einen Join des Command Fusion Teilnehmers. \\
+Dabei wird zwischen kurzem und langem Tastendruck unterschieden. Es können mehrere Anweisungen durch Strichpunkt \\
+getrennt angegeben werden. Nach der letzten Anweisung steht kein Strichpunkt.$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphone oder ipad oder ... $\\
+      $Der Bezeichner des Joins, d102$\\
+      $Das Kommando/Anweisung, das bei einem kurzen Tastendruck ausgeführt werden soll$ \\
+      $Das Kommando/Anweisung, das bei einem langen Tastendruck ausgeführt werden soll$
+:shortinfo $Join zum Ausführen von Befehlen mit kurzen und langem Tastendruck.$
+//------------------------------------------------------------
+//
+//    Join: Digital, Analog or Serial
+//
+//-------------------------------------------------------------
+Name_JoinID=0
+if Name_Command==$^JoinID^$ and change(Name_CommandCount) and Name_Connected then { 	
+    if convert(Name_Arg,1b01) then {
+    	Name_JoinID=1
+    } endif;
+    if !convert(Name_Arg,1b01) and	Name_JoinID==1 then {
+    	Name_JoinID=2
+    } endif;
+	if Name_Debug then write('1/2/3'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif 
+
+if (Name_JoinID==2) and !after(Name_JoinID==1,500u64) then {
+   Commando1;
+   Name_JoinID=0
+} endif
+if (Name_JoinID==1) and after(Name_JoinID==1,500u64) then {
+   Commando2;
+   Name_JoinID=0
+} endif
+
+:end
+
+

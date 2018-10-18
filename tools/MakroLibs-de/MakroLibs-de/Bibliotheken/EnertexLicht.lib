@@ -1,0 +1,173 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Lichtsteuerungen 
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.10 $
+//----------------------------------------------------------------------
+
+
+// Treppenhauslicht
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin TreppenhausLicht(Schalter, Lichtaktor, Sekunden)
+:info $Sie schalten über die GA "Schalter" die GA "Lichtaktor" für die Zeit in Sekunden. Der Schalter kann auch wiederholt ein EIN-Signal senden und triggert damit den Timer erneut$ \\
+      $Gruppenadresse, auf welcher der Schalter sendet$ \\
+      $Gruppenadresse des LichtAktor zum Schalten des Ausgangs$ \\
+      $Zeit in Sekunden$
+:shortinfo $Treppenhauslicht mit EIN-Taster$
+if event(Schalter) and Schalter then write(Lichtaktor,EIN) endif
+if delay(event(Schalter) and Schalter,Sekunden^000u64) then write(Lichtaktor,AUS) endif
+
+:end
+
+
+// Bewegungsmelder verriegelbar
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin BewegungsmelderVerriegelbar(Bewegungsmelder, Schalter, Lichtaktor)
+:info $Sie schalten über die GA "Bewegungsmelder" die GA "Lichtaktor" ein. Durch Betätigen des Schalter wird die Abschaltung des Bewegungsmelders außer Kraft gesetzt.$ \\
+      $Gruppenadresse des Bewegungsmleders$ \\
+      $Gruppenadresse des Schalters$ \\
+      $Gruppenadresse des Lichtaktors$
+:shortinfo $Bewegungsmelder, manuell überbrückbar.$
+if (Bewegungsmelder==EIN) or (Schalter==EIN) then write(Lichtaktor,EIN) endif
+if (Bewegungsmelder==AUS) and (Schalter==AUS) then write(Lichtaktor,AUS) endif
+
+:end
+
+
+// Dämmerungsschalter
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Daemmerungsschalter(LichtSensor,LichtWert,Lichtaktor)
+:info $Wenn der Lichtsensor den Lichtwert unterschreitet wird der Lichtaktor eingeschalten. Überschreitet der Lichtsensor den Lichtwert, \\
+schaltet der Lichtaktor ab$ \\
+	$Gruppenadresse des Lichtsensor$ \\
+	$Lichtwert, bei dessen Unterschreitung der LichtAktor geschalten werden soll. Angabe in Lux.$ \\
+	$Gruppenadresse des LichtAktor zum Schalten des Ausgangs$
+:shortinfo $Daemmerungsschalter, der einen Lichtaktor bei Dunkelheit ein und bei Helligkeit ausschaltet$
+
+if (convert(LichtSensor, 0u16)<LichtWert^u16) then write(Lichtaktor,EIN) else write(Lichtaktor,AUS) endif
+
+:end
+
+
+// Dämmerungsschalter Zeituhr
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin DaemmerungsschalterZeituhr(LichtSensor,LichtWert,Lichtaktor, StundeAus, MinuteAus, StundeEin, MinuteEin)
+:info $Wenn der Lichtsensor den Lichtwert unterschreitet wird der Lichtaktor eingeschalten. Überschreitet der Lichtsensor den Lichtwert, \\
+schaltet der Lichtaktor ab. \\
+Zusätzlich wird der Lichtaktor zeitgesteuert aus- und eingeschalten. \\
+Z.B. von 22:30Uhr - 6:00Uhr ist der Aktor aus, egal ob es hell oder dunkel ist.$ \\
+	$Gruppenadresse des Lichtsensor$ \\
+	$Lichtwert, bei dessen Unterschreitung der LichtAktor geschalten werden soll. Angabe in Lux.$ \\
+	$Gruppenadresse des LichtAktor zum Schalten des Ausgangs$ \\
+	$Stunde, zu der der Aktor ausgeschalten werden soll$ \\
+	$Minute, zu der der Aktor ausgeschalten werden soll$ \\
+	$Stunde, zu der der Aktor eingeschalten werden soll$ \\
+	$Minute, zu der der Aktor eingeschalten werden soll$
+:shortinfo $Daemmerungsschalter, der einen Lichtaktor zeitlich- und helligkeitsabhängig steuert$
+
+if convert(LichtSensor, 0u16)<LichtWert^u16 then write(Lichtaktor,EIN) endif
+if convert(LichtSensor, 0u16)>LichtWert^u16 then write(Lichtaktor, AUS) endif
+if htime(StundeAus,MinuteAus,00) then write(Lichtaktor, AUS) endif
+if htime(StundeEin,MinuteEin,00) and convert(LichtSensor, 0u16)<LichtWert^u16 then write (Lichtaktor, EIN) endif 
+
+:end
+
+
+// Komfort Dimmer
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin KomfortDimmer(Dimmer, GADimmerWert, Bewegungsmelder,Schalter, StundenNacht,MinutenNacht,DimmerwertNacht,StundenTag,MinutenTag, DimmerwertTag)
+:info $ Ein Dimmer, gesteuert über einen Bewegungsmelder oder Schalter. Der Dimmerwert kann für Tag und Nacht unterschiedlich eingestellt werden. \\
+Wird der Schalter eingeschalten, soll die Lampe einschalten und der Dimmer auf 100% gehen. \\
+Wenn der Schalter auf "aus" geht, sollen die Lichter ausgehen. \\
+Wenn der Schalter aktiv ist, soll der Bewegungsmelder deaktiviert werden.$\\
+	$Gruppenadresse des Dimmers$ \\
+	$Gruppenadresse für die Helligkeit des Dimmers$ \\
+	$Gruppenadresse des Bewegungsmelders$ \\
+	$Gruppenadresse des Schalters$ \\
+	$Stunde Nacht$ \\
+	$Minute Nacht$ \\
+	$Dimmerwert Nacht in %$ \\
+	$Stunde Tag$ \\
+	$Minute Tag$ \\
+	$Dimmerwert Tag in %$ 
+:shortinfo $Dimmer, schaltbar über Bewegungsmelder oder Schalter. Der Dimmerwert kann für Tag und Nacht unterschiedlich eingestellt werden.$
+
+//DimmerWert=GADimmerWert
+DimmerWert=10%
+// Der Schalter
+if (Schalter==EIN) then write(Dimmer,EIN); write(GADimmerWert,100%) endif
+if (Schalter==AUS) then write(GADimmerWert,0%) endif
+
+//Bewegungsmelder
+if (htime(StundenNacht,MinutenNacht,00)) and (Schalter==AUS) then DimmerWert=DimmerwertNacht^% endif
+if (htime(StundenTag,MinutenTag,00)) and (Schalter==AUS) then DimmerWert=DimmerwertTag^% endif
+
+if (Bewegungsmelder==EIN) and (Schalter==AUS) then write(Dimmer,EIN); write(GADimmerWert,DimmerWert) endif
+if (Bewegungsmelder==AUS) and (Schalter==AUS) then write(Dimmer,AUS) endif
+
+:end
+
+
+// Aufwachlicht
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Aufwachlicht(Name, DimmerGA, DimmerWertGA, StartZeitStunde, StartZeitMinute, Dauer, Wert)
+:info $Den Dimmer zu einer bestimmten Zeit in einer bestimmten Zeit auf einen bestimmten Wert langsam hochdimmen$\\
+	$Name des Aufwachlichts$ \\
+	$Gruppenadresse des Dimmers$ \\
+	$Gruppenadresse für die Helligkeit des Dimmers$ \\
+	$Stunde, wenn der Dimmer anfangen soll zu dimmen$ \\
+	$Minute, wenn der Dimmer anfangen soll zu dimmen$ \\
+	$Zeit in Minuten, wie lange er hochdimmen soll, bis er den Wert erreicht hat$\\
+	$Wert auf den hochgedimmt werden soll in %(z.B. "80%")$
+:shortinfo $Dimmer langsam hochdimmen lassen$
+
+Name^wert = (convert(Wert, 0f32))
+//wieviel pro Sekunde gedimmt wird
+Name^Einheit = Name^wert / Dauer^f32 / 60f32
+Name^Dimmen = AUS
+Name^AktuellerWert = 999f32
+
+if htime(StartZeitStunde, StartZeitMinute,0) then {
+	Name^Dimmen = EIN;
+	write(DimmerGA, EIN); 
+	write(DimmerWertGA, 0);
+	Name^AktuellerWert = 0f32
+} endif
+
+if after((change(Name^AktuellerWert) or Name^AktuellerWert == 0f32) and Name^Dimmen == EIN, 1000u64) then {
+	write(DimmerWertGA,convert(Name^AktuellerWert,0%));
+	Name^AktuellerWert = Name^AktuellerWert + Name^Einheit;
+	if (Name^AktuellerWert >= Name^wert) then Name^Dimmen = AUS endif
+} endif
+
+:end
+
+
+
+
+
+
+

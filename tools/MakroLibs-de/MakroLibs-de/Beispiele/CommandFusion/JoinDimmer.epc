@@ -1,0 +1,15 @@
+[Macros]
+//Einbinden einer Command Fusion Oberfläche
+CommandFusion(IPod,0.0.0.0,Passwort)
+//So kann man einen Dimmer über die CF-Oberfläche mit dem Join a2 steuern
+JoinDimmer(IPod,a2,"WigaDimmerWert-1/1/11")
+[MacroLibs]
+EnertexCommandFusion.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+
+

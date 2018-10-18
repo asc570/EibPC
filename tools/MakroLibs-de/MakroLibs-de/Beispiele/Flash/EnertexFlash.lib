@@ -1,0 +1,439 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Nutzung des Remanentspeichers
+// 
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/09/01 08:40:31 $
+//  Version              : $Revision: 1.2 $
+//----------------------------------------------------------------------
+
+
+// Flash cycle
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Michael Schuster
+:begin FlashCycleGA(Name,SpeicherplatzNummer,GA, Zyklus,ZylusAvg,StartTag,StartMonat,StartJahr)
+:info $Speichert Minimum, Maximum und Mittelwert im Flash ab.$ \\
+	$Name der Speichers$ \\
+	$Speicherplatznummer 0...998 (es wird zudem der folgende Speicherplatz genutzt)$ \\
+	$Gruppenadresse, dessen Wert gespeichert werden soll$ \\
+	$Zyklus für das Aufrufen des Speichers (z.B. htime(6,00,00) or htime(12,00,00))$ \\
+	$Zykluszeit der Mittelung in Minuten$ \\
+	$Datum (Tag) des Starts der Aufzeichnung$ \\
+	$Datum (Monat) des Starts der Aufzeichnung$ \\
+	$Datum (Jahr) des Starts der Aufzeichnung$ 
+:shortinfo $Nutzung des Flashspeichers für die remantente Datenaufzeichnung$
+
+//Store_Name_Value kann zwischen 1 und 32 Bit breiter Datentyp sein, Datentyp beliebig
+Store_Name_Value=GA
+//
+// -----------------------------------------------------------------------
+//
+//  Speichern auf das Flash:
+//  Platz1: Min,Max,Mittelwert (im Abstand von 4 Bytes)
+//  Platz1: std,min,Tag,Monat, Jahr (im Abstand von 4 Bytes)
+// -----------------------------------------------------------------------
+initga(GA)
+Store_Name_InitDay=StartTag
+Store_Name_InitMon=StartMonat
+Store_Name_InitYear=StartJahr
+Store_Name_Timer=Zyklus
+Store_Name_Start=AUS
+Store_Name_Time=$$
+// Speichern in temporäre String Arrays
+Store_Name_Array=$$
+Store_Name_TimeStamp=$$
+Store_Name_ArrayPos=SpeicherplatzNummer^u16
+Store_Name_TimeStampPos=SpeicherplatzNummer^u16+1u16
+Store_Name_CarryFlag=OFF
+// 0: nix zu speichern, 1: Speicher ist einmal vollgelaufen,
+// 2: Speicher verändert, 3:Es wird gespeichert
+Store_Name_Ready=0
+Store_Name_InitDone=OFF
+// Täglich mindestens 1x überprüfen, ob gespeichert werden soll
+Store_Name_Now=htime(1,convert(random(59u32) ,0),convert(random(59u32) ,0))
+
+// Indexspeicher
+Store_Name_Init=2u16
+Store_Name_Pos=Store_Name_Init
+// Min,Max,Mittelwert
+Store_Name_Max=convert(0,Store_Name_Value)
+Store_Name_Min=convert(0,Store_Name_Value)
+Store_Name_Avg=0f32
+Store_Name_AvgIcr=1f32
+
+// 
+Store_Name_Error=AUS
+// Datum als Zahlen abspeichern
+Store_Name_dd=convert(split(convert(setdate(),$$),0u16,1u16),0)
+Store_Name_mm=convert(split(convert(setdate(),$$),3u16,4u16),0)
+Store_Name_yy=convert(split(convert(setdate(),$$),6u16,10u16),0u16)
+
+// Aufzeichnung nur aus dem Flash lesen, wenn Aufzeichnung bereits begonnen hatte
+if date(Store_Name_InitDay,Store_Name_InitMon,Store_Name_InitYear) then {
+   readflash(Store_Name_Array, Store_Name_ArrayPos);
+   readflash(Store_Name_TimeStamp, Store_Name_ArrayPos+1u16)
+} else {
+   writeflash(Store_Name_Pos, Store_Name_ArrayPos);
+   writeflash(Store_Name_CarryFlag, Store_Name_ArrayPos+1u16)
+} endif
+
+// Sollte ein Wert aus dem Flash gelesen werden, so muss dieser 
+// eine gültige Position haben, wenn nicht, wird er hier zurückgesetzt
+if after(systemstart(),convert(random(1400u32),0u64)+1000u64) then {
+   Store_Name_Pos=stringcast(Store_Name_Array,Store_Name_Pos,0u16); 
+   Store_Name_CarryFlag=stringcast(Store_Name_TimeStamp,Store_Name_CarryFlag,0u16);
+   if mod(Store_Name_Pos-Store_Name_Init,12u16)>0u16 then  Store_Name_Pos=Store_Name_Init endif;
+   Store_Name_InitDone=ON;
+} endif 
+
+
+if after(systemstart(),convert(random(3000u32),0u64)+9000u64) then {
+   Store_Name_Max=Store_Name_Value;
+   Store_Name_Min=Store_Name_Value;
+   Store_Name_Avg=convert(Store_Name_Value,0f32);
+   Store_Name_AvgIcr=1f32;
+   Store_Name_Start=EIN
+} endif
+ 
+
+// Min,Max, Mittelwert
+if (Store_Name_Max<Store_Name_Value) and Store_Name_Start then Store_Name_Max=Store_Name_Value endif
+if (Store_Name_Min>Store_Name_Value) and Store_Name_Start then Store_Name_Min=Store_Name_Value endif
+if cycle(ZylusAvg,0) and Store_Name_Start  then {
+   Store_Name_AvgIcr=Store_Name_AvgIcr+1f32;
+   Store_Name_Avg=((Store_Name_Avg*(Store_Name_AvgIcr-1f32))+convert(Store_Name_Value,0f32))/Store_Name_AvgIcr
+} endif
+ 
+// Messen im nächsten Zeitintervall
+if after(Store_Name_Timer,1u64) and Store_Name_Start then {
+   Store_Name_Max=Store_Name_Value;
+   Store_Name_Min=Store_Name_Value;
+   Store_Name_Avg=convert(Store_Name_Value,0f32);
+   Store_Name_AvgIcr=1f32;
+   Store_Name_Pos=Store_Name_Pos+12u16
+} endif
+
+// In das StringArray Speichern
+// 12 Byte (3x4 Byte): Store_Name_Value kann zwischen 1 und 32 Bit breiter Datentyp sein
+// Die Zeitwerte werden im TimestampArray gespeichert
+if Store_Name_Start and Store_Name_Timer then {
+   if (Store_Name_Pos>END-12u16) then Store_Name_Pos=Store_Name_Init; Store_Name_CarryFlag=ON; Store_Name_Ready=1;  Store_Name_Now=EIN endif;
+   stringset(Store_Name_Array,Store_Name_Pos,0u16);
+   stringset(Store_Name_Array,Store_Name_Min,Store_Name_Pos);
+   stringset(Store_Name_Array,Store_Name_Max,Store_Name_Pos+4u16);
+   stringset(Store_Name_Array,Store_Name_Avg,Store_Name_Pos+8u16);
+   stringset(Store_Name_TimeStamp,Store_Name_CarryFlag,0u16); 
+   stringset(Store_Name_TimeStamp,hour(),Store_Name_Pos);
+   stringset(Store_Name_TimeStamp,minute(),Store_Name_Pos+1u16);
+   stringset(Store_Name_TimeStamp,second(),Store_Name_Pos+2u16);
+   stringset(Store_Name_TimeStamp,Store_Name_dd,Store_Name_Pos+3u16);
+   stringset(Store_Name_TimeStamp,Store_Name_mm,Store_Name_Pos+4u16);
+   stringset(Store_Name_TimeStamp,Store_Name_yy,Store_Name_Pos+5u16);
+   Store_Name_Ready=2;
+   Store_Name_Time=convert(settimedate(),$$)
+} endif 
+
+// Speichern der Werte
+if Store_Name_Now and Store_Name_Ready<3 then {
+   Store_Name_Error=writeflash(Store_Name_Array,Store_Name_ArrayPos) or writeflash(Store_Name_TimeStamp,Store_Name_ArrayPos+1u16);
+   Store_Name_Ready=3
+} endif   
+// 
+if (after(Store_Name_Ready==3,100u64)) then {
+   Store_Name_Now=OFF;
+   Store_Name_Ready=0;
+   write('0/0/42'c14,$Speicher$c14)
+} endif
+:end
+
+
+
+
+
+// Flash Visu
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Michael Schuster
+:begin VisuFlash(Name,Detail,ElementID,PageID)
+:info $Visualsiert einen Flashspeicher (Minimum, Maximum und Mittelwert). Das Webelement muss vom Typ mpchart sein und drei Grafen vorkonfiguriert haben.Das Makro kann nur dem entsprechend konfiguriertem FlashCycleGA genutzt werden$ \\
+	$Name des Speichers im Flash.$ \\
+	$Darstellungsoption der X-Achse. Dabei bedeutet 0 geeicht auf Minute-Sekunde, 1 auf Stunde-Minute, 2 auf Tag(Datum)-Stunde, 3 auf Monat-Tag (Datum), 4 auf Jahr-Monat, 5 Tag-Stunde-Minute$\\
+	$ID des Grafikelements "mpchart"$\\
+	$SeitenID der Visualisierung$
+:shortinfo $Visualisierung der Daten bei remantenter Datenaufzeichnung$
+
+// -----------------------------------------------------------------------
+//
+//  Visualisieren
+//  
+// -----------------------------------------------------------------------
+Visu_Name_Time=0f16
+Visu_Name_Scale=Detail
+Visu_Name_Build=EIN
+Visu_Name_Min=convert(0,Store_Name_Min)
+Visu_Name_Max=convert(0,Store_Name_Max)
+Visu_Name_Avg=convert(0,Store_Name_Avg)
+Visu_Name_Pos=0u16
+Visu_Name_dd=0
+Visu_Name_mm=0
+Visu_Name_yy=0u16
+Visu_Name_second=0
+Visu_Name_minute=0
+Visu_Name_hour=0
+Visu_Name_depth=0
+Visu_Name_Init=AUS
+Visu_Name_Draw=AUS
+Visu_Name_CastValue=AUS
+// Start des Init der charts
+if after(systemstart(),5000u64) then Visu_Name_Init=EIN endif
+// "Normales" Mitloggen
+if Store_Name_Timer and Store_Name_Start and !Visu_Name_Build then {
+    if (Visu_Name_Scale==0) then {
+        Visu_Name_Time=convert(minute(),0f16)+convert(second(),0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==1) or (Visu_Name_Scale>5) then {
+        Visu_Name_Time=convert(hour(),0f16)+convert(minute(),0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==2) then {
+        Visu_Name_Time=convert(Store_Name_dd,0f16)+convert(hour(),0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==3) then {
+        Visu_Name_Time=convert(Store_Name_mm,0f16)+convert(Store_Name_dd,0f16)/31.01f16
+    } endif;
+    if (Visu_Name_Scale==4) then {
+        Visu_Name_Time=convert(Store_Name_yy,0f16)+convert(Store_Name_mm,0f16)/12.01f16
+    } endif;
+    if (Visu_Name_Scale==5) then {
+        Visu_Name_Time=convert(Store_Name_dd,0f16)+convert(hour(),0f16)/60f16+convert(minute(),0f16)/3600f16
+    } endif;
+    Visu_Name_Min=Store_Name_Min;
+    Visu_Name_Max=Store_Name_Max;
+    Visu_Name_Avg=Store_Name_Avg;
+    Visu_Name_Draw=!Visu_Name_Draw
+} endif
+
+
+// Lesen aus dem Flashspeicher
+// Erster Wert aus dem Flashspeicher
+if Store_Name_Pos>=576u16+Store_Name_Init and Store_Name_InitDone then {
+    Visu_Name_Pos=Store_Name_Pos-576u16;
+    Visu_Name_depth=48;
+    Visu_Name_Init=EIN
+} endif
+// Weniger als die Speichertiefe des Charts
+if !Store_Name_CarryFlag and Store_Name_Pos<576u16+Store_Name_Init and Store_Name_InitDone then {
+    Visu_Name_Pos=Store_Name_Init;
+    Visu_Name_depth=convert((Store_Name_Pos-Store_Name_Init)/12u16,0u08);
+    if Visu_Name_depth==0 then Visu_Name_Build=AUS endif;
+    Visu_Name_Init=EIN
+} endif  
+// 
+if Store_Name_CarryFlag and Store_Name_Pos=<576u16+Store_Name_Init and Store_Name_InitDone then {
+    /*Visu_Name_Pos=(Store_Name_Pos-Store_Name_Init)/12u16*/;
+    /*Visu_Name_Pos=1394u16-(48u16-Visu_Name_Pos)*12u16*/;
+   Visu_Name_Pos=814u16+Store_Name_Pos+Store_Name_Init;
+   Visu_Name_depth=48;
+   Visu_Name_Init=EIN
+} endif  
+
+// Lesen der zuletzt gespeicherten Werte aus dem Flash 
+if Visu_Name_Init and Visu_Name_Build and change(Visu_Name_depth)  then {
+   if (Visu_Name_Pos>END-12u16) then Visu_Name_Pos=Store_Name_Init endif;
+   Visu_Name_Min=stringcast(Store_Name_Array,Visu_Name_Min,Visu_Name_Pos);
+   Visu_Name_Max=stringcast(Store_Name_Array,Visu_Name_Max,Visu_Name_Pos+4u16);
+   Visu_Name_Avg=stringcast(Store_Name_Array,Visu_Name_Avg,Visu_Name_Pos+8u16);
+   Visu_Name_hour=stringcast(Store_Name_TimeStamp,Visu_Name_hour,Visu_Name_Pos);
+   Visu_Name_minute=stringcast(Store_Name_TimeStamp,Visu_Name_minute,Visu_Name_Pos+1u16);
+   Visu_Name_second=stringcast(Store_Name_TimeStamp,Visu_Name_second,Visu_Name_Pos+2u16);
+   Visu_Name_dd=stringcast(Store_Name_TimeStamp,Visu_Name_dd,Visu_Name_Pos+3u16);
+   Visu_Name_mm=stringcast(Store_Name_TimeStamp,Visu_Name_mm,Visu_Name_Pos+4u16);
+   Visu_Name_yy=stringcast(Store_Name_TimeStamp,Visu_Name_yy,Visu_Name_Pos+5u16);
+   Visu_Name_Pos=Visu_Name_Pos+12u16;
+   Visu_Name_CastValue=!Visu_Name_CastValue
+}endif
+
+// Daten vorbereiten
+if Visu_Name_Init and Visu_Name_Build  and change(Visu_Name_CastValue) then {
+    if (Visu_Name_Scale==0) then {
+        Visu_Name_Time=convert(Visu_Name_minute,0f16)+convert(Visu_Name_second,0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==1) or (Visu_Name_Scale>5) then {
+        Visu_Name_Time=convert(Visu_Name_hour,0f16)+convert(Visu_Name_minute,0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==2) then {
+        Visu_Name_Time=convert(Visu_Name_dd,0f16)+convert(Visu_Name_hour,0f16)/60f16
+    } endif;
+    if (Visu_Name_Scale==3) then {
+        Visu_Name_Time=convert(Visu_Name_mm,0f16)+convert(Visu_Name_dd,0f16)/31.01f16
+    } endif;
+    if (Visu_Name_Scale==4) then {
+        Visu_Name_Time=convert(Visu_Name_yy,0f16)+convert(Visu_Name_mm,0f16)/12.01f16
+    } endif;
+    if (Visu_Name_Scale==5) then {
+        Visu_Name_Time=convert(Visu_Name_dd,0f16)+convert(Visu_Name_hour,0f16)/60f16+convert(Visu_Name_minute,0f16)/3600f16
+    } endif;
+    if Visu_Name_depth==0 then Visu_Name_Build=AUS else Visu_Name_depth=Visu_Name_depth-1 endif; 
+    Visu_Name_Draw=!Visu_Name_Draw
+}endif
+
+// Darstellen der Werte
+if change(Visu_Name_Draw)  then {
+    mpchart(ElementID,Visu_Name_Time,convert(Visu_Name_Min,0f16),0,PageID);
+    mpchart(ElementID,Visu_Name_Time,convert(Visu_Name_Max,0f16),1,PageID);
+    mpchart(ElementID,Visu_Name_Time,convert(Visu_Name_Avg,0f16),2,PageID)
+}endif
+:end
+
+
+// VisuFlashHistory
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Michael Schuster
+:begin VisuFlashHistory(Name,Detail,ElementID,SliderID,ButtonID,PageID)
+:info $Visualsiert Daten aus dem Flashspeicher (Minimum, Maximum und Mittelwert). Das Webelement muss vom Typ mpchart sein und drei Grafen vorkonfiguriert haben. Das Makro kann nur dem entsprechend konfiguriertem FlashCycleGA genutzt werden. Es werden keine neue Daten dargestellt, sondern dieses Makro dient der Visualsierung von aufgezeichneten Datensätzen. Um es richtig verwenden zu können, müssen ein pslider, pshifter und mpchart definiert sein$\\
+	$Name des Speichers im Flash.$ \\
+	$Darstellungsoption der X-Achse. Dabei bedeutet 0 geeicht auf Minute-Sekunde, 1 auf Stude-Minute, 2 auf Tag(Datum)-Stunde, 3 auf Monat-Tag (Datum), 4 auf Jahr-Monat, 5 Tag-Stunde-Minute$\\
+	$ID des Grafikelements "mpchart"$\\
+	$ID des Grafikelements "pslider" (Position im Ringspeicher)$\\
+	$ID des Grafikelements "Buttons" (Darstellung der Zeitachse)$\\
+	$SeitenID der Visualisierung$
+:shortinfo $Visualisierung von abgespeicherten Daten aus dem Flash bei remantenter Datenaufzeichnung$
+
+// -----------------------------------------------------------------------
+//
+//  Visualisieren vergangener Werte
+//  
+// -----------------------------------------------------------------------
+VisuHist_Name_Time=0f16
+VisuHist_Name_Scale=Detail
+VisuHist_Name_Build=AUS
+VisuHist_Name_Min=convert(0,Store_Name_Min)
+VisuHist_Name_Max=convert(0,Store_Name_Max)
+VisuHist_Name_Avg=convert(0,Store_Name_Avg)
+VisuHist_Name_Pos=0u16
+VisuHist_Name_dd=0
+VisuHist_Name_mm=0
+VisuHist_Name_yy=0u16
+VisuHist_Name_second=0
+VisuHist_Name_minute=0
+VisuHist_Name_hour=0
+VisuHist_Name_depth=0
+VisuHist_Name_Draw=AUS
+VisuHist_Name_CastValue=AUS
+VisuHist_Name_BeginTime=$$
+VisuHist_Name_EndTime=$$
+
+// Umwandeln der Prozentwerte in den Speicherposition (116-48= Speichertiefe)
+VisuHist_Name_NewPosition=mod(Store_Name_Pos+1392u16-Store_Name_Init-convert(68f32*(1f32-convert(VisuHistSlider_Name_ProzentPosition,0f32))/255f32,0u16)*12u16,1392u16)+Store_Name_Init
+// Lesen aus dem Flashspeicher
+// Erster Wert aus dem Flashspeicher
+if VisuHist_Name_NewPosition>=576u16+Store_Name_Init and change(VisuHistSlider_Name_ProzentPosition) then {
+    VisuHist_Name_Pos=VisuHist_Name_NewPosition-576u16;
+    VisuHist_Name_depth=48;
+    VisuHist_Name_BeginTime=$$;
+    VisuHist_Name_EndTime=$$;
+    VisuHist_Name_Build=EIN
+} endif
+// Weniger als die Speichertiefe des Charts
+if !Store_Name_CarryFlag and VisuHist_Name_NewPosition<576u16+Store_Name_Init and change(VisuHistSlider_Name_ProzentPosition) then {
+    VisuHist_Name_Pos=Store_Name_Init;
+    VisuHist_Name_depth=convert((Store_Name_Pos-Store_Name_Init)/12u16,0u08);
+    if VisuHist_Name_depth==0 then VisuHist_Name_Build=AUS endif;
+    VisuHist_Name_BeginTime=$$;
+    VisuHist_Name_EndTime=$$;
+    VisuHist_Name_Build=EIN
+} endif  
+// 
+if Store_Name_CarryFlag and VisuHist_Name_NewPosition=<576u16+Store_Name_Init and change(VisuHistSlider_Name_ProzentPosition) then {
+   VisuHist_Name_Pos=814u16+VisuHist_Name_NewPosition+Store_Name_Init;
+   VisuHist_Name_depth=48;
+   VisuHist_Name_BeginTime=$$;
+    VisuHist_Name_EndTime=$$;
+   VisuHist_Name_Build=EIN;
+} endif  
+
+// Lesen der zuletzt gespeicherten Werte aus dem Flash 
+if VisuHist_Name_Build and change(VisuHist_Name_depth)  then {
+      if (VisuHist_Name_Pos>END-12u16) then VisuHist_Name_Pos=Store_Name_Init endif;
+   VisuHist_Name_Min=stringcast(Store_Name_Array,VisuHist_Name_Min,VisuHist_Name_Pos);
+   VisuHist_Name_Max=stringcast(Store_Name_Array,VisuHist_Name_Max,VisuHist_Name_Pos+4u16);
+   VisuHist_Name_Avg=stringcast(Store_Name_Array,VisuHist_Name_Avg,VisuHist_Name_Pos+8u16);
+   VisuHist_Name_hour=stringcast(Store_Name_TimeStamp,VisuHist_Name_hour,VisuHist_Name_Pos);
+   VisuHist_Name_minute=stringcast(Store_Name_TimeStamp,VisuHist_Name_minute,VisuHist_Name_Pos+1u16);
+   VisuHist_Name_second=stringcast(Store_Name_TimeStamp,VisuHist_Name_second,VisuHist_Name_Pos+2u16);
+   VisuHist_Name_dd=stringcast(Store_Name_TimeStamp,VisuHist_Name_dd,VisuHist_Name_Pos+3u16);
+   VisuHist_Name_mm=stringcast(Store_Name_TimeStamp,VisuHist_Name_mm,VisuHist_Name_Pos+4u16);
+   VisuHist_Name_yy=stringcast(Store_Name_TimeStamp,VisuHist_Name_yy,VisuHist_Name_Pos+5u16);
+   VisuHist_Name_Pos=VisuHist_Name_Pos+12u16;
+   VisuHist_Name_CastValue=!VisuHist_Name_CastValue
+}endif
+
+// Daten vorbereiten
+if VisuHist_Name_Build  and change(VisuHist_Name_CastValue) then {
+    if (VisuHist_Name_Scale==0) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_minute,0f16)+convert(VisuHist_Name_second,0f16)/60f16
+    } endif;
+    if (VisuHist_Name_Scale==1) or (VisuHist_Name_Scale>5) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_hour,0f16)+convert(VisuHist_Name_minute,0f16)/60f16
+    } endif;
+    if (VisuHist_Name_Scale==2) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_dd,0f16)+convert(VisuHist_Name_hour,0f16)/60f16
+    } endif;
+    if (VisuHist_Name_Scale==3) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_mm,0f16)+convert(VisuHist_Name_dd,0f16)/31.01f16
+    } endif;
+    if (VisuHist_Name_Scale==4) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_yy,0f16)+convert(VisuHist_Name_mm,0f16)/12.01f16
+    } endif;
+    if (VisuHist_Name_Scale==5) then {
+        VisuHist_Name_Time=convert(VisuHist_Name_dd,0f16)+convert(VisuHist_Name_hour,0f16)/60f16+convert(VisuHist_Name_minute,0f16)/3600f16
+    } endif;
+
+    if (size(VisuHist_Name_BeginTime)==0u16) then {
+         VisuHist_Name_BeginTime=stringformat(VisuHist_Name_yy,0,3,4,4)+$-$+stringformat(VisuHist_Name_mm,0,3,2,2)+$-$+stringformat(VisuHist_Name_dd,0,3,2,2)+$ $+stringformat(VisuHist_Name_hour,0,3,2,2)+$:$+stringformat(VisuHist_Name_minute,0,3,2,2)
+      } endif; 
+   
+    if VisuHist_Name_depth==0 then { 
+       VisuHist_Name_Build=AUS;
+             VisuHist_Name_EndTime=stringformat(VisuHist_Name_yy,0,3,4,4)+$-$+stringformat(VisuHist_Name_mm,0,3,2,2)+$-$+stringformat(VisuHist_Name_dd,0,3,2,2)+$ $+stringformat(VisuHist_Name_hour,0,3,2,2)+$:$+stringformat(VisuHist_Name_minute,0,3,2,2)
+       } else {
+      VisuHist_Name_depth=VisuHist_Name_depth-1
+    } endif; 
+    VisuHist_Name_Draw=!VisuHist_Name_Draw
+}endif
+
+// Darstellen der Werte
+if change(VisuHist_Name_Draw)  then {
+    mpchart(ElementID,VisuHist_Name_Time,convert(VisuHist_Name_Min,0f16),0,PageID);
+    mpchart(ElementID,VisuHist_Name_Time,convert(VisuHist_Name_Max,0f16),1,PageID);
+    mpchart(ElementID,VisuHist_Name_Time,convert(VisuHist_Name_Avg,0f16),2,PageID)
+}endif
+
+// Slider abfragen
+VisuHistSlider_Name_ProzentPosition=getpslider(SliderID,PageID)
+if change(VisuHistSlider_Name_ProzentPosition) then setpslider(SliderID,VisuHistSlider_Name_ProzentPosition,DATE,DISPLAY,PageID) endif
+//Button
+Visu_Name_Display=AUS
+if size(VisuHist_Name_EndTime)!=0u16 then {
+   pdisplay(ButtonID,$Ende:$+VisuHist_Name_EndTime,INFO,DISPLAY,GREY,PageID)
+}endif
+if pbutton(ButtonID,PageID)==1 then {
+   if Visu_Name_Display then {
+       pdisplay(ButtonID,$Ende: $+VisuHist_Name_EndTime,INFO,DISPLAY,GREY,PageID)
+   } else {
+       pdisplay(ButtonID,$Start: $+VisuHist_Name_BeginTime,INFO,DISPLAY,GREEN,PageID)
+   } endif;
+   Visu_Name_Display=!Visu_Name_Display
+}endif
+:end
+

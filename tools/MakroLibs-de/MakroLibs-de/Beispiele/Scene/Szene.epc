@@ -1,0 +1,44 @@
+[Macros]
+//
+// Szenebaustein mit 5 Speicherobjekten (4 GAs, 1 Variable)
+//
+Szenen5Baustein("WohnzimmerSzene-0/2/2","SollwertVorlauf-3/3/1","FlurLicht-1/1/0","GästeWCSpiegel-1/1/3",SzeneText,"KücheLicht-1/1/6")
+// Szenenbaustein: Szene 0 vorbelegen: Hier ist "FlurLicht-1/1/0" nicht aktiv
+Szenen5PresetNr("WohnzimmerSzene-0/2/2",0,EIN,12.3,EIN,EIN,AUS,AUS,AUS,$Szene 0 ist aktiv$,EIN,EIN,EIN)
+// Szenenbaustein: Szene 1 vorbelegen: Hier ist "SollwertVorlauf-3/3/1" nicht aktiv
+Szenen5PresetNr("WohnzimmerSzene-0/2/2",1,EIN,12.3,AUS,EIN,EIN,AUS,EIN,$Szene 1 ist aktiv$,EIN,EIN,EIN)
+
+//
+// Szenebaustein mit 3 Speicherobjekten 
+//
+Szenen3Baustein("Esszimmerszene-0/2/4","GrillenAn-0/2/0",SzeneText,StromWert)
+Szenen3PresetNr("Esszimmerszene-0/2/4",10,EIN,EIN,AUS,$Szene 10 ist aktiv$,EIN,234f32,EIN)
+//
+// Szenebaustein mit 10 Speicherobjekten 
+//
+Szenen10Baustein('0/2/33'u08,"SollwertVorlauf-3/3/1"f16 ,"LagerKeller-1/0/6","SaunaDimmerAn-1/0/10","ArbeitszimmerLinks-5/0/11","Temp58-0/1/1","Temp56-0/1/2","Temp56-0/1/2","HeizkreisAutoMan-3/3/14","WigaFenster-5/0/6","EsszimmerTür-5/0/4")
+//
+// Szenenbaustein: Szene 21 vorbelegen
+Szenen10PresetNr('0/2/33'u08,21,EIN,0.2343f16,EIN,AUS,EIN,EIN,AUS,EIN,EIN,AUS,EIN,EIN,AUS,EIN,EIN,EIN,AUS,AUS,AUS,AUS,AUS)
+
+
+//
+// Szenenbaustein mit 20 Speicherobjekten 
+//
+Szenen20Baustein('0/5/13'u08,"Speis-5/0/1","Küche-5/0/2","EsszimmerFenster-5/0/3","EsszimmerTür-5/0/4","ArbeitszimmerLinks-5/0/11","ArbeitszimmerMitte-5/0/12","ArbeitsZimmerRechts-5/0/10","MarkiseWohnzimmer-5/0/22","MarkiseEsszimmer-5/0/21","WinterGartenFensterEsszimmer-5/0/25","WintergartenFensterWohnzimmer-5/0/26","BadFensterStraße-5/1/1","BadFensterKinderBad-5/1/0","ElternFenster-5/1/5","ElternFenster-5/1/5","ElternTüre-5/1/6",SzeneText,"BibLinks-5/1/33","BibRechts-5/1/34",StromWert)
+
+// Szenenbaustein: Szene 21 vorbelegen: Hier ist "SollwertVorlauf-3/3/1" nicht aktiv
+Szenen20PresetNr('0/5/13'u08,21,EIN,EIN,AUS,EIN,EIN,AUS,EIN,EIN,EIN,AUS,EIN,EIN,EIN,AUS,AUS,AUS,AUS,AUS,AUS,AUS,AUS,EIN,AUS,EIN,EIN,EIN,AUS,EIN,EIN,EIN,AUS,AUS,EIN,$Szene 21$,EIN,EIN,EIN,AUS,AUS,23.13f32,AUS)
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexScene.lib
+
+[EibPC]
+SzeneText=$$
+StromWert=9234.4f32
+

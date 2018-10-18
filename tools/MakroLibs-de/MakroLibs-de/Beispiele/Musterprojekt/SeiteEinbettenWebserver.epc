@@ -1,0 +1,12 @@
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+// Enertex Webshop einbetten in den Webserver
+page(EnertexID)[$Allgemein$,$Enertex Webshop$]
+dframe[$http://www.shop.enertex.de$]
+
+[EibPC]
+EnertexID = 1

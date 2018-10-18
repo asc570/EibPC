@@ -1,0 +1,16 @@
+[Macros]
+//Beschattung eines Ostfensters, nachdem runterfahren wird der Rollo 4s lang wieder hochgefahren für einen entsprechenden Lichteinfall
+BeschattungRolloOstZeit(Schattenautomatik,"Aufgang-5/1/28","AufgangStop-5/1/37",4000)
+
+[MacroLibs]
+EnertexBeschattung.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Freigabevariable
+Schattenautomatik = AUS
+//30Minuten nach Sonnenuntergang soll die Schattenautomatik deaktiviert werden
+if after(sun()==AUS, 1800000u64) then write ("RollosNacht-5/3/1",1b01);Schattenautomatik=AUS endif

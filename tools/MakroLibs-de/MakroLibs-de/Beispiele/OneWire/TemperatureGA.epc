@@ -1,0 +1,25 @@
+[Macros]
+//Den HA7E Adapter einbinden
+HA7E()
+// Mit diesem Makro wird der Sensor im Wohnzimmer alle 5 Minuten ausgelesen 
+// und in der Variable Wohnzimmer_Temperature gespeichert und an die 
+// Gruppenadresse "RkWohnzimmerTemp-3/1/28" geschickt
+TemperatureGA(Wohnzimmer,WohnSensor,"RkWohnzimmerTemp-3/1/28",5)
+[MacroLibs]
+//Makro-Bibliotheken
+EnertexOneWire.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Die ROM-ID des Sensors im Wohnzimmer
+WohnSensor = $8D000801D29B2410$
+
+[RS232]
+// RS232-Konfiguration: Baudrate, Datenbits, Stoppbits, Parität, Flusssteuerung
+9600
+8
+1
+0
+0

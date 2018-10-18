@@ -1,0 +1,11 @@
+[MacroLibs]
+EnertexWebV2.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[WebServer]
+Page(WohnzimmerPageID)[$Erdgeschoss$, $Wohnzimmer$]
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1

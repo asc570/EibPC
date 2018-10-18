@@ -1,0 +1,483 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Anbindung an HomeControl 
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Enertex Bayern GmbH. All rights reserved.
+//
+//  Author               : Enertex Bayern GmbH
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.10 $
+//----------------------------------------------------------------------
+
+// HomeControl Intialisierung
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin EibPCHomeControl(Name,IPSender, Pass)
+:info $Dieses Makro initialisiert den EibPC TCP Server für die Anbindung an das EibPC Homecontrol. Sie benötigen dieses \\
+Makro nur einmal in Ihrem System pro Client. Wenn Sie mit mehr als einem Client arbeiten wollen, vergeben Sie entsprechend weitere Namen. Das Makro $\\
+      $Vergeben Sie einen Namen für Ihre Anbindung, ohne Leerzeichen, z.B Hauptpanel, NebenStelle, Küche etc.$\\
+      $Geben, Sie an, mit welcher IP Adresse der Teilnehmer sich anmeldet. Wenn Sie dies nicht wissen oder nur einen einzelnen Client haben,\\
+ d.h. eine einzige Visu verwenden, geben Sie 0.0.0.0 ein.$\\
+      $Geben Sie das Passwort an, welches Sie im Homecontroll vergeben haben. Standard ist hier pass$
+:shortinfo $EibPC an EibPC Homecontrol koppeln.$
+
+// if you want to observe the actions please comment #undef DEBUG like this //#undef DEBUG
+#define DEBUG 
+#undef DEBUG
+Name_Debug=ON
+Name_Debug_hb=ON
+// Do show if an unknown message occur
+Name_Unknown=OFF
+Name_Dummy='1/2/3'c14 
+// der Client
+Name_IPC=0u32
+Name_SenderPort=0u16
+Name_Port=8019u16
+// Password
+Name_PASS=$^Pass^$
+Name_HeartBeat=$h=1$
+// connection 
+Name_Connected=AUS
+Name_Next=AUS
+// Endlimiter
+Name_EndLimiter=$ $
+// Incomming Message
+Name_Message=$$
+// Queue for all Mesages
+Name_MQueue=$$
+// A single command 
+Name_Command=$$
+Name_Arg=$$
+Name_CommandCount=0
+// Some String Data
+Name_String=$$
+Name_Send=$$
+Name_Pos=0u16
+Name_PosCount=0u16
+// Init 
+Name_Init=OFF
+// error 1: Too many unhandled Commands 
+Name_error=1
+// Heartbeat Message
+Name_MHeartbeat=ON
+Name_LastHeartbeat=OFF
+// Portrait Message
+Name_Portrait=ON
+// U16 Groupaddress for HomeControl
+Ga16 = 0u16
+// EachMessage is limited by an Hex 03 Value (ASCII EOT)
+if systemstart() then {
+        stringset(Name_EndLimiter,3,0u16);
+ 	stringset(Name_HeartBeat,3,size(Name_HeartBeat)); 
+} endif 
+
+//------------------------------------------------------------
+//
+//    Message Handling in MQueue
+//
+//-------------------------------------------------------------
+if event(readtcp(Name_Port,Name_IPC,Name_Message)) and (IPSender==0u32 or Name_IPC==IPSender) then {
+	if (size(Name_MQueue)+size(Name_Message))>=END then Name_error=1 endif;
+	/* We insert an EndLimiter in Queue to make things easier */;
+	if Name_Connected and size(Name_MQueue)!=0u16 then {
+		Name_MQueue=Name_MQueue+Name_Message;
+		#ifdef DEBUG
+		if Name_Debug then { 
+			write('1/2/3'c14,$OM:$c14+convert(Name_Message,$$c14)) 
+		} endif
+		#endif 
+	} endif; 
+	if !Name_Connected or (Name_Connected and size(Name_MQueue)==0u16) then {	
+		Name_MQueue=Name_EndLimiter+Name_Message;
+		/* Init Data if an incomplete Message was in Queue*/;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+	        Name_CommandCount=0;
+	        Name_Command=$$;
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14,$NM:$c14+convert(Name_Message,$$c14)) endif
+		#endif 
+	} endif;  
+	/* Initiate Command Scheduler*/;
+	if size(Name_Command)==0u16 then Name_Next=!Name_Next endif
+} endif
+
+
+//------------------------------------------------------------
+//
+//    Next Telegramms in MQueue: Commands to schedule
+//
+//    We provide a small delay, to keep processing alive, if 
+//    Bustransfers are performed each time a Messages is arriving
+//-------------------------------------------------------------
+
+if after(change(Name_Next),1u64) then { 
+	Name_PosCount=Name_PosCount+1u16;
+	Name_Pos=find(Name_MQueue,Name_EndLimiter,Name_PosCount-1u16)+1u16;
+	Name_String=split(Name_MQueue,Name_Pos,find(Name_MQueue,Name_EndLimiter,Name_PosCount)-1u16);
+	Name_Command=split(Name_String,0u16,find(Name_String,$=$,0u16)-1u16);
+	Name_Arg=split(Name_String,find(Name_String,$=$,0u16)+1u16,END);
+	if Name_Pos==EOS or Name_Pos==size(Name_MQueue) then {
+		Name_MQueue=$$;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+	        Name_Command=$$;
+		Name_CommandCount=0;
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14,$Ready$c14) endif
+		#endif 
+	} endif;
+	Name_CommandCount=Name_CommandCount+1;
+	#ifdef DEBUG
+	if Name_Debug then {
+		if Name_Pos!=EOS and Name_Pos!=size(Name_MQueue) then{
+			write('1/2/3'c14,$N:$c14+convert(Name_Command+$=$+Name_Arg,$$c14))
+		} endif
+	} endif
+	#endif 
+} endif 
+
+
+//-----------------------------------------------------------
+// Commands
+//-----------------------------------------------------------
+
+//------------------------------------------------------------
+//
+//    Password Command
+//
+//-------------------------------------------------------------
+if Name_Command==$p$ then {
+	if Name_Arg==Name_PASS then {
+		Name_Send=$p=ok $;
+	        stringset(Name_Send,3,size(Name_Send)-1u16);
+		Name_Connected=EIN;
+		Name_MHeartbeat==EIN;
+		sendtcp(Name_Port,Name_IPC,Name_Send);
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14,$Pass ok$c14) endif; 
+		#endif 
+        } endif;
+	if Name_Arg!=Name_PASS then {
+		Name_Send=$p=bad $;
+ 		stringset(Name_Send,3,size(Name_Send)-1u16);
+	        Name_Connected=AUS;
+		Name_Init=AUS;
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14,$NoP$c14+convert(Name_Arg,$$c14)) endif; 
+		#endif 
+		sendtcp(Name_Port, Name_IPC,Name_Send)
+        } endif; 
+	Name_Next=!Name_Next
+} endif 
+
+//------------------------------------------------------------
+//
+//    Heartbeat Command
+//
+//-------------------------------------------------------------
+if Name_Command==$h$ and Name_Arg==$0$ and Name_Connected then { 
+ 	Name_MHeartbeat=EIN;
+	sendtcp(Name_Port,Name_IPC,Name_HeartBeat);
+	Name_LastHeartbeat=!Name_LastHeartbeat;
+	#ifdef DEBUG
+	if Name_Debug_hb then write('1/2/3'c14,convert(Name_HeartBeat,$$c14))  endif; 
+	#endif 
+	Name_Next=!Name_Next
+} endif 
+
+if Name_Connected and delay(change(Name_LastHeartbeat),2800u64) then {
+	sendtcp(Name_Port,Name_IPC,Name_HeartBeat);
+	Name_LastHeartbeat=!Name_LastHeartbeat
+} endif
+//------------------------------------------------------------
+//
+//   Disconnect 
+//
+//-------------------------------------------------------------
+// After 7 seconds without any Heartbeat kill connection
+if cycle(0,7) then {
+	if Name_MHeartbeat==AUS and Name_Connected then {
+		Name_Connected=AUS;
+		Name_Init=AUS;
+		Name_MQueue=$$;
+		Name_PosCount=0u16;
+		Name_Pos=0u16;
+	        Name_Command=$$;
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14,$Timeout$c14)  endif
+		#endif 
+	} endif;
+	if Name_Connected then Name_MHeartbeat=AUS endif
+} endif 
+	
+//------------------------------------------------------------
+//
+//   Portrait Command
+//
+//-------------------------------------------------------------
+if Name_Command==$m$ and Name_Connected then { 
+ 	if Name_Arg==$portrait$ then { 
+		Name_Portrait=EIN
+	} endif;
+	if Name_Arg==$landscape$ then { 
+	 	Name_Portrait=AUS
+        } endif;
+	#ifdef DEBUG
+	if Name_Debug then write('1/2/3'c14,convert(Name_Command+$=$+Name_Arg,$$c14))  endif; 	
+	#endif 
+	Name_Next=!Name_Next
+} endif 
+//------------------------------------------------------------
+//
+//    Initializing Command
+//
+//-------------------------------------------------------------
+if Name_Command==$i$ and Name_Arg==$1$ and Name_Connected then {
+	#ifdef DEBUG 
+	if Name_Debug then write('1/2/3'c14,$Init$c14)  endif; 
+	#endif 
+	Name_Init=EIN;
+	Name_Next=!Name_Next	 
+} endif  
+
+
+//------------------------------------------------------------
+//
+//    Unkown command: After 100ms each command must have been 
+//    processed otherewise it is cancled 
+//
+//-------------------------------------------------------------
+if delay(change(Name_CommandCount),100u64) and Name_Command!=$$ and Name_Connected then { 
+	Name_error=2; 
+	#ifdef DEBUG
+	if Name_Debug or Name_Unknown then write('1/2/3'c14,$U:$c14+convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 
+	#endif 
+	Name_Next=!Name_Next;
+} endif
+
+
+//------------------------------------------------------------
+//
+//    Recieving messages from KNX Bus
+//    No "joins" are necessary, as all group adress can be
+//    directly recieved and forwarded.
+//    
+//------------------------------------------------------------
+
+Name_addr = 0u16
+Name_info = $$
+//
+// Only send if its not a debug message(You don't send messages on the group address 1/2/3)
+if event(readknx(Name_addr,Name_info)) and Name_Connected and !(Name_addr == 2563u16 and Name_Debug) then {
+	sendtcp(Name_Port,Name_IPC,$GA:$+convert(Name_addr,$$)+$=$+convert(Name_info,$$)+Name_EndLimiter);
+	#ifdef DEBUG
+	if Name_Debug then write('1/2/3'c14,convert($GA:$ + convert(Name_addr,$$)+$=$,$$c14)+convert(Name_info,$$c14)) endif
+	#endif 
+} endif
+
+
+//------------------------------------------------------------
+//
+//    Sending messages to KNX Bus
+//    Recieving messages from KNX Bus
+//    No "joins" are necessary, as all group adress can be
+//    directly written to the Bus
+//    
+//    The image of an group address in the EibPC can be directly 
+//    asked and used for initializing with the "?"-Command. So 
+//    the initializing of EibPC Homecontrol doesnot need any
+//    read to the KNX Bus
+//
+//------------------------------------------------------------
+
+Datatype = $$
+if split(Name_Command,0u16,2u16)==$GA:$ then {
+	Ga16 = convert(split(Name_Command,3u16,find(Name_Command,$;$,0u16)-1u16),0u16);
+	Datatype = split(Name_Command,find(Name_Command,$;$,0u16) + 1u16, END);
+	if Datatype == $b01$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0b01)) endif;
+	if Datatype == $u08$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0u08)) endif;
+    if Datatype == $s08$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0s08)) endif;
+	if Datatype == $c14$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,$$c14)) endif;
+	if Datatype == $f16$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0f16)) endif;
+    if Datatype == $u16$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0u16)) endif;
+    if Datatype == $s16$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0s16)) endif;
+    if Datatype == $u32$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0u32)) endif;
+    if Datatype == $s32$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0s32)) endif;
+    if Datatype == $f32$ and !(Name_Arg == $?$) then write(address(Ga16),convert(Name_Arg,0f32)) endif;
+	if Name_Arg == $?$ and Name_Connected then {
+		sendtcp(Name_Port,Name_IPC,$GA:$+convert(Ga16,$$)+$=$+gaImage(address(Ga16))+Name_EndLimiter);
+		#ifdef DEBUG
+		if Name_Debug then write('1/2/3'c14, $GA:$c14+convert(Ga16,$$c14)+$=$c14+convert(gaimage(address(Ga16)),$$c14)) endif
+		#endif 
+	} endif
+} endif
+
+//-------------------------------------------------------
+//
+//    TIMER
+//    The Homecontol Makro implements Timers for directly
+//    using them without the need of parametrizing them.
+//
+//    Each timer is depending on the day and time
+//
+//-------------------------------------------------------
+
+T00GA = 0u16
+T00Value = $$
+T00Datatype = $$
+T00Hour = 0
+T00Minute = 0
+T00Second = 0
+T00Monday = OFF
+T00Tuesday = OFF
+T00Wednesday = OFF
+T00Thursday = OFF
+T00Friday = OFF
+T00Saturday = OFF
+T00Sunday = OFF
+T00ReleaseTime = chtime(T00Hour, T00Minute, T00Second)
+T00ReleaseDay = OFF
+T00Release = T00ReleaseTime and T00ReleaseDay
+
+if T00Monday and dayofweek()==MONDAY then T00ReleaseDay = ON endif
+if T00Tuesday and dayofweek()==TUESDAY then T00ReleaseDay = ON endif
+if T00Wednesday and dayofweek()==WEDNESDAY then T00ReleaseDay = ON endif
+if T00Thursday and dayofweek()==THURSDAY then T00ReleaseDay = ON endif
+if T00Friday and dayofweek()==FRIDAY then T00ReleaseDay = ON endif
+if T00Saturday and dayofweek()==SATURDAY then T00ReleaseDay = ON endif
+if !T00Sunday and dayofweek()==SUNDAY then T00ReleaseDay = OFF endif
+if !T00Monday and dayofweek()==MONDAY then T00ReleaseDay = OFF endif
+if !T00Tuesday and dayofweek()==TUESDAY then T00ReleaseDay = OFF endif
+if !T00Wednesday and dayofweek()==WEDNESDAY then T00ReleaseDay = OFF endif
+if !T00Thursday and dayofweek()==THURSDAY then T00ReleaseDay = OFF endif
+if !T00Friday and dayofweek()==FRIDAY then T00ReleaseDay = OFF endif
+if !T00Saturday and dayofweek()==SATURDAY then T00ReleaseDay = OFF endif
+if !T00Sunday and dayofweek()==SUNDAY then T00ReleaseDay = OFF endif
+
+
+
+if T00Release then {
+	if T00Datatype == $b01$ then write(address(T00GA),convert(T00Value, 0b01)) endif;
+	if T00Datatype == $u08$ then write(address(T00GA),convert(T00Value, 0u08)) endif;
+	if T00Datatype == $s08$ then write(address(T00GA),convert(T00Value, 0s08)) endif;
+	if T00Datatype == $c14$ then write(address(T00GA),convert(T00Value, $$c14)) endif;
+	if T00Datatype == $f16$ then write(address(T00GA),convert(T00Value, 0f16)) endif;
+	if T00Datatype == $s16$ then write(address(T00GA),convert(T00Value, 0s16)) endif;
+	if T00Datatype == $u16$ then write(address(T00GA),convert(T00Value, 0u16)) endif;
+	if T00Datatype == $s32$ then write(address(T00GA),convert(T00Value, 0s32)) endif;
+	if T00Datatype == $u32$ then write(address(T00GA),convert(T00Value, 0u32)) endif;
+	if T00Datatype == $f32$ then write(address(T00GA),convert(T00Value, 0f32)) endif
+} endif
+
+
+if split(Name_Command,0u16,3u16)==$T:00$ then {
+	T00GA = convert(split(Name_Command,5u16,find(Name_Command,$;$,1u16)-1u16),0u16);
+	T00Value = split(Name_Command,find(Name_Command,$;$,1u16)+1u16,find(Name_Command,$;$,2u16)-1u16);
+	T00Datatype = split(Name_Command,find(Name_Command,$;$,2u16)+1u16,find(Name_Command,$;$,3u16)-1u16);
+	T00Hour = convert(split(Name_Command,find(Name_Command,$;$,3u16)+1u16,find(Name_Command,$;$,4u16)-1u16),0);
+	T00Minute = convert(split(Name_Command,find(Name_Command,$;$,4u16)+1u16,find(Name_Command,$;$,5u16)-1u16),0);
+	T00Second = convert(split(Name_Command,find(Name_Command,$;$,5u16)+1u16,find(Name_Command,$;$,6u16)-1u16),0);
+	T00Monday = convert(split(Name_Command,find(Name_Command,$;$,6u16)+1u16,find(Name_Command,$;$,7u16)-1u16),0b01);
+	T00Tuesday = convert(split(Name_Command,find(Name_Command,$;$,7u16)+1u16,find(Name_Command,$;$,8u16)-1u16),0b01);
+	T00Wednesday = convert(split(Name_Command,find(Name_Command,$;$,8u16)+1u16,find(Name_Command,$;$,9u16)-1u16),0b01);
+	T00Thursday = convert(split(Name_Command,find(Name_Command,$;$,9u16)+1u16,find(Name_Command,$;$,10u16)-1u16),0b01);
+	T00Friday = convert(split(Name_Command,find(Name_Command,$;$,10u16)+1u16,find(Name_Command,$;$,11u16)-1u16),0b01);
+	T00Saturday = convert(split(Name_Command,find(Name_Command,$;$,11u16)+1u16,find(Name_Command,$;$,12u16)-1u16),0b01);
+	T00Sunday = convert(split(Name_Command,find(Name_Command,$;$,12u16)+1u16,END),0b01)
+} endif
+:end
+
+
+
+// Connect to internal Variables of the EibPC
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin HCVariable(Name,Var)
+:info $Dieses Makro verbindet eine eibPC Variable mit dem HomeControl Server. \\
+Wenn Command Fusion sendet, wird der Wert auf die Variable in Form eines Tasters EIN/AUS gesendet$\\
+      $Der Name Ihrer Anbindung, z.B cf oder iphon oder ipad oder ... $\\
+      $Die Variable, die mit dem HomeControl Server ausgetauscht werden soll$
+:shortinfo $Verbindung einer Variablen mit dem HomeControl Server$
+
+if Name_Command==$^Var^$ and change(Name_CommandCount) and Name_Connected then { 	
+	Var=convert(Name_Arg,Var);	
+	#ifdef DEBUG
+	if Name_Debug write('15/7/0'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+    #endif
+	Name_Next=!Name_Next	
+} endif 
+
+// Answering 
+if change(Var) and Name_Connected then {
+	sendtcp(Name_SendPort,Name_SendIP,$^Var^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter);
+	if Name_Debug then write('15/7/0'c14,convert($^Var^$+$=$,$$c14)+convert(Var,$$c14)) endif
+ } endif 
+
+:end
+
+
+// Sendet Kommando 
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin ServerCommand(Name,Command,Var)
+:info $Dieses Makro sendet bei Änderung des Zustands einer Variablen auf EIN das angegebene Kommando an den HomeControl Server.$ \\
+      $Der Name Ihrer Anbindung, z.B cf oder iphon oder ipad oder ... $\\
+      $Das Kommando als String$\\
+      $Die Variable, deren Zustand überwacht werden soll$
+:shortinfo $Senden eines Kommandos an den HomeControl Server bei Zustandsänderung einer Variablen$
+if (Var) and Name_Connected then {
+    sendtcp(Name_SendPort,Name_SendIP,$command=$+convert(Command,Name_Arg)+Name_EndLimiter);
+	#ifdef DEBUG
+	if Name_Debug then write('15/7/0'c14,convert($command=$+Command,$$c14)) endif
+    #endif 
+ } endif 
+:end
+
+
+// Speichert
+// @date	11.01.2012
+// @version	1 
+// @author	Enertex Bayern GmbH
+:begin Storage(Name,Var,SaveCondition,LoadTrigger,AvailableTrigger)
+:info $Dieses Makro speichert bei Veränderung eine Variable auf dem HomeControl Server. $\\
+Bzw. setzt diese neu, wenn sie vom HomeControl Server verschickt wird.$\\
+      $Name der Anbindung$\\
+      $Variablenname für die Übertragung an den HomeControl Server $\\
+      $Bedingung, die erfüllt sein muss, damit Variable gespeichert wird (EIN / AUS) $\\
+      $Trigger für die Anforderung, wird automatisch wieder zurückgesetzt $\\
+      $Trigger für die Bestätigung der Verfügbarkeit der Variable auf dem HomeControl Server $\\
+:shortinfo $Speichern einer Variablen auf den HomeControl Server$
+if change(Var) and SaveCondition and Name_Connected then {
+	sendtcp(Name_SendPort,Name_SendIP,$store=^Var^$+Name_EndLimiter);
+	sendtcp(Name_SendPort,Name_SendIP,$^Var^$+$=$+convert(Var,Name_Arg)+Name_EndLimiter)
+} endif
+
+if Name_Command==$^Var^$ and change(Name_CommandCount) and Name_Connected then { 	
+	if (Name_Arg != $%NA%$) then {
+        if (Name_Arg == $?$) then sendtcp(Name_SendPort,Name_SendIP,$^Var^=$+convert(Var,$$)+Name_EndLimiter) else Var=convert(Name_Arg,Var) endif
+    } endif;
+    AvailableTrigger = EIN;
+	if Name_Debug then write('15/7/0'c14,$Set:$c14+\\
+		convert(Name_Command+$=$+Name_Arg,$$c14)) endif; 	
+	Name_Next=!Name_Next	
+} endif
+ 
+if (LoadTrigger == EIN) and Name_Connected then {
+	sendtcp(Name_SendPort,Name_SendIP,$load=^Var^$+Name_EndLimiter)
+} endif
+  
+:end
+
+

@@ -1,0 +1,340 @@
+//----------------------------------------------------------------------
+//  Makros für den Enertex EiBPC
+//
+//  Logik-Bausteine 
+//
+//  Version              : v3.100
+//
+//  License              : Verwendung nur für die Nutzung mit dem 
+//                         Enertex EibPC gestattet 
+//
+//  (C) Copyright        : Dr. Ing. Michael Schuster. All rights reserved.
+//
+//  Author               : Dr. Ing. Michael Schuster
+// 
+//  Dat.Rev.             : $Date: 2016/07/22 09:47:58 $
+//  Version              : $Revision: 1.11 $
+//----------------------------------------------------------------------
+
+// Und2
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin UND2(Sensor1GA, Sensor2GA, AktorGA, WahrAktor)
+:info $UND-Verknüpfung mit 2 binären Eingängen: Die beiden Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert Wahraktor wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".  Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. $\\
+$Gruppenadresse oder Variable des ersten Eingangs$ \\
+$Gruppenadresse oder Variable des zweiten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $UND-Verknüpfung mit 2 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+if (Sensor1GA and Sensor2GA) then write(AktorGA,WahrAktor)  endif
+:end
+
+// Und3
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin UND3(Sensor1GA, Sensor2GA, Sensor3GA, AktorGA, WahrAktor)
+:info $UND-Verknüpfung mit 3 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert Wahraktor wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. $\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $UND-Verknüpfung mit 3 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+if Sensor1GA and Sensor2GA and Sensor3GA  then write(AktorGA,WahrAktor)  endif
+:end
+
+// Und4
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin UND4(Sensor1GA, Sensor2GA, Sensor3GA, Sensor4GA, AktorGA, WahrAktor)
+:info $UND-Verknüpfung mit 4 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben.$\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $UND-Verknüpfung mit 4 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+if (Sensor1GA and Sensor2GA and Sensor3GA and Sensor4GA) then write(AktorGA,WahrAktor)  endif
+:end
+
+// Und8
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin UND8(Sensor1GA, Sensor2GA, Sensor3GA, Sensor4GA,Sensor5GA, Sensor6GA,Sensor7GA, Sensor8GA, AktorGA, WahrAktor)
+:info $UND-Verknüpfung mit 4 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert Wahraktor wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben.$\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des fünften Eingangs$ \\
+$Gruppenadresse des sechsten Eingangs$ \\
+$Gruppenadresse des siebten Eingangs$ \\
+$Gruppenadresse des achten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $UND-Verknüpfung mit 8 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+initga(Sensor5GA)
+initga(Sensor6GA)
+initga(Sensor7GA)
+initga(Sensor8GA)
+if  (Sensor1GA and Sensor2GA and Sensor3GA and Sensor4GA and Sensor5GA and Sensor6GA and Sensor7GA and Sensor8GA ) then write(AktorGA,WahrAktor)  endif
+:end
+
+// Oder2
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin ODER2(Sensor1GA, Sensor2GA, AktorGA, WahrAktor)
+:info $ODER-Verknüpfung mit 2 binären Eingängen: Die beiden Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $ODER-Verknüpfung mit 2 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+if (Sensor1GA or  Sensor2GA) then write(AktorGA,WahrAktor)  endif
+:end
+
+// Oder3
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin ODER3(Sensor1GA, Sensor2GA, Sensor3GA, AktorGA, WahrAktor)
+:info $ODER-Verknüpfung mit 2 binären Eingängen: Die beiden Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $ODER-Verknüpfung mit 3 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+if  Sensor1GA or Sensor2GA or  Sensor3GA then write(AktorGA,WahrAktor) endif
+:end
+
+// Oder4
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin ODER4(Sensor1GA, Sensor2GA,Sensor3GA, Sensor4GA, AktorGA, WahrAktor)
+:info $ODER-Verknüpfung mit 4 binären Eingängen: Die 4 Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge und der Ausgang ausgelese n(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $ODER-Verknüpfung mit 4 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+if (Sensor1GA or Sensor2GA or Sensor3GA or Sensor4GA) then write(AktorGA,WahrAktor) endif
+:end
+
+// Oder8
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin ODER8(Sensor1GA, Sensor2GA,Sensor3GA, Sensor4GA,Sensor5GA, Sensor6GA,Sensor7GA, Sensor8GA, AktorGA,WahrAktor)
+:info $ODER-Verknüpfung mit 8 binären Eingängen: Die 8 Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben.  Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des fünften Eingangs$ \\
+$Gruppenadresse des sechsten Eingangs$ \\
+$Gruppenadresse des siebten Eingangs$ \\
+$Gruppenadresse des achten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $ODER-Verknüpfung mit 8 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+initga(Sensor5GA)
+initga(Sensor6GA)
+initga(Sensor7GA)
+initga(Sensor8GA)
+if Sensor1GA or Sensor2GA or Sensor3GA or Sensor4GA or Sensor5GA or Sensor6GA or Sensor7GA or Sensor8GA then write(AktorGA,WahrAktor) endif
+
+:end
+
+// nicht und 2
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_UND2(Sensor1GA, Sensor2GA, AktorGA,WahrAktor)
+:info $NICHT-UND-Verknüpfung mit 2 binären Eingängen: Die beiden Eingänge werden mit NICHT-UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang nochmals invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-UND-Verknüpfung mit 2 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+if !(Sensor1GA and Sensor2GA) then write(AktorGA,WahrAktor) endif        
+:end
+
+// nicht und 3
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_UND3(Sensor1GA, Sensor2GA, Sensor3GA, AktorGA, WahrAktor)
+:info $NICHT-UND-Verknüpfung mit 3 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert Wahraktor wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. $\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-UND-Verknüpfung mit 3 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+if !(Sensor1GA and Sensor2GA and Sensor3GA) then write(AktorGA,WahrAktor) endif        
+:end
+
+// nicht und 4
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_UND4(Sensor1GA, Sensor2GA, Sensor3GA, Sensor4GA, AktorGA, WahrAktor)
+:info $NICHT-UND-Verknüpfung mit 4 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben.$\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-UND-Verknüpfung mit 4 Eingängen$
+if !(Sensor1GA and Sensor2GA and Sensor3GA and Sensor4GA) then write(AktorGA,WahrAktor) endif        
+:end
+
+// nicht und 8
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_UND8(Sensor1GA, Sensor2GA, Sensor3GA, Sensor4GA,Sensor5GA, Sensor6GA,Sensor7GA, Sensor8GA, AktorGA, WahrAktor)
+:info $NICHT-UND-Verknüpfung mit 4 binären Eingängen: Die Eingänge werden mit UND verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert Wahraktor wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3". Bei Systemstart werden die Eingänge und der Ausgang ausgelesen (Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben.$\\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des fünften Eingangs$ \\
+$Gruppenadresse des sechsten Eingangs$ \\
+$Gruppenadresse des siebten Eingangs$ \\
+$Gruppenadresse des achten Eingangs$ \\
+$Gruppenadresse des Ausgangs$\\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-UND-Verknüpfung mit 8 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+initga(Sensor5GA)
+initga(Sensor6GA)
+initga(Sensor7GA)
+initga(Sensor8GA)
+if !(Sensor1GA and Sensor2GA and Sensor3GA and Sensor4GA and Sensor5GA and Sensor6GA and Sensor7GA and Sensor8GA) then write(AktorGA,WahrAktor) endif
+:end
+
+// nicht oder 2
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_ODER2(Sensor1GA, Sensor2GA, AktorGA, WahrAktor)
+:info $NICHT-ODER-Verknüpfung mit 2 binären Eingängen: Die beiden Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-ODER-Verknüpfung mit 2 Eingängen$
+if !(Sensor1GA or Sensor2GA) then write(AktorGA,WahrAktor) endif         
+:end
+
+// nicht oder 3
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_ODER3(Sensor1GA, Sensor2GA, Sensor3GA, AktorGA, WahrAktor)
+:info $NICHT-ODER-Verknüpfung mit 3 binären Eingängen: Die beiden Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-ODER-Verknüpfung mit 3 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+if  !(Sensor1GA or Sensor2GA or Sensor3GA) then write(AktorGA,WahrAktor)  endif  
+:end
+
+// nicht oder 4
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_ODER4(Sensor1GA, Sensor2GA,Sensor3GA, Sensor4GA, AktorGA, WahrAktor)
+:info $NICHT-ODER-Verknüpfung mit 4 binären Eingängen: Die 4 Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben. Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge und der Ausgang ausgelese n(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-ODER-Verknüpfung mit 4 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+if  !(Sensor1GA or Sensor2GA or Sensor3GA or Sensor4GA) then write(AktorGA,WahrAktor) endif        
+:end
+
+// nicht oder 8
+// @date	11.01.2012
+// @version	1 
+// @author	Dr. Ing. Michael Schuster
+:begin NICHT_ODER8(Sensor1GA, Sensor2GA,Sensor3GA, Sensor4GA,Sensor5GA, Sensor6GA,Sensor7GA, Sensor8GA, AktorGA,WahrAktor)
+:info $NICHT_ODER-Verknüpfung mit 8 binären Eingängen: Die 8 Eingänge werden mit ODER verknüpft und das Ergebnis auf den Ausgang geschrieben.  Der Wert "Wahraktor" wird auf AktorGA geschrieben, wenn die Verknüpfung erfüllt ist. Bei Systemstart werden die Eingänge ausgelesen(Leseflags müssen gesetzt sein) und das Ergebnis der Verknüpfung auf den Ausgang geschrieben. Wenn Sie einen Eingang invertieren wollen, so schreiben sie ein !-Zeichen vor den Eingang bzw. Gruppenadresse, z.B. !"MeineAdresse-1/2/3".$ \\
+$Gruppenadresse des ersten Eingangs$ \\
+$Gruppenadresse des zweiten Eingangs$ \\
+$Gruppenadresse des dritten Eingangs$ \\
+$Gruppenadresse des vierten Eingangs$ \\
+$Gruppenadresse des fünften Eingangs$ \\
+$Gruppenadresse des sechsten Eingangs$ \\
+$Gruppenadresse des siebten Eingangs$ \\
+$Gruppenadresse des achten Eingangs$ \\
+$Gruppenadresse des Ausgangs$ \\
+$Wert des Ausgangs bei Logik erfüllt(z.B. EIN oder 20%)$
+:shortinfo $NICHT-ODER-Verknüpfung mit 8 Eingängen$
+initga(Sensor1GA)
+initga(Sensor2GA)
+initga(Sensor3GA)
+initga(Sensor4GA)
+initga(Sensor5GA)
+initga(Sensor6GA)
+initga(Sensor7GA)
+initga(Sensor8GA)
+if  !(Sensor1GA or Sensor2GA or Sensor3GA or Sensor4GA or Sensor5GA or Sensor6GA or Sensor7GA or Sensor8GA) then write(AktorGA,WahrAktor) endif        
+:end

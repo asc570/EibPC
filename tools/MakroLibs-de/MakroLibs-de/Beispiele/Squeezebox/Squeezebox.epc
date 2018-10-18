@@ -1,0 +1,11 @@
+[Macros]
+//Die Squeezebox wird eingebunden über den Standard Port 9090 und die IP-Adresse des Servers mit der Standardverzögerung von 100ms
+Squeezebox(9090,192.168.22.18,100)
+[MacroLibs]
+EnertexSqueezebox.lib
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+SQ1 = $Squeezebox$

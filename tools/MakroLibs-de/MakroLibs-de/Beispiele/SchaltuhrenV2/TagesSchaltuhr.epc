@@ -1,0 +1,10 @@
+[Macros]
+//Jeden Tag soll um 7Uhr das Licht in der Küche und im Arbeitszimmer angehen
+TagesSchaltuhr_2GA(7,0,"KücheLicht-1/1/6",EIN,"ArbeitszimmerLicht-1/1/16",EIN)
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[MacroLibs]
+EnertexSchaltuhrenV2.lib
+[EibPC]

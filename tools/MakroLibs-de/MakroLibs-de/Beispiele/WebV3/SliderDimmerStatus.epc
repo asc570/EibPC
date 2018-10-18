@@ -1,0 +1,24 @@
+[MacroLibs]
+EnertexWebV3.lib
+
+[ETS-ESF]
+// Die aus der ETS3 exportierte ESF-Datei
+Haus.esf
+
+[EibPC]
+//Definitionen
+WohnzimmerPageID = 1
+DimmerID = 1
+
+
+[WebServer]
+//Seite erstellen
+page(WohnzimmerPageID) [$Erdgeschoss$,$Wohnzimmer$]
+//pslider erstellen ist Vorraussetzung für das Makro SliderDimmer
+pslider(DimmerID) [LIGHT]$Dimmer$ 
+
+
+[Macros]
+//Hiermit verbindet man den pslider mit einer GA, sowie einer StatusGA eines Dimmers
+SliderDimmerStatus(DimmerID,WohnzimmerPageID,"WohnzimmerDimmerStatus-1/1/1","WohnzimmerDimmerStatus-1/1/1")
+
