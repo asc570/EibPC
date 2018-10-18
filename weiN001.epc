@@ -16,14 +16,14 @@ C:\Users\asc\repo\EibPC/EtsExport/Weisshauptstr.esf
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken
-C:\Users\asc\repo\EibPC/lib/EibPCHz.lib
-C:\Users\asc\repo\EibPC/lib/WeiHz.lib
-C:\Users\asc\repo\EibPC/lib/EibPCBase.lib
-C:\Users\asc\repo\EibPC/lib/HzInit.lib
-C:\Users\asc\repo\EibPC/lib/visuMain.lib
-C:\Users\asc\repo\EibPC\lib/webOut01.lib
-C:\Users\asc\repo\EibPC/lib/HzViso.lib
-C:\Users\asc\repo\EibPC/lib/RemMem.lib
+//C:\Users\asc\repo\EibPC/lib/EibPCHz.lib
+//C:\Users\asc\repo\EibPC/lib/WeiHz.lib
+//C:\Users\asc\repo\EibPC/lib/EibPCBase.lib
+//C:\Users\asc\repo\EibPC/lib/HzInit.lib
+//C:\Users\asc\repo\EibPC/lib/visuMain.lib
+//C:\Users\asc\repo\EibPC\lib/webOut01.lib
+//C:\Users\asc\repo\EibPC/lib/HzViso.lib
+//C:\Users\asc\repo\EibPC/lib/RemMem.lib
 //C:/Users/Public/dev/knx/EibPC/lib/BMXRemanent8.lib
 //C:/Users/Public/dev/knx/EibPC/lib/test.lib
 
@@ -38,9 +38,16 @@ C:\Users\asc\repo\EibPC/lib/RemMem.lib
 
 
 [EibPC]
-#ifndef EMPTY
+
 #include C:\Users\asc\repo\EibPC/include/DefHz.inc
 #include C:\Users\asc\repo\EibPC/include/RemMem.inc
+
+if(event("HzEgBoost_EssZ-8/2/39") ) then{
+	write("SetLockPosE-3/2/100","HzEgBoost_EssZ-8/2/39");
+	write("SetLockPosF-3/2/101","HzEgBoost_EssZ-8/2/39")
+	}endif
+if(chtime(5,0,0) and !chtime(7,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
+if(chtime(7,0,0) ) then write ("HzEgBoost_EssZ-8/2/39",AUS) endif
 //
 //////////////////////////////////////////////////////////////////////
 // EibPC-UVR1611
@@ -58,6 +65,5 @@ pbutton(ButtonON)[STOP]$Shutdown$
 
 //////////////////////////////////////////////////////
 
-#endif	
 
 
