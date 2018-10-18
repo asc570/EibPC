@@ -10,14 +10,14 @@
 C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 [Macros]
-
+//Sp_Hk5OG1control("OG1MaxStellwertOut-3/3/105", 95%,Hk5_SwOg1)
 
 
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken
 //C:\Users\asc\repo\EibPC/lib/EibPCHz.lib
-//C:\Users\asc\repo\EibPC/lib/WeiHz.lib
+C:\Users\asc\repo\EibPC/lib/WeiHz.lib
 //C:\Users\asc\repo\EibPC/lib/EibPCBase.lib
 //C:\Users\asc\repo\EibPC/lib/HzInit.lib
 //C:\Users\asc\repo\EibPC/lib/visuMain.lib
@@ -38,6 +38,7 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 
 [EibPC]
+rP = 95%
 
 #include C:/Users/asc/repo/EibPC/include/DefHz.inc
 #include C:/Users/asc/repo/EibPC/include/RemMem.inc
@@ -48,6 +49,13 @@ if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	}endif
 if(chtime(5,0,0) and !chtime(7,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 if(chtime(7,0,0) ) then write ("HzEgBoost_EssZ-8/2/39",AUS) endif
+/////////////////////////////////////////////////////////////////////////////////
+// HK3 switch on when request above threshold
+if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then{
+   if( "OG1MaxStellwertOut-3/3/105" > rP)      then write( "Aout05-11/3/5",UVR_NORMAL) endif;
+   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then write( "Aout05-11/3/5",UVR_SBY) endif
+   }endif
+
 //
 //////////////////////////////////////////////////////////////////////
 // EibPC-UVR1611
