@@ -7,7 +7,7 @@
 
 [ETS-ESF]
 // Die aus der ETS3 exportierte ESF-Datei
-C:/Users/asc/repo/EibPC/download/esf/Weisshauptstr.esf
+C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 [Macros]
 
@@ -39,8 +39,8 @@ C:/Users/asc/repo/EibPC/download/esf/Weisshauptstr.esf
 
 [EibPC]
 
-#include C:/Users/asc/repo/EibPC/download/includes/DefHz.inc
-#include C:/Users/asc/repo/EibPC/download/includes/RemMem.inc
+#include C:/Users/asc/repo/EibPC/include/DefHz.inc
+#include C:/Users/asc/repo/EibPC/include/RemMem.inc
 
 if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	write("SetLockPosE-3/2/100","HzEgBoost_EssZ-8/2/39");
