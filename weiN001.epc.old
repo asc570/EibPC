@@ -47,7 +47,7 @@ C:\Users\asc\repo\EibPC/lib/RemMem.lib
 //
 // HK
 ButtonON = 1
-if webbutton(ButtonON)==1 then display(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
+if webbutton(ButtonON)==1 then webdisplay(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
 [WebServer]
 
 page(1)[$Allgemein$,$Übersicht$]
