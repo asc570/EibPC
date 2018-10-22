@@ -5,6 +5,7 @@ Sys.GEN.0/0/1	sTime	Uncertain (3 Byte)	Low
 Sys.GEN.0/0/4	sDate	Uncertain (3 Byte)	Low	
 Sys.GEN.0/0/5	SymPresents	EIS 1 'Switching' (1 Bit)	Low	
 Sys.GEN.0/0/6	sAbwSimu	EIS 1 'Switching' (1 Bit)	Low	
+Sys.GEN.0/0/7	bIsDay	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/1	EG_Küche_Kaffe_StSw	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/2	EG_Küche_Kaffe_GetH	Uncertain (2 Byte)	Low	
 ElPower.EG.1/2/3	EG_Küche_Kaffe_ResetH	EIS 1 'Switching' (1 Bit)	Low	
