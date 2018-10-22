@@ -23,11 +23,11 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 [InitGA]
 
-
 [Location]
-// Länge und Breite des Aufstellungsorts
-110.5
-48.166666666666664
+// Longitude and Latitude of Location
+11.5
+48.21666666666667
+
 
 
 [EibPC]
