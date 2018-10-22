@@ -31,6 +31,23 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 
 [EibPC]
+/////////////////////////////////////////
+// Basics
+////
+///  Date / Time
+MinuteTimeCycle	= 10
+MinuteDayCycle	= 60
+//
+// Time
+if(cycle(MinuteTimeCycle,0)) then{
+ 	write("sTime-0/0/1",settime())
+	} endif
+// Date
+if(cycle(MinuteDayCycle,0)) then{
+ 	write("sDate-0/0/4",setdate())
+	} endif
+
+
 rP = 95%
 
 #include C:/Users/asc/repo/EibPC/include/DefHz.inc
