@@ -1,6 +1,9 @@
+
 [ETS-ESF]
-// Die aus der ETS3 exportierte ESF-Datei
+// ESF file exported from ETS3
 C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
+
+
 
 [Macros]
 //Sp_Hk5OG1control("OG1MaxStellwertOut-3/3/105", 95%,Hk5_SwOg1)
@@ -50,13 +53,17 @@ if(cycle(MinuteDayCycle,0)) then{
  	write("sDate-0/0/4",setdate())
 	} endif
 //////////
-// IsDay
+// IsDay ; bIsNight
 //
 if( change(sun())) then {
-	write("bIsDay-0/0/7",sun())
+	write("bIsDay-0/0/7",sun());
+	write("bIsNight-0/0/8", !sun())
 	} endif
 if(eventread("bIsDay-0/0/7")) then{
 	write("bIsDay-0/0/7",sun())
+	} endif
+if(eventread("bIsNight-0/0/8")) then{
+	write("bIsNight-0/0/8",!sun())
 	} endif
 //
 /////////////////////////////

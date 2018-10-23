@@ -6,6 +6,7 @@ Sys.GEN.0/0/4	sDate	Uncertain (3 Byte)	Low
 Sys.GEN.0/0/5	SymPresents	EIS 1 'Switching' (1 Bit)	Low	
 Sys.GEN.0/0/6	sAbwSimu	EIS 1 'Switching' (1 Bit)	Low	
 Sys.GEN.0/0/7	bIsDay	EIS 1 'Switching' (1 Bit)	Low	
+Sys.GEN.0/0/8	bIsNight	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/1	EG_Küche_Kaffe_StSw	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/2	EG_Küche_Kaffe_GetH	Uncertain (2 Byte)	Low	
 ElPower.EG.1/2/3	EG_Küche_Kaffe_ResetH	EIS 1 'Switching' (1 Bit)	Low	
@@ -165,7 +166,6 @@ Klimat.EG.3/2/10	GetPosC	Uncertain (1 Byte)	Low
 Klimat.EG.3/2/12	GetPosE	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/13	GetPosF	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/14	StEmeregencyModA	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.EG.3/2/16	StEmeregencyModC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/18	StEmeregencyModE	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/19	StEmeregencyModF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/20	HkEMO5Ist	Uncertain (1 Byte)	Low	
@@ -200,7 +200,7 @@ Klimat.EG.3/2/62	RHCCstE	Uncertain (2 Byte)	Low
 Klimat.EG.3/2/63	RHCCstF	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/64	SetModKomfortA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/66	SetModKomfortC	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.EG.3/2/68	SetModKomfortE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.EG.3/2/68	SetModKomfortE	EIS 1 'Switching' (1 Bit)	Low	3/2/69
 Klimat.EG.3/2/69	SetModKomfortF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/70	setModNightA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/72	setModNightC	EIS 1 'Switching' (1 Bit)	Low	
