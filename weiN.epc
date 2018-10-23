@@ -70,6 +70,7 @@ if(eventread("bIsNight-0/0/8")) then{
 rP = 95%
 
 #include C:/Users/asc/repo/EibPC/include/DefHz.inc
+#include C:/Users/asc/repo/EibPC/include/WebServer.inc
 //#include C:/Users/asc/repo/EibPC/include/RemMem.inc
 
 
@@ -98,13 +99,17 @@ if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then
 // EibPC-UVR1611
 //
 // HK
+//
+// WebServer Logic
+//
 ButtonON = 1
 if webbutton(ButtonON)==1 then webdisplay(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
 ///////////////////////////////////////////////////////////////////////
 ///////////////
+str = $test$
 [WebServer]
 
-page(1)[$Allgemein$,$Übersicht$]
+page(P_ID_GEN_1)[$General$,$Heating$]
 header(0)
 footer(0)
 design $black$
