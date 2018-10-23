@@ -83,7 +83,7 @@ if( !"HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_SBY) endif
 
 if(chtime(5,0,0) and !chtime(7,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 
-if(after("HzEgBoost_EssZ-8/2/39",360000u64)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
+if(after("HzEgBoost_EssZ-8/2/39",3600000u64)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
 if(chtime(7,0,0) ) then write ("HzEgBoost_EssZ-8/2/39",AUS) endif
 /////////////////////////////////////////////////////////////////////////////////
 // HK3 switch on when request above threshold
