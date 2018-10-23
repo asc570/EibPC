@@ -50,17 +50,18 @@
 			</Target>
 		</Menu>
 		<Includes>
-			<Include Dir="C:/Users/Public/dev/knx/EibPC/include/"/>
-			<Include Dir="C:/Users/Public/dev/knx/EibPC/lib/"/>
+			<Include Dir="C:/Users/asc/repo/EibPC/include/"/>
 		</Includes>
 	</Config>
 	<Files>
 		<Folder
 			Name="Source Files"
-			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go"/>
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go"
+			GUID="{9D57E252-90E7-456C-B296-804A08B8A9B4}"/>
 		<Folder
 			Name="Header Files"
-			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if"
+			GUID="{DF305D77-9256-40C6-42C0-AA7FC42D2799}">
 			<F N="include/DefHz.inc"/>
 			<F N="include/RemMem.inc"/>
 			<F N="include/tBuf.inc"/>
@@ -68,21 +69,22 @@
 		</Folder>
 		<Folder
 			Name="Resource Files"
-			Filters="*.ico;*.cur;*.dlg"/>
+			Filters="*.ico;*.cur;*.dlg"
+			GUID="{5826E8AB-9E71-4679-38B1-2FC7B58F51A0}"/>
 		<Folder
 			Name="Bitmaps"
-			Filters="*.bmp"/>
+			Filters="*.bmp"
+			GUID="{9ECB5AE3-CC60-4F62-3ADD-C30D9C6523BD}"/>
 		<Folder
 			Name="Other Files"
-			Filters="">
-			<F N="../../../../asc/Downloads/booking"/>
+			Filters=""
+			GUID="{5B52A83D-33C3-4332-E78F-CBCBACDDB285}">
 			<F N="lib/EibPCBase.lib"/>
 			<F N="lib/EibPCHz.lib"/>
 			<F N="lib/HzC"/>
 			<F N="lib/HzInit.lib"/>
 			<F N="lib/HzViso.lib"/>
 			<F N="lib/RemMem.lib"/>
-			<F N="te.txt"/>
 			<F N="lib/test.lib"/>
 			<F N="lib/visuMain.lib"/>
 			<F N="lib/webOut01"/>
