@@ -1,0 +1,18 @@
+// WebOutHkGen() shows Hk Parameters via a Weboutput()
+//
+// input:
+// - HkName:      Name of the Hk as shown in the WebOutput()
+// - ID:          the WebOutput(ID)[]
+// - GA_Vl        GA of Vorlauf Temp
+// - GA_Rl        Ga of Ruecklauf Temp
+// - GA_HkModeReq Requested Hk Mode in UVR1611 u16
+// - Ga_HkModeAct Actuel Hk Mode in UVR1611 u16
+// - GA_PID       Burner PID in 16u
+// - GA_bPump     Pump Status (running?) b1
+// - GA_wbFrost    Warning: Frost b1
+// - GA_bGenHzON   Heatingting system general status ON/OFF
+
+:begin WebOutHkGen( HkName,ID,GA_Vl,GA_Rl,GA_HkModeReq,GA_HkModeAct,GA_PID,GA_bPump,GA_wbFrost, GA_bGenHzON )
+
+
+:end
