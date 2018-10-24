@@ -8,7 +8,7 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 [Macros]
 //Sp_Hk5OG1control("OG1MaxStellwertOut-3/3/105", 95%,Hk5_SwOg1)
 
-
+SpWebOutHkGen($EG FB Heizung$,ID_WebOutHK1,"Ain02-11/2/2","Ain03-11/2/3","Aout04-11/3/4","Ain05-11/2/5","Din04-11/0/4","Dout04-11/1/4","Din01-11/0/1","Din14-11/0/14")
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken
@@ -20,11 +20,12 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 //C:\Users\asc\repo\EibPC\lib/webOut01.lib
 //C:\Users\asc\repo\EibPC/lib/HzViso.lib
 //C:\Users\asc\repo\EibPC/lib/RemMem.lib
-//C:/Users/Public/dev/knx/EibPC/lib/BMXRemanent8.lib
-//C:/Users/Public/dev/knx/EibPC/lib/test.lib
+C:\Users\asc\repo\EibPC/lib/WebOutputHkGen.lib
 
 
 [InitGA]
+// Hk1 VL
+"Ain02-11/2/2"			
 
 [Location]
 // Longitude and Latitude of Location
@@ -34,6 +35,9 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 
 [EibPC]
+// to be moved to include
+//
+ID_WebOutHK1	= 2
 /////////////////////////////////////////
 // Basics
 ////
@@ -112,8 +116,9 @@ str = $test$
 page(P_ID_GEN_1)[$General$,$Heating$]
 header(0)
 footer(0)
-design $black$
-pbutton(ButtonON)[STOP]$Shutdown$
+//design $black$
+
+weboutput(ID_WebOutHK1)[DOUBLE,NOICON] pbutton(ButtonON)[STOP]$Shutdown$ 
 
 //////////////////////////////////////////////////////
 

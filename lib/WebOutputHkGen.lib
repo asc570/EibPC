@@ -12,7 +12,71 @@
 // - GA_wbFrost    Warning: Frost b1
 // - GA_bGenHzON   Heatingting system general status ON/OFF
 
-:begin WebOutHkGen( HkName,ID,GA_Vl,GA_Rl,GA_HkModeReq,GA_HkModeAct,GA_PID,GA_bPump,GA_wbFrost, GA_bGenHzON )
+:begin SpWebOutHkGen( HkName,Id,GaVl,GaRl,GaHkModeReq,GA_HkModeAct,GaPID,GabPump,GawbFrost, GabGenHzON )
+:var strON@
+strON@   = $ON$
+
+:var strOFF@
+strOFF@  = $OFF$
+
+:var strTitle@
+strTitle@ = HkName
+
+:var strPump@
+strPump@  = $?$
 
 
+:var html@
+html@ = $$
+
+:var STARTDELAY@
+STARTDELAY@    = 2000u64
+
+
+:var strTemp@
+strTemp@ = $nil$
+
+
+if after(systemstart(), STARTDELAY@) or   \\
+   event(GaVl) or                         \\
+   event(GaRl) or                         \\
+   event( GabPump)                        \\
+   then{
+
+   strTemp@ =  stringformat(convert( GaVl,0f16 ) ,4,3,2,0 ) + $C / $ +    \\
+               stringformat(convert( GaRl,0f16 ) ,4,3,2,0 ) + $C$ ;
+
+   if GabPump then{
+      strPump@=   strON@ 
+      }endif ;
+  if !GabPump then{
+      strPump@ =  strOFF@ 
+      }endif ;
+
+//   strTemp@ = stringformat( GaVl /148u16 , 0,3,3,3)+$% / $ + stringformat( GaRl /148u16 , 0,3,3,3)+$%$;
+  
+
+html@ =  HkName + $                    \\
+          <table width ="100%">         \\
+               <tr>                       \\ 
+                  <td>                   \\
+                     Pumpe                    \\
+                  </td>                 \\               
+                  <td>$+                    \\
+                  strPump@             \\
+                  +$</td>                  \\
+               </tr>                      \\
+               <tr>                       \\
+                  <td>                    \\
+                  VL / RL :               \\
+                  </td>                   \\
+                  <td>$+                    \\
+                  strTemp@                  \\
+                  +$</td>                   \\
+               </tr>                      \\
+            </table>$;
+
+   weboutput( Id,html@ )
+
+ }endif
 :end
