@@ -57,10 +57,11 @@
 	<Files>
 		<Folder
 			Name="Source Files"
-			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go"/>
+			GUID="{88D71770-3D67-4057-1435-C5DBFE0E6B89}"/>
 		<Folder
 			Name="Header Files"
-			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if"
+			GUID="{2BAEF45E-A3A4-498E-D0AC-79FBC1D580BD}">
 			<F N="include/DefHz.inc"/>
 			<F N="include/RemMem.inc"/>
 			<F N="include/tBuf.inc"/>
@@ -68,13 +69,16 @@
 		</Folder>
 		<Folder
 			Name="Resource Files"
-			Filters="*.ico;*.cur;*.dlg"/>
+			Filters="*.ico;*.cur;*.dlg"
+			GUID="{94846D12-333E-4439-6686-B011D537379F}"/>
 		<Folder
 			Name="Bitmaps"
-			Filters="*.bmp"/>
+			Filters="*.bmp"
+			GUID="{8C982B27-BFF0-42E8-D631-9C3B851177A0}"/>
 		<Folder
 			Name="Other Files"
-			Filters="">
+			Filters=""
+			GUID="{48BF71E9-B029-4042-A0BE-C61483567498}">
 			<F N="../../../../asc/Downloads/booking"/>
 			<F N="lib/EibPCBase.lib"/>
 			<F N="lib/EibPCHz.lib"/>
@@ -82,7 +86,6 @@
 			<F N="lib/HzInit.lib"/>
 			<F N="lib/HzViso.lib"/>
 			<F N="lib/RemMem.lib"/>
-			<F N="te.txt"/>
 			<F N="lib/test.lib"/>
 			<F N="lib/visuMain.lib"/>
 			<F N="lib/webOut01"/>
