@@ -76,7 +76,11 @@ rP = 95%
 #include C:/Users/asc/repo/EibPC/include/DefHz.inc
 #include C:/Users/asc/repo/EibPC/include/WebServer.inc
 //#include C:/Users/asc/repo/EibPC/include/RemMem.inc
-
+//
+//  SBY or ABGESENKT
+//
+UVR_REDUCED = UVR_ABGESENKT
+//UVR_REDUCED = UVR_SBY
 
 if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	write("SetLockPosE-3/2/100","HzEgBoost_EssZ-8/2/39");
@@ -84,7 +88,7 @@ if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	}endif
 
 if( "HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_NORMAL) endif
-if( !"HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_ABGESENKT) endif
+if( !"HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_REDUCED) endif
 
 if(chtime(5,0,0) and !chtime(7,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 
@@ -94,7 +98,7 @@ if(chtime(7,0,0) ) then write ("HzEgBoost_EssZ-8/2/39",AUS) endif
 // HK3 switch on when request above threshold
 if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then{
    if( "OG1MaxStellwertOut-3/3/105" > rP)      then write( "Aout05-11/3/5",UVR_NORMAL) endif;
-   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then write( "Aout05-11/3/5",UVR_ABGESENKT) endif
+   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then write( "Aout05-11/3/5",UVR_REDUCED) endif
 
    }endif
 
