@@ -122,7 +122,7 @@ header(0)
 footer(0)
 //design $black$
 
-weboutput(ID_WebOutHK1)[DOUBLE,NOICON] pbutton(ButtonON)[STOP]$Shutdown$ 
+weboutput(ID_WebOutHK1)[SINGLE,NOICON] pbutton(ButtonON)[STOP]$Shutdown$ 
 
 //////////////////////////////////////////////////////
 

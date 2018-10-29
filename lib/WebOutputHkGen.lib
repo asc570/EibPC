@@ -27,7 +27,7 @@ strPump@  = $?$
 
 
 :var html@
-html@ = $$
+
 
 :var STARTDELAY@
 STARTDELAY@    = 2000u64
@@ -35,6 +35,110 @@ STARTDELAY@    = 2000u64
 
 :var strTemp@
 strTemp@ = $nil$
+
+html@ =  $     <style  >                \\
+                                                   \\
+    body{                                          \\
+         font-size: 14px;                          \\
+    }                                              \\
+    .head{                                         \\
+        margin:0 0 0 0;                            \\
+                                                   \\
+                                                   \\
+    }                                              \\
+    .line{                                         \\
+        display:flex;                              \\
+        width:100%;                                \\
+        justify-content:space-between;                \\
+        align-content: space-between;              \\
+        background-color: DodgerBlue;              \\
+    }                                              \\
+    .col1  {                                       \\
+        flex: 0 0 5em;                             \\
+        background-color: lightgrey;               \\
+    }                                              \\
+    .col2 {                                        \\
+        flex: 0 0 7em;                             \\
+        background-color: white;                   \\
+    }                                              \\
+    .col3{                                         \\
+        flex: 0 0 5em;                             \\
+        background-color: lightgrey;               \\
+    }                                              \\
+    .col4{                                         \\
+        flex: 0 0 5em;                             \\
+        background-color: white;                   \\
+    }                                              \\
+    .col5{                                         \\
+        flex: 0 0 5em;                             \\
+        background-color: lightgrey    }           \\
+                                                   \\
+    #Hz{                                           \\
+        background-color : lightgrey;              \\
+        font-wieght : bold;                        \\
+    }                                              \\
+                                                  \\
+    #Status{                                      \\
+        color : blue;                             \\
+    }                                             \\
+    #VlRl{                                        \\
+        color : orange;                           \\
+        font-weight : bold;                       \\
+    }                                             \\
+    #Tsoll{                                       \\
+        color : green;                            \\
+        font-weight : bold;                       \\
+    }                                             \\
+    #PID{                                         \\
+        color : green;                            \\
+        font-weight : bold;                       \\
+    }                                             \\
+    #Mode{                                        \\
+        color : green;                            \\
+        font-weight :bold;                        \\
+    }                                             \\
+    #OverTemp{                                    \\
+        color : red;                              \\
+        font-weight :bold;                        \\
+    }                                             \\
+    #Pump{                                        \\
+        color : blue;                             \\
+    }                                             \\
+    #Frost{                                       \\
+        color : red;                              \\
+        font-weight : bold                        \\
+    }                                             \\
+                                             \\
+    </style>                                       \\
+                                                   \\
+       <h3 id = "Hz" class="head" >FBH EG</h2>     \\
+    <div id="vlrl" class="line">                   \\
+        <div id = "Status" class="col1">           \\
+            OFF        </div>                      \\
+        <div id = "VlRl" class = "col2" >          \\
+            28C / 26C                              \\
+        </div >                                    \\
+        <div id="Tsoll" class = "col3" >           \\
+           27C                                     \\
+        </div>                                     \\
+         <div class = "col4" id="PID">             \\
+            21%                                    \\
+        </div>                                     \\
+    </div>                                         \\
+    <div class = "line">                           \\
+        <div id = "Mode" class = "col1" >          \\
+            HIGH                                   \\
+        </div>                                     \\
+        <div id = "OverTemp" class = "col2" >      \\
+            OverTemp                               \\
+        </div>                                     \\
+        <div id = "Pump" class = "col3" >          \\
+            Pump                                   \\
+        </div>                                     \\
+        <div id = "Frost" class = "col4" >         \\
+            Frost                                  \\
+        </div>                                     \\
+    </div>$c6000 
 
 
 if after(systemstart(), STARTDELAY@) or   \\
@@ -55,27 +159,6 @@ if after(systemstart(), STARTDELAY@) or   \\
 
 //   strTemp@ = stringformat( GaVl /148u16 , 0,3,3,3)+$% / $ + stringformat( GaRl /148u16 , 0,3,3,3)+$%$;
   
-
-html@ =  HkName + $                    \\
-          <table width ="100%">         \\
-               <tr>                       \\ 
-                  <td>                   \\
-                     Pumpe                    \\
-                  </td>                 \\               
-                  <td>$+                    \\
-                  strPump@             \\
-                  +$</td>                  \\
-               </tr>                      \\
-               <tr>                       \\
-                  <td>                    \\
-                  VL / RL :               \\
-                  </td>                   \\
-                  <td>$+                    \\
-                  strTemp@                  \\
-                  +$</td>                   \\
-               </tr>                      \\
-            </table>$;
-
    weboutput( Id,html@ )
 
  }endif
