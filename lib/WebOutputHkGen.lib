@@ -49,28 +49,27 @@ html@ =  $     <style  >                \\
     .line{                                         \\
         display:flex;                              \\
         width:100%;                                \\
-        justify-content:space-between;                \\
         align-content: space-between;              \\
         background-color: DodgerBlue;              \\
     }                                              \\
     .col1  {                                       \\
-        flex: 0 0 5em;                             \\
+        flex: 0 0 7em;                             \\
         background-color: lightgrey;               \\
     }                                              \\
     .col2 {                                        \\
         flex: 0 0 7em;                             \\
-        background-color: white;                   \\
+        background-color: lightgrey;                   \\
     }                                              \\
     .col3{                                         \\
-        flex: 0 0 5em;                             \\
+        flex: 0 0 7em;                             \\
         background-color: lightgrey;               \\
     }                                              \\
     .col4{                                         \\
-        flex: 0 0 5em;                             \\
-        background-color: white;                   \\
+        flex: 0 0 7em;                             \\
+        background-color: lightgrey;                   \\
     }                                              \\
     .col5{                                         \\
-        flex: 0 0 5em;                             \\
+        flex: 0 0 7em;                             \\
         background-color: lightgrey    }           \\
                                                    \\
     #Hz{                                           \\
@@ -111,31 +110,31 @@ html@ =  $     <style  >                \\
                                              \\
     </style>                                       \\
                                                    \\
-       <h3 id = "Hz" class="head" >FBH EG</h2>     \\
-    <div id="vlrl" class="line">                   \\
-        <div id = "Status" class="col1">           \\
+       <h3 id = Hz class= head  >FBH EG</h2>     \\
+    <div id= vlrl  class= line >                   \\
+        <div id =  Status  class= col1 >           \\
             OFF        </div>                      \\
-        <div id = "VlRl" class = "col2" >          \\
+        <div id =  VlRl  class =  col2  >          \\
             28C / 26C                              \\
         </div >                                    \\
-        <div id="Tsoll" class = "col3" >           \\
+        <div id= Tsoll  class =  col3  >           \\
            27C                                     \\
         </div>                                     \\
-         <div class = "col4" id="PID">             \\
+         <div class =  col4  id= PID >             \\
             21%                                    \\
         </div>                                     \\
     </div>                                         \\
-    <div class = "line">                           \\
-        <div id = "Mode" class = "col1" >          \\
+    <div class =  line >                           \\
+        <div id =  Mode  class =  col1  >          \\
             HIGH                                   \\
         </div>                                     \\
-        <div id = "OverTemp" class = "col2" >      \\
+        <div id =  OverTemp  class =  col2  >      \\
             OverTemp                               \\
         </div>                                     \\
-        <div id = "Pump" class = "col3" >          \\
+        <div id =  Pump  class =  col3  >          \\
             Pump                                   \\
         </div>                                     \\
-        <div id = "Frost" class = "col4" >         \\
+        <div id =  Frost  class =  col4  >         \\
             Frost                                  \\
         </div>                                     \\
     </div>$c6000 
