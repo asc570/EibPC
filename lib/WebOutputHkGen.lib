@@ -13,6 +13,25 @@
 // - GA_bGenHzON   Heatingting system general status ON/OFF
 
 :begin SpWebOutHkGen( HkName,Id,GaVl,GaRl,GaHkModeReq,GA_HkModeAct,GaPID,GabPump,GawbFrost, GabGenHzON )
+//
+// HTML style color strings
+//
+:var strColorBase@
+strColorBase@ = $black$
+
+:var strColorUnused@
+strColorUnused@ = $grey$
+
+:var strColorNormal@
+strColorNormal@ = $green$
+:var strColorCaution@ 
+strColorCaution@ = $DarkOrange$
+:var strColorWarning@
+strColorWarning@ = $red$
+
+:var strND@
+strND@ = $ND$
+
 :var strON@
 strON@   = $ON$
 
@@ -37,26 +56,49 @@ style1@ = $?$c16000
 style2@ = $?$c16000
 
 
-:var style3@
-style3@ = $?$c16000
-
-
 :var STARTDELAY@
 STARTDELAY@    = 2000u64
 
 
 :var strTemp@
 strTemp@ = $nil$
+////////////////////////////////////////
+
+:var strColorHkStatus@
+strColorHkStatus@ = strColorUnused@
+:var strHkStatus@
+strHkStatus@ = strND@
+
+:var strColorVLRL@
+strColorVLRL@ = strColorUnused@
+:var fMaxTempDiff@
+fMaxTempDiff@ = 5f16
 
 
-if after(systemstart(), STARTDELAY@) or   \\
-   event(GaVl) or                         \\
-   event(GaRl) or                         \\
-   event( GabPump)                        \\
-   then{
 
-   strTemp@ =  stringformat(convert( GaVl,0f16 ) ,4,3,2,0 ) + $C / $ +    \\
+:var iDelay@
+iDelay@ = 1
+if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
+
+  if GabGenHzON then{
+		strColorHkStatus@ = strColorNormal@;
+		strHkStatus@      = strON@;      
+		}endif ;
+	if(!GabGenHzON) then{
+	    strColorHkStatus@ = strColorUnused@;
+	    strHkStatus@      = strOFF@;
+	    }endif;
+
+
+
+   strTemp@ =  stringformat(convert( GaVl,0f16 ) ,4,3,2,0 ) + $C/$ +    \\
                stringformat(convert( GaRl,0f16 ) ,4,3,2,0 ) + $C$ ;
+
+   strColorVLRL@ = strColorNormal@;
+   if( convert(GaVl,0f16) - convert( GaRl,0f16 ) >  fMaxTempDiff@ ) then{
+      strColorVLRL@ = strColorCaution@;
+      }endif;
+    
 
    if GabPump then{
       strPump@=   strON@ 
@@ -65,15 +107,15 @@ if after(systemstart(), STARTDELAY@) or   \\
       strPump@ =  strOFF@ 
       }endif ;
 
-//   strTemp@ = stringformat( GaVl /148u16 , 0,3,3,3)+$% / $ + stringformat( GaRl /148u16 , 0,3,3,3)+$%$;
+//  strTemp@ = $Vl:$+ stringformat( GaVl /148u16 , 0,3,3,3)+$C / Rl:$ + stringformat( GaRl /148u16 , 0,3,3,3)+$C$;
 
 style1@ =  $<style  >                                                 
     body    { font-size: 15px; }                                      
     .head   { margin:0 0 0 0;  }                                      
     .line   { display:flex; width:100%; align-content: space-between;}
-    .col1   { flex: 0 0 7em; background-color: lightgrey;}                                  
-    .col2   { flex: 0 0 7em; background-color: lightgrey;}                                  
-    .col3   { flex: 0 0 7em; background-color: lightgrey;}                                   
+    .col1   { flex: 0 0 6em; background-color: lightgrey;}                                  
+    .col2   { flex: 0 0 10em; background-color: lightgrey;}                                  
+    .col3   { flex: 0 0 6em; background-color: lightgrey;}                                   
     .col4   { flex: 0 0 7em; background-color: lightgrey;   }                               
     .col5   { flex: 0 0 7em; background-color: lightgrey;   }       
     $;                                    
@@ -81,22 +123,23 @@ style1@ =  $<style  >
 
 style2@ = $                                          
     #Hz     { background-color : lightgrey; font-wieght : bold; }    
-    #Status { color : blue;}                                         
-    #VlRl   { color : orange; font-weight : bold; }                                  
-    #VlRl   { color : orange  ; font-weight : bold;}                         
-    #Tsoll  { color : green   ; font-weight : bold;}                             
-    #PID    { color : green   ; font-weight : bold;}                             
-    #Mode   { color : green   ; font-weight :bold; }                             
+    #Status { color : black;}                                         
+    #VlRl   { color : black   ; font-weight : bold; }                                  
+    #Tsoll  { color : black   ; font-weight : bold;}                             
+    #PID    { color : black   ; font-weight : bold;}                             
+    #Mode   { color : black   ; font-weight :bold; }                             
     #OverTemp{ color : red    ; font-weight :bold; }                             
-    #Pump   { color : blue    ;                    }                             
+    #Pump   { color : black   ;                    }                             
     #Frost  { color : red     ; font-weight : bold }                         
    </style>                                          
    $;
 
-html@ = $<h3 id = Hz class= head  >FBH EG</h2>                
-    <div id= vlrl  class= line >                              
-        <div id =  Status  class= col1 > OFF         </div>                
-        <div id =  VlRl  class =  col2 > 28C / 26C   </div>                           
+html@ = $<h3 id = 'Hz' class= 'head'  >FBH EG</h2>                
+    <div id= vlrl  class= line >  	                             
+        <div id =  Status  class= col1 >HK: <span style='color:$+ strColorHkStatus@ +$'>
+        $+ strHkStatus@ +$</span></div>                
+        <div id =  VlRl  class =  col2 >VL/RL: <span style= 'color:$+ strColorVLRL@ +$' >
+        $+ strTemp@ +$</span></div>                           
         <div id= Tsoll  class =  col3  > 27C         </div>                            
          <div class =  col4  id= PID   > 21%         </div>                            
     </div>                                                    
