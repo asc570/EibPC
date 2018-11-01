@@ -8,7 +8,7 @@ C:/Users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 [Macros]
 //Sp_Hk5OG1control("OG1MaxStellwertOut-3/3/105", 95%,Hk5_SwOg1)
 
-SpWebOutHkGen($EG_FB$,ID_WebOutHK1,"Ain02-11/2/2","Ain03-11/2/3","Aout04-11/3/4","Ain05-11/2/5","Din04-11/0/4","Dout04-11/1/4","Din01-11/0/1","Din14-11/0/14")
+SpWebOutHkGen($EG_FB$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1")
 //WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 [MacroLibs]
 //Makro-Bibliotheken

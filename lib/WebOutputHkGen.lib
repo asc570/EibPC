@@ -12,10 +12,12 @@
 // - GA_wbFrost    Warning: Frost b1
 // - GA_bGenHzON   Heatingting system general status ON/OFF
 
-:begin SpWebOutHkGen( HkName,Id,GaVl,GaRl,GaHkModeReq,GA_HkModeAct,GaPID,GabPump,GawbFrost, GabGenHzON )
+
+:begin SpWebOutHkGen( HkName,Id, GabGenHzON,GaVl,GaRl,GabPump,GaPID,GaHkModeReq,GaHkModeAct,GaOverTempC,GaOverTempW,GabFrost )
 //
 // HTML style color strings
 //
+
 :var strColorBase@
 strColorBase@ = $black$
 
@@ -40,10 +42,6 @@ strOFF@  = $OFF$
 
 :var strTitle@
 strTitle@ = HkName
-
-:var strPump@
-strPump@  = $?$
-
 
 :var html@
 html@ = $?$c16000
@@ -74,6 +72,36 @@ strColorVLRL@ = strColorUnused@
 :var fMaxTempDiff@
 fMaxTempDiff@ = 5f16
 
+:var strColorPump@
+strColorPump@ = strColorUnused@
+:var strPump@
+strPump@       = strND@
+
+:var strColorPID@
+strColorPID@ = strColorUnused@
+:var strPID@ 
+strPID@ = strND@
+
+:var strColorHkMode@
+strColorHkMode@   = strColorUnused@
+:var strHkMode@
+strHkMode@        = strND@
+
+:var strOverT@
+strOverT@         = $$
+:var strCOverTC@
+strCOverTC@        = $<span style='color:$+ strColorCaution@ +$'> OverTemp</span> $  
+
+:var strCOverTW@
+strCOverTW@        = $<span style='color:$+ strColorWarning@ +$'> OverTemp</span> $  
+
+:var strFrost@
+strFrost@ = $$
+:var strCFrost@  
+strCFrost@        = $<span style='color:$+ strColorWarning@ +$'> Frost</span> $  
+
+
+
 
 
 :var iDelay@
@@ -98,26 +126,53 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
    if( convert(GaVl,0f16) - convert( GaRl,0f16 ) >  fMaxTempDiff@ ) then{
       strColorVLRL@ = strColorCaution@;
       }endif;
-    
-
+ 
    if GabPump then{
-      strPump@=   strON@ 
+      strPump@       = strON@;
+      strColorPump@  = strColorNormal@;
       }endif ;
-  if !GabPump then{
-      strPump@ =  strOFF@ 
+   if !GabPump then{
+      strPump@       = strOFF@;
+      strColorPump@  = strColorUnused@;
       }endif ;
 
-//  strTemp@ = $Vl:$+ stringformat( GaVl /148u16 , 0,3,3,3)+$C / Rl:$ + stringformat( GaRl /148u16 , 0,3,3,3)+$C$;
+
+   strColorPID@ =  strColorUnused@ ;
+   if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif; 
+   strPID@ =   stringformat(convert(GaPID,0u16)/148u16 ,0,3,3,3 )+$%$; 
+//   strPID@ = stringformat(GaPID,4,3,2,0); 
+//  strPID@ = stringformat(convert(GaPID, 0f16),4,3,2,0 ) + $%$;
+
+   strColorHkMode@ = strColorNormal@;
+//   if( GaHkModeReq != GaHkModeAct) then{ strColorHkMode@ = strColorCaution@} endif;
+   strHkMode@ = strND@;
+   if( convert(GaHkModeAct,0u16) == UVR_NORMAL )      then{ strHkMode@ = $high$} endif;
+   if( convert(GaHkModeAct,0u16) == UVR_ABGESENKT )   then{ strHkMode@ = $hlow$} endif;
+   if( convert(GaHkModeAct,0u16) == UVR_AUTO)         then{ strHkMode@ = $auto$} endif;
+   if( convert(GaHkModeAct,0u16) == UVR_SBY)          then{ strHkMode@ = $frost$} endif; 
+   if( convert(GaHkModeAct,0u16) == UVR_INTERN )      then{ strHkMode@ = $intern$} endif;
+   if( convert(GaHkModeAct,0u16) == UVR_ERROR )       then{
+      strHkMode@ = $error$;
+      strColorHkMode@ = strColorWarning@;
+      } endif;
+
+   strOverT@ = $$;
+   if(GaOverTempC) then{strOverT@ = strCOverTC@} endif;
+   if(GaOverTempW) then{strOverT@ = strCOverTW@} endif;
+
+   strFrost@ = $$;
+   if( GabFrost ) then{strFrost@ = strCFrost@}endif;
+      
 
 style1@ =  $<style  >                                                 
     body    { font-size: 15px; }                                      
     .head   { margin:0 0 0 0;  }                                      
     .line   { display:flex; width:100%; align-content: space-between;}
-    .col1   { flex: 0 0 6em; background-color: lightgrey;}                                  
-    .col2   { flex: 0 0 10em; background-color: lightgrey;}                                  
-    .col3   { flex: 0 0 6em; background-color: lightgrey;}                                   
-    .col4   { flex: 0 0 7em; background-color: lightgrey;   }                               
-    .col5   { flex: 0 0 7em; background-color: lightgrey;   }       
+    .col1   { flex: 0 0 7em;  background-color: lightgrey;}                                  
+    .col2   { flex: 0 0 9em; background-color: lightgrey;}                                  
+    .col3   { flex: 0 0 6em;  background-color: lightgrey;}                                   
+    .col4   { flex: 0 0 7em;  background-color: lightgrey;   }                               
+    .col5   { flex: 0 0 7em;  background-color: lightgrey;   }       
     $;                                    
                                           
 
@@ -136,18 +191,21 @@ style2@ = $
 
 html@ = $<h3 id = 'Hz' class= 'head'  >FBH EG</h2>                
     <div id= vlrl  class= line >  	                             
-        <div id =  Status  class= col1 >HK: <span style='color:$+ strColorHkStatus@ +$'>
+        <div id =  Status  class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
         $+ strHkStatus@ +$</span></div>                
         <div id =  VlRl  class =  col2 >VL/RL: <span style= 'color:$+ strColorVLRL@ +$' >
-        $+ strTemp@ +$</span></div>                           
-        <div id= Tsoll  class =  col3  > 27C         </div>                            
-         <div class =  col4  id= PID   > 21%         </div>                            
+        $+ strTemp@ +$</span></div>                                
+        <div id =  Pump  class =  col3  >Pump: <span style= 'color:$+ strColorPump@ +$' >
+        $+ strPump@ +$</span> </div>                            
+        <div class =  col4  id= PID   >PID: <span='color:$+ strColorPID@ +$'>
+         $+  strPID@ +$</span></div>                            
     </div>                                                    
     <div class =  line >                                      
-        <div id =  Mode  class =  col1  > HIGH        </div>                            
-        <div id =  OverTemp class = col2> OverTemp    </div>                            
-        <div id =  Pump  class =  col3  > Pump        </div>                            
-        <div id =  Frost  class =  col4 > Frost       </div>                            
+        <div id =  Mode  class=  col1 >Mode: <span style='color:$+ strColorHkMode@ +$'>
+        $+ strHkMode@ +$</span> </div>                            
+        <div id =  OverTemp class = col2>$+ strOverT@    +$</div>                            
+        <div id =  Frost  class =  col3  >$+ strFrost@   +$</div>                            
+        <div   class =  col4 >       </div>                            
     </div>                                                    
     $;
  
