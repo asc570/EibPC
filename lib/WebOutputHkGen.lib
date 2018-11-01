@@ -17,7 +17,6 @@
 //
 // HTML style color strings
 //
-
 :var strColorBase@
 strColorBase@ = $black$
 
@@ -26,11 +25,15 @@ strColorUnused@ = $grey$
 
 :var strColorNormal@
 strColorNormal@ = $green$
+
 :var strColorCaution@ 
 strColorCaution@ = $DarkOrange$
+
 :var strColorWarning@
 strColorWarning@ = $red$
-
+//
+// HTML text
+//
 :var strND@
 strND@ = $ND$
 
@@ -49,24 +52,16 @@ html@ = $?$c16000
 :var style1@
 style1@ = $?$c16000
 
-
-:var style2@
-style2@ = $?$c16000
-
-
-:var STARTDELAY@
-STARTDELAY@    = 2000u64
-
-
-:var strTemp@
-strTemp@ = $nil$
-////////////////////////////////////////
-
+//
+// HTML variables
+//
 :var strColorHkStatus@
 strColorHkStatus@ = strColorUnused@
 :var strHkStatus@
 strHkStatus@ = strND@
 
+:var strTemp@
+strTemp@ = $nil$
 :var strColorVLRL@
 strColorVLRL@ = strColorUnused@
 :var fMaxTempDiff@
@@ -99,16 +94,17 @@ strCOverTW@        = $<span style='color:$+ strColorWarning@ +$'> OverTemp</span
 strFrost@ = $$
 :var strCFrost@  
 strCFrost@        = $<span style='color:$+ strColorWarning@ +$'> Frost</span> $  
-
-
-
-
+//
+/////////////////////////////////////////////////////////////////////////////
+///
+:var STARTDELAY@
+STARTDELAY@    = 2000u64
 
 :var iDelay@
 iDelay@ = 1
 if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 
-  if GabGenHzON then{
+   if GabGenHzON then{
 		strColorHkStatus@ = strColorNormal@;
 		strHkStatus@      = strON@;      
 		}endif ;
@@ -116,8 +112,6 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 	    strColorHkStatus@ = strColorUnused@;
 	    strHkStatus@      = strOFF@;
 	    }endif;
-
-
 
    strTemp@ =  stringformat(convert( GaVl,0f16 ) ,4,3,2,0 ) + $C/$ +    \\
                stringformat(convert( GaRl,0f16 ) ,4,3,2,0 ) + $C$ ;
@@ -135,7 +129,6 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
       strPump@       = strOFF@;
       strColorPump@  = strColorUnused@;
       }endif ;
-
 
    strColorPID@ =  strColorUnused@ ;
    if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif; 
@@ -163,55 +156,37 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
    strFrost@ = $$;
    if( GabFrost ) then{strFrost@ = strCFrost@}endif;
       
-
 style1@ =  $<style  >                                                 
-    body    { font-size: 15px; }                                      
-    .head   { margin:0 0 0 0;  }                                      
-    .line   { display:flex; width:100%; align-content: space-between;}
+    .head   { margin:0 0 0 0; font-size: 15px;background-color: lightgrey; }                                      
+    .line   { display:flex; width:100%; align-content: space-between; font-weight:bold;font-size: 12px;}
     .col1   { flex: 0 0 7em;  background-color: lightgrey;}                                  
     .col2   { flex: 0 0 9em; background-color: lightgrey;}                                  
     .col3   { flex: 0 0 6em;  background-color: lightgrey;}                                   
     .col4   { flex: 0 0 7em;  background-color: lightgrey;   }                               
-    .col5   { flex: 0 0 7em;  background-color: lightgrey;   }       
+    .col5   { flex: 0 0 7em;  background-color: lightgrey;   }   
+     </style>     
     $;                                    
                                           
-
-style2@ = $                                          
-    #Hz     { background-color : lightgrey; font-wieght : bold; }    
-    #Status { color : black;}                                         
-    #VlRl   { color : black   ; font-weight : bold; }                                  
-    #Tsoll  { color : black   ; font-weight : bold;}                             
-    #PID    { color : black   ; font-weight : bold;}                             
-    #Mode   { color : black   ; font-weight :bold; }                             
-    #OverTemp{ color : red    ; font-weight :bold; }                             
-    #Pump   { color : black   ;                    }                             
-    #Frost  { color : red     ; font-weight : bold }                         
-   </style>                                          
-   $;
-
-html@ = $<h3 id = 'Hz' class= 'head'  >FBH EG</h2>                
-    <div id= vlrl  class= line >  	                             
-        <div id =  Status  class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
+html@ = $<h2 class= 'head'  >FBH EG</h2>                
+    <div  class= line >  	                             
+        <div class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
         $+ strHkStatus@ +$</span></div>                
-        <div id =  VlRl  class =  col2 >VL/RL: <span style= 'color:$+ strColorVLRL@ +$' >
+        <div class =  col2 >VL/RL: <span style= 'color:$+ strColorVLRL@ +$' >
         $+ strTemp@ +$</span></div>                                
-        <div id =  Pump  class =  col3  >Pump: <span style= 'color:$+ strColorPump@ +$' >
+        <div class =  col3  >Pump: <span style= 'color:$+ strColorPump@ +$' >
         $+ strPump@ +$</span> </div>                            
-        <div class =  col4  id= PID   >PID: <span='color:$+ strColorPID@ +$'>
+        <div class =  col4 >PID: <span='color:$+ strColorPID@ +$'>
          $+  strPID@ +$</span></div>                            
     </div>                                                    
     <div class =  line >                                      
-        <div id =  Mode  class=  col1 >Mode: <span style='color:$+ strColorHkMode@ +$'>
+        <div class=  col1 >Mode: <span style='color:$+ strColorHkMode@ +$'>
         $+ strHkMode@ +$</span> </div>                            
-        <div id =  OverTemp class = col2>$+ strOverT@    +$</div>                            
-        <div id =  Frost  class =  col3  >$+ strFrost@   +$</div>                            
+        <div class = col2>$+ strOverT@    +$</div>                            
+        <div class =  col3  >$+ strFrost@   +$</div>                            
         <div   class =  col4 >       </div>                            
     </div>                                                    
     $;
  
- 
- 
-   weboutput( Id,style1@+style2@+html@ );
-
+   weboutput( Id,style1@+html@ );
  }endif
 :end
