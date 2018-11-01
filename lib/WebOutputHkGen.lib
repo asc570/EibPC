@@ -140,7 +140,7 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 //   if( GaHkModeReq != GaHkModeAct) then{ strColorHkMode@ = strColorCaution@} endif;
    strHkMode@ = strND@;
    if( convert(GaHkModeAct,0u16) == UVR_NORMAL )      then{ strHkMode@ = $high$} endif;
-   if( convert(GaHkModeAct,0u16) == UVR_ABGESENKT )   then{ strHkMode@ = $hlow$} endif;
+   if( convert(GaHkModeAct,0u16) == UVR_ABGESENKT )   then{ strHkMode@ = $low$} endif;
    if( convert(GaHkModeAct,0u16) == UVR_AUTO)         then{ strHkMode@ = $auto$} endif;
    if( convert(GaHkModeAct,0u16) == UVR_SBY)          then{ strHkMode@ = $frost$} endif; 
    if( convert(GaHkModeAct,0u16) == UVR_INTERN )      then{ strHkMode@ = $intern$} endif;
@@ -167,7 +167,7 @@ style1@ =  $<style  >
      </style>     
     $;                                    
                                           
-html@ = $<h2 class= 'head'  >FBH EG</h2>                
+html@ = $<h2 class= 'head'  >$+ HkName +$</h2>                
     <div  class= line >  	                             
         <div class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
         $+ strHkStatus@ +$</span></div>                
