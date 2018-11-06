@@ -1,0 +1,5 @@
+Ip interfaces
+--------------------------------
+- EibPC                 : 10.1.40.5
+- ETS Interface         : 10.1.17.2
+- EibStudio Interface   : 10.1.17.1

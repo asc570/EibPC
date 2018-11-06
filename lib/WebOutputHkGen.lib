@@ -13,7 +13,7 @@
 // - GA_bGenHzON   Heatingting system general status ON/OFF
 //
 //
-:begin SpWebOutHkGen( HkName,Id, GabGenHzON,GaVl,GaRl,GabPump,GaPID,GaHkModeReq,GaHkModeAct,GaOverTempC,GaOverTempW,GabFrost )
+:begin SpWebOutHkGen( HkName,Id, GabGenHzON,GaVl,GaRl,GabPump,GaPID,GaHkModeReq,GaHkModeAct,GaOverTempC,GaOverTempW,GabFrost,GaMax3 )
 //
 // HTML style color strings
 //
@@ -47,10 +47,10 @@ strOFF@  = $OFF$
 strTitle@ = HkName
 
 :var html@
-html@ = $?$c16000
+html@ = $?$c24000
 
 :var style1@
-style1@ = $?$c16000
+style1@ = $?$c24000
 //
 // HTML variables
 //
@@ -84,15 +84,15 @@ strHkMode@        = strND@
 :var strOverT@
 strOverT@         = $$
 :var strCOverTC@
-strCOverTC@        = $<span style='color:$+ strColorCaution@ +$'> OverTemp</span> $  
+strCOverTC@        = $<span style= color:$+ strColorCaution@ +$> OverTemp</span> $  
 
 :var strCOverTW@
-strCOverTW@        = $<span style='color:$+ strColorWarning@ +$'> OverTemp</span> $  
+strCOverTW@        = $<span style= color:$+ strColorWarning@ +$ > OverTemp</span> $  
 
 :var strFrost@
 strFrost@ = $$
 :var strCFrost@  
-strCFrost@        = $<span style='color:$+ strColorWarning@ +$'> Frost</span> $  
+strCFrost@        = $<span style= color:$+ strColorWarning@ +$ > Frost</span> $  
 //
 /////////////////////////////////////////////////////////////////////////////
 ///
@@ -133,8 +133,12 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
    if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif;
    strPID@ =   stringformat(convert(GaPID,0u16),0,3,3,3 )+$%$; 
 
+   if ( GaMax3 > 0 ) then{ strPID@ = stringformat( convert(GaMax3, 0u16)*100u16/255u16,0,3,3,3 ) + $%$ } endif;
+   if ( convert(GaMax3, 0u16)*100u16/255u16 > 95u16 ) then{ strColorPID@ = strColorCaution@ }endif;
+
+
    strColorHkMode@ = strColorNormal@;
-//   if( GaHkModeReq != GaHkModeAct) then{ strColorHkMode@ = strColorCaution@} endif;
+
    strHkMode@ = strND@;
    if( convert(GaHkModeAct,0u16) == UVR_NORMAL )      then{ strHkMode@ = $high$} endif;
    if( convert(GaHkModeAct,0u16) == UVR_ABGESENKT )   then{ strHkMode@ = $low$} endif;
@@ -161,19 +165,19 @@ style1@ =  $<style  >
      </style>     
     $;                                    
                                           
-html@ = $<h2 class= 'head'  >$+ HkName +$</h2>                
+html@ = $<h2 class= head  >$+ HkName +$</h2>                
     <div  class= line >  	                             
-        <div class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
+        <div class= col1 >Hk: <span style= color:$+ strColorHkStatus@ +$ >
         $+ strHkStatus@ +$</span></div>                
-        <div class =  col2 >VL/RL: <span style = 'color:$+ strColorVLRL@ +$' >
+        <div class =  col2 >VL/RL: <span style = color:$+ strColorVLRL@ +$ >
         $+ strTemp@ +$</span></div>                                
-        <div class =  col3  >Pump: <span style = 'color:$+ strColorPump@ +$' >
+        <div class =  col3  >Pump: <span style = color:$+ strColorPump@ +$ >
         $+ strPump@ +$</span> </div>                            
-        <div class =  col4 >PID: <span style ='color:$+ strColorPID@ +$'>
+        <div class =  col4 >Load: <span style = color:$+ strColorPID@ +$ >
          $+  strPID@ +$</span></div>                            
     </div>                                                    
     <div class =  line >                                      
-        <div class=  col1 >Mode: <span style ='color:$+ strColorHkMode@ +$'>
+        <div class=  col1 >Mode: <span style = color:$+ strColorHkMode@ +$ >
         $+ strHkMode@ +$</span> </div>                            
         <div class = col2>$+ strOverT@    +$</div>                            
         <div class =  col3  >$+ strFrost@   +$</div>                            
