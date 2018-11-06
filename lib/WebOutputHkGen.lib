@@ -11,8 +11,8 @@
 // - GA_bPump     Pump Status (running?) b1
 // - GA_wbFrost    Warning: Frost b1
 // - GA_bGenHzON   Heatingting system general status ON/OFF
-
-
+//
+//
 :begin SpWebOutHkGen( HkName,Id, GabGenHzON,GaVl,GaRl,GabPump,GaPID,GaHkModeReq,GaHkModeAct,GaOverTempC,GaOverTempW,GabFrost )
 //
 // HTML style color strings
@@ -51,7 +51,6 @@ html@ = $?$c16000
 
 :var style1@
 style1@ = $?$c16000
-
 //
 // HTML variables
 //
@@ -131,10 +130,8 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
       }endif ;
 
    strColorPID@ =  strColorUnused@ ;
-   if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif; 
+   if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif;
    strPID@ =   stringformat(convert(GaPID,0u16),0,3,3,3 )+$%$; 
-//   strPID@ = stringformat(GaPID,4,3,2,0); 
-//  strPID@ = stringformat(convert(GaPID, 0f16),4,3,2,0 ) + $%$;
 
    strColorHkMode@ = strColorNormal@;
 //   if( GaHkModeReq != GaHkModeAct) then{ strColorHkMode@ = strColorCaution@} endif;
@@ -144,10 +141,7 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
    if( convert(GaHkModeAct,0u16) == UVR_AUTO)         then{ strHkMode@ = $auto$} endif;
    if( convert(GaHkModeAct,0u16) == UVR_SBY)          then{ strHkMode@ = $frost$} endif; 
    if( convert(GaHkModeAct,0u16) == UVR_INTERN )      then{ strHkMode@ = $intern$} endif;
-   if( convert(GaHkModeAct,0u16) == UVR_ERROR )       then{
-      strHkMode@ = $error$;
-      strColorHkMode@ = strColorWarning@;
-      } endif;
+   if( convert(GaHkModeAct,0u16) == UVR_ERROR )       then{strHkMode@ = $error$;strColorHkMode@ = strColorWarning@;} endif;
 
    strOverT@ = $$;
    if(GaOverTempC) then{strOverT@ = strCOverTC@} endif;
@@ -171,15 +165,15 @@ html@ = $<h2 class= 'head'  >$+ HkName +$</h2>
     <div  class= line >  	                             
         <div class= col1 >Hk: <span style='color:$+ strColorHkStatus@ +$'>
         $+ strHkStatus@ +$</span></div>                
-        <div class =  col2 >VL/RL: <span style= 'color:$+ strColorVLRL@ +$' >
+        <div class =  col2 >VL/RL: <span style = 'color:$+ strColorVLRL@ +$' >
         $+ strTemp@ +$</span></div>                                
-        <div class =  col3  >Pump: <span style= 'color:$+ strColorPump@ +$' >
+        <div class =  col3  >Pump: <span style = 'color:$+ strColorPump@ +$' >
         $+ strPump@ +$</span> </div>                            
-        <div class =  col4 >PID: <span='color:$+ strColorPID@ +$'>
+        <div class =  col4 >PID: <span style ='color:$+ strColorPID@ +$'>
          $+  strPID@ +$</span></div>                            
     </div>                                                    
     <div class =  line >                                      
-        <div class=  col1 >Mode: <span style='color:$+ strColorHkMode@ +$'>
+        <div class=  col1 >Mode: <span style ='color:$+ strColorHkMode@ +$'>
         $+ strHkMode@ +$</span> </div>                            
         <div class = col2>$+ strOverT@    +$</div>                            
         <div class =  col3  >$+ strFrost@   +$</div>                            
