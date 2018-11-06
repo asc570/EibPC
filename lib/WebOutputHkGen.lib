@@ -126,7 +126,7 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
       }endif ;
    if !GabPump then{
       strPump@       = strOFF@;
-      strColorPump@  = strColorUnused@;cd 
+      strColorPump@  = strColorUnused@;
       }endif ;
 
    strColorPID@ =  strColorUnused@ ;
