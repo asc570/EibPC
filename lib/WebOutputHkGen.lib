@@ -132,7 +132,7 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 
    strColorPID@ =  strColorUnused@ ;
    if (convert(GaPID, 0u16) > 20u16) then{ strColorPID@ = strColorNormal@ }endif; 
-   strPID@ =   stringformat(convert(GaPID,0u16)/148u16 ,0,3,3,3 )+$%$; 
+   strPID@ =   stringformat(convert(GaPID,0u16),0,3,3,3 )+$%$; 
 //   strPID@ = stringformat(GaPID,4,3,2,0); 
 //  strPID@ = stringformat(convert(GaPID, 0f16),4,3,2,0 ) + $%$;
 

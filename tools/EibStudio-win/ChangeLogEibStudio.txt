@@ -1,0 +1,511 @@
+EibStudio 3.205 (2017-12-18)
++ New:
+	 +Bug fix: Internal Error in visu assistent
+
+EibStudio 3.204 (2017-12-13)
++ New:
+	 +Bug fix: Error during creation of certificate fixed
+	 
+EibStudio 3.203 (2016-11-29)
++ New:
+	 +Bug fix: Visuassistent window allows scrolling with mouse wheel
+	 +Feature: Visuassi Standard room can control 6 lamps and 3 dimmers
+
+EibStudio 3.202 (2016-11-18)
++ New:
+	 +Bug fix: black screen at Visu-Preview
+	 +Feature: Visuassi webpage can now contain umlauts
+	 
+EibStudio 3.201 (2016-11-14)
++ New:
+	 +Background Pictures can be added in Visualisation-Assistent
+	 +VisuAssi has new template: Philips Hue Light
+	 +Sections can be folded and defolded wit double mouse click
+	 +Minor bug fixes of beta forum: Macro-Error, ...
+
+EibStudio 3.200 (2016-10-17)
++ New:
+	 First Step of upgrade of Visualisation-Assistent to a Visualisation designer with new Functions:
+	   Size of template sites can be adjusted; web elements can be displaced in templates per drag and drop; 
+	   category of websites can be changed.
+	 History for vis-projects now available; function for duplicating websites; new toolbuttons for delete and displacement of websites
+	 VisuAssi has new template: IpKameraWebseite
+
+EibStudio 3.103 (2016-09-06)
++ New:
+	 VisuAssi has new templates: SonosSyoundSystem
+	 Macros without shortinfo field are not listed any more in macro-window
+
++Fixes:
+	 error "expected integer but got 0x" at download of knx telegrams fixed
+
+
+EibStudio 3.102 (2016-08-04)
++Fixes:
+	 Eibparser-Timeout increased to 2min to deal with slow computers
+
+EibStudio 3.101 (2016-08-03)
++Fixes:
+	 Timeout-Error of eibparser when using many macros.
+
+EibStudio 3.100 (2016-07-13)
++ New:
+	 VisuAssi has new templates: Enertex Smartemeter-Sites, Presentsimulation
++Fixes:
+	 VisuAssi now uses new web-timer macro "Zeitschaltuhr4SchaltuhrenV2" to use more than one page with web timers
++ Fixes (eibparser):
+
+
+EibStudio 3.021 (2015-12-18)
++ New:
+	 SHUTDOWN variable can be set before data transfer
+	 timechartcolor as new web element
+	 *.vis file now is included in support file
++Fixes:
+	 a search and replace bug was fixed
+	 mtimechart arguments are colored now
+	 a message window bug was fixed
+	 the VisuAssi file is included to the project data backup on the EibPC
++ Fixes (eibparser):
+	 a segmentation fault was fixed
+	 error message for user defined ports bigger than 65535
+
+
+EibStudio 3.020 (2015-12-03)
++ Fixes (eibparser):
+	 problems with macro expander solved
+	 problems with c14 strings solved
+
+
+EibStudio 3.019 (2015-12-01)
++ Fixes (eibparser):
+	 problems with macro expander solved
+
+
+EibStudio 3.018 (2015-11-27)
++ New (eibparser):
+	 timechart colours can be defined
+	 TCP/UDP ports can be defined
+	 string length (except c14) increased by one
++ Fixes (eibparser):
+	 presetscene error message fixed
+	 comments allowed at the end of definitions
+
+
+EibStudio 3.017 (2015-06-30)
++ Fixes (eibparser):
+	 counting webelements fixed
+
+
+EibStudio 3.016 (2015-05-08)
++ Fixes (eibparser):
+	 function toString fixed
+
+
+EibStudio 3.015 (2015-03-11)
++ New:
+	 tostring-Function 
+         for furher information consult manual 
++ Fixes (eibparser)
+	 ping initial value
+	 picture height for HALF
+	 #addto Bug with [Webserver]
+
+
+EibStudio 3.014 (2014-12-19)
++ New:
+	 Webserver now processes 60 elements each page
+	 new template for time switches Visu-Assitant
+	 complete template for Home Automation in Visuu-Assitant
+	 new baloon help in Visu-Assistant
+         new functions urldecode,processingtime, md5sum, getganame (see manual, needs Patch 3.019 to work)
+         new webconfig "mobilezoom" 
+         new directive #addto for multiple [EibPC],[Macros] and [Webserver] sections in code
+         for furher information consult manual 
++ Fixes:
+	 various macro errors and error messages 
+	 English version corrected (messages)
+
+
+EibStudio 3.011 (2014-09-19)
++ New:
+	 nconf update for problems with programming under Windows 8.1 
+         new functions processingtime, md5sum, getganame (see manual, needs Patch 3.016 to work)
++ Fixes:
+	 readflash problem when using variables for counts 
+	 name handling of events in certain macro programming
+	 stringformat and precision argument (can be optional in certain conditions)
+	 number of possible webelements (mtimecharts)
+	 macro expanding, if using macros as functions
+	 Icon PERSON and PHONE are swapped
+	 macro expansion with arguments as results of comparisons
+	 address()-function when debugging in EibStudio
+	 Update function in EibStudio fixed
+	 Visuassitent can work with variables for Diagramms
+	 if sending a programm to EibPC will fail, eibstudio reports an error
+
+
+EibStudio 3.009 (2014-06-05)
++ New:
+	 nconf update 
+         Tested with Windows 7 and Windows 8.1
++ Fixes:
+        Fixes Bug for writes
+	Bug in eibparser with direct-GA Writes (write(GA1,GA2))
+	Bug in eibparser with UPDATE-Icon
+
+
+EibStudio 3.008 (2014-06-02)
++ New:
+	Profiler for processing objects and webserver objects
++ Fixes:
+	Wrong errormessages when compiling macros
+	Improved errormessages when compiling macros 
+	
++ Known Bugs:
+	Problems with uploading applicatios to EibPC via VPN or WIFI under Windows 8.1
+
+
+EibStudio 3.007 (2014-04-03)
++ New:
+	eibparser updated 
++ Fixes:
+	compilation error
+	Visuassistent now works on Mac
++ Known Bugs:
+	Problems with uploading applicatios to EibPC via VPN or WIFI under Windows 8.1
+
+
+EibStudio 3.004 (2014-02-22)
++ New:
+	eibparser updated 
++ Fixes:
+	compilation error 	
++ Known Bugs:
+	There is no complete English manual available yet
+	EibStudio doesnot support highlightning of extended syntax error analysis of eibparser
+	Upload of timebuffer fails 
+
+
+EibStudio 3.003 (2014-02-19)
++ New:
+	typo fixes
+	eibparser updated
+	   - Improved syntax check errormessages 
+	   - Fixed problem with icons higher values
+
+
+EibStudio 3.001 (2014-01-30)
++ New:
+	eibparser updated
+
+
+EibStudio 3.000 (2014-01-16)
++ New:
+	 This Version is needed for new V3 Patch/Firmware 
+	 Please see changelog in manual for the new functions
+	 
+         !!! There is no complete English manual available yet !!
+
+
+EibStudio 2.911 (2013-10-11)
++ New:
+	Beta-Development of new v3
++ Fixes:
+	Coding Problems in Webserver
+	UI in EibStudio
+	Visuassistent now in English
+	New Templates for Visuassistent
+
+
+EibStudio 2.908 (2013-09-20)
++ New	:
+	New Query before encoding an epc, esf-File
+	
++ Fixes :
+	Project Data download-Bug in MAc-Version behoben
+	Debug message disabled
+
+
+EibStudio 2.903 (2013-08-30)
++ New	:
+	Project Data (esf, epc, includes) can now be stored/downloaded to/from EibPC
+	GA in tree are not deleted, if eibparser throw an error
+	Better Debug-Messages in case of error "Variable kann nicht vorgegeben werden"
+	encoding of text files was set to system encoding (utf-8 on Linux/Mac, ISO-8859-15 in Win)
+	
++ Fixes :
+	epc and esf Files in EibstudioData directory are not deleted any more
+	56Byte strings and 64Bit integer are now correctly in debugger
+	some minor bugfixes
+
+
+EibStudio 2.311 (2012-11-29)
++ New	:
+	New templates for visu-assitent 
+	No restart after different DNS settings
+	waring if old files are re-written
+	changing notation of phy. adresses 
++ Fixes :
+	Irregular Decoding of FTP Logs under Windows
+	Compiler doesnot stop if error is in Macrolib
+	Large u64 numbers are not properly displayed
+	#Included-files are not fully packed in support data
+	multiple selection of initga-Adresses causes crash
+	Firwallinformation in English
+
+
+EibStudio 2.308 (2012-06-29)
++ Fixes:
+	Initalizing of Buttons in Webserver
+	Corrections in Visu-Assistent
+
+
+EibStudio 2.306 (2012-06-20)
++ New:
+	 Adding command line option for temporary Data (see -h)
+ 	 New functions for dynamic link/plink/picture
+
+ 	 Attention: 
+ 	    Please clear pdf your dir for temporary files (normally 
+ 	    EibstudioData relative to the exec) to see new manual
++ Fixes:
+	 Problems with manual GAs ('1/2/3'f16) 
+	 Proper Counting of webelements
+	 Problems with else-branches
+	 Problems with webelements
+	 Initializing of Plink 
+	 EOS-return of size()
+	 double email-send during start of system
+	 chtime problems
+	 wrong optimizing for after(change...) under certain circumstances
+	 Makro-Editor loses short description
+
+
+EibStudio 2.300
++ New:
+	  Improved performance of Firmware
+	  New functionsets see in manual
+	  improved webserver 
++ Known Bugs:
+	  Linux/Windows: none
+	  OSX: Menu handling of right click on code (popup) seems to be 
+	       unusal as an feature of the used gui-toolkit. We wait
+	       for an update of it to fix it. 
+
+
+EibStudio 2.104
++ New:
+          commobject is allowed to use as argument for initga()
+	  added new event
++ Fixes:
+          fixes plink Bug
+          handels errors for makrofunctions without :return
+          fixes manual errors
+
+
+EibStudio 2.100
++ New: 
+          Apdaption to new Kernel series
+          Needs Patch 2.100 or higher
++ Fixes:  
+          CSV telegram import problem
+          event-memory bug fixed
+
+
+EibStudio 2.004
++ New: 
+          Improved Webserverrefresh
+          New default values for Peformance settings
+
+
+EibStudio 2.003
++ New:     
+          Fixes Webserverrefresh in Performance Settings (eibparser)
+          Fixes Dialog in Performance in Win-enviroment
+          Fixes FTP Bug in EibStudio
+          Password of Webserveraccess and VPN is hided
+                        
++ WARNING: Don't use readflash and writeflash without Patch 1.100. 
+           You will kill your warranty in this case.
+
+
+EibStudio 2.002
++ New:
+          Fixes Patch 2.000 update Bug
+          Fixes Windows Windowing behaviour
++ WARNING: Don't use readflash and writeflash without Patch 1.100. 
+           You will kill your warranty in this case.
+
+
+EibStudio 2.000 
++ New:
+          VPN Support with user adiministration
+	  Black Design for Webserver
+	  New Functions
+	  Improved Macro-Capabilities
+	  All Release Patches include Firmware 
+	  See Chanlog list in manual
+          Black design 
+          Https Server
+          Visu for two or three columns
++ NEEDS: Patch 2.000 for operation 
+         You can upgrade your EibPC, if you have both Patch 1.100 and Firmware 1.308 running on your EibPC
++ WARNING: Don't use readflash and writeflash without Patch 1.100. 
+           You will kill your warranty in this case.
+
+
+------------------------- 
+
+EibStudio 1.300
+
++ WARNInG: Don't use readflash and writeflash without Patch 1.100. 
+           You will kill your warranty in this case.
++ New
+ - NEEDS: Firmware 1.300, 
+          Patches 1.000, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006, 1.007, 1.300
+          Optional for readflash and storeflash: Patch 1.100
+              
+ - Compiler supports new Webserver
+ - Compiler extended for old Webpage handling
+ - New Functions and improvements see manual at Changelog (last page)
+ - Routing Functions 
+ - Remanent storage
+ - FTP Downloads of Telegramms
+ - Performance-Scheduler
+ - RS232 
+
+
+
+EibStudio 1.127
++ Fixes
+ - bug with Macro reading
+ - size is now highlighted
+ - fixed shortcut problem with OSX
+ - fixed minor compilerbigs
+ 
++ New
+ - improved Event-Logger (still all objects are not displayed)
+ - added support for FT1.2 group monitor acess
+ - added shortcuts 
+ - closing procedure of eibstudio is rearranged
+ - collective configuration file "eibstudio.set" now holds all setup data
+ - tmp-Files are now placed in %USERS on Mac OSX plattforms
+ - compiler enhancements for optimized data structure (reduced size of object tables)
+ - compiler supports tcp-functions
+ - compiler supports c1400 Datatype as optional type
+ - compiler supports braces "{}" in then-branches as replacement for "\\" -line brakes
+ - new functions (see manual) requires Firmware 1.102 or higher: 
+    * tcpsend, tcpread, tcpconnect, tcpclose 
+ - improved compiler for faster object processing in firmware and 
+   reduced size of compiled object table
+ 
+ 
+
+EibStudio 1.121
+
++ Requires 
+  - Firmware eib-pc-v1.078.upd
+  - Patches 1.000, 1.001, 1.002, 1.003, 1.004, 1.005
+
++ Fixes
+ - Confusing message wit Calcluation of solar data was removed
+ - View of 32-bit floats in message console was corrected
+ - 16 Bit float problem fixed
+ - Webserver initializing of big websites improved (requires patch 1.003)
+ - English translation was updated
+ - Syntaxhighlight after undo function
+ - Empty strings $$ are now highlighted
+ - View of signed integer values in message console was corrected
+ - Delete key triggers now the automatic synthax highlighting
+ - "Replace All" function was fixed 
+ - MAC OS X short cuts 
+ - Fixed problems with FT1.2 with a high bus loads
+ 
++ New
+ - Highlighting of syntax errors
+ - Read/Write at Group Addresses directly from Treeview (with popup) without debug window
+ - Search function: Found words are now invers highlighted
+ - Group Adresses can be completely selected by one double click
+ - Available Macros are now shown in a treeview next to the Message console
+ - Search and Replace functions can now be applied on selected text only
+ - Configurable max. telegram rate for EIB-telgrams sent by the EibPC
+ - Access to constants of application programm in section [Webserver]
+ - Separate header and footer command in Webserver (not documented yet)
+ - improved precition of ntp-demon (requires Patches 1.004 and 1.005)
+ - Telegramm data rate can be freely adjusted 
+ - Highlight compiler errors directly
+ - Improved groupadress import
+ - Webserver can process u08 Variables of [EibPC] Sektions for its IDs
+   (not documented yet)
+ - Enhanced compability of Eibnet/IP Interfaces
+
+
+
+
+-------------------------------------------------------------------------------------
+EibStudio 1.114
++ Fixes
+ - manual has been updated 
+
++ New
+ - OSX support (beta)
+ - Changelog now in English language
+
+
+-------------------------------------------------------------------------------------
+EibStudio 1.111
+
++ Fixes
+ - Paste verliert Syntaxhighlight
+ - Webserver hat Probleme mit "none"
+ - Oberfläche läuft wieder unter Win2k (ohne Support und Garantie)
+ - Verbesserungen am Handbuch
+
+Neue Features ab 1.111
+ - Online-Telegrammausgabe umgestaltet
+
+
+-------------------------------------------------------------------------------------
+EibStudio 1.109
+
++ Fixes
+ - Die Eibtelegramme konnten bisweilen nur 1x abgeholt werden (Neustart erforderlich)
+ - Autocomplete unter Windows 
+ - Mailversand unter Windows
+ - Probleme beim ESF Import (bei nicht definierten Typen)
+
+Neue Features ab 1.109
+ - ceil, floor, mod
+ - EIBnet/IP Untersützung (Firmware 1.065 oder höher notwendig)
+ - Online-Telegrammausgabe verbessert 
+ - Informationen über Betriebsmodus (LAN) verbessert
+
+------------------------------------------------------------------------------------- 
+EibStudio 1.101
+
++ Fixes
+ - Timeoutfehler bei Übertragung ausgemerzt (Komponente nconf)
+ - acrobat reader 9 unter Windows geht nun
+ - ETS Gruppenadressen im Treeview waren teilweise falsch (Komponente eibparser)
+ - Verhalten der modalen Dialoge angepasst
+ - sendmail-Funktion bei Rückgabewert nicht aktualisiert (Komponente eibparser)
+
+Neue Features ab 1.100
+- Erste Unterstützung der Englischen Sprache im UI (Handbuch immer nur Deutsch)
+- Drag& Drop Support
+- ETS Gruppenadressen im Treeview für importierte Adresse
+- UI komplett überarbeitet
+- Beschleunigung des Syntaxhighlight
+- Beschleunigung des Downloads von Telegrammen
+
+Neue Features ab 1.101
+- Autolog Funktion (zyklisches Speichern in Datei)
+- Filter Funkton für Speichern und Autologspeichern von Telegrammen
+- Filter Funkton mit Wildcards "?" und "*"
+- email Passwort wird ausgegraut.
+- Rechte-Maus-Menü auf Meldungenfenster
+- Statusleiste erweitert
+- Nach dem Reboot des EibPCs wird die Firmwareversion abgefragt
+- Sortieren von Debugger und Definitionen mit Buchstaben ( Was mit "A" anfängt durch drücken)
+
