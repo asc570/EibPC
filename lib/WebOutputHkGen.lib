@@ -49,8 +49,6 @@ strTitle@ = HkName
 :var html@
 html@ = $?$c24000
 
-:var style1@
-style1@ = $?$c24000
 //
 // HTML variables
 //
@@ -98,10 +96,12 @@ strCFrost@        = $<span style= color:$+ strColorWarning@ +$ > Frost</span> $
 ///
 :var STARTDELAY@
 STARTDELAY@    = 2000u64
-
+//////////////////////
+// iDelay is cycle time in minutes
+//
 :var iDelay@
 iDelay@ = 1
-if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
+if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,5))then{
 
    if GabGenHzON then{
 		strColorHkStatus@ = strColorNormal@;
@@ -119,7 +119,7 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
    if( convert(GaVl,0f16) - convert( GaRl,0f16 ) >  fMaxTempDiff@ ) then{
       strColorVLRL@ = strColorCaution@;
       }endif;
- 
+
    if GabPump then{
       strPump@       = strON@;
       strColorPump@  = strColorNormal@;
@@ -135,7 +135,6 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 
    if ( GaMax3 > 0 ) then{ strPID@ = stringformat( convert(GaMax3, 0u16)*100u16/255u16,0,3,3,3 ) + $%$ } endif;
    if ( convert(GaMax3, 0u16)*100u16/255u16 > 95u16 ) then{ strColorPID@ = strColorCaution@ }endif;
-
 
    strColorHkMode@ = strColorNormal@;
 
@@ -153,38 +152,67 @@ if( after(systemstart(), STARTDELAY@) or cycle(iDelay@,0 ))then{
 
    strFrost@ = $$;
    if( GabFrost ) then{strFrost@ = strCFrost@}endif;
-      
-style1@ =  $<style  >                                                 
-    .head   { margin:0 0 0 0; font-size: 15px;background-color: lightgrey; }                                      
-    .line   { display:flex; width:100%; align-content: space-between; font-weight:bold;font-size: 12px;}
-    .col1   { flex: 0 0 7em;  background-color: lightgrey;}                                  
-    .col2   { flex: 0 0 9em; background-color: lightgrey;}                                  
-    .col3   { flex: 0 0 6em;  background-color: lightgrey;}                                   
-    .col4   { flex: 0 0 7em;  background-color: lightgrey;   }                               
-    .col5   { flex: 0 0 7em;  background-color: lightgrey;   }   
-     </style>     
-    $;                                    
-                                          
-html@ = $<h2 class= head  >$+ HkName +$</h2>                
-    <div  class= line >  	                             
-        <div class= col1 >Hk: <span style= color:$+ strColorHkStatus@ +$ >
-        $+ strHkStatus@ +$</span></div>                
-        <div class =  col2 >VL/RL: <span style = color:$+ strColorVLRL@ +$ >
-        $+ strTemp@ +$</span></div>                                
-        <div class =  col3  >Pump: <span style = color:$+ strColorPump@ +$ >
-        $+ strPump@ +$</span> </div>                            
-        <div class =  col4 >Load: <span style = color:$+ strColorPID@ +$ >
-         $+  strPID@ +$</span></div>                            
-    </div>                                                    
-    <div class =  line >                                      
-        <div class=  col1 >Mode: <span style = color:$+ strColorHkMode@ +$ >
-        $+ strHkMode@ +$</span> </div>                            
-        <div class = col2>$+ strOverT@    +$</div>                            
-        <div class =  col3  >$+ strFrost@   +$</div>                            
-        <div   class =  col4 >       </div>                            
+/////////////////////////////////////////////////////////////////////////////////////
+// the <style> in the <body> part of the <html> causes problems
+// with JSON. All <style> tags ar moved ino html
+// <style is for refernce only
+//       
+//style1@ =  $<style  >
+//    .head   { margin:0 0 0 0; font-size: 15px;background-color: lightgrey; }
+//    .line1   { display:flex; width:100%; align-content: space-between; font-weight:bold;font-size: 12px;}
+//    .col1   { flex: 0 0 7em;  background-color: lightgrey;}
+//    .col2   { flex: 0 0 9em; background-color: lightgrey;}
+//    .col3   { flex: 0 0 6em;  background-color: lightgrey;}
+//    .col4   { flex: 0 0 7em;  background-color: lightgrey;}
+//    .col5   { flex: 0 0 7em;  background-color: lightgrey;}
+//     </style>
+//    $;
+//
+//html@ = $<h2 class= head  >$+ HkName +$</h2>
+//    <div  class= line1 >
+//        <div class= col1 >Hk: <span style= color:$+ strColorHkStatus@ +$ >
+//        $+ strHkStatus@ +$</span></div>
+//        <div class =  col2 >VL/RL: <span style = color:$+ strColorVLRL@ +$ >
+//        $+ strTemp@ +$</span></div>
+//        <div class =  col3  >Pump: <span style = color:$+ strColorPump@ +$ >
+//        $+ strPump@ +$</span> </div>
+//        <div class =  col4 >Load: <span style = color:$+ strColorPID@ +$ >
+//         $+  strPID@ +$</span></div>
+//    </div>
+//    <div class =  line1 >
+//        <div class=  col1 >Mode: <span style = color:$+ strColorHkMode@ +$ >
+//        $+ strHkMode@ +$</span> </div>
+//        <div class = col2>$+ strOverT@    +$</div>
+//        <div class =  col3  >$+ strFrost@   +$</div>
+//        <div   class =  col4 >       </div>
+//    </div>
+//    $;
+
+html@ = $<h2 style = 'margin:0 0 0 0; font-size: 15px;background-color: lightgrey;'  >$+ HkName +$</h2>
+    <div  style = 'display:flex; width:100%; align-content: space-between; font-weight:bold;font-size: 12px;' >
+        <div style = 'flex: 0 0 7em;  background-color: lightgrey;'>
+        Hk: <span style= color:$+ strColorHkStatus@ +$ >
+        $+ strHkStatus@ +$</span></div>
+        <div style = 'flex: 0 0 9em; background-color: lightgrey;' >
+        VL/RL: <span style = color:$+ strColorVLRL@ +$ >
+        $+ strTemp@ +$</span></div>
+        <div style = 'flex: 0 0 6em;  background-color: lightgrey;'  >
+        Pump: <span style = color:$+ strColorPump@ +$ >
+        $+ strPump@ +$</span> </div>
+        <div style = 'flex: 0 0 7em;  background-color: lightgrey;' >
+        Load: <span style = color:$+ strColorPID@ +$ >
+         $+  strPID@ +$</span></div>
+    </div>
+    <div style = 'display:flex; width:100%; align-content: space-between; font-weight:bold;font-size: 12px;' > 
+        <div style = 'flex: 0 0 7em;  background-color: lightgrey;'>
+        Mode: <span style = color:$+ strColorHkMode@ +$ >
+        $+ strHkMode@ +$</span> </div>
+        <div style = ' flex: 0 0 9em; background-color: lightgrey;'>$+ strOverT@    +$</div>
+        <div style = 'flex: 0 0 6em;  background-color: lightgrey;'  >$+ strFrost@   +$</div>
+        <div   style = 'flex: 0 0 7em;  background-color: lightgrey;' >       </div>
     </div>                                                    
     $;
- 
-   weboutput( Id,style1@+html@ );
+
+   weboutput( Id,html@);
  }endif
 :end
