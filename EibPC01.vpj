@@ -66,6 +66,7 @@
 			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
 			GUID="{BADFDE6B-6046-4E58-1040-2941DCBF91BE}">
 			<F N="include/DefHz.inc"/>
+			<F N="include/IDviso.inc"/>
 			<F N="include/RemMem.inc"/>
 			<F N="include/tBuf.inc"/>
 			<F N="include/viso.inc"/>

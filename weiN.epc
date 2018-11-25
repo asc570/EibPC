@@ -9,7 +9,6 @@ D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
 SpWebOutHkGen($RAD$,ID_WebOutHK3,"Din14-11/0/14","Ain10-11/2/10","Ain11-11/2/11","Din05-11/0/5",0,"Aout06-11/3/6","Ain15-11/2/15","Din08-11/0/8","Din07-11/0/7","Din03-11/0/3","EGmaxStellwertOut-3/2/109")
 SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2/7","Din06-11/0/6","Ain08-11/2/8","Aout03-11/3/3","Ain09-11/2/9","Din08-11/0/8", "Din07-11/0/7","Din02-11/0/2",0 )
-//WebOutTest1( WOUT_ID_TEST ,"BuzzOff-10/2/0" )
 
 [MacroLibs]
 //Macro Library
@@ -25,14 +24,19 @@ D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 48.21666666666667
 
 [EibPC]
+#include D:/Users/asc/repo/EibPC/include/DefHz.inc
+#include D:\users\asc\repo\EibPC\include\IDviso.inc
+//#include D:/Users/asc/repo/EibPC/include/WebServer.inc
+//#include D:/Users/asc/repo/EibPC/include/RemMem.inc
+//
 // to be moved to include
 //
-ID_WebOutHK1	= 2
-ID_WebOutHK3	= 3
-ID_WebOutHK4	= 4
 /////////////////////////////////////////
 // Basics
 ////
+//////////////////////////////////////
+// send Date/ Time Signal
+//
 ///  Date / Time
 MinuteTimeCycle	= 10
 MinuteDayCycle	= 60
@@ -63,50 +67,92 @@ if(eventread("bIsNight-0/0/8")) then{
 	} endif
 //
 /////////////////////////////
-rP = 95%
-
-#include D:/Users/asc/repo/EibPC/include/DefHz.inc
-#include D:/Users/asc/repo/EibPC/include/WebServer.inc
-//#include D:/Users/asc/repo/EibPC/include/RemMem.inc
 //
-//  SBY or ABGESENKT
+// Heating
+//
+///////////////////////////////////////////////////////
 //
 UVR_REDUCED = UVR_ABGESENKT
-//UVR_REDUCED = UVR_SBY
+//
+///////////////////////////////
+//
+// Boost /////////////////////
+//
+BoostHk3 = AUS
+//
+// automatic Threshold from OG1 requests
+//
+Boost3Threshold = AUS
+//
+// Boost manual request for EG Kueche / Esszimmer
+//
+Boost3EgK	= AUS
+//
+if(cycle(1,0)) then{
+	BoostHk3 = EIN;
+	if (	! Boost3Threshold and
+		! Boost3EgK) then{
+			BoostHk3 = AUS;
+			} endif;
+		
+	if( BoostHk3) then write( "Aout05-11/3/5",UVR_NORMAL) endif;
+	if( !BoostHk3) then write( "Aout05-11/3/5",UVR_REDUCED) endif;
+	}endif
+//	
+///////////////////////////////////////////////////
+//			
+// Boost EG, Kueche
+//
+// start Time LT
+BOOST_EG_K_START 	= 5u08
+//
+if(htime(BOOST_EG_K_START,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
+// Boost duration, Kueche 2h
+//
+BOOST_EG_K_DURATION	= 7200000u64
 
+//
+if(delayc("HzEgBoost_EssZ-8/2/39",BOOST_EG_K_DURATION,Boost_Eg_K_Remaining)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
+//
 if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	write("SetLockPosE-3/2/100","HzEgBoost_EssZ-8/2/39");
 	write("SetLockPosF-3/2/101","HzEgBoost_EssZ-8/2/39")
 	}endif
 
-if( "HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_NORMAL) endif
-if( !"HzEgBoost_EssZ-8/2/39")  then write( "Aout05-11/3/5",UVR_REDUCED) endif
-
-if(chtime(5,0,0) and !chtime(7,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
-
-if(after("HzEgBoost_EssZ-8/2/39",3600000u64)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
-if(chtime(7,0,0) ) then write ("HzEgBoost_EssZ-8/2/39",AUS) endif
-/////////////////////////////////////////////////////////////////////////////////
-// HK3 switch on when request above threshold
-if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then{
-   if( "OG1MaxStellwertOut-3/3/105" > rP)      then write( "Aout05-11/3/5",UVR_NORMAL) endif;
-   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then write( "Aout05-11/3/5",UVR_REDUCED) endif
-
-   }endif
-
-
-//////////////////////////////////////////////////////////////////////
-// EibPC-UVR1611
+if( "HzEgBoost_EssZ-8/2/39") 	then Boost3EgK = EIN endif
+if( !"HzEgBoost_EssZ-8/2/39")  	then Boost3EgK = AUS endif
 //
-// HK
+/////////////////////////////////////////////////////////////////////////////////
+// Boost HK3  when request from OG1 above threshold
+//
+// threshold
+rP = 95%
+//
+if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then{
+   if( "OG1MaxStellwertOut-3/3/105" > rP)      then Boost3Threshold = EIN endif;
+   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then Boost3Threshold = AUS endif
+   }endif
+//
+//////////////////////////////////////////////////////////////////////
 //
 // WebServer Logic
 //
-ButtonON = 1
-if webbutton(ButtonON)==1 then webdisplay(ButtonON,$test$,LIGHT,ACTIVE,GREY) endif
+// Button BoostEgK ////////////////////////////////////////////////////
+//
+if( button(ID_BOOST_EG_K) == 1) then write ("HzEgBoost_EssZ-8/2/39" ,!"HzEgBoost_EssZ-8/2/39") endif;
+//
+Boost_Eg_K_Remaining 	= 0u64
+//
+if( "HzEgBoost_EssZ-8/2/39") then webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
+if( !"HzEgBoost_EssZ-8/2/39" ) then {
+		Boost_Eg_K_Remaining = 0u64;
+		webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining,WALLHEATING ,INACTIVE,GREY)
+		}endif
+
+if( cycle(1,0) and Boost_Eg_K_Remaining != 0u64) then webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
+//
 ///////////////////////////////////////////////////////////////////////
-///////////////
-str = $test$
+
 [WebServer]
 
 page(P_ID_GEN_1)[$General$,$Heating$]
@@ -117,6 +163,7 @@ footer(0)
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
+button(ID_BOOST_EG_K)[WALLHEATING]$Boost Küche$
 
 //////////////////////////////////////////////////////
 
