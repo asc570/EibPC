@@ -88,14 +88,14 @@ Boost3Threshold = AUS
 //
 Boost3EgK	= AUS
 //
-if(cycle(1,0)) then{
-	BoostHk3 = EIN;
-	if (	! Boost3Threshold and
-		! Boost3EgK) then{
-			BoostHk3 = AUS;
+if( change( Boost3Threshold) or change( Boost3EgK)) then{
+	BoostHk3 = AUS;
+	if (	Boost3Threshold or
+		Boost3EgK) then{
+			BoostHk3 = EIN;
 			} endif;
 		
-	if( BoostHk3) then write( "Aout05-11/3/5",UVR_NORMAL) endif;
+	if(  BoostHk3) then write( "Aout05-11/3/5",UVR_NORMAL) endif;
 	if( !BoostHk3) then write( "Aout05-11/3/5",UVR_REDUCED) endif;
 	}endif
 //	
@@ -119,8 +119,8 @@ if(event("HzEgBoost_EssZ-8/2/39") ) then{
 	write("SetLockPosF-3/2/101","HzEgBoost_EssZ-8/2/39")
 	}endif
 
-if( "HzEgBoost_EssZ-8/2/39") 	then Boost3EgK = EIN endif
-if( !"HzEgBoost_EssZ-8/2/39")  	then Boost3EgK = AUS endif
+if( event("HzEgBoost_EssZ-8/2/39")) 	then Boost3EgK = "HzEgBoost_EssZ-8/2/39" endif
+
 //
 /////////////////////////////////////////////////////////////////////////////////
 // Boost HK3  when request from OG1 above threshold
@@ -128,10 +128,9 @@ if( !"HzEgBoost_EssZ-8/2/39")  	then Boost3EgK = AUS endif
 // threshold
 rP = 95%
 //
-if( event( "OG1MaxStellwertOut-3/3/105") or after(systemstart( ),10000u64) )then{
-   if( "OG1MaxStellwertOut-3/3/105" > rP)      then Boost3Threshold = EIN endif;
-   if( "OG1MaxStellwertOut-3/3/105" < rP -5%)  then Boost3Threshold = AUS endif
-   }endif
+if( event( "OG1MaxStellwertOut-3/3/105") )then{
+   if( "OG1MaxStellwertOut-3/3/105" > rP) then Boost3Threshold = EIN else Boost3Threshold = AUS endif;
+   	}endif
 //
 //////////////////////////////////////////////////////////////////////
 //
