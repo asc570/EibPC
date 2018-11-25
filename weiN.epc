@@ -128,9 +128,8 @@ if( event("HzEgBoost_EssZ-8/2/39")) 	then Boost3EgK = "HzEgBoost_EssZ-8/2/39" en
 // threshold
 rP = 95%
 //
-if( event( "OG1MaxStellwertOut-3/3/105") )then{
-   if( "OG1MaxStellwertOut-3/3/105" > rP) then Boost3Threshold = EIN else Boost3Threshold = AUS endif;
-   	}endif
+if( "OG1MaxStellwertOut-3/3/105" > rP) then Boost3Threshold = EIN endif
+if( "OG1MaxStellwertOut-3/3/105" < rP) then Boost3Threshold = AUS endif
 //
 //////////////////////////////////////////////////////////////////////
 //
