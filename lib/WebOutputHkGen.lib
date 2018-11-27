@@ -228,7 +228,7 @@ html@ = $<h2 style = 'margin:0 0 0 0; font-size: 15px;background-color: lightgre
 //  - GATsoll(in): Soll temperatur f16
 //  - GATist(in): Ist Temperatur, f16
 //
-:begin SpWebButtonMEGFrost( ID,GASetFrost,GAStFrost,GATsoll,GATist )
+:begin SpWebButtonMEGFrost(git push ID,GASetFrost,GAStFrost,GATsoll,GATist )
 :var strOut@
 strOut@     = $$
 :var bFrost@
