@@ -104,12 +104,12 @@ if( change( Boost3Threshold) or change( Boost3EgK)) then{
 // Boost EG, Kueche
 //
 // start Time LT
-BOOST_EG_K_START 	= 5u08
+BOOST_EG_K_START 	= 6u08
 //
 if(htime(BOOST_EG_K_START,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 // Boost duration, Kueche 2h
 //
-BOOST_EG_K_DURATION	= 7200000u64
+BOOST_EG_K_DURATION	= 5400000u64
 
 //
 if(delayc("HzEgBoost_EssZ-8/2/39",BOOST_EG_K_DURATION,Boost_Eg_K_Remaining)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
@@ -127,9 +127,11 @@ if( event("HzEgBoost_EssZ-8/2/39")) 	then Boost3EgK = "HzEgBoost_EssZ-8/2/39" en
 //
 // threshold
 rP = 95%
+upperLboostOG1	= 95%
+lowerLboostOG1	= 90%
 //
-if( "OG1MaxStellwertOut-3/3/105" > rP) then Boost3Threshold = EIN endif
-if( "OG1MaxStellwertOut-3/3/105" < rP) then Boost3Threshold = AUS endif
+if( hysteresis("OG1MaxStellwertOut-3/3/105",lowerLboostOG1,upperLboostOG1)) 	then Boost3Threshold = EIN \\
+										else Boost3Threshold = AUS endif
 //
 //////////////////////////////////////////////////////////////////////
 //
