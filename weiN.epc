@@ -4,19 +4,28 @@
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 [Macros]
-//Sp_Hk5OG1control("OG1MaxStellwertOut-3/3/105", 95%,Hk5_SwOg1)
-// SpWebOutHkGen( HkName,Id, GabGenHzON,GaVl,GaRl,GabPump,GaPID,GaHkModeReq,GaHkModeAct,GaOverTempC,GaOverTempW,GabFrost )
+// heating
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
 SpWebOutHkGen($RAD$,ID_WebOutHK3,"Din14-11/0/14","Ain10-11/2/10","Ain11-11/2/11","Din05-11/0/5",0,"Aout06-11/3/6","Ain15-11/2/15","Din08-11/0/8","Din07-11/0/7","Din03-11/0/3","OG1MaxStellwertOut-3/3/105")
 SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2/7","Din06-11/0/6","Ain08-11/2/8","Aout03-11/3/3","Ain09-11/2/9","Din08-11/0/8", "Din07-11/0/7","Din02-11/0/2",0 )
-SpWebButtonMEGFrost( ID_B_OG1_MARISA_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
+SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
+SpWebButtonMEGFrost( ID_B_OG1_BUERO_MEG_FROST,"SetMEG_Buero_FrostMode-7/2/38","GetMEG_Buero_FrostMode-7/2/39","GetMEG_Buero_SollT-7/2/31","T_OG1_Buero_Merten_MEG-6/2/3" )
+SpWebButtonMEGFrost( ID_B_OG1_EMILIA_MEG_FROST,"SetMEG_Emilia_FrostMode-7/2/10","StMEG_Emilia_FrostMode-7/2/11","GetMEG_Emilia_SollT-7/2/3","Aout02-11/3/2")
 [MacroLibs]
-//Macro Library
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 
 [InitGA]
-// Hk1 VL
-"Ain02-11/2/2"			
+// heating
+"Ain02-11/2/2"	
+"StMEG_Marisa_FrostMode-7/2/25"
+"GetMEG_Marisa_SollT-7/2/17"
+"GetMEG_Marisa_IstT-7/2/19" 	
+"GetMEG_Buero_FrostMode-7/2/39"	
+"GetMEG_Buero_SollT-7/2/31"
+"T_OG1_Buero_Merten_MEG-6/2/3"
+"StMEG_Emilia_FrostMode-7/2/11"
+"GetMEG_Emilia_SollT-7/2/3"
+"Aout02-11/3/2"
 
 [Location]
 // Longitude and Latitude of Location
@@ -28,8 +37,6 @@ D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 #include D:\users\asc\repo\EibPC\include\IDviso.inc
 //#include D:/Users/asc/repo/EibPC/include/WebServer.inc
 //#include D:/Users/asc/repo/EibPC/include/RemMem.inc
-//
-// to be moved to include
 //
 /////////////////////////////////////////
 // Basics
@@ -163,7 +170,8 @@ footer(0)
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
-button(ID_B_BOOST_EG_K)[WALLHEATING]$Boost Küche$ button( ID_B_OG1_MARISA_FROST)[ICE]$Marisa Frost$
+button(ID_B_BOOST_EG_K)[WALLHEATING]$EG-Boost Küche$ 	button( ID_B_OG1_MARISA_MEG_FROST)[ICE]$OG1-Marisa Frost$
+button(ID_B_OG1_BUERO_MEG_FROST )[ICE]$OG1-Buero Frost$ button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1-Emilia Frost$
 
 //////////////////////////////////////////////////////
 
