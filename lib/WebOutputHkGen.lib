@@ -216,3 +216,35 @@ html@ = $<h2 style = 'margin:0 0 0 0; font-size: 15px;background-color: lightgre
    weboutput( Id,html@);
  }endif
 :end
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SpWebButtonMEGFrost( ) is used to controll the Frost mode of the
+// Merten MEG6241 RoomTemperatur Controller via a Button in the [WebServer]
+//
+// input:
+//  - ID: Button ID
+//  - GASetFrost(out): GA to set Frost Mode. 0b01
+//  - GAStFrost(in): status frost mode 0b01
+//  - GATsoll(in): Soll temperatur f16
+//  - GATist(in): Ist Temperatur, f16
+//
+:begin SpWebButtonMEGFrost( ID,GASetFrost,GAStFrost,GATsoll,GATist )
+:var strOut@
+strOut@     = $$
+:var bFrost@
+bFrost@     = 0b01
+
+if( change(GATsoll or GATist )) then strOut@ =  $Ist:$\\
+                                            +stringformat( convert(GATist,0f16),4,3,2,0)\\
+                                            +$C/Soll:$ \\
+                                            +stringformat( convert(GATsoll,0f16),4,3,2,0)\\
+                                            +$C$ endif
+
+if( change(strOut@ ) or change( GAStFrost )) then{
+        if( GAStFrost )  then webdisplay( ID,strOut@,ICE,DARKRED,GREY ) endif;
+        if( !GAStFrost ) then webdisplay( ID,strOut@,ICE,DISPLAY,GREY ) endif;
+        bFrost@ = GAStFrost;
+        }endif
+
+if( button(ID) != 0 ) then bFrost@ = !bFrost@ endif
+if( change(bFrost@) ) then write(GASetFrost,bFrost@ )endif
+:end

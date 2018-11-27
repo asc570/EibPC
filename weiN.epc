@@ -9,7 +9,7 @@ D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
 SpWebOutHkGen($RAD$,ID_WebOutHK3,"Din14-11/0/14","Ain10-11/2/10","Ain11-11/2/11","Din05-11/0/5",0,"Aout06-11/3/6","Ain15-11/2/15","Din08-11/0/8","Din07-11/0/7","Din03-11/0/3","OG1MaxStellwertOut-3/3/105")
 SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2/7","Din06-11/0/6","Ain08-11/2/8","Aout03-11/3/3","Ain09-11/2/9","Din08-11/0/8", "Din07-11/0/7","Din02-11/0/2",0 )
-
+SpWebButtonMEGFrost( ID_B_OG1_MARISA_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
 [MacroLibs]
 //Macro Library
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
@@ -139,17 +139,17 @@ if( hysteresis("OG1MaxStellwertOut-3/3/105",lowerLboostOG1,upperLboostOG1)) 	the
 //
 // Button BoostEgK ////////////////////////////////////////////////////
 //
-if( button(ID_BOOST_EG_K) == 1) then write ("HzEgBoost_EssZ-8/2/39" ,!"HzEgBoost_EssZ-8/2/39") endif;
+if( button(ID_B_BOOST_EG_K) != 0) then write ("HzEgBoost_EssZ-8/2/39" ,!"HzEgBoost_EssZ-8/2/39") endif;
 //
 Boost_Eg_K_Remaining 	= 0u64
 //
-if( "HzEgBoost_EssZ-8/2/39") then webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
+if( "HzEgBoost_EssZ-8/2/39") then webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
 if( !"HzEgBoost_EssZ-8/2/39" ) then {
 		Boost_Eg_K_Remaining = 0u64;
-		webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining,WALLHEATING ,INACTIVE,GREY)
+		webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining,WALLHEATING ,INACTIVE,GREY)
 		}endif
 
-if( cycle(1,0) and Boost_Eg_K_Remaining != 0u64) then webdisplay(ID_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
+if( cycle(1,0) and Boost_Eg_K_Remaining != 0u64) then webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
 //
 ///////////////////////////////////////////////////////////////////////
 
@@ -163,7 +163,7 @@ footer(0)
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
-button(ID_BOOST_EG_K)[WALLHEATING]$Boost Küche$
+button(ID_B_BOOST_EG_K)[WALLHEATING]$Boost Küche$ button( ID_B_OG1_MARISA_FROST)[ICE]$Marisa Frost$
 
 //////////////////////////////////////////////////////
 
