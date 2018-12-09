@@ -2,4 +2,6 @@
 *.old
 *.vpwhist
 *.vtg
+*.lnk
 tmp/
+tools/Eibstudio-win/EibstudioData/
