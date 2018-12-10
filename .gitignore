@@ -4,4 +4,5 @@
 *.vtg
 *.lnk
 tmp/
+nconf.out
 tools/Eibstudio-win/EibstudioData/

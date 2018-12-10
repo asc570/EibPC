@@ -249,3 +249,88 @@ if( change(strOut@ ) or change( GAStFrost )) then{
 if( button(ID) != 0 ) then bFrost@ = !bFrost@ endif
 if( change(bFrost@) ) then write(GASetFrost,bFrost@ )endif
 :end
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+// shifter for MDT AKH Heater controller
+// This shifter uses a 3 button shifter control:
+// button 1: temperatur UP
+// button 2: mode control, cycels throuh: Komfort,Sby, Night, Frost
+// button 3: temperatur DOWN
+// Text Display:
+// - Temp IST
+// - Temp SOLL
+// - Valve load in %
+//////////////////////
+// IN:
+// ID:          button ID
+// GAshift:     GA for temp UP/DOWN shift   (OUT)
+// GAsetHVAC:   GA for AKH control Mode     (OUT)
+// GAgetHVAC    GA for AKH HVAC status      (IN)
+// GATmpSoll    GA for soll temperatur      (IN)
+// GATmpIst     GA for Ist Temperatur       (IN)
+// GALoad       GA for valve load           (IN)
+// 
+/////////////////////////////////////////////////////////////////////////
+// MDT HVCA Mode (HEX)
+// Komfort  0x01
+// SBY      0x02
+// Night    0x03
+// frost    0x04
+//
+//////////////////////////////////////////////////////////////////////////////
+//
+:begin SpShifterAKH(ID,GAshift,GAsetHVAC,GAgetHVAC,GATmpSoll,GATmpIst,GALoad )
+:var strOut@
+strOut@     =$ Test $
+:var strHVAC@
+strHVAC@    = $blue$
+:var fontWeight@
+fontWeight@ = $normal$
+:var Mode@
+Mode@       = DARKRED
+:var nextM@
+nextMode@   = HZ_MDT_KOMFORT
+
+///////////////////////////////////////////////////////////////////////////
+ //
+if( button(ID) == 1) then write( GAshift,EIN ) endif
+if( button(ID) == 3) then write( GAshift,AUS ) endif
+if( button(ID) == 2) then write( GAsetHVAC,nextMode@ ) endif
+
+if change( GAgetHVAC) or systemstart() then{ 
+    fontWeight@ = $normal$;
+    if(GAgetHVAC == HZ_MDT_KOMFORTst ) then{
+        strHVAC@    = $green$;
+        Mode@       = STATE6;
+        fontWeight@ = $bold$;
+        nextMode@   = HZ_MDT_SBY 
+        }endif;
+    if(GAgetHVAC == HZ_MDT_SBYst )    then{
+        strHVAC@    = $aqua$;
+        Mode@       = STATE5;
+        nextMode@   = HZ_MDT_NIGHT
+        }endif;
+    if(GAgetHVAC == HZ_MDT_NIGHTst ) then{
+        strHVAC@    = $blue$;
+        Mode@       = STATE4;
+        nextMode@   = HZ_MDT_FROST
+        }endif;
+    if(GAgetHVAC == HZ_MDT_FROSTst )then{
+        strHVAC@    = $fuchsia$;
+        Mode@       = DISPLAY;
+        nextMode@   = HZ_MDT_KOMFORT
+        }endif;
+}endif
+//
+if( change( GAgetHVAC) or change( GATmpSoll) or change(GATmpIst) or change(GALoad) ) then{
+   strOut@ = $Ist:$\\
+             +stringformat( convert(GATmpIst,0f16),4,3,2,1)\\
+             +$C/Soll:<span style =color:$+strHVAC@
+             +$;font-weight:$+fontWeight@+$>$ \\
+             +stringformat( convert(GATmpSoll,0f16),4,3,2,1)\\
+             +$C</span>,$
+             +stringformat(convert(GALoad, 0u16)*100u16/255u16,0,3,3,3 )+$%$; 
+
+             webdisplay( ID,strOut@,FLOORHEATING,Mode@,GREY )
+   }endif
+:end
