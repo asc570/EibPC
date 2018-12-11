@@ -11,7 +11,7 @@ SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2
 SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
 SpWebButtonMEGFrost( ID_B_OG1_BUERO_MEG_FROST,"SetMEG_Buero_FrostMode-7/2/38","GetMEG_Buero_FrostMode-7/2/39","GetMEG_Buero_SollT-7/2/31","T_OG1_Buero_Merten_MEG-6/2/3" )
 SpWebButtonMEGFrost( ID_B_OG1_EMILIA_MEG_FROST,"SetMEG_Emilia_FrostMode-7/2/10","StMEG_Emilia_FrostMode-7/2/11","GetMEG_Emilia_SollT-7/2/3","Aout02-11/3/2")
-SpShifterAKH(ID_S_EG_WC,"SetTShiftA-3/2/34","HVAC_A-3/2/40","HVACstA-3/2/52","GetTargetTA-3/2/46","tEgWCElsnerTH_UP-6/1/11","GetPosA-3/2/8")
+SpShifterAKH(ID_S_EG_WC,"SetTShiftA-3/2/34","HVAC_A-3/2/40","HVACstA-3/2/52","GetTargetTA-3/2/46","tEgWCElsnerTH_UP-6/1/11","GetPosA-3/2/8","SetLockPosA-3/2/96")
 [MacroLibs]
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 
