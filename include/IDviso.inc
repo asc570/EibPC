@@ -19,4 +19,6 @@ ID_B_BOOST_EG_K             = 10
 ID_B_OG1_MARISA_MEG_FROST   = 11
 ID_B_OG1_BUERO_MEG_FROST    = 12
 ID_B_OG1_EMILIA_MEG_FROST   = 13
-ID_S_EG_WC                  = 14
+ID_S_EG_WC_HZ               = 14
+ID_S_EG_ESSZ_RAD            = 15
+ID_S_EG_WOHNZ_RAD           = 16

@@ -5,7 +5,6 @@ Sys.GEN.0/0/1	sTime	Uncertain (3 Byte)	Low
 Sys.GEN.0/0/4	sDate	Uncertain (3 Byte)	Low	
 Sys.GEN.0/0/5	SymPresents	EIS 1 'Switching' (1 Bit)	Low	
 Sys.GEN.0/0/6	sAbwSimu	EIS 1 'Switching' (1 Bit)	Low	
-Sys.GEN.0/0/7	bIsDay	EIS 1 'Switching' (1 Bit)	Low	
 Sys.GEN.0/0/8	bIsNight	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/1	EG_Küche_Kaffe_StSw	EIS 1 'Switching' (1 Bit)	Low	
 ElPower.EG.1/2/2	EG_Küche_Kaffe_GetH	Uncertain (2 Byte)	Low	
@@ -179,25 +178,20 @@ Klimat.EG.3/2/27	HkLockF	EIS 1 'Switching' (1 Bit)	Low
 Klimat.EG.3/2/28	SetTKomfortA	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/30	SetTKomfortC	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/32	SetTKomfortE	Uncertain (2 Byte)	Low	
-Klimat.EG.3/2/33	SetTKomfortF	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/34	SetTShiftA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/38	SetTShiftE	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/40	HVAC_A	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/42	HVAC_C	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/44	HVAC_E	Uncertain (1 Byte)	Low	
-Klimat.EG.3/2/45	HVAC_F	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/46	GetTargetTA	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/48	GetTargetTC	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/50	GetTargetTE	Uncertain (2 Byte)	Low	
-Klimat.EG.3/2/51	GetTargetTF	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/52	HVACstA	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/54	HVACstC	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/56	HVACstE	Uncertain (1 Byte)	Low	
-Klimat.EG.3/2/57	HVACstF	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/58	RHCCstA	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/60	RHCCstC	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/62	RHCCstE	Uncertain (2 Byte)	Low	
-Klimat.EG.3/2/63	RHCCstF	Uncertain (2 Byte)	Low	
 Klimat.EG.3/2/64	SetModKomfortA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/66	SetModKomfortC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/68	SetModKomfortE	EIS 1 'Switching' (1 Bit)	Low	3/2/69
@@ -205,18 +199,15 @@ Klimat.EG.3/2/69	SetModKomfortF	EIS 1 'Switching' (1 Bit)	Low
 Klimat.EG.3/2/70	setModNightA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/72	setModNightC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/74	setModNightE	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.EG.3/2/75	setModNightF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/76	SetModSafeA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/78	SetModSafeC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/81	SetModSafeF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/82	AlertFrostA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/84	AlertFrostC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/86	AlertFrostE	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.EG.3/2/87	AlertFrostF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/88	AlertHeatA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/90	AlertHeatC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/92	AlertHeatE	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.EG.3/2/93	AlertHeatF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/94	HzEGReqHeater	EIS 1 'Switching' (1 Bit)	High	
 Klimat.EG.3/2/96	SetLockPosA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/97	SetLockPosB	EIS 1 'Switching' (1 Bit)	Low	
@@ -311,8 +302,6 @@ Klimat.Dach.3/4/86	SetPosPercD	Uncertain (1 Byte)	Low
 Klimat.Dach.3/4/87	SetPosPercE	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/88	SetPosPercF	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/91	GetPosPercC	Uncertain (1 Byte)	Low	
-Klimat.Dach.3/4/93	GetPosPercE	Uncertain (1 Byte)	Low	
-Klimat.Dach.3/4/94	GetPosPercF	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/107	HkLockA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/108	HkLockB	EIS 1 'Switching' (1 Bit)	Low	7/3/6
 Klimat.Dach.3/4/109	HkLockC	EIS 1 'Switching' (1 Bit)	Low	
@@ -326,13 +315,16 @@ Klimat.Dach.3/4/116	LockPosD	EIS 1 'Switching' (1 Bit)	Low
 Klimat.Dach.3/4/117	LockPosE	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/118	LockPosF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/151	StAlertHeatC	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.Dach.3/4/153	StAlertHeatE	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/155	SwHkA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/156	SwHkB	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/158	SwHkD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/159	SwHkE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/160	SwHkF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/161	StSwHkA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/162	StSwHkB	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/164	StSwHkD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/165	StSwHkE	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/166	StSwHkF	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/173	fLockHumBadSW1	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/174	fDach Bad Log: Cold OR HUM	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/175	DfCUpDown	EIS 1 'Switching' (1 Bit)	Low	
@@ -478,12 +470,14 @@ TempSens.EG.6/1/8	nil	Uncertain (2 Byte)	Low
 TempSens.EG.6/1/9	tEgWohnZSentidoEingang	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/10	tEgWC	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/11	tEgWCElsnerTH_UP	Uncertain (2 Byte)	Low	
-TempSens.EG.6/1/12	tEgWohnZ_Send	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/13	TavgEGWohnZ	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/14	TavgEGEssZ	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/15	TavgEGWC	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/16	TavgEGGard	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/17	TavgEGTreppe	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/18	tEgWohnzWest	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/19	tEgWohnzSued	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/20	tEgWohnzOst	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/1	T_OG1_Bad_Basalte	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/3	T_OG1_Buero_Merten_MEG	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/4	TavgOG1Marisa	Uncertain (2 Byte)	Low	
@@ -553,7 +547,6 @@ Controls.OG1.7/2/49	SetMEG_Buero_Msg	EIS 1 'Switching' (1 Bit)	Low
 Controls.OG1.7/2/50	GetMEG_Buero_Msg	EIS 1 'Switching' (1 Bit)	Low	
 Controls.OG1.7/2/51	StMEG_Emilia_Frost	EIS 1 'Switching' (1 Bit)	Low	
 Controls.OG1.7/2/52	StMEG_Marisa_Frost	EIS 1 'Switching' (1 Bit)	Low	
-Controls.OG1.7/2/53	StMEG_Buero_Frost	EIS 1 'Switching' (1 Bit)	Low	
 Controls.OG1.7/2/54	StMEG_Emilia_HVAC1	Uncertain (1 Byte)	Low	
 Controls.OG1.7/2/55	StMEG_Marisa_HVAC1	Uncertain (1 Byte)	Low	
 Controls.OG1.7/2/56	StMEG_Buero_HVAC1	Uncertain (1 Byte)	Low	

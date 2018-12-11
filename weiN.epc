@@ -3,6 +3,7 @@
 // ESF file exported from ETS3
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
+
 [Macros]
 // heating
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
@@ -11,27 +12,45 @@ SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2
 SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
 SpWebButtonMEGFrost( ID_B_OG1_BUERO_MEG_FROST,"SetMEG_Buero_FrostMode-7/2/38","GetMEG_Buero_FrostMode-7/2/39","GetMEG_Buero_SollT-7/2/31","T_OG1_Buero_Merten_MEG-6/2/3" )
 SpWebButtonMEGFrost( ID_B_OG1_EMILIA_MEG_FROST,"SetMEG_Emilia_FrostMode-7/2/10","StMEG_Emilia_FrostMode-7/2/11","GetMEG_Emilia_SollT-7/2/3","Aout02-11/3/2")
-SpShifterAKH(ID_S_EG_WC,"SetTShiftA-3/2/34","HVAC_A-3/2/40","HVACstA-3/2/52","GetTargetTA-3/2/46","tEgWCElsnerTH_UP-6/1/11","GetPosA-3/2/8","SetLockPosA-3/2/96")
+SpShifterAKH(ID_S_EG_WC_HZ,"SetTShiftA-3/2/34","HVAC_A-3/2/40","HVACstA-3/2/52","GetTargetTA-3/2/46","tEgWCElsnerTH_UP-6/1/11","GetPosA-3/2/8","SetLockPosA-3/2/96")
+SpShifterAKH( ID_S_EG_WOHNZ_RAD  ,"GetSetShiftT_C-3/2/104","HVAC_C-3/2/42","HVACstC-3/2/54","GetTargetTC-3/2/48","tEgWohnzWest-6/1/18","GetPosC-3/2/10","SetLockPosC-3/2/98")
+SpShifterAKH( ID_S_EG_ESSZ_RAD,   "SetTShiftE-3/2/38","HVAC_E-3/2/44","HVACstE-3/2/56","GetTargetTE-3/2/50","Aout01-11/3/1","GetPosE-3/2/12","SetLockPosE-3/2/100")
 [MacroLibs]
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 
 [InitGA]
 // heating
 "Ain02-11/2/2"	
+// for SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,..)
 "StMEG_Marisa_FrostMode-7/2/25"
 "GetMEG_Marisa_SollT-7/2/17"
-"GetMEG_Marisa_IstT-7/2/19" 	
+"GetMEG_Marisa_IstT-7/2/19" 
+// for SpWebButtonMEGFrost( ID_B_OG1_BUERO_MEG_FROST,	
 "GetMEG_Buero_FrostMode-7/2/39"	
 "GetMEG_Buero_SollT-7/2/31"
 "T_OG1_Buero_Merten_MEG-6/2/3"
+// for SpWebButtonMEGFrost( ID_B_OG1_EMILIA_MEG_FROST,..)
 "StMEG_Emilia_FrostMode-7/2/11"
 "GetMEG_Emilia_SollT-7/2/3"
 "Aout02-11/3/2"
+// for SpShifterAKH(ID_S_EG_WC,...)
 "HVACstA-3/2/52"
 "GetTargetTA-3/2/46"
 "tEgWCElsnerTH_UP-6/1/11"
 "GetPosA-3/2/8"
-
+"SetLockPosA-3/2/96"
+// for SpShifterAKH( ID_S_EG_WOHNZ_RAD  ,...)
+"HVACstC-3/2/54"
+"GetTargetTC-3/2/48"
+"tEgWohnzWest-6/1/18"
+"GetPosC-3/2/10"
+"SetLockPosC-3/2/98"
+// for SpShifterAKH( ID_S_EG_ESSZ_RAD ...)
+"HVACstE-3/2/56"
+"GetTargetTE-3/2/50"
+"Aout01-11/3/1"
+"GetPosE-3/2/12"
+"SetLockPosE-3/2/100"
 
 [Location]
 // Longitude and Latitude of Location
@@ -68,16 +87,16 @@ if(cycle(MinuteDayCycle,0)) then{
 //////////
 // IsDay ; bIsNight
 //
-if( change(sun())) then {
-	write("bIsDay-0/0/7",sun());
-	write("bIsNight-0/0/8", !sun())
-	} endif
-if(eventread("bIsDay-0/0/7")) then{
-	write("bIsDay-0/0/7",sun())
-	} endif
-if(eventread("bIsNight-0/0/8")) then{
-	write("bIsNight-0/0/8",!sun())
-	} endif
+//if( change(sun())) then {
+//	write("bIsDay-0/0/7",sun());
+//	write("bIsNight-0/0/8", !sun())
+//	} endif
+//if(eventread("bIsDay-0/0/7")) then{
+//	write("bIsDay-0/0/7",sun())
+//	} endif
+//if(eventread("bIsNight-0/0/8")) then{
+//	write("bIsNight-0/0/8",!sun())
+//	} endif
 //
 /////////////////////////////
 //
@@ -122,7 +141,7 @@ BOOST_EG_K_START 	= 6u08
 if(htime(BOOST_EG_K_START,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 // Boost duration, Kueche 2h
 //
-BOOST_EG_K_DURATION	= 5400000u64
+BOOST_EG_K_DURATION	= 3600000u64
 
 //
 if(delayc("HzEgBoost_EssZ-8/2/39",BOOST_EG_K_DURATION,Boost_Eg_K_Remaining)) then write("HzEgBoost_EssZ-8/2/39",AUS) endif
@@ -177,9 +196,11 @@ footer(0)
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
+shifter(ID_S_EG_WC_HZ)[UP,WALLHEATING,DOWN] $EG Gäste-WC$
+shifter(ID_S_EG_WOHNZ_RAD )[UP,WALLHEATING,DOWN] $EG Wohnzimmer$
+shifter(ID_S_EG_ESSZ_RAD )[UP,WALLHEATING,DOWN] $EG Esszimmer$
 button(ID_B_BOOST_EG_K)[WALLHEATING]$EG-Boost Kueche$ 	button( ID_B_OG1_MARISA_MEG_FROST)[ICE]$OG1-Marisa Frost$
 button(ID_B_OG1_BUERO_MEG_FROST )[ICE]$OG1-Buero Frost$ button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1-Emilia Frost$
-shifter(ID_S_EG_WC)[UP,WALLHEATING,DOWN] $EG-WC$
 
 //////////////////////////////////////////////////////
 
