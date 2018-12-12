@@ -343,3 +343,38 @@ if( change( GAgetHVAC) or change( GATmpSoll) or change(GATmpIst) or change(GALoa
              webdisplay( ID,strOut@,Icon@,Mode@,GREY )
    }endif
 :end
+/////////////////////////////////////////////////////////////////////////////
+// button for MDT AKH Heater controller, RAD and FBH
+// uses a button control
+// - shows status (On/Off/ Locked)
+// - switches On/OFF
+// - icon for RAD or FBH must be given in function
+// ID:          button ID
+// Icon:        icon for RAD or FBH
+// GAsetValve:  set valve On/Off (OUT)
+// GAgetValve   get the valve position On/Off (IN)
+// GAgetLock    get LockOpen Information (IN)
+//
+:begin SpButtonAKH(ID,Icon,GAsetValve,GAgetValve,GAgetLock)
+:var bNext@
+//bNext@ = 0b01
+bNext@      = !GAgetValve
+:var Icon@
+Icon@       = Icon
+:var Mode@
+Mode@       = ACTIVE
+:var strInfo@
+strInfo@    =$$
+
+if change(GAgetValve) then bNext@ = !GAgetValve endif
+if button(ID) != 0 then write(GAsetValve,bNext@) endif
+if change(GAgetValve) or change(GAgetLock) then{
+        Icon@   = Icon;
+        if GAgetValve   then Mode@ = ACTIVE;     strInfo@ = $On$ endif;
+        if !GAgetValve  then Mode@ = DARKRED;    strInfo@ = $Off$ endif;
+        if GAgetLock    then Icon@ = CROSSCIRCLE; Mode@ = BRIGHTRED; strInfo@ = $locked open$ endif;
+        webdisplay(ID,strInfo@,Icon@,Mode@,GREY)
+    }endif
+
+
+:end

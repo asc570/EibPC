@@ -22,3 +22,6 @@ ID_B_OG1_EMILIA_MEG_FROST   = 13
 ID_S_EG_WC_HZ               = 14
 ID_S_EG_ESSZ_RAD            = 15
 ID_S_EG_WOHNZ_RAD           = 16
+ID_B_EG_GARDROBE_RAD        = 17
+ID_B_EG_ESSZ_FBH            = 18
+ID_B_EG_WOHNZ_FBH           = 19
