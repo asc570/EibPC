@@ -4,6 +4,7 @@
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
 
+
 [Macros]
 // heating
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
@@ -87,16 +88,16 @@ if(cycle(MinuteDayCycle,0)) then{
 //////////
 // IsDay ; bIsNight
 //
-//if( change(sun())) then {
-//	write("bIsDay-0/0/7",sun());
-//	write("bIsNight-0/0/8", !sun())
-//	} endif
-//if(eventread("bIsDay-0/0/7")) then{
-//	write("bIsDay-0/0/7",sun())
-//	} endif
-//if(eventread("bIsNight-0/0/8")) then{
-//	write("bIsNight-0/0/8",!sun())
-//	} endif
+if( change(sun())) then {
+	write("bIsDay-0/0/7",sun());
+	write("bIsNight-0/0/8", !sun())
+	} endif
+if(eventread("bIsDay-0/0/7")) then{
+	write("bIsDay-0/0/7",sun())
+	} endif
+if(eventread("bIsNight-0/0/8")) then{
+	write("bIsNight-0/0/8",!sun())
+	} endif
 //
 /////////////////////////////
 //
@@ -122,10 +123,7 @@ Boost3EgK	= AUS
 //
 if( change( Boost3Threshold) or change( Boost3EgK)) then{
 	BoostHk3 = AUS;
-	if (	Boost3Threshold or
-		Boost3EgK) then{
-			BoostHk3 = EIN;
-			} endif;
+	if (	Boost3Threshold or Boost3EgK) then{ BoostHk3 = EIN} endif;
 		
 	if(  BoostHk3) then write( "Aout05-11/3/5",UVR_NORMAL) endif;
 	if( !BoostHk3) then write( "Aout05-11/3/5",UVR_REDUCED) endif;
@@ -136,9 +134,10 @@ if( change( Boost3Threshold) or change( Boost3EgK)) then{
 // Boost EG, Kueche
 //
 // start Time LT
-BOOST_EG_K_START 	= 6u08
+BOOST_EG_K_START_H 	= 6u08
+BOOST_EG_K_START_M 	= 30u08
 //
-if(htime(BOOST_EG_K_START,0,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
+if(htime(BOOST_EG_K_START_H,BOOST_EG_K_START_M ,0) ) then write("HzEgBoost_EssZ-8/2/39",EIN) endif
 // Boost duration, Kueche 2h
 //
 BOOST_EG_K_DURATION	= 3600000u64
@@ -174,12 +173,14 @@ if( hysteresis("OG1MaxStellwertOut-3/3/105",lowerLboostOG1,upperLboostOG1)) 	the
 if( button(ID_B_BOOST_EG_K) != 0) then write ("HzEgBoost_EssZ-8/2/39" ,!"HzEgBoost_EssZ-8/2/39") endif;
 //
 Boost_Eg_K_Remaining 	= 0u64
-//
-if( "HzEgBoost_EssZ-8/2/39") then webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
+// 
+if( "HzEgBoost_EssZ-8/2/39") then{
+ 	webdisplay(ID_B_BOOST_EG_K,stringformat(Boost_Eg_K_Remaining/60000u64,0,3,2,2)+ $ minutes remaining$,WALLHEATING ,DARKRED,GREY) 
+	}endif;
 if( !"HzEgBoost_EssZ-8/2/39" ) then {
-		Boost_Eg_K_Remaining = 0u64;
-		webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining,WALLHEATING ,INACTIVE,GREY)
-		}endif
+	Boost_Eg_K_Remaining = 0u64;
+	webdisplay(ID_B_BOOST_EG_K,$$,WALLHEATING ,INACTIVE,GREY)
+	}endif
 
 if( cycle(1,0) and Boost_Eg_K_Remaining != 0u64) then webdisplay(ID_B_BOOST_EG_K,Boost_Eg_K_Remaining/60000u64,WALLHEATING ,DARKRED,GREY) endif;
 //
