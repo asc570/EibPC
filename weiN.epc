@@ -219,7 +219,6 @@ shifter(ID_S_EG_WC_HZ)[UP,WALLHEATING,DOWN] 	$EG Gäste-WC$
 shifter(ID_S_EG_EMO_TREPPE)[UP,WALLHEATING,DOWN]$EG Treppenhaus$
 button(ID_B_BOOST_EG_K)[WALLHEATING]	$EG Boost Kueche$	button(ID_B_EG_GARDROBE_RAD )[WALLHEATING] $EG Gardrobe$ 
 button(ID_B_EG_ESSZ_FBH )[FLOORHEATING] $EG Essz. FBH$		button(ID_B_EG_WOHNZ_FBH )[FLOORHEATING] $EG Wohnz. FBH$
-shifter(ID_S_EG_EMO_TREPPE)[UP,WALLHEATING,DOWN] 	$EG Treppenhaus$
 line $OG1$	
 button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
 button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 	
