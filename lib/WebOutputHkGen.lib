@@ -281,7 +281,7 @@ if( change(bFrost@) ) then write(GASetFrost,bFrost@ )endif
 //
 //////////////////////////////////////////////////////////////////////////////
 //
-:begin SpShifterAKH(ID,GAshift,GAsetHVAC,GAgetHVAC,GATmpSoll,GATmpIst,GALoad,GAFoceLock )
+:begin SpShifterAKH(ID,Icon,GAshift,GAsetHVAC,GAgetHVAC,GATmpSoll,GATmpIst,GALoad,GAFoceLock )
 :var strOut@
 strOut@     =$ Test $
 :var strHVAC@
@@ -293,7 +293,7 @@ Mode@       = DARKRED
 :var nextM@
 nextMode@   = HZ_MDT_KOMFORT
 :var Icon@
-Icon@       = FLOORHEATING
+Icon@       = Icon
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -303,7 +303,7 @@ if( button(ID) == 2) then write( GAsetHVAC,nextMode@ ) endif
 
 if change( GAgetHVAC) or change( GAFoceLock) or systemstart() then{ 
     fontWeight@ = $normal$;
-    Icon@       = FLOORHEATING;
+    Icon@       = Icon;
     if(GAgetHVAC == HZ_MDT_KOMFORTst ) then{
         strHVAC@    = $green$;
         Mode@       = STATE6;
