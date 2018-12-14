@@ -25,3 +25,4 @@ ID_S_EG_WOHNZ_RAD           = 16
 ID_B_EG_GARDROBE_RAD        = 17
 ID_B_EG_ESSZ_FBH            = 18
 ID_B_EG_WOHNZ_FBH           = 19
+ID_S_EG_EMO_TREPPE          = 20

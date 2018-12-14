@@ -378,3 +378,63 @@ if change(GAgetValve) or change(GAgetLock) then{
 
 
 :end
+//////////////////////////////////////////////////////////////////////////////////
+// Shifter for Merten EMO Valve actuator
+// uses a 3 button shifter to adjust tze % value of the valve
+// - show soll % / ist % of valve position
+// - big step adjustment by pushing button 2 (0%,50%,100%)
+// - small adjustment in 3% steps by putton 1 & 3.
+// - changes button 2 when in lock Mode
+// Remark: has to poll the GAget position, Initials GAset with GAget by writing to GAset!!
+//
+// ID:      button ID
+// Icon:    Icon for RAD or FBH
+// GAset:   GA to set valve position (OUT)
+// GAget:   GA for actual valve position (IN)
+// GAlock:  GA for valve lock (IN)
+//
+:begin ShifterEMO(ID,Icon,GAset,GAget,GAlock)
+:var Step@
+Step@       = 8
+:var cyMinute@
+cyMinute    = 1
+:var strOut@
+strOut@     = $$
+:var Icon@
+Icon@       =Icon
+:var Mode@
+Mode@       = ACTIVE
+:var nextValve@
+nextValve@   = 0%
+//
+if systemstart() then write(GAset, GAget) endif;
+if(cycle(cyMinute,0)) then read(GAget) endif
+if( button(ID) == 2) then{
+    if GAset < 128      then nextValve@ = 128   endif;
+    if GAset >= 128     then nextValve@ = 255   endif;
+    if GAset > 254      then nextValve@ = 0     endif;
+    write(GAset, nextValve@)
+    }endif
+if( button(ID) == 1) then{
+    if(GAset >= 255 -Step@) then write(GAset,255) else write(GAset, GAset + Step@) endif;
+    }endif
+if( button(ID) == 3) then{
+    if(GAset <= Step@) then write(GAset,0) else write(GAset, GAset - Step@) endif;
+    }endif
+if change(GAset) or change(GAget) or change(GAlock) then{
+    if(GAget == 0)      then Mode@ = INACTIVE endif;
+    if(GAget > 0)       then Mode@ = STATE4 endif;
+    if(GAget >= 85)     then Mode@ = STATE5 endif;
+    if(GAget >= 170)    then Mode@ = STATE6 endif;
+    if(GAget > 254)     then Mode@ = STATE8 endif;
+    if(GAlock == 0b01) then Icon@  = Icon endif;
+    if(GAlock == 1b01) then{ Icon@ = CROSSCIRCLE;Mode@ = BRIGHTRED }endif;
+        strOut@ = $Soll:$\\
+        + stringformat(convert(GAset,0u16)*100u16/255u16,0,3,3,3 )+$% / Ist:$\\
+        + stringformat(convert(GAget,0u16)*100u16/255u16,0,3,3,3 )+$%$; 
+        webdisplay(ID,strOut@,Icon@,Mode@,GREY)
+        }endif
+
+:end
+
+
