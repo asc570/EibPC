@@ -481,6 +481,7 @@ TempSens.EG.6/1/17	TavgEGTreppe	Uncertain (2 Byte)	Low
 TempSens.EG.6/1/18	tEgWohnzWest	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/19	tEgWohnzSued	Uncertain (2 Byte)	Low	
 TempSens.EG.6/1/20	tEgWohnzOst	Uncertain (2 Byte)	Low	
+TempSens.EG.6/1/21	tEgEssZSofaL	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/1	T_OG1_Bad_Basalte	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/3	T_OG1_Buero_Merten_MEG	Uncertain (2 Byte)	Low	
 TempSens.OG1.6/2/4	TavgOG1Marisa	Uncertain (2 Byte)	Low	
@@ -620,6 +621,7 @@ EibPC.HzKnxEG.8/2/48	SetShiftHzEGnH_Global	EIS 1 'Switching' (1 Bit)	Low
 EibPC.HzKnxEG.8/2/49	SetShiftHzEGdH_Global	EIS 1 'Switching' (1 Bit)	Low	
 EibPC.HzKnxEG.8/2/50	fNightOverride_EG	EIS 1 'Switching' (1 Bit)	Low	
 EibPC.HzKnxEG.8/2/51	fNightOverride_Dach	EIS 1 'Switching' (1 Bit)	Low	
+EibPC.HzKnxEG.8/2/52	fHzBlockEgBoost	EIS 1 'Switching' (1 Bit)	Low	
 EibPC.HzKnxOG1.8/3/0	fHzOG1_IsDay	EIS 1 'Switching' (1 Bit)	Low	
 EibPC.HzKnxOG1.8/3/1	fHzOG1_IsDay_Override	EIS 1 'Switching' (1 Bit)	Low	
 EibPC.HzKnxOG1.8/3/2	HzOG1dHGlobal	Uncertain (1 Byte)	Low	

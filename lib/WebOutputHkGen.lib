@@ -436,5 +436,23 @@ if change(GAset) or change(GAget) or change(GAlock) then{
         }endif
 
 :end
-
+/////////////////////////////////////////////////////////////////////////////////////////
+// Button for switching OFF/ON the timer for the morning Boost in kueche
+// ID:              button ID
+// bBlockRGBoost:   remanent flag for the ON/OFF state (IN)
+// GAlockEgBoot:    GA for the ON/OFF switching (OUT)
+// remark:          switching is done via the GA. The nBlockEGBoot flag in (IN) variable   
+//
+:begin SpWebButtonBlockEgBoost(ID,bBlockEGBoost,GAblockEgBoost)
+:var strOut@
+strOut@     = $$
+:var Icon@
+Icon@       = SWITCH
+:var State@
+State@      = ACTIVE
+if( button(ID) != 0 ) then write(GAblockEgBoost, !bBlockEGBoost) endif
+if bBlockEGBoost then State@ = INACTIVE; strOut@ = $Auto Boost OFF$ endif
+if !bBlockEGBoost then State@ = ACTIVE; strOut@ = $Auto Boost ON$ endif
+if change(bBlockEGBoost) then webdisplay( ID,strOut@,Icon@,State@,GREY ) endif
+:end
 
