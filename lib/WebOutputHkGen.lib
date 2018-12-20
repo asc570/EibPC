@@ -455,4 +455,42 @@ if bBlockEGBoost then State@ = INACTIVE; strOut@ = $Auto Boost OFF$ endif
 if !bBlockEGBoost then State@ = ACTIVE; strOut@ = $Auto Boost ON$ endif
 if change(bBlockEGBoost) then webdisplay( ID,strOut@,Icon@,State@,GREY ) endif
 :end
+////////////////////////////////////////////////////////////////////////////////////////
+// Shifter for selecting FBH HK mode (Auto,High,Low)
+// using a 4 button shifter. Right button shows act status.
+// ID:          shifter ID
+// GAgetMode    UVR mode(IN)
+// GAsetMode    UVR mode (OUT)
+//
+// rem: EibPC has some problems to interprete the incomming UVR mode. When f16 is used by EibPC
+//      you have to use the scale faktor 100 on the EIBconverter ( presently only for HK3)
+//
+:begin SpShifterUVRmode(ID,GAgetMode,GAsetMode)
+:var strOut@
+strOut@         = $error$
+:var Icon@
+Icon@           = UPDATE
+:var State@
+State@          = ACTIVE
+
+if button(ID) == 1 then write(GAsetMode, UVR_AUTO)      endif
+if button(ID) == 2 then write(GAsetMode, UVR_NORMAL)    endif
+if button(ID) == 3 then write(GAsetMode, UVR_ABGESENKT) endif
+if GAgetMode == UVR_AUTO then{
+    Icon@   = CLOCK;
+    State@  = ACTIVE;
+    strOut@ = $Auto$
+    }endif
+if GAgetMode == UVR_NORMAL then{
+    Icon@    = WEATHER;
+    State@  = ACTIVE;
+    strOut@ = $high$
+    }endif
+if GAgetMode == UVR_ABGESENKT then{
+    Icon@   = NIGHT;
+    State@  = ACTIVE;
+    strOut@ = $low$
+    }endif
+if change(GAgetMode) then webdisplay(ID,strOut@,Icon@,State@,GREY) endif
+:end
 

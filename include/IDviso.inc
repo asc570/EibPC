@@ -3,9 +3,10 @@
 //
 // Page ID
 //
-P_ID_GEN_1 = 1
-P_ID_GEN_1_GR = $Main$
-P_ID_GEN_1_NA = $Heating$
+P_ID_GEN_1          = 1
+
+P_ID_ADMIN_HEATING  = 2
+      
 
 // weboutput() , SpWebOutHkGen()
 ID_WebOutHK1	 = 2
@@ -27,3 +28,5 @@ ID_B_EG_ESSZ_FBH            = 18
 ID_B_EG_WOHNZ_FBH           = 19
 ID_S_EG_EMO_TREPPE          = 20
 ID_B_BOOST_EG_Kueche        = 21
+ID_S_HK1_MODE               = 22
+ID_S_HK4_MODE               = 23
