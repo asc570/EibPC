@@ -3,16 +3,11 @@
 // ESF file exported from ETS3
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
 
-
-
-
-
-
 [Macros]
 // heating
-SpWebOutHkGen($EG FBH$,ID_WebOutHK1,	"Din14-11/0/14","Ain02-11/2/2","Ain03-11/2/3","Din04-11/0/4","Ain04-11/2/4","Aout04-11/3/4","Ain05-11/2/5","Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
-SpWebOutHkGen($RAD$,ID_WebOutHK3,	"Din14-11/0/14","Ain10-11/2/10","Ain11-11/2/11","Din05-11/0/5",0,"Aout06-11/3/6","Ain15-11/2/15","Din08-11/0/8","Din07-11/0/7","Din03-11/0/3","OG1MaxStellwertOut-3/3/105")
-SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,	"Din14-11/0/14","Ain06-11/2/6","Ain07-11/2/7","Din06-11/0/6","Ain08-11/2/8","Aout03-11/3/3","Ain09-11/2/9","Din08-11/0/8", "Din07-11/0/7","Din02-11/0/2",0 )
+SpWebOutHkGen($EG FBH$,ID_WebOutHK1,	"Din14-11/0/14","Ain02-11/2/2" ,"Ain03-11/2/3" ,"Din04-11/0/4","Ain04-11/2/4"   ,"Aout04-11/3/4","Ain05-11/2/5" ,"Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
+SpWebOutHkGen($RAD$,ID_WebOutHK3,	"Din14-11/0/14","Ain10-11/2/10","Ain11-11/2/11","Din05-11/0/5",0                ,"Aout05-11/3/5","Ain15-11/2/15","Din08-11/0/8"  ,"Din07-11/0/7","Din03-11/0/3","OG1MaxStellwertOut-3/3/105")
+SpWebOutHkGen($DACH FBH$,ID_WebOutHK4,	"Din14-11/0/14","Ain06-11/2/6" ,"Ain07-11/2/7" ,"Din06-11/0/6","Ain08-11/2/8"   ,"Aout06-11/3/6","Ain09-11/2/9" ,"Din08-11/0/8"  ,"Din07-11/0/7","Din02-11/0/2",0 )
 SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,"SetMEG_Marisa_FrostMode-7/2/24","StMEG_Marisa_FrostMode-7/2/25","GetMEG_Marisa_SollT-7/2/17","GetMEG_Marisa_IstT-7/2/19" )
 SpWebButtonMEGFrost( ID_B_OG1_BUERO_MEG_FROST,"SetMEG_Buero_FrostMode-7/2/38","GetMEG_Buero_FrostMode-7/2/39","GetMEG_Buero_SollT-7/2/31","T_OG1_Buero_Merten_MEG-6/2/3" )
 SpWebButtonMEGFrost( ID_B_OG1_EMILIA_MEG_FROST,"SetMEG_Emilia_FrostMode-7/2/10","StMEG_Emilia_FrostMode-7/2/11","GetMEG_Emilia_SollT-7/2/3","Aout02-11/3/2")
@@ -26,6 +21,7 @@ ShifterEMO(ID_S_EG_EMO_TREPPE,WALLHEATING,"HkProp2Soll-3/3/14","HkProp2Ist-3/3/1
 SpWebButtonBlockEgBoost(ID_B_BOOST_EG_Kueche ,bRemBoostEG_K_Block,"fHzBlockEgBoost-8/2/52")
 SpShifterUVRmode(ID_S_HK1_MODE,"Ain05-11/2/5","Aout04-11/3/4")
 SpShifterUVRmode(ID_S_HK4_MODE,"Ain09-11/2/9","Aout06-11/3/6")
+SpShifterUVRost(ID_S_HK4_DACH_EAST,"SwFBH4DachOst-3/4/183","T_Dach_Ost_Zas_Schreibtisch-6/3/11","Aout03-11/3/3","SwHkE-3/4/159","StSwHkE-3/4/165","shiftT_FBH4DachOst-3/4/181","shiftT_FBH4DachGen-3/4/182",bFBHdachOst,corRoomEast,corGenHk4)
 
 [MacroLibs]
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
@@ -75,6 +71,12 @@ D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 //for ShifterEMO(ID_S_EG_EMO_TREPPE..)
 "HkProp2Ist-3/3/15"
 "HkProp2Lock-3/3/138"
+//for SpShifterUVRost()
+"T_Dach_Ost_Zas_Schreibtisch-6/3/11"
+"T_Dach_Ost_F50west-6/3/10"
+"StSwHkE-3/4/165"
+
+
 [Location]
 // Longitude and Latitude of Location
 11.5
@@ -193,6 +195,33 @@ if( hysteresis("OG1MaxStellwertOut-3/3/105",lowerLboostOG1,upperLboostOG1)) 	the
 //
 //////////////////////////////////////////////////////////////////////
 //
+tempStep 	= 0.5f16
+corRoomEast	= 0f16
+if systemstart() then readflashvar(corRoomEast) endif
+if change(corRoomEast) then writeflashvar(corRoomEast) endif
+if event("shiftT_FBH4DachOst-3/4/181") then{
+	if "shiftT_FBH4DachOst-3/4/181" then corRoomEast = corRoomEast + tempStep endif;
+	if !"shiftT_FBH4DachOst-3/4/181" then corRoomEast = corRoomEast - tempStep endif
+	}endif;
+
+corGenHk4	= 0f16
+if systemstart() then readflashvar(corGenHk4) endif
+if change(corGenHk4) then writeflashvar(corGenHk4) endif
+if event("shiftT_FBH4DachGen-3/4/182") then{
+	if "shiftT_FBH4DachGen-3/4/182" then corGenHk4 = corGenHk4 + tempStep endif;
+	if !"shiftT_FBH4DachGen-3/4/182" then corGenHk4 = corGenHk4 - tempStep endif
+	}endif
+
+bFBHdachOst	= 1b01
+if systemstart() then readflashvar(bFBHdachOst) endif
+if change(bFBHdachOst) then writeflashvar(bFBHdachOst) endif
+if event("SwFBH4DachOst-3/4/183") then bFBHdachOst = "SwFBH4DachOst-3/4/183" endif
+
+// 
+
+
+//////////////////////////////////////////////////////////////////////
+//
 // WebServer Logic
 //
 // Button BoostEgK ////////////////////////////////////////////////////
@@ -232,28 +261,19 @@ shifter(ID_S_EG_EMO_TREPPE)[UP,WALLHEATING,DOWN]$EG Treppenhaus$
 button(ID_B_BOOST_EG_K)[WALLHEATING]	$EG Boost Kueche$	button(ID_B_BOOST_EG_Kueche)[SWITCH] $EG Auto Boost$ 
 button(ID_B_EG_ESSZ_FBH )[FLOORHEATING] $EG Essz. FBH$		button(ID_B_EG_WOHNZ_FBH )[FLOORHEATING] $EG Wohnz. FBH$
 
-line $OG1$	
-button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
-button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 	
-
 page(P_ID_ADMIN_HEATING)[$Admin$,$Heating$]
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
 shifter(ID_S_HK4_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH Dach Mode$
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 	
 shifter(ID_S_HK1_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH EG Mode$
+line $Dach$
+shifter(ID_S_HK4_DACH_EAST)[UP,FLOORHEATING,DOWN]  $FBH Dach Raum Ost$	
+line $OG1$	
+button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
+button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 
+line $EG$	
 button(ID_B_EG_GARDROBE_RAD )[WALLHEATING] $EG Gardrobe$ 
-
-shifter(ID_S_HK1_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH EG Mode$
-line $OG1$	
-button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
-button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 	
-
-page(P_ID_ADMIN_HEATING)[$Admin$,$Heating$]
-weboutput(ID_WebOutHK4)[SINGLE,NOICON]
-shifter(ID_S_HK4_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH Dach Mode$
-weboutput(ID_WebOutHK3)[SINGLE,NOICON]
-weboutput(ID_WebOutHK1)[SINGLE,NOICON] 	
 
 
 

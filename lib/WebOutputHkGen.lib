@@ -493,4 +493,61 @@ if GAgetMode == UVR_ABGESENKT then{
     }endif
 if change(GAgetMode) then webdisplay(ID,strOut@,Icon@,State@,GREY) endif
 :end
+/////////////////////////////////////////////////////////////////////////////////////
+// A 3-button Shifter (UP,Status,DOWN) to controll FBH Dach room east.
+// - use button 2 to switch ON/OFF FBH in romm east
+// - If FBH is ON, HK4 gets temperatue via sensor
+// - If FBH is OFF, a fixed temperatue value tGen@ is provided
+// - The output temp (input for UVR1611) is modified by a correction temp value
+// - the temp corr values are descrete for FBH ON and OFF.
+// - the temp corr values have to be sored externaly in REM
+// ID:              Shifter ID
+// GARoomSw:        GA to switch FBH ON/OFF
+// GAinT            GA room temp (IN)
+// GAoutT:          GA corr temp for UVR1611 (OUT)
+// GAsetValve:      GA to set FBH valve ON/OFF (OUT)
+// GAgetValve:      GA to get FBH valve position ON/OFF (IN)
+// GAtShiftRoom:    GA to shift temp room corr
+// GAtShiftGen:     GA to shift temo gen corr
+// bSwitch          external REM status switch 
+// corRoom:         external REM room cor value
+// corGen:          external REM gen cor value
+// remark:          the handling of the 3 external REM values mut be providet by 
+//                  external funktions:
+//                  1. read from REM
+//                  2. write to REM
+//                  3. set cor  value (room & gen) when an event is sent on  GAtShiftxxx
+//
+:begin SpShifterUVRost(ID,GARoomSw,GAinT,GAoutT,GAsetValve,GAgetValve,GAtShiftRoom,GAtShiftGen,bSwitch,corRoom,corGen)
+:var tGen@
+tGen@        = 21.5f16
+:var strOut@
+strOut@     = $$
+:var Icon@
+Icon@       = SWITCH
+:var State@
+State@      = ACTIVE
 
+if change(bSwitch) then write(GAsetValve,bSwitch) endif
+
+if button(ID) == 1 then{
+    if bSwitch  then write(GAtShiftRoom, EIN) endif;
+    if !bSwitch then write( GAtShiftGen, EIN) endif
+    }endif
+if button(ID) == 3 then{
+    if bSwitch  then write(GAtShiftRoom, AUS) endif;
+    if !bSwitch then write( GAtShiftGen, AUS) endif
+    }endif
+if button(ID) == 2 then write(GARoomSw,!bSwitch) endif
+if change(bSwitch) or change(GARoomSw) or change(GAinT) or change(GAsetValve) or change(GAgetValve) or change(corRoom) or change(corGen) then{
+   strOut@ =  $Ist:$ + stringformat( convert(GAinT,0f16),4,3,2,1) + $C,corr:$; 
+   if bSwitch != GAgetValve then Icon@ = UPDATE endif;
+   if bSwitch == GAgetValve and bSwitch  then Icon@ = FLOORHEATING endif;
+   if bSwitch == GAgetValve and !bSwitch then Icon@ = CROSSCIRCLE  endif;
+   if bSwitch  then write(GAoutT,GAinT - corRoom) endif;
+   if !bSwitch then write(GAoutT,tGen@ - corGen)  endif;
+   if GAgetValve   then strOut@ = strOut@ + stringformat(convert(corRoom,0f16),4,3,2,1)    + $ , <span style= 'color:green;font-weight:bold'>ON</span>$ endif;
+   if !GAgetValve  then strOut@ = strOut@ + stringformat(convert(corGen,0f16),4,3,2,1)     + $ , <span style= 'font-weight:bold'>OFF</span>$ endif;
+   webdisplay(ID,strOut@,Icon@,State@,GREY)
+    }endif
+:end

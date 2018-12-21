@@ -220,7 +220,6 @@ Klimat.EG.3/2/104	GetSetShiftT_C	EIS 1 'Switching' (1 Bit)	Low
 Klimat.EG.3/2/108	EGmaxStellwertIn	Uncertain (1 Byte)	High	
 Klimat.EG.3/2/109	EGmaxStellwertOut	Uncertain (1 Byte)	High	
 Klimat.EG.3/2/110	ErrAHK-0800_Power	EIS 1 'Switching' (1 Bit)	High	
-Klimat.EG.3/2/117	SetValvePercentG	Uncertain (1 Byte)	Low	
 Klimat.EG.3/2/119	HkLockG	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/120	HkLockH	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.EG.3/2/121	GetPosG	EIS 1 'Switching' (1 Bit)	Low	
@@ -335,6 +334,9 @@ Klimat.Dach.3/4/177	RefA	EIS 1 'Switching' (1 Bit)	Low
 Klimat.Dach.3/4/178	RefB	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/179	RefC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/180	RefD	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/181	shiftT_FBH4DachOst	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/182	shiftT_FBH4DachGen	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/183	SwFBH4DachOst	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Gen.3/0/3	SetWinter	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Outside.3/6/0	RsRainRaining	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Outside.3/6/1	RsRainAlive	EIS 1 'Switching' (1 Bit)	Low	
@@ -417,7 +419,6 @@ UVR1611.Dout.11/1/13	Dout13	EIS 1 'Switching' (1 Bit)	High
 UVR1611.Dout.11/1/14	Dout14	EIS 1 'Switching' (1 Bit)	High	
 UVR1611.Dout.11/1/15	Dout15	EIS 1 'Switching' (1 Bit)	High	
 UVR1611.Dout.11/1/16	Dout16	EIS 1 'Switching' (1 Bit)	High	
-UVR1611.Ain.11/2/1	Ain01	Uncertain (2 Byte)	Low	
 UVR1611.Ain.11/2/2	Ain02	Uncertain (2 Byte)	Low	11/2/3 11/2/6 11/2/7 11/2/10 11/2/11 11/2/12 11/2/13 11/2/14 11/2/16
 UVR1611.Ain.11/2/3	Ain03	Uncertain (2 Byte)	Low	
 UVR1611.Ain.11/2/4	Ain04	Uncertain (2 Byte)	Low	11/2/8
@@ -488,6 +489,10 @@ TempSens.Dach.6/3/4	TavgDachWest	Uncertain (2 Byte)	Low
 TempSens.Dach.6/3/5	TavgDachOst	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/6	TavgDachBad	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/7	TavgDachTreppe	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/9	T_DachWestTür	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/10	T_Dach_Ost_F50west	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/11	T_Dach_Ost_Zas_Schreibtisch	Uncertain (2 Byte)	Low	
+TempSens.Dach.6/3/12	T_Dach_West_ZAS	Uncertain (2 Byte)	Low	
 Controls.UG.7/0/0	KlingelAussen	EIS 1 'Switching' (1 Bit)	Low	
 Controls.EG.7/1/0	fZasEssZBuzz	EIS 1 'Switching' (1 Bit)	Low	
 Controls.EG.7/1/1	fCoffeMakerON	EIS 1 'Switching' (1 Bit)	Low	
