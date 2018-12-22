@@ -472,26 +472,34 @@ strOut@         = $error$
 Icon@           = UPDATE
 :var State@
 State@          = ACTIVE
+initga(GAgetMode);
+if after(systemstart(),  2000u64) then write(GAsetMode,GAgetMode) endif
 
 if button(ID) == 1 then write(GAsetMode, UVR_AUTO)      endif
 if button(ID) == 2 then write(GAsetMode, UVR_NORMAL)    endif
 if button(ID) == 3 then write(GAsetMode, UVR_ABGESENKT) endif
-if GAgetMode == UVR_AUTO then{
-    Icon@   = CLOCK;
-    State@  = ACTIVE;
-    strOut@ = $Auto$
+if GAgetMode != GAsetMode then{
+    Icon@   = UPDATE;
+    strOut@ = $transit$;
     }endif
-if GAgetMode == UVR_NORMAL then{
-    Icon@    = WEATHER;
-    State@  = ACTIVE;
-    strOut@ = $high$
+if GAgetMode == GAsetMode then{
+    if GAgetMode == UVR_AUTO then{
+        Icon@   = CLOCK;
+        State@  = ACTIVE;
+        strOut@ = $Auto$
+        }endif;
+    if GAgetMode == UVR_NORMAL then{
+        Icon@    = WEATHER;
+        State@  = ACTIVE;
+        strOut@ = $high$
+        }endif;
+    if GAgetMode == UVR_ABGESENKT then{
+        Icon@   = NIGHT;
+        State@  = ACTIVE;
+        strOut@ = $low$
+        }endif;
     }endif
-if GAgetMode == UVR_ABGESENKT then{
-    Icon@   = NIGHT;
-    State@  = ACTIVE;
-    strOut@ = $low$
-    }endif
-if change(GAgetMode) then webdisplay(ID,strOut@,Icon@,State@,GREY) endif
+if change(GAgetMode) or change(GAsetMode) then webdisplay(ID,strOut@,Icon@,State@,GREY) endif
 :end
 /////////////////////////////////////////////////////////////////////////////////////
 // A 3-button Shifter (UP,Status,DOWN) to controll FBH Dach room east.
