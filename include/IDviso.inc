@@ -31,3 +31,4 @@ ID_B_BOOST_EG_Kueche        = 21
 ID_S_HK1_MODE               = 22
 ID_S_HK4_MODE               = 23
 ID_S_HK4_DACH_EAST          = 24
+ID_B_UVR_ON                 = 25

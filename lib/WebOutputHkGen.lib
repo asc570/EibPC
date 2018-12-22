@@ -456,8 +456,8 @@ Icon@       = SWITCH
 :var State@
 State@      = ACTIVE
 if( button(ID) != 0 ) then write(GAblockEgBoost, !bBlockEGBoost) endif
-if bBlockEGBoost then State@ = INACTIVE; strOut@ = $Auto Boost OFF$ endif
-if !bBlockEGBoost then State@ = ACTIVE; strOut@ = $Auto Boost ON$ endif
+if bBlockEGBoost  then Icon@ = CROSSCIRCLE; State@ = INACTIVE; strOut@ = $Auto Boost OFF$ endif
+if !bBlockEGBoost then Icon@ = OKCIRCLE;    State@ = ACTIVE; strOut@ = $Auto Boost ON$ endif
 if change(bBlockEGBoost) then webdisplay( ID,strOut@,Icon@,State@,GREY ) endif
 :end
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -563,4 +563,39 @@ if change(bSwitch) or change(GARoomSw) or change(GAinT) or change(GAsetValve) or
    if !GAgetValve  then strOut@ = strOut@ + stringformat(convert(corGen,0f16),4,3,2,1)     + $ , <span style= 'font-weight:bold'>OFF</span>$ endif;
    webdisplay(ID,strOut@,Icon@,State@,GREY)
     }endif
+:end
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button control to switch UVR1611 ON/OFF
+// - shows transit
+// - shows outside Air Tem
+// ID:          Button ID
+// GAsetON      GA to switch UVR ON/OFF (OUT)
+// GAgetON      GA to get ON/OFF status of UVR (IN)
+// GAoT         GA to get Outside Temp
+//
+:begin SpButtonUVRon(ID,GAsetON,GAgetON,GAoT)
+:var strOut@
+strOut@     = $$
+:var Icon@
+Icon@       = UPDATE
+:var Next@
+Next@       = ON
+:var State@
+State@      = ACTIVE
+
+initga(GAgetON)
+if after(systemstart(),  4000u64) then write(GAsetON,GAgetON) endif
+if event(GAgetON) then Next@ = !GAgetON endif;
+
+if button(ID) != 0 then write(GAsetON, Next@) endif;
+
+if change(GAsetON) or change(GAgetON) or change(Next@) or change(GAoT) then{
+    strOut@ = $Temp:$ + stringformat( convert(GAoT,0f16),4,3,2,1) + $C,$;
+    if GAgetON != GAsetON then Icon@ = UPDATE; State@ = BRIGHTRED; strOut@ = strOut@ + $<span style= 'color:red'>transit</span>$ endif;
+    if GAgetON == GAsetON then{
+        if GAgetON  then Icon@ = OKCIRCLE;      State@ = ACTIVE;    strOut@ = strOut@ + $<span style= 'color:green;font-weight:bold'>ON</span>$ endif;
+        if !GAgetON then Icon@ = CROSSCIRCLE;   State@ = DARKRED;   strOut@ = strOut@ + $OFF$ endif;
+        }endif;
+        webdisplay(ID,strOut@,Icon@,State@,GREY);
+    }endif;
 :end

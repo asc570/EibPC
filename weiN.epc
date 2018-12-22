@@ -22,11 +22,14 @@ SpWebButtonBlockEgBoost(ID_B_BOOST_EG_Kueche ,bRemBoostEG_K_Block,"fHzBlockEgBoo
 SpShifterUVRmode(ID_S_HK1_MODE,"Ain05-11/2/5","Aout04-11/3/4")
 SpShifterUVRmode(ID_S_HK4_MODE,"Ain09-11/2/9","Aout06-11/3/6")
 SpShifterUVRost(ID_S_HK4_DACH_EAST,"SwFBH4DachOst-3/4/183","T_Dach_Ost_Zas_Schreibtisch-6/3/11","Aout03-11/3/3","SwHkE-3/4/159","StSwHkE-3/4/165","shiftT_FBH4DachOst-3/4/181","shiftT_FBH4DachGen-3/4/182",bFBHdachOst,corRoomEast,corGenHk4)
+SpButtonUVRon(ID_B_UVR_ON,"Dout01-11/1/1" ,"Din14-11/0/14","Ain16-11/2/16")
 
 [MacroLibs]
 D:/users/asc/repo/EibPC/lib/WebOutputHkGen.lib
 
 [InitGA]
+// outsideTemp
+"Ain16-11/2/16"
 // heating
 "Ain02-11/2/2"	
 // for SpWebButtonMEGFrost( ID_B_OG1_MARISA_MEG_FROST,..)
@@ -248,7 +251,7 @@ page(P_ID_GEN_1)[$General$,$Heating$]
 header(0)
 footer(0)
 //design $black$
-
+button(ID_B_UVR_ON) [UPDATE] $Heating ON/OFF$
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
@@ -256,9 +259,8 @@ line $Dach$
 shifter(ID_S_HK4_DACH_EAST)[UP,FLOORHEATING,DOWN]  $FBH Dach Raum Ost$	
 line $EG$
 shifter(ID_S_EG_ESSZ_RAD )[UP,WALLHEATING,DOWN]	$EG Esszimmer$
-shifter(ID_S_EG_WOHNZ_RAD )[UP,WALLHEATING,DOWN]$EG Wohnzimmer$
 button(ID_B_BOOST_EG_K)[WALLHEATING]	$EG Boost Kueche$	button(ID_B_BOOST_EG_Kueche)[SWITCH] $EG Auto Boost$ 
-button(ID_B_EG_ESSZ_FBH )[FLOORHEATING] $EG Essz. FBH$		button(ID_B_EG_WOHNZ_FBH )[FLOORHEATING] $EG Wohnz. FBH$
+shifter(ID_S_EG_WOHNZ_RAD )[UP,WALLHEATING,DOWN]$EG Wohnzimmer$
 
 //////////////////////////////////////////////////////////////
 page(P_ID_ADMIN_HEATING)[$Admin$,$Heating$]
@@ -271,10 +273,11 @@ button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMIL
 button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 
 line $EG$
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 	
-shifter(ID_S_HK1_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH EG Mode$	
+shifter(ID_S_HK1_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH EG Mode$
+button(ID_B_EG_WOHNZ_FBH )[FLOORHEATING] $EG Wohnz. FBH$	button(ID_B_EG_GARDROBE_RAD )[WALLHEATING] $EG Gardrobe$ 	
 shifter(ID_S_EG_WC_HZ)[UP,WALLHEATING,DOWN] 	$EG Gäste-WC$
 shifter(ID_S_EG_EMO_TREPPE)[UP,WALLHEATING,DOWN]$EG Treppenhaus$
-button(ID_B_EG_GARDROBE_RAD )[WALLHEATING] $EG Gardrobe$ 
+		
 
 
 //////////////////////////////////////////////////////
