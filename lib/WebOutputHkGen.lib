@@ -261,6 +261,8 @@ if( change(bFrost@) ) then write(GASetFrost,bFrost@ )endif
 // - Temp SOLL
 // - Valve load in %
 // - shows CROSSCIRCLE when in Lock Mode
+// - Mode SBY is scipt
+// - shows transit
 //////////////////////
 // IN:
 // ID:          button ID
@@ -292,42 +294,55 @@ fontWeight@ = $normal$
 Mode@       = DARKRED
 :var nextM@
 nextMode@   = HZ_MDT_KOMFORT
+:var stMDT@
+stMDT@      = HZ_MDT_INIT
+
 :var Icon@
 Icon@       = Icon
 
+initga(GAgetHVAC)
+initga(GATmpSoll)
+initga(GATmpIst)
+initga(GALoad)
+initga(GAFoceLock)
 ///////////////////////////////////////////////////////////////////////////
 //
 if( button(ID) == 1) then write( GAshift,EIN ) endif
 if( button(ID) == 3) then write( GAshift,AUS ) endif
 if( button(ID) == 2) then write( GAsetHVAC,nextMode@ ) endif
 
-if change( GAgetHVAC) or change( GAFoceLock) or systemstart() then{ 
+if event( GAgetHVAC) or change( GAFoceLock) or event(GAsetHVAC) or systemstart() then{ 
     fontWeight@ = $normal$;
     Icon@       = Icon;
     if(GAgetHVAC == HZ_MDT_KOMFORTst ) then{
         strHVAC@    = $green$;
         Mode@       = STATE6;
         fontWeight@ = $bold$;
-        nextMode@   = HZ_MDT_SBY 
+        nextMode@   = HZ_MDT_NIGHT;
+        stMDT@      = HZ_MDT_KOMFORT;
         }endif;
     if(GAgetHVAC == HZ_MDT_SBYst )    then{
         strHVAC@    = $aqua$;
         Mode@       = STATE5;
-        nextMode@   = HZ_MDT_NIGHT
+        nextMode@   = HZ_MDT_NIGHT;
+        stMDT@      = HZ_MDT_SBY;
         }endif;
     if(GAgetHVAC == HZ_MDT_NIGHTst ) then{
         strHVAC@    = $blue$;
         Mode@       = STATE4;
-        nextMode@   = HZ_MDT_FROST
+        nextMode@   = HZ_MDT_FROST;
+        stMDT@      = HZ_MDT_NIGHT;
         }endif;
     if(GAgetHVAC == HZ_MDT_FROSTst )then{
         strHVAC@    = $fuchsia$;
         Mode@       = DISPLAY;
-        nextMode@   = HZ_MDT_KOMFORT
+        nextMode@   = HZ_MDT_KOMFORT;
+        stMDT@      = HZ_MDT_FROST;
         }endif;
 }endif
 //
-if( change( GAgetHVAC) or change( GATmpSoll) or change(GATmpIst) or change(GALoad) or change( GAFoceLock )) then{
+if change( GAgetHVAC) or change( GATmpSoll) or change(GATmpIst) or change(GALoad) or change( GAFoceLock ) or event(GAsetHVAC) or change(stMDT@) then{
+    if  GAsetHVAC != HZ_MDT_INIT and stMDT@ != HZ_MDT_INIT and !GAFoceLock and stMDT@ != GAsetHVAC then Icon@ = UPDATE; Mode@ = ACTIVE endif;
     if(GAFoceLock == 1b01) then{
         Icon@   = CROSSCIRCLE;
         Mode@   = BRIGHTRED
