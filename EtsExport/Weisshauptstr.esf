@@ -241,12 +241,12 @@ Klimat.OG1.3/3/16	HkProp2St	Uncertain (1 Byte)	Low
 Klimat.OG1.3/3/17	FBHSw	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/18	FBHStSw	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/20	HkSwA	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/26	GetPosPercA	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/27	GetPosPercB	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/28	GetPosPercC	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/29	GetPosPercD	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/30	GetPosPercE	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/31	GetPosPercF	Uncertain (1 Byte)	Low	
-Klimat.OG1.3/3/32	StEmergencyModeA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/34	StEmergencyModeC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/35	StEmergencyModeD	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/36	StEmergencyModeE	EIS 1 'Switching' (1 Bit)	Low	
@@ -275,6 +275,7 @@ Klimat.OG1.3/3/104	OG1MaxStellwertIn	Uncertain (1 Byte)	High
 Klimat.OG1.3/3/105	OG1MaxStellwertOut	Uncertain (1 Byte)	High	
 Klimat.OG1.3/3/106	StOG1AHK-0800_ErrPower	EIS 1 'Switching' (1 Bit)	High	
 Klimat.OG1.3/3/113	ReqHeater	EIS 1 'Switching' (1 Bit)	High	
+Klimat.OG1.3/3/107	SetPosPercA	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/108	SetPosPercB	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/109	SetPosPercC	Uncertain (1 Byte)	Low	
 Klimat.OG1.3/3/110	SetPosPercD	Uncertain (1 Byte)	Low	
@@ -484,7 +485,6 @@ TempSens.OG1.6/2/9	TavgOG1Treppe	Uncertain (2 Byte)	Low
 TempSens.Dach.6/3/0	T_Dach_Bad_T_HY	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/1	T_Dach_Ost_ZAS_WWest	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/2	T_Dach_Ost_ZAS_Hz	Uncertain (2 Byte)	Low	
-TempSens.Dach.6/3/3	T_Dach_F50_Ost	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/4	TavgDachWest	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/5	TavgDachOst	Uncertain (2 Byte)	Low	
 TempSens.Dach.6/3/6	TavgDachBad	Uncertain (2 Byte)	Low	

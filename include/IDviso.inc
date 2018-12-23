@@ -35,3 +35,5 @@ ID_B_UVR_ON                 = 25
 ID_B_DACH_BAD_FBH           = 26
 ID_B_DACH_WEST_FBH          = 27
 ID_B_DACH_WEST_RAD          = 28
+ID_S_OG1_BAD_RAD            = 29
+ID_S_OG1_EMO_GAST           = 30

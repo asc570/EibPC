@@ -417,7 +417,7 @@ if change(GAgetValve) or change(GAsetValve) or change(GAgetLock) then{
 :var Step@
 Step@       = 8
 :var cyMinute@
-cyMinute    = 1
+cyMinute@    = 1
 :var strOut@
 strOut@     = $$
 :var Icon@
@@ -428,7 +428,7 @@ Mode@       = ACTIVE
 nextValve@   = 0%
 //
 if systemstart() then write(GAset, GAget) endif;
-if(cycle(cyMinute,0)) then read(GAget) endif
+if(cycle(cyMinute@,0)) then read(GAget) endif
 if( button(ID) == 2) then{
     if GAset < 128      then nextValve@ = 128   endif;
     if GAset >= 128     then nextValve@ = 255   endif;
