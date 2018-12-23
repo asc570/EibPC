@@ -47,7 +47,7 @@ strOFF@  = $OFF$
 strTitle@ = HkName
 
 :var html@
-html@ = $?$c24000
+html@ = $?$c8000
 
 //
 // HTML variables
@@ -533,7 +533,7 @@ if change(GAgetMode) or change(GAsetMode) then webdisplay(ID,strOut@,Icon@,State
 //
 :begin SpShifterUVRost(ID,GARoomSw,GAinT,GAoutT,GAsetValve,GAgetValve,GAtShiftRoom,GAtShiftGen,bSwitch,corRoom,corGen)
 :var tGen@
-tGen@        = 21.5f16
+tGen@        = 21.0f16
 :var strOut@
 strOut@     = $$
 :var Icon@
