@@ -500,7 +500,7 @@ if button(ID) == 2 then write(GAsetMode, UVR_NORMAL)    endif
 if button(ID) == 3 then write(GAsetMode, UVR_ABGESENKT) endif
 if GAgetMode != GAsetMode then{
     Icon@   = UPDATE;
-    strOut@ = $transit$;
+    strOut@ = $<span style= 'color:red'>transit</span>$;
     }endif
 if GAgetMode == GAsetMode then{
     if GAgetMode == UVR_AUTO then{
