@@ -426,6 +426,10 @@ Icon@       =Icon
 Mode@       = ACTIVE
 :var nextValve@
 nextValve@   = 0%
+
+initga(GAget)
+initga(GAlock)
+initga(GAset)
 //
 if systemstart() then write(GAset, GAget) endif;
 if(cycle(cyMinute@,0)) then read(GAget) endif
