@@ -33,3 +33,5 @@ ID_S_HK4_MODE               = 23
 ID_S_HK4_DACH_EAST          = 24
 ID_B_UVR_ON                 = 25
 ID_B_DACH_BAD_FBH           = 26
+ID_B_DACH_WEST_FBH          = 27
+ID_B_DACH_WEST_RAD          = 28
