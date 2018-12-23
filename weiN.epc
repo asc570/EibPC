@@ -17,6 +17,7 @@ SpShifterAKH( ID_S_EG_ESSZ_RAD,WALLHEATING, "SetTShiftE-3/2/38","HVAC_E-3/2/44",
 SpButtonAKH(ID_B_EG_GARDROBE_RAD,WALLHEATING,"HkSwB-3/2/1","GetPosB-3/2/9","SetLockPosB-3/2/97")
 SpButtonAKH(ID_B_EG_ESSZ_FBH,FLOORHEATING,"HkSwH-3/2/7","GetPosH-3/2/122","SetLockPosH-3/2/126")
 SpButtonAKH(ID_B_EG_WOHNZ_FBH,FLOORHEATING,"HkSwG-3/2/6","GetPosG-3/2/121","SetLockPosG-3/2/125")
+SpButtonAKH(ID_B_DACH_BAD_FBH,FLOORHEATING,"SwHkF-3/4/160","StSwHkF-3/4/166","LockPosF-3/4/118")
 ShifterEMO(ID_S_EG_EMO_TREPPE,WALLHEATING,"HkProp2Soll-3/3/14","HkProp2Ist-3/3/15","HkProp2Lock-3/3/138")
 SpWebButtonBlockEgBoost(ID_B_BOOST_EG_Kueche ,bRemBoostEG_K_Block,"fHzBlockEgBoost-8/2/52")
 SpShifterUVRmode(ID_S_HK1_MODE,"Ain05-11/2/5","Aout04-11/3/4")
@@ -267,6 +268,7 @@ page(P_ID_ADMIN_HEATING)[$Admin$,$Heating$]
 line$Dach$
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
 shifter(ID_S_HK4_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH Dach Mode$
+button(ID_B_DACH_BAD_FBH)[FLOORHEATING] $Dach Bad FBH$
 line $OG1$
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]	
 button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$

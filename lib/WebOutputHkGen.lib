@@ -366,7 +366,7 @@ Icon@       = Icon
 Mode@       = ACTIVE
 :var strInfo@
 strInfo@    =$$
-
+initga(GAgetLock);
 initga(GAgetValve);
 if after(systemstart(),  3000u64) then write(GAsetValve,GAgetValve) endif
 
@@ -378,7 +378,7 @@ if change(GAgetValve) or change(GAsetValve) or change(GAgetLock) then{
     if !GAgetLock then{ 
         if GAsetValve == GAgetValve and GAgetValve   then Mode@ = ACTIVE; Icon@ = Icon; strInfo@ = $On$ endif;
         if GAsetValve == GAgetValve and !GAgetValve  then Mode@ = DARKRED;Icon@ = Icon; strInfo@ = $Off$ endif;
-        if GAsetValve != GAgetValve then Icon@ = UPDATE; Mode@ = ACTIVE; strInfo@ = $transit$ endif
+        if GAsetValve != GAgetValve then Icon@ = UPDATE; Mode@ = ACTIVE; strInfo@ = $<span style= 'color:red'>transit</span>$ endif
         }endif;
     webdisplay(ID,strInfo@,Icon@,Mode@,GREY)
     }endif
