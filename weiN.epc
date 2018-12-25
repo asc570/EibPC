@@ -2,6 +2,7 @@
 [ETS-ESF]
 // ESF file exported from ETS3
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
+
 [Macros]
 // heating
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,	"Din14-11/0/14","Ain02-11/2/2" ,"Ain03-11/2/3" ,"Din04-11/0/4","Ain04-11/2/4"   ,"Aout04-11/3/4","Ain05-11/2/5" ,"Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
@@ -27,6 +28,7 @@ SpWebButtonBlockEgBoost(ID_B_BOOST_EG_Kueche ,bRemBoostEG_K_Block,"fHzBlockEgBoo
 SpShifterUVRmode(ID_S_HK1_MODE,"Ain05-11/2/5","Aout04-11/3/4")
 SpShifterUVRmode(ID_S_HK4_MODE,"Ain09-11/2/9","Aout06-11/3/6")
 SpShifterUVRost(ID_S_HK4_DACH_EAST,"SwFBH4DachOst-3/4/183","T_Dach_Ost_Zas_Schreibtisch-6/3/11","Aout03-11/3/3","SwHkE-3/4/159","StSwHkE-3/4/165","shiftT_FBH4DachOst-3/4/181","shiftT_FBH4DachGen-3/4/182",bFBHdachOst,corRoomEast,corGenHk4)
+SpButtonSwHzDoor(ID_B_DACH_EAST_RAD,WALLHEATING,bRADdachOst,"fSwGenDachOstRad-3/4/185" ,"SwHkB-3/4/156","StSwHkB-3/4/162","TuerOstOpen-7/3/6","HkLockB-3/4/108")
 SpButtonUVRon(ID_B_UVR_ON,"Dout01-11/1/1" ,"Din14-11/0/14","Ain16-11/2/16")
 
 [MacroLibs]
@@ -204,6 +206,10 @@ if( hysteresis("OG1MaxStellwertOut-3/3/105",lowerLboostOG1,upperLboostOG1)) 	the
 //
 //////////////////////////////////////////////////////////////////////
 //
+// Flash memory
+//
+// Flash heating
+//
 tempStep 	= 0.5f16
 corRoomEast	= 0f16
 if systemstart() then readflashvar(corRoomEast) endif
@@ -226,7 +232,12 @@ if systemstart() then readflashvar(bFBHdachOst) endif
 if change(bFBHdachOst) then writeflashvar(bFBHdachOst) endif
 if event("SwFBH4DachOst-3/4/183") then bFBHdachOst = "SwFBH4DachOst-3/4/183" endif
 
-// 
+bRADdachOst	= 1b01
+if systemstart() then readflashvar(bRADdachOst) endif
+if change(bRADdachOst) then writeflashvar(bRADdachOst) endif
+if event("fSwGenDachOstRad-3/4/185") then bRADdachOst = "fSwGenDachOstRad-3/4/185" endif
+
+////////////////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////
@@ -276,7 +287,7 @@ line$Dach$
 weboutput(ID_WebOutHK4)[SINGLE,NOICON]
 shifter(ID_S_HK4_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH Dach Mode$
 shifter(ID_S_HK4_DACH_EAST)[UP,FLOORHEATING,DOWN]  $FBH Dach Raum Ost$	
-button(ID_B_DACH_BAD_FBH)[FLOORHEATING] $Dach Bad FBH$		
+button(ID_B_DACH_EAST_RAD)[WALLHEATING]$RAD Dach Ost$		button(ID_B_DACH_BAD_FBH)[FLOORHEATING] $Dach Bad FBH$			
 button(ID_B_DACH_WEST_RAD)[WALLHEATING] $Dach West RAD$ 	button(ID_B_DACH_WEST_FBH)[FLOORHEATING] $Dach West FBH$
 line $OG1$
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]	
@@ -285,8 +296,6 @@ shifter(ID_S_BOOST_OG1_BAD)[UP,FLOORHEATING,DOWN] $OG1 Boost Bad$
 shifter(ID_S_OG1_EMO_GAST)[UP,WALLHEATING,DOWN]$OG Gast$
 button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
 button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 
-
-
 line $EG$
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 	
 shifter(ID_S_HK1_MODE)[CLOCK,WEATHER,NIGHT,UPDATE] $FBH EG Mode$

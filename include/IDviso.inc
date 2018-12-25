@@ -39,3 +39,4 @@ ID_S_OG1_BAD_RAD            = 29
 ID_S_OG1_EMO_GAST           = 30
 ID_B_BOOST_OG1_BAD          = 31
 ID_S_BOOST_OG1_BAD          = 32
+ID_B_DACH_EAST_RAD           = 33

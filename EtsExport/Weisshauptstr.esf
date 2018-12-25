@@ -307,7 +307,7 @@ Klimat.Dach.3/4/87	SetPosPercE	Uncertain (1 Byte)	Low
 Klimat.Dach.3/4/88	SetPosPercF	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/91	GetPosPercC	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/107	HkLockA	EIS 1 'Switching' (1 Bit)	Low	
-Klimat.Dach.3/4/108	HkLockB	EIS 1 'Switching' (1 Bit)	Low	7/3/6
+Klimat.Dach.3/4/108	HkLockB	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/109	HkLockC	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/110	HkLockD	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/111	HkLockE	EIS 1 'Switching' (1 Bit)	Low	
@@ -339,6 +339,7 @@ Klimat.Dach.3/4/180	RefD	EIS 1 'Switching' (1 Bit)	Low
 Klimat.Dach.3/4/181	shiftT_FBH4DachOst	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/182	shiftT_FBH4DachGen	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/183	SwFBH4DachOst	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.Dach.3/4/185	fSwGenDachOstRad	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Gen.3/0/3	SetWinter	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Outside.3/6/0	RsRainRaining	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Outside.3/6/1	RsRainAlive	EIS 1 'Switching' (1 Bit)	Low	

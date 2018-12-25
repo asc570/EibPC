@@ -673,3 +673,62 @@ if change(GAsetON) or change(GAgetON) or change(Duration@) or (GAgetON and cycle
     }endif;    
 :end
 //////////////////////////////////////////////////////////////////////////////////
+// 
+// Button control to set RAD/FBH ON//OFF with regards to an external switch GA (door open/close)
+// - shows lock mode
+// - shows door position
+// - uses external REM flag bRemON controlled by GAsetSw
+// ID:          buttonID
+// Icon:        base icon
+// bRemON       external REM flag, controlled by GAsetSw (IN)
+// GAsetSw:     GA to change the REM flag bRemON (OUT)
+// GAsetON      GA to set valve position(OUT)
+// GAgetON      GA to get valve position(IN)
+// GAdoorOpen   GA to get door position, oben -> ON, (IN)
+// GAlock       GA to get lock (IN)
+//
+:begin SpButtonSwHzDoor(ID,Icon,bRemON,GAsetSw,GAsetON,GAgetON,GAdoorOpen,GAlock)
+initga(GAgetON)
+initga(GAdoorOpen)
+initga(GAlock)
+:var strOut@
+strOut@         = $$
+:var Icon@      
+Icon@           = UPDATE
+:var State@
+State@          = ACTIVE
+
+if button(ID) != 0 then write(GAsetSw,!bRemON) endif
+//if button(ID) == 3 then write(GAsetSw,0b01) endif
+
+if bRemON and !GAdoorOpen   then write(GAsetON,1b01) endif
+if !bRemON or GAdoorOpen    then write(GAsetON,0b01) endif
+
+if change(bRemON) or event(GAgetON) or event(GAdoorOpen) then{
+    if !GAlock then{
+        if bRemON and !GAdoorOpen then{
+            if !GAgetON then strOut@ = $<span style= 'color:red;font-weight:bold'>OFF</span>,$;    Icon@ = Icon;   State@ = DARKRED  endif;
+            if GAgetON  then strOut@ = $<span style= 'color:green;font-weight:bold'>ON</span>,$ ;  Icon@ = Icon;   State@ = ACTIVE   endif;
+            }endif;
+        if bRemON and GAdoorOpen then{
+            if !GAgetON then strOut@ = $<span style= 'color:blue;font-weight:bold'>OFF</span>,$;    Icon@ = WINDOW; State@ = STATE7     endif;
+            if  GAgetON then strOut@ = $<span style= 'color:red;font-weight:bold'>ON</span>,$;      Icon@ = WINDOW; State@ = BRIGHTRED  endif;
+            }endif;
+        if !bRemON and GAdoorOpen then{
+            if !GAgetON then strOut@ = $<span style= 'color:black;font-weight:bold'>OFF</span>,$;   Icon@ = WINDOW; State@ = STATE5     endif;
+            if GAgetON  then strOut@ = $<span style= 'color:red;font-weight:bold'>ON</span>,$;      Icon@ = WINDOW; State@ = BRIGHTRED  endif;
+            }endif;
+        if !bRemON and !GAdoorOpen then{
+            if !GAgetON then strOut@ = $<span style= 'color:black;font-weight:bold'>OFF</span>,$;   Icon@ = Icon;   State@ = INACTIVE   endif;
+            if GAgetON  then strOut@ = $<span style= 'color:red;font-weight:bold'>ON</span>,$;      Icon@ = Icon;   State@ = BRIGHTRED  endif;
+            }endif;                                                                                                                                                                 
+        }endif;
+    if GAlock then{
+        Icon@   = CROSSCIRCLE;
+        State@  = BRIGHTRED;
+        if !GAgetON then strOut@ = $<span style= 'color:red;font-weight:bold'>OFF</span>,$   endif;
+        if GAgetON  then strOut@ = $<span style= 'color:black;font-weight:bold'>ON</span>,$ endif;
+        }endif;
+    webdisplay(ID,strOut@,Icon@,State@,GREY);
+    }endif;
+:end
