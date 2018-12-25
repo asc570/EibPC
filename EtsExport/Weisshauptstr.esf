@@ -283,6 +283,7 @@ Klimat.OG1.3/3/112	SetPosPercF	Uncertain (1 Byte)	Low
 Klimat.OG1.3/3/130	GetBoolA	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/136	SetModeFrostE	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.OG1.3/3/138	HkProp2Lock	EIS 1 'Switching' (1 Bit)	Low	
+Klimat.OG1.3/3/139	toggleOG1BoostBad	EIS 1 'Switching' (1 Bit)	Low	
 Klimat.Dach.3/4/0	Gen Scene	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/4	HzBlowe:2	Uncertain (1 Byte)	Low	
 Klimat.Dach.3/4/5	WX:TempDach	Uncertain (2 Byte)	Low	

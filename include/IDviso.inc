@@ -38,3 +38,4 @@ ID_B_DACH_WEST_RAD          = 28
 ID_S_OG1_BAD_RAD            = 29
 ID_S_OG1_EMO_GAST           = 30
 ID_B_BOOST_OG1_BAD          = 31
+ID_S_BOOST_OG1_BAD          = 32

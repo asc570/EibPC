@@ -618,3 +618,58 @@ if change(GAsetON) or change(GAgetON) or change(Next@) or change(GAoT) then{
         webdisplay(ID,strOut@,Icon@,State@,GREY);
     }endif;
 :end
+//////////////////////////////////////////////////////////////////////////////////////////
+// 3600000u64 -> 1h
+//
+// Shift control to set timer time and start/stop timer using GAtoggle to toggle ON(timer)/OFF
+// -reset to OFF on systemstart()
+// -duration can be adjustet in betwean uMax-uMin
+// -when switched to OFF, timer duration is reset to uDuration
+// -shows transit
+// ID:          shifter ID
+// Icon:        Icon to display in shifter pos.2
+// GAtoggle:    GA Toggle timer ON/OFF (IN)
+// GAsetON:     GA to set ON (OUT)
+// GAgetON:     GA to get ON (IN)
+// uDuration:   basic duration on 0u64 (3600000u64 -> 1h)
+// uMax:        max duration 0u64
+// uMin:        min durastion 0u64
+//
+:begin  SpShiftTimer(ID,Icon,GAtoggle,GAsetON,GAgetON,uDuration,uMaxD,uMinD)
+initga(GAsetON)
+initga(GAgetON)
+
+:var strOut@
+strOut@         = $$
+:var Icon@
+Icon@           = UPDATE
+:var State@
+State@          = ACTIVE
+:var Duration@
+Duration@       = uDuration
+:var Inc@
+Inc@            = 180000u64
+:var Remaining@
+Remaining@      = 0u64
+if systemstart() then write(GAsetON,AUS) endif
+if delayc(GAgetON,Duration@,Remaining@) then write(GAsetON,AUS) endif
+if !GAgetON then Duration@ = uDuration ; Remaining@ = 0u64 endif
+
+if button(ID) == 1   then Duration@ = Duration@ + Inc@ endif
+if button(ID) == 3   then Duration@ = Duration@ - Inc@ endif
+if Duration@ < uMinD then Duration@ = uMinD endif
+if Duration@ > uMaxD then Duration@ = uMaxD endif
+if button(ID) == 2 or event(GAtoggle) then write(GAsetON,!GAgetON) endif
+     
+if change(GAsetON) or change(GAgetON) or change(Duration@) or (GAgetON and cycle(1,0)) then{
+    strOut@ = stringformat(Remaining@/60000u64,0,3,2,2) + $/$ + stringformat(Duration@ /60000u64,0,3,2,2) + $ Minuten,$;
+    
+    if GAgetON != GAsetON then Icon@ = UPDATE; State@ = ACTIVE; strOut@= $<span style= 'color:red'>transit</span>$   endif;
+    if GAgetON == GAsetON then{
+        if GAgetON  then Icon@ = Icon ; State@ = BRIGHTRED ; strOut@ = strOut@ + $<span style= 'color:red;font-weight:bold'> ON</span>$  endif;
+        if !GAgetON then Icon@ = Icon ; State@ = INACTIVE  ; strOut@ = strOut@ + $ OFF$ endif; 
+        }endif;
+    webdisplay(ID,strOut@,Icon@,State@,GREY);
+    }endif;    
+:end
+//////////////////////////////////////////////////////////////////////////////////

@@ -2,8 +2,6 @@
 [ETS-ESF]
 // ESF file exported from ETS3
 D:/users/asc/repo/EibPC/EtsExport/Weisshauptstr.esf
-
-
 [Macros]
 // heating
 SpWebOutHkGen($EG FBH$,ID_WebOutHK1,	"Din14-11/0/14","Ain02-11/2/2" ,"Ain03-11/2/3" ,"Din04-11/0/4","Ain04-11/2/4"   ,"Aout04-11/3/4","Ain05-11/2/5" ,"Din010-11/0/10","Din09-11/0/9","Din01-11/0/1",0)
@@ -24,7 +22,7 @@ SpButtonAKH(ID_B_DACH_WEST_FBH ,FLOORHEATING,"SwHkD-3/4/158","StSwHkD-3/4/164","
 SpButtonAKH(ID_B_DACH_WEST_RAD ,WALLHEATING,"SwHkA-3/4/155","StSwHkA-3/4/161","LockPosA-3/4/113")
 ShifterEMO(ID_S_EG_EMO_TREPPE,WALLHEATING,"HkProp2Soll-3/3/14","HkProp2Ist-3/3/15","HkProp2Lock-3/3/138")
 ShifterEMO(ID_S_OG1_EMO_GAST,WALLHEATING,"SetPosPercA-3/3/107","GetPosPercA-3/3/26","LockPosA-3/3/44")
-
+SpShiftTimer(ID_S_BOOST_OG1_BAD,FLOORHEATING,"toggleOG1BoostBad-3/3/139","FBHSw-3/3/17","FBHStSw-3/3/18",1800000u64,3600000u64,1800000u64 )
 SpWebButtonBlockEgBoost(ID_B_BOOST_EG_Kueche ,bRemBoostEG_K_Block,"fHzBlockEgBoost-8/2/52")
 SpShifterUVRmode(ID_S_HK1_MODE,"Ain05-11/2/5","Aout04-11/3/4")
 SpShifterUVRmode(ID_S_HK4_MODE,"Ain09-11/2/9","Aout06-11/3/6")
@@ -251,26 +249,7 @@ if( !"HzEgBoost_EssZ-8/2/39" ) then {
 
 if( cycle(1,0) and Boost_Eg_K_Remaining != 0u64) then webdisplay(ID_B_BOOST_EG_K,stringformat(Boost_Eg_K_Remaining/60000u64,0,3,2,2) + $ minutes remaining$,WALLHEATING ,DARKRED,GREY) endif;
 //
-///////////////////////////////////////////////////////////////////////
-// Button BoostOG1Bad ///////////////////////////////////////////////
-// ID_B_BOOST_OG1_BAD
-///////////////////////////////////////////////////////////////////////////////////////
-BOOST_OG1_BAD_DURATION	= 1800000u64
-//
-if delayc( "FBHSw-3/3/17",BOOST_OG1_BAD_DURATION,Boost_OG1_Bad_Remaining) then write( "FBHSw-3/3/17",AUS) endif
 
-if button(ID_B_BOOST_OG1_BAD) != 0 then write("FBHSw-3/3/17",!"FBHSw-3/3/17") endif;
-
-Boost_OG1_Bad_Remaining 	= 0u64
-if( "FBHSw-3/3/17") then{
- 	webdisplay(ID_B_BOOST_OG1_BAD,stringformat(Boost_OG1_Bad_Remaining/60000u64,0,3,2,2)+ $ minutes remaining$,FLOORHEATING ,DARKRED,GREY) 
-	}endif;
-if( !"FBHSw-3/3/17" ) then {
-	Boost_OG1_Bad_Remaining  = 0u64;
-	webdisplay(ID_B_BOOST_OG1_BAD,$$,FLOORHEATING,INACTIVE,GREY)
-	}endif
-
-if( cycle(1,0) and Boost_OG1_Bad_Remaining  != 0u64) then webdisplay(ID_B_BOOST_OG1_BAD,stringformat(Boost_OG1_Bad_Remaining /60000u64,0,3,2,2)+ $ minutes remaining$,FLOORHEATING ,DARKRED,GREY) endif;
 [WebServer]
 
 page(P_ID_GEN_1)[$General$,$Heating$]
@@ -283,6 +262,8 @@ weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 line $Dach$
 shifter(ID_S_HK4_DACH_EAST)[UP,FLOORHEATING,DOWN]  $FBH Dach Raum Ost$	
+line $OG1$
+shifter(ID_S_BOOST_OG1_BAD)[UP,FLOORHEATING,DOWN] $OG1 Boost Bad$
 line $EG$
 shifter(ID_S_EG_ESSZ_RAD )[UP,WALLHEATING,DOWN]	$EG Esszimmer$
 button(ID_B_BOOST_EG_K)[WALLHEATING]	$EG Boost Kueche$	button(ID_B_BOOST_EG_Kueche)[SWITCH] $EG Auto Boost$ 
@@ -300,7 +281,7 @@ button(ID_B_DACH_WEST_RAD)[WALLHEATING] $Dach West RAD$ 	button(ID_B_DACH_WEST_F
 line $OG1$
 weboutput(ID_WebOutHK3)[SINGLE,NOICON]	
 shifter(ID_S_OG1_BAD_RAD )[UP,WALLHEATING,DOWN]$OG1 Bad$
-button(ID_B_BOOST_OG1_BAD)[FLOORHEATING] $OG1 Boost Bad$
+shifter(ID_S_BOOST_OG1_BAD)[UP,FLOORHEATING,DOWN] $OG1 Boost Bad$
 shifter(ID_S_OG1_EMO_GAST)[UP,WALLHEATING,DOWN]$OG Gast$
 button( ID_B_OG1_MARISA_MEG_FROST)[ICE]	$OG1 Marisa Frost$	button( ID_B_OG1_EMILIA_MEG_FROST)[ICE]$OG1 Emilia Frost$
 button(ID_B_OG1_BUERO_MEG_FROST )[ICE]	$OG1 Buero Frost$ 
