@@ -552,7 +552,7 @@ if change(GAgetMode) or change(GAsetMode) then webdisplay(ID,strOut@,Icon@,State
 //
 :begin SpShifterUVRost(ID,GARoomSw,GAinT,GAoutT,GAsetValve,GAgetValve,GAtShiftRoom,GAtShiftGen,bSwitch,corRoom,corGen)
 :var tGen@
-tGen@        = 21.0f16
+tGen@        = 22.0f16
 :var strOut@
 strOut@     = $$
 :var Icon@
