@@ -273,6 +273,7 @@ weboutput(ID_WebOutHK3)[SINGLE,NOICON]
 weboutput(ID_WebOutHK1)[SINGLE,NOICON] 
 line $Dach$
 shifter(ID_S_HK4_DACH_EAST)[UP,FLOORHEATING,DOWN]  $FBH Dach Raum Ost$	
+button(ID_B_DACH_EAST_RAD)[WALLHEATING]$RAD Dach Ost$	
 line $OG1$
 shifter(ID_S_BOOST_OG1_BAD)[UP,FLOORHEATING,DOWN] $OG1 Boost Bad$
 line $EG$
